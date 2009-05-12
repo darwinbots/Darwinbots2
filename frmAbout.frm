@@ -179,7 +179,7 @@ Begin VB.Form frmAbout
    End
    Begin VB.Label Label6 
       Alignment       =   2  'Center
-      Caption         =   "Version 2.43 - Jan 2007"
+      Caption         =   "Version 2.44.1 - Dec 2008"
       BeginProperty Font 
          Name            =   "Arial"
          Size            =   8.25
@@ -193,7 +193,7 @@ Begin VB.Form frmAbout
       Left            =   120
       TabIndex        =   1
       Top             =   960
-      Width           =   2265
+      Width           =   2505
    End
 End
 Attribute VB_Name = "frmAbout"
@@ -211,7 +211,7 @@ Private Sub Form_Load()
   strings Me
   SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
   Text1.text = ""
-  Text1.text = Text1.text + "DarwinBots v2.43" + vbCrLf
+  Text1.text = Text1.text + "DarwinBots v2.44.1" + vbCrLf
   Text1.text = Text1.text + "http://www.darwinbots.com" + vbCrLf
   Text1.text = Text1.text + "Original Copyright (C) 2003 Carlo Comis" + vbCrLf
   Text1.text = Text1.text + "comis@libero.it" + vbCrLf

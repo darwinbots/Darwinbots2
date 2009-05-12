@@ -195,11 +195,11 @@ End Sub
 
 Private Sub Form_Resize()
   If WindowState <> 1 Then
-    Text1.Width = Width - 120
+    Text1.width = width - 120
     Text1.Height = Height - Text2.Height - 620
     Text2.Top = Height - Text2.Height - 400
-    Text2.Width = Text1.Width
-    Picture1.Width = Text2.Width
+    Text2.width = Text1.width
+    Picture1.width = Text2.width
   End If
 End Sub
 
@@ -341,8 +341,12 @@ Private Sub evnt_textentered(ind As Integer, text As String)
       DisplayActivations = False
       Form1.Active = False
     Case "set"
-      rob(ind).mem(SysvarTok(rob(ind).console.text(2), ind)) = val(rob(ind).console.text(3))
-      printmem ind, rob(ind).console.text(2)
+      If Abs(val(rob(ind).console.text(3))) < 32001 Then
+        rob(ind).mem(SysvarTok(rob(ind).console.text(2), ind)) = val(rob(ind).console.text(3))
+        printmem ind, rob(ind).console.text(2)
+      Else
+        rob(ind).console.textout "Value out of range.  Memory values must be between -32000 and 32000."
+      End If
     Case "printmem"
       printmem ind, rob(ind).console.text(2)
     Case "?"

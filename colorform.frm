@@ -129,7 +129,7 @@ End Sub
 Private Sub Form_terminate()
   
   UseThisColor = True
-  Unload Me
+  Me.Hide
 End Sub
 
 Private Sub SliderG_Scroll()
@@ -173,5 +173,5 @@ End Sub
 Private Sub UseColor_Click()
   UseThisColor = True
   SelectColor = True
-  Unload Me
+  Me.Hide
 End Sub

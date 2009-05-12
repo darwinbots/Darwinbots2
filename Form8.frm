@@ -53,8 +53,7 @@ Dim points(1000, 1) As Long
 Dim ind As Integer
 
 Private Sub Command2_Click()
-  makewall
-  Form1.DrawAllRobs
+    Form1.DrawAllRobs
 End Sub
 
 Private Sub Form_Load()
@@ -93,33 +92,6 @@ Sub storepoints(x As Single, y As Single)
   ind = ind + 1
 End Sub
 
-Private Sub makewall()
-  Dim x1 As Long
-  Dim y1 As Long
-  Dim x2 As Long
-  Dim y2 As Long
-  Dim dx As Single
-  Dim dy As Single
-  Dim num As Integer
-  Dim k As Integer
-  If ind > 1 Then
-    For t = 1 To ind - 2
-      x1 = points(t, 0)
-      y1 = points(t, 1)
-      x2 = points(t + 1, 0)
-      y2 = points(t + 1, 1)
-      dx = x2 - x1
-      dy = y2 - y1
-      dis = Sqr(dx ^ 2 + dy ^ 2)
-      num = dis / (RobSize * 0.8)
-      dy = dy / num
-      dx = dx / num
-      For k = 1 To num
-        Form1.CreaMuro x1 + k * dx, y1 + k * dy
-      Next k
-    Next t
-  End If
-End Sub
 
 
 

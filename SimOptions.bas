@@ -28,17 +28,23 @@ Public Const DYNAMICCOSTTARGETLOWERRANGE As Integer = 58
 Public Const COSTXREINSTATEMENTLEVEL As Integer = 59
 Public Const AGECOSTMAKELINEAR As Integer = 60
 Public Const DYNAMICCOSTINCLUDEPLANTS As Integer = 61
+Public Const ALLOWNEGATIVECOSTX As Integer = 62
 
 Public Const TEMPSUNSUSPEND As Integer = 0
 Public Const ADVANCESUN As Integer = 2
 Public Const PERMSUNSUSPEND As Integer = 1
 
-' definition of the SimOpts structure
 
+Public Const MAXSPECIES As Integer = 500 ' Used to count species in other sims for IM mode
+Public Const MAXNATIVESPECIES As Integer = 76 ' Max number of species that can be in this sim
+
+Public Species(MAXSPECIES) As datispecie
+
+
+' definition of the SimOpts structure
 'BE VERY CAREFUL changing the TYPE of a variable
 'the read/write functions for saving sim settings/bots/simulations are
 'very particular about variable TYPE
-
 Public Type SimOptions
   SimName As String
   TotRunCycle As Long
@@ -46,7 +52,7 @@ Public Type SimOptions
   TotRunTime As Long
   TotBorn As Long
   SpeciesNum As Integer
-  Specie(50) As datispecie
+  Specie(MAXNATIVESPECIES) As datispecie
   FieldSize As Integer
   FieldWidth As Long
   FieldHeight As Long
@@ -71,6 +77,7 @@ Public Type SimOptions
   MutOscill As Boolean
   MutCycMax As Long
   MutCycMin As Long
+  DisableMutations As Boolean ' Indicates whether all mutations should be disabled
   '
   DBName As String
   DBEnable As Boolean
@@ -170,9 +177,21 @@ Public Type SimOptions
   shapeDriftRate As Integer
   makeAllShapesTransparent As Boolean
   makeAllShapesBlack As Boolean
+  
+  'Egrid Stuff
+  EGridEnabled As Boolean
+  EGridWidth As Integer
+    
   oldCostX As Single
   
   MaxAbsNum As Long ' Highest Maximum number assigned so far in the sim
+  SimGUID As Long   ' Unique ID for this sim
+  
+  EnableAutoSpeciation As Boolean
+  SpeciationGeneticDistance As Integer
+  SpeciationGenerationalDistance As Integer
+  SpeciationMinimumPopulation As Integer
+  SpeciationForkInterval As Long
      
 End Type
 

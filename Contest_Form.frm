@@ -371,7 +371,7 @@ Option Explicit
 
 ' Stuff for automatic restarts and F1 contest mode
 Private Sub Form_Load()
-  SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
+'  SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
 End Sub
 
 Private Sub Option1_Click(Index As Integer)
@@ -383,13 +383,12 @@ Private Sub Option1_Click(Index As Integer)
   
     For t = 1 To MaxRobs
     '  t = nd.robn
-      With rob(t)
         'If Not .Veg And Not .Corpse And Not .wall And .exist Then
-        If Not .Veg And Not .Corpse And .exist Then
-          realname = Left(.FName, Len(.FName) - 4)
+        If Not rob(t).Veg And Not rob(t).Corpse And rob(t).exist Then
+          realname = Left(rob(t).FName, Len(rob(t).FName) - 4)
           If realname <> PopArray(Index).SpName Then KillRobot t
         End If
-      End With
+   
     Next t
   
     Option1(0).value = True
@@ -399,8 +398,8 @@ End Sub
 
 Private Sub Form_Resize()
   If Contest_Form.WindowState = 0 Then
-    Contest_Form.Height = 2700
-    Contest_Form.Width = 5000
+    Contest_Form.height = 2700
+    Contest_Form.width = 5000
   End If
 End Sub
 

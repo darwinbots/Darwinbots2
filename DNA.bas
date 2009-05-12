@@ -44,6 +44,7 @@ Dim currbot As Long
 Dim currgene As Long 'for *.thisgene
 Public DisplayActivations As Boolean 'EricL - Toggle for displaying activations in the consol
                                      'Indicates whether the cycle was executed from a console
+Public ingene As Boolean             ' Flag for current gene counting.
 
 ''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''
@@ -58,21 +59,20 @@ Private Sub ExecuteDNA(n As Integer)
   currbot = n
   currgene = 0
   CurrentCondFlag = NEXTBODY 'execute body statements if no cond is found
+  ingene = False
   
-  'clear the stack
-  IntStack.pos = 0
-  IntStack.val(0) = 0
-  Condst.pos = 0
-  Condst.val(0) = 0
+  'New bot.  clear the stacks
+  ClearIntStack
+  ClearBoolStack
   
   'EricL - March 15, 2006 This section initializes the robot's ga() array to all False so that it can
   'be populated below for those genes that activate this cycle.  Used for displaying
   'Gene Activations.  Only initialized and populated for the robot with the focus or if the bot's console
   'is open.
   If (n = robfocus) Or Not (rob(n).console Is Nothing) Then
-    rob(n).genenum = CountGenes(rob(n).DNA) ' EricL 4/6/2006 This keeps the gene number up to date
+  '  rob(n).genenum = CountGenes(rob(n).DNA) ' EricL 4/6/2006 This keeps the gene number up to date
     ReDim rob(n).ga(rob(n).genenum)
-    For i = 0 To rob(n).genenum - 1
+    For i = 0 To rob(n).genenum
       rob(n).ga(i) = False
     Next i
   End If
@@ -109,23 +109,27 @@ Private Sub ExecuteDNA(n As Integer)
           ExecuteBitwiseCommand .DNA(a).value
         End If
       Case 5 'conditions
-        If CurrentFlow = COND Then
+        'EricL  11/2007 New execution paradym.  Conditions can now be executeed anywhere in the gene
+        If CurrentFlow = COND Or CurrentFlow = body Or CurrentFlow = ELSEBODY Then
           ExecuteConditions .DNA(a).value
         End If
       Case 6 'logic commands (and, or, etc.)
-        If CurrentFlow = COND Then
+        'EricL  11/2007 New execution paradym.  Conditions can now be executeed anywhere in the gene
+        If CurrentFlow = COND Or CurrentFlow = body Or CurrentFlow = ELSEBODY Then
           ExecuteLogic .DNA(a).value
         End If
       Case 7 'store, inc and dec
         If CurrentFlow = body Or CurrentFlow = ELSEBODY Then
-          ExecuteStores .DNA(a).value
-          If n = robfocus Or Not (rob(n).console Is Nothing) Then rob(n).ga(currgene) = True  'EricL  This gene fired this cycle!  Populate ga()
+          If CondStateIsTrue Then  ' Check the Bool stack.  If empty or True on top, do the stores.  Don't if False.
+            ExecuteStores .DNA(a).value
+            If n = robfocus Or Not (rob(n).console Is Nothing) Then rob(n).ga(currgene) = True  'EricL  This gene fired this cycle!  Populate ga()
+          End If
         End If
       Case 8 'reserved for a future type
       Case 9 'flow commands
       
         ' EricL 4/6/2006 Added If statement.  This counts the number of COND statements in each bot.
-        If Not ExecuteFlowCommands(.DNA(a).value) Then
+        If Not ExecuteFlowCommands(.DNA(a).value, n) Then
           rob(n).condnum = rob(n).condnum + 1
         End If
         
@@ -148,6 +152,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''
 
 Private Sub ExecuteBasicCommand(n As Integer)
+Dim i As Long
   '& denotes commands that can be constructed from other commands, but
   'are still basic enough to be listed here
   
@@ -170,8 +175,16 @@ Private Sub ExecuteBasicCommand(n As Integer)
       DNAsgn
     Case 9 'absolute value &
       DNAabs
-    Case 10 'dup
+    Case 10 'dup or dupint
       DNAdup
+    Case 11 'dropint - Drops the top value on the Int stack
+      i = PopIntStack
+    Case 12 'clearint - Clears the Int stack
+      ClearIntStack
+    Case 13 'swapint - Swaps the top two values on the Int stack
+      SwapIntStack
+    Case 14 'overint - a b -> a b a  Dups the second value on the Int stack
+      OverIntStack
   End Select
 End Sub
 
@@ -198,19 +211,19 @@ Private Sub DNASub()
   b = PopIntStack
   a = PopIntStack
   c = a - b
-  c = c Mod 2000000000#
+'  c = c Mod 2000000000#
   PushIntStack c
 End Sub
 
 Private Sub DNAmult()
-  Dim a As Single
-  Dim b As Single
-  Dim c As Single
+  Dim a As Long
+  Dim b As Long
+  Dim c As Double
   b = PopIntStack
   a = PopIntStack
-  c = a * b
+  c = CDbl(a) * CDbl(b)
   If Abs(c) > 2000000000 Then c = Sgn(c) * 2000000000
-  PushIntStack c
+  PushIntStack CLng(c)
 End Sub
 
 Private Sub DNAdiv()
@@ -298,15 +311,15 @@ Private Sub ExecuteAdvancedCommand(n As Integer)
 End Sub
 
 Private Sub findang()
-  Dim a As Long  'target xpos
-  Dim b As Long  'target ypos
-  Dim c As Long  'robot's xpos
-  Dim d As Long  'robot's ypos
+  Dim a As Single  'target xpos
+  Dim b As Single  'target ypos
+  Dim c As Single  'robot's xpos
+  Dim d As Single  'robot's ypos
   Dim e As Single  'angle to target
-  b = PopIntStack
-  a = PopIntStack
-  c = rob(currbot).pos.x
-  d = rob(currbot).pos.y
+  b = PopIntStack ' * Form1.yDivisor
+  a = PopIntStack ' * Form1.xDivisor
+  c = rob(currbot).pos.x / Form1.xDivisor
+  d = rob(currbot).pos.Y / Form1.yDivisor
   e = angnorm(angle(c, d, a, b)) * 200
   PushIntStack e
 End Sub
@@ -317,10 +330,10 @@ Private Sub finddist()
   Dim c As Single  'robot's xpos
   Dim d As Single  'robot's ypos
   Dim e As Single  'distance to target
-  b = PopIntStack
-  a = PopIntStack
+  b = PopIntStack * Form1.yDivisor
+  a = PopIntStack * Form1.xDivisor
   c = rob(currbot).pos.x
-  d = rob(currbot).pos.y
+  d = rob(currbot).pos.Y
   e = Sqr(((c - a) ^ 2 + (d - b) ^ 2))
   If Abs(e) > 2000000000# Then
     e = Sgn(e) * 2000000000#
@@ -331,9 +344,9 @@ End Sub
 'applies a ceiling to a value on the stack.
 'Usage: val ceilingvalue ceil.
 Private Sub DNAceil()
-  Dim a As Long
-  Dim b As Long
-
+  Dim a As Single
+  Dim b As Single
+  
   b = PopIntStack
   a = PopIntStack
 
@@ -344,7 +357,7 @@ End Sub
 Private Sub DNAfloor()
   Dim a As Long
   Dim b As Long
-
+  
   b = PopIntStack
   a = PopIntStack
 
@@ -355,7 +368,7 @@ End Sub
 Private Sub DNASqr()
     Dim a As Single
     a = PopIntStack
-    Dim b As Long
+    Dim b As Single
     
     If a > 0 Then
       b = Sqr(a)
@@ -534,7 +547,6 @@ End Sub
 
 Private Sub ExecuteConditions(n As Integer)
   rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(CONDCOST) * SimOpts.Costs(COSTMULTIPLIER))
- ' EnergyLostPerCycle = EnergyLostPerCycle - SimOpts.Costs(CONDCOST)
   
   Select Case n
     Case 1 '<
@@ -637,13 +649,11 @@ End Function
 
 Private Sub ExecuteLogic(n As Integer)
   Dim a As Integer, b As Integer
-  
-  b = PopBoolStack
-  If b = -5 Then b = True
-  
-  'If b <> 5 Then
+
     Select Case n
       Case 1 'and
+        b = PopBoolStack
+        If b = -5 Then b = True
         a = PopBoolStack
         If a <> -5 Then
           PushBoolStack a And b
@@ -651,6 +661,8 @@ Private Sub ExecuteLogic(n As Integer)
           PushBoolStack b
         End If
       Case 2 'or
+        b = PopBoolStack
+        If b = -5 Then b = True
         a = PopBoolStack
         If a <> -5 Then
           PushBoolStack a Or b
@@ -658,6 +670,8 @@ Private Sub ExecuteLogic(n As Integer)
           PushBoolStack True
         End If
       Case 3 'xor
+        b = PopBoolStack
+        If b = -5 Then b = True
         a = PopBoolStack
         If a <> -5 Then
           PushBoolStack a Xor b
@@ -665,9 +679,25 @@ Private Sub ExecuteLogic(n As Integer)
           PushBoolStack Not b
         End If
       Case 4 'not
+        b = PopBoolStack
+        If b = -5 Then b = True
         PushBoolStack Not b
+      Case 5 ' true
+        PushBoolStack True
+      Case 6 ' false
+        PushBoolStack False
+      Case 7 ' dropbool
+        b = PopBoolStack
+      Case 8 ' clearbool
+        ClearBoolStack
+      Case 9 ' dupbool
+        DupBoolStack
+      Case 10 ' swapbool
+        SwapBoolStack
+      Case 11 ' overbool
+        OverBoolStack
     End Select
- ' End If
+
 End Sub
 
 '''''''''''''''''''''''''''''''''''''''
@@ -691,11 +721,20 @@ End Sub
 
 Private Sub DNAstore()
    Dim b As Long
+   Dim a As Long
    b = PopIntStack          ' Pop the stack and get the mem location to store to
    If b <> 0 Then           ' Stores to 0 are allowed, but do nothing and cost nothing
      b = Abs(b) Mod MaxMem  ' Make sure the location hits the bot's memory to increase the chance of mutations hitting sysvars.
      If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
-     rob(currbot).mem(b) = PopIntStack Mod 32000
+     a = PopIntStack
+     If a > 0 Then
+       a = a Mod 32000
+       If a = 0 Then a = 32000  ' Special case 32000
+     ElseIf a < 0 Then
+       a = a Mod 32000
+       If a = 0 Then a = -32000 ' special case -32000
+     End If
+     rob(currbot).mem(b) = a
      rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER))
    End If
 End Sub
@@ -727,29 +766,48 @@ End Sub
 '''''''''''''''''''''''''''''''''''''''''''
 '''''''''''''''''''''''''''''''''''''''''''
 '''''''''''''''''''''''''''''''''''''''''''
-Private Function ExecuteFlowCommands(n As Integer) As Boolean
+Private Function ExecuteFlowCommands(n As Integer, bot As Integer) As Boolean
 'returns true if a stop command was found (start, stop, or else)
 'returns false if cond was found
   ExecuteFlowCommands = False
   Select Case n
     Case 1 'cond
       CurrentFlow = COND
-      Exit Function
+      currgene = currgene + 1
+      ClearBoolStack
+      ingene = True
+      GoTo getout
     Case 2, 3, 4 'assume a stop command, or it really is a stop command
       'this is supposed to come before case 2 and 3, since these commands
       'must be executed before start and else have a chance to go
       ExecuteFlowCommands = True
       If CurrentFlow = COND Then CurrentCondFlag = AddupCond
+      If Not ingene Then CurrentCondFlag = NEXTBODY
+                     
+      If CurrentCondFlag And CurrentFlow <> CLEAR Then
+        ' Need to check this for the case where the gene body doesn't have any stores to trigger the activation dialog
+        If bot = robfocus Or Not (rob(bot).console Is Nothing) Then rob(bot).ga(currgene) = True  'EricL  This gene fired this cycle!  Populate ga()
+      End If
       CurrentFlow = CLEAR
       Select Case n
         Case 2 'start
+          If Not ingene Then ' the first start or else after a cond is not a new gene but the rest are
+            currgene = currgene + 1
+          End If
+          ingene = False
           If CurrentCondFlag = NEXTBODY Then CurrentFlow = body
-          currgene = currgene + 1
         Case 3 'else
           If CurrentCondFlag = NEXTELSE Then CurrentFlow = ELSEBODY
-          currgene = currgene + 1
+          If Not ingene Then
+            currgene = currgene + 1
+          End If
+          ingene = False
+        Case 4 ' stop
+          ingene = False
+          CurrentFlow = CLEAR
       End Select
-  End Select
+    End Select
+getout:
 End Function
 
 Private Function AddupCond() As Boolean
@@ -763,6 +821,22 @@ Private Function AddupCond() As Boolean
     AddupCond = AddupCond And a
     a = PopBoolStack
   Wend
+End Function
+
+' EricL 11/2007 - New execution paradym.  Returns true if the bool stack is empty or has true on the top.
+Private Function CondStateIsTrue() As Boolean
+
+Dim a As Integer
+
+  CondStateIsTrue = True
+  
+  a = PopBoolStack
+  If a = -5 Then GoTo getout
+  PushBoolStack CBool(a)           ' If we popped something off the stack, push it back on
+    
+  If a = False Then CondStateIsTrue = False ' Return True unless False is on the top of the stack
+getout:
+
 End Function
 
 '''''''''''''''''''''''''''''''''''''''''''

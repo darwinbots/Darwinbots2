@@ -47,7 +47,6 @@ Begin VB.Form datirob
          _ExtentX        =   11562
          _ExtentY        =   12250
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"robdata.frx":0E42
@@ -238,7 +237,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   120
          TabIndex        =   39
-         Top             =   3840
+         Top             =   4080
          Width           =   1215
       End
       Begin VB.Label robshell 
@@ -255,7 +254,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   120
          TabIndex        =   37
-         Top             =   4080
+         Top             =   3840
          Width           =   1215
       End
       Begin VB.Label robvenom 
@@ -335,13 +334,13 @@ Begin VB.Form datirob
          Width           =   1845
       End
       Begin VB.Label Label1 
-         Caption         =   "Coming from:"
+         Caption         =   "Last Sim:"
          Height          =   195
          Left            =   105
          TabIndex        =   25
          Tag             =   "15015"
          Top             =   480
-         Width           =   1170
+         Width           =   810
       End
       Begin VB.Label totlenlab 
          Alignment       =   1  'Right Justify
@@ -700,8 +699,8 @@ Sub infoupdate(n As Integer, nrg As Single, par As Long, mut As Integer, age As 
   robbody.Caption = Str$(Round(body, 2)) 'EricL 4/14/2006 Removed Int()  Need to see the decimal value
   robmass.Caption = Str$(Round(mass, 2))
   robvenom.Caption = Str$(Round(venom, 2))
-  robshell.Caption = Str$(Round(shell, 2))
-  robslime.Caption = Str$(Round(Slime, 2))
+  robshell.Caption = Str$(Round(rob(n).shell, 2))
+  robslime.Caption = Str$(Round(rob(n).Slime, 2))
   PoisonLabel.Caption = Str$(Round(rob(n).poison, 2))
   VTimerLabel.Caption = Str$(rob(n).Vtimer)
   robparent.Caption = Str$(par)
@@ -711,7 +710,7 @@ Sub infoupdate(n As Integer, nrg As Single, par As Long, mut As Integer, age As 
   robfname.Caption = FName
   robgene.Caption = Str$(gn)
   robover.Caption = Str$(mut)
-  robgener.Caption = Str$(gennum)
+  robgener.Caption = rob(n).generation
   totlenlab.Caption = Str$(DnaLen)
   wasteval.Caption = Str$(Round(Waste, 2))
   VelocityLabel.Caption = Str$(Round(VectorMagnitude(rob(n).vel), 2))

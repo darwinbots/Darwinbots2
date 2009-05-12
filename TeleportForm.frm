@@ -45,6 +45,24 @@ Begin VB.Form TeleportForm
       TabIndex        =   7
       Top             =   720
       Width           =   4575
+      Begin VB.OptionButton TeleportOption 
+         Caption         =   "Internet"
+         Enabled         =   0   'False
+         Height          =   255
+         Index           =   3
+         Left            =   600
+         TabIndex        =   31
+         Top             =   960
+         Width           =   975
+      End
+      Begin VB.TextBox BackFlowText 
+         Height          =   285
+         Left            =   2160
+         TabIndex        =   30
+         Text            =   "10"
+         Top             =   2280
+         Width           =   735
+      End
       Begin VB.CheckBox TeleportVeggiesCheck 
          Caption         =   "Teleport Autotrophs"
          Height          =   195
@@ -71,11 +89,11 @@ Begin VB.Form TeleportForm
       End
       Begin VB.TextBox BotsPerPoll 
          Height          =   285
-         Left            =   2280
+         Left            =   2160
          TabIndex        =   19
          Text            =   "10"
          Top             =   1920
-         Width           =   615
+         Width           =   735
       End
       Begin VB.TextBox InboundCycleCheck 
          Height          =   285
@@ -91,7 +109,7 @@ Begin VB.Form TeleportForm
          Index           =   0
          Left            =   600
          TabIndex        =   10
-         Top             =   1200
+         Top             =   720
          Width           =   975
       End
       Begin VB.OptionButton TeleportOption 
@@ -100,7 +118,7 @@ Begin VB.Form TeleportForm
          Index           =   1
          Left            =   600
          TabIndex        =   9
-         Top             =   720
+         Top             =   480
          Width           =   1095
       End
       Begin VB.OptionButton TeleportOption 
@@ -111,6 +129,22 @@ Begin VB.Form TeleportForm
          TabIndex        =   8
          Top             =   240
          Width           =   975
+      End
+      Begin VB.Label Label5 
+         Caption         =   "Backflow Limit"
+         Height          =   255
+         Left            =   960
+         TabIndex        =   29
+         Top             =   2280
+         Width           =   1095
+      End
+      Begin VB.Label Label4 
+         Caption         =   "bots"
+         Height          =   255
+         Left            =   3000
+         TabIndex        =   28
+         Top             =   2280
+         Width           =   1335
       End
       Begin VB.Label InboundLabel4 
          Caption         =   "bots in at a time"
@@ -123,10 +157,10 @@ Begin VB.Form TeleportForm
       Begin VB.Label InboundLabel3 
          Caption         =   "Teleport max of "
          Height          =   255
-         Left            =   1080
+         Left            =   960
          TabIndex        =   18
          Top             =   1920
-         Width           =   1935
+         Width           =   1215
       End
       Begin VB.Label InboundLabel2 
          Caption         =   "cycles"
@@ -279,7 +313,7 @@ Attribute VB_Exposed = False
 
 Option Explicit
 
-Dim teleporterDefaultWidth As Integer
+
 Public teleporterFormMode As Integer
 
 Private Sub CancelButton_Click()
@@ -315,6 +349,7 @@ Else
     NetworkPath.Enabled = Not .local
     TeleportOption(1).value = .Out
     TeleportOption(0).value = .In
+    TeleportOption(3).value = .Internet
     TeleportVeggiesCheck.value = .teleportVeggies * True
     TeleportCorpsesCheck.value = .teleportCorpses * True
     TeleportHeterotrophsCheck.value = .teleportHeterotrophs * True
@@ -329,7 +364,7 @@ End Sub
 Private Sub OKButton_Click()
 Dim i As Integer
 Dim randomX As Single
-Dim randomY As Single
+Dim randomy As Single
 Dim v As vector
 Dim aspectRatio As Single
 Dim realWidth As Single
@@ -337,12 +372,9 @@ Dim realWidth As Single
   aspectRatio = SimOpts.FieldHeight / SimOpts.FieldWidth
   realWidth = teleporterDefaultWidth * aspectRatio
 
-  randomX = Random(0, SimOpts.FieldWidth - realWidth)
-  randomY = Random(0, SimOpts.FieldHeight - teleporterDefaultWidth)
-  v = VectorSet(randomX, randomY)
   
   If teleporterFormMode = 0 Then
-    i = Teleport.NewTeleporter(NetworkPath.text, TeleportOption(0).value, TeleportOption(1).value, v, CSng(realWidth), CSng(teleporterDefaultWidth))
+    i = Teleport.NewTeleporter(TeleportOption(0).value, TeleportOption(1).value, CSng(teleporterDefaultWidth), TeleportOption(3).value)
   Else
     i = teleporterFocus
   End If
@@ -356,14 +388,15 @@ Dim realWidth As Single
     Teleporters(i).local = TeleportOption(2).value
     Teleporters(i).In = TeleportOption(0).value
     Teleporters(i).Out = TeleportOption(1).value
+    Teleporters(i).Internet = TeleportOption(3).value
     Teleporters(i).teleportVeggies = CBool(TeleportVeggiesCheck.value)
     Teleporters(i).teleportCorpses = CBool(TeleportCorpsesCheck.value)
     Teleporters(i).teleportHeterotrophs = CBool(TeleportHeterotrophsCheck.value)
     Teleporters(i).RespectShapes = CBool(RespectShapesCheck.value)
     Teleporters(i).Height = CSng(TeleporterSizeSlider.value)
     Teleporters(i).Width = CSng(TeleporterSizeSlider.value) * aspectRatio
-    Teleporters(i).InboundPollCycles = val(InboundCycleCheck.text)
-    Teleporters(i).BotsPerPoll = val(BotsPerPoll.text)
+    Teleporters(i).InboundPollCycles = CInt(val(InboundCycleCheck.text) Mod 32000)
+    Teleporters(i).BotsPerPoll = CInt(val(BotsPerPoll.text) Mod 32000)
     Teleporters(i).PollCountDown = Teleporters(i).BotsPerPoll
         
   End If
@@ -377,13 +410,13 @@ End Sub
 
 
 Private Sub TeleportOption_Click(Index As Integer)
-  If Index = 2 Then
+  If Index = 2 Or Index = 3 Then
     NetworkPath.Enabled = False
   Else
     NetworkPath.Enabled = True
   End If
   
-  If Index = 1 Or Index = 2 Then
+  If Index = 1 Or Index = 2 Or Index = 3 Then
     TeleportHeterotrophsCheck.Enabled = True
     TeleportVeggiesCheck.Enabled = True
     TeleportCorpsesCheck.Enabled = True
@@ -393,14 +426,14 @@ Private Sub TeleportOption_Click(Index As Integer)
     TeleportCorpsesCheck.Enabled = False
   End If
   
-  If Index = 0 Then
+  If Index = 0 Or Index = 3 Then ' Outbound or Internet
     InboundLabel1.Enabled = True
     InboundLabel2.Enabled = True
     InboundLabel3.Enabled = True
     InboundLabel4.Enabled = True
     InboundCycleCheck.Enabled = True
     BotsPerPoll.Enabled = True
-  Else
+  Else 'Inbound
     InboundLabel1.Enabled = False
     InboundLabel2.Enabled = False
     InboundLabel3.Enabled = False
