@@ -95,7 +95,7 @@ Private Sub SetLab(ga() As Boolean)
       pbox.CurrentY = cy
       pbox.CurrentX = (pbox.ScaleWidth / da) * t + (pbox.ScaleWidth / da) / 2 - Len(CStr(t + 1)) * 40
       pbox.Print CStr(t);
-      pbox.Line (stp * (t - 1), 0)-Step(0, pbox.ScaleHeight / 2), vbBlack
+      pbox.Line (stp * (t), 0)-Step(0, pbox.ScaleHeight / 2), vbBlack
     Next t
   End If
 End Sub
@@ -106,13 +106,13 @@ Private Sub DrawStat(ga() As Boolean)
   If gn = 0 Then Exit Sub ' EricL to prevent overflow
   stp = cornice.Width / gn
   Me.FillStyle = 0
-  For t = 0 To gn - 1
-    If ga(t + 1) Then
+  For t = 1 To gn
+    If ga(t) Then
       Me.FillColor = vbGreen
     Else
       Me.FillColor = vbRed
     End If
-    Me.Line (cornice.Left + stp * t, cornice.Top)-(cornice.Left + stp * (t + 1), cornice.Top + cornice.Height), , B
+    Me.Line (cornice.Left + stp * (t - 1), cornice.Top)-(cornice.Left + stp * (t), cornice.Top + cornice.Height), , B
   Next t
 End Sub
 
@@ -123,20 +123,20 @@ Private Sub DrawDyn(ga() As Boolean)
   If gn = 0 Then Exit Sub
   stp = cornice2.Width / gn
   Me.FillStyle = 0
-  For t = 0 To gn - 1
-    If ga(t + 1) Then
-      gb(t + 1) = gb(t + 1) + (100 - gb(t + 1)) / 5
-      If gb(t + 1) > 100 Then gb(t + 1) = 100
+  For t = 1 To gn
+    If ga(t) Then
+      gb(t) = gb(t) + (100 - gb(t)) / 5
+      If gb(t) > 100 Then gb(t) = 100
     Else
-      gb(t + 1) = gb(t + 1) - gb(t + 1) / 5
-      If gb(t + 1) < 0 Then gb(t + 1) = 0
+      gb(t) = gb(t) - gb(t) / 5
+      If gb(t) < 0 Then gb(t) = 0
     End If
-    GrH = gb(t + 1) / 100 * cornice2.Height
+    GrH = gb(t) / 100 * cornice2.Height
     ReH = cornice2.Height - GrH
     Me.FillColor = vbBlue
-    Me.Line (cornice2.Left + stp * t, cornice2.Top)-(cornice2.Left + stp * (t + 1), cornice2.Top + ReH), , B
+    Me.Line (cornice2.Left + stp * (t - 1), cornice2.Top)-(cornice2.Left + stp * (t), cornice2.Top + ReH), , B
     Me.FillColor = vbCyan
-    Me.Line (cornice2.Left + stp * t, cornice2.Top + ReH)-(cornice2.Left + stp * (t + 1), cornice2.Top + ReH + GrH), , B
+    Me.Line (cornice2.Left + stp * (t - 1), cornice2.Top + ReH)-(cornice2.Left + stp * (t), cornice2.Top + ReH + GrH), , B
   Next t
 End Sub
 
@@ -144,3 +144,4 @@ Private Sub Form_Load()
   SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
   ReDim gb(1)
 End Sub
+

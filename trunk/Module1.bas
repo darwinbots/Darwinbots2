@@ -14,9 +14,14 @@ Public Function RobScriptLoad(path As String) As Integer
     ScanUsedVars n          ' count other used locations
     makeoccurrlist n        ' creates the ref* array
     rob(n).DnaLen = DnaLen(rob(n).DNA())  ' measures dna length
+    rob(n).genenum = CountGenes(rob(n).DNA())
+    rob(n).mem(DnaLenSys) = rob(n).DnaLen
+    rob(n).mem(GenesSys) = rob(n).genenum
     RobScriptLoad = n       ' returns the index of the created rob
   Else
     rob(n).exist = False
+    UpdateBotBucket n
+    RobScriptLoad = -1
   End If
 End Function
 
@@ -25,16 +30,19 @@ Private Sub preparerob(t As Integer, path As String)
     Dim col1 As Long, col2 As Long, col3 As Long
     Dim k As Integer
     rob(t).pos.x = Random(50, Form1.ScaleWidth)
-    rob(t).pos.y = Random(50, Form1.ScaleHeight)
+    rob(t).pos.Y = Random(50, Form1.ScaleHeight)
     rob(t).aim = Random(0, 628) / 100
     rob(t).aimvector = VectorSet(Cos(rob(t).aim), Sin(rob(t).aim))
-    'UpdateBotBucket t
+    rob(t).exist = True
+    rob(t).BucketPos.x = -2
+    rob(t).BucketPos.Y = -2
+    UpdateBotBucket t
         
     col1 = Random(50, 255)
     col2 = Random(50, 255)
     col3 = Random(50, 255)
     rob(t).color = col1 * 65536 + col2 * 256 + col3
-    rob(t).exist = True
+    
     rob(t).vnum = 1
     'rob(t).st.pos = 1
     rob(t).nrg = 20000
@@ -47,9 +55,10 @@ Private Sub preparerob(t As Integer, path As String)
 End Sub
 
 Public Function IsRobDNABounded(ByRef ArrayIn() As block) As Boolean
-  On Error Resume Next
+  On Error GoTo done
   IsRobDNABounded = False
   IsRobDNABounded = (UBound(ArrayIn) >= LBound(ArrayIn))
+done:
 End Function
 
 Public Function DnaLen(DNA() As block) As Integer
@@ -57,6 +66,9 @@ Public Function DnaLen(DNA() As block) As Integer
   While Not (DNA(DnaLen).tipo = 10 And DNA(DnaLen).value = 1) And DnaLen <= 32000
     DnaLen = DnaLen + 1
   Wend
+  If DnaLen = 32000 Then
+    DnaLen = 32000
+  End If
 End Function
 
 ' compiles a list of used locations
@@ -70,7 +82,7 @@ Dim used As Boolean
 used = False
   While Not (rob(n).DNA(t).tipo = 10 And rob(n).DNA(t).value = 1)
     t = t + 1
-    If UBound(rob(n).DNA()) < t Then Exit Sub
+    If UBound(rob(n).DNA()) < t Then GoTo getout
     If rob(n).DNA(t).tipo = 1 Then
       a = rob(n).DNA(t).value
       For k = 1 To rob(n).maxusedvars
@@ -83,6 +95,7 @@ used = False
       used = False
     End If
   Wend
+getout:
 End Sub
 
 ' inserts sysvars among used vars
@@ -129,12 +142,12 @@ End Sub
 Public Sub PushIntStack(ByVal value As Long)
   Dim a As Integer
   
-  If IntStack.pos >= 21 Then 'next push will overfill
-    For a = 0 To 19
+  If IntStack.pos >= 101 Then 'next push will overfill
+    For a = 0 To 99
       IntStack.val(a) = IntStack.val(a + 1)
     Next a
-    IntStack.val(20) = 0
-    IntStack.pos = 20
+    IntStack.val(100) = 0
+    IntStack.pos = 100
   End If
   
   IntStack.val(IntStack.pos) = value
@@ -152,6 +165,56 @@ Public Function PopIntStack() As Long
   PopIntStack = IntStack.val(IntStack.pos)
 End Function
 
+Public Sub ClearIntStack()
+  IntStack.pos = 0
+  IntStack.val(0) = 0
+End Sub
+
+Public Sub DupIntStack()
+  Dim a As Long
+  
+  If IntStack.pos = 0 Then
+    Exit Sub
+  Else
+    a = PopIntStack
+    PushIntStack a
+    PushIntStack a
+  End If
+End Sub
+
+
+Public Sub SwapIntStack()
+  Dim a As Long
+  Dim b As Long
+  
+  If IntStack.pos <= 1 Then ' 1 or 0 values on the stack
+    Exit Sub
+  Else
+    a = PopIntStack
+    b = PopIntStack
+    PushIntStack a
+    PushIntStack b
+  End If
+End Sub
+Public Sub OverIntStack()
+  'a b -> a b a
+  
+  Dim a As Long
+  Dim b As Long
+  
+  If IntStack.pos = 0 Then Exit Sub
+  If IntStack.pos = 1 Then ' 1 value on the stack
+    PushIntStack 0
+    Exit Sub
+  Else
+    b = PopIntStack
+    a = PopIntStack
+    PushIntStack a
+    PushIntStack b
+    PushIntStack a
+  End If
+End Sub
+
 Public Sub PushBoolStack(ByVal value As Boolean) 'change to a linked list so there is no stack limit or wasted memory soemtime in the future
   Dim a As Integer
   
@@ -165,6 +228,54 @@ Public Sub PushBoolStack(ByVal value As Boolean) 'change to a linked list so the
   
   Condst.val(Condst.pos) = value
   Condst.pos = Condst.pos + 1
+End Sub
+
+Public Sub ClearBoolStack()
+  Condst.pos = 0
+  Condst.val(0) = 0
+End Sub
+
+Public Sub DupBoolStack()
+  Dim a As Boolean
+  
+  If Condst.pos = 0 Then
+    Exit Sub
+  Else
+    a = PopBoolStack
+    PushBoolStack a
+    PushBoolStack a
+  End If
+End Sub
+
+Public Sub SwapBoolStack()
+  Dim a As Boolean
+  Dim b As Boolean
+  
+  If Condst.pos <= 1 Then
+    Exit Sub  'Do nothing
+  Else ' 2 or more things on stack
+    a = PopBoolStack
+    b = PopBoolStack
+    PushBoolStack a
+    PushBoolStack b
+  End If
+End Sub
+Public Sub OverBoolStack()
+'a b -> a b a
+  Dim a As Boolean
+  Dim b As Boolean
+  
+  If Condst.pos = 0 Then Exit Sub  'Do nothing.  Nothing on stack.
+  If Condst.pos = 1 Then           'Only 1 thing on stack.
+    PushBoolStack True
+    Exit Sub
+  Else
+    b = PopBoolStack
+    a = PopBoolStack
+    PushBoolStack a
+    PushBoolStack b
+    PushBoolStack a
+  End If
 End Sub
 
 Public Function PopBoolStack() As Integer
@@ -181,16 +292,33 @@ End Function
 
 Public Function CountGenes(ByRef DNA() As block) As Integer
   Dim counter As Long
-    
+  Dim k As Integer
+  Dim genenum As Integer
+  Dim ingene As Boolean
+  
+  ingene = False
+   
   counter = 1
   
-  While Not (DNA(counter).tipo = 10 And DNA(counter).value = 1) And counter <= 32000
+   While counter <= 32000
+   If DNA(counter).tipo = 10 And DNA(counter).value = 1 Then GoTo getout
+    ' If a Start or Else
     If DNA(counter).tipo = 9 And (DNA(counter).value = 2 Or DNA(counter).value = 3) Then
-   ' If DNA(counter).tipo = 9 And (DNA(counter).value = 2) Then
+      If Not ingene Then 'that does not follow a Cond
+        CountGenes = CountGenes + 1
+      End If
+      ingene = False ' that follows a cond
+    End If
+    ' If a Cond
+    If DNA(counter).tipo = 9 And (DNA(counter).value = 1) Then
+      ingene = True
       CountGenes = CountGenes + 1
     End If
+    ' If a stop
+    If DNA(counter).tipo = 9 And DNA(counter).value = 4 Then ingene = False
     counter = counter + 1
   Wend
+getout:
 End Function
 
 Public Function NextStop(ByRef DNA() As block, ByVal inizio As Long) As Integer
@@ -201,36 +329,82 @@ Public Function NextStop(ByRef DNA() As block, ByVal inizio As Long) As Integer
   Wend
 End Function
 
+'Returns the position of the last base pair of the gene beginnign at position
+Public Function GeneEnd(ByRef DNA() As block, ByVal Position As Integer) As Integer
+  Dim condgene As Boolean
+  condgene = False
+    
+  GeneEnd = Position
+  If DNA(GeneEnd).tipo = 9 And DNA(GeneEnd).value = 1 Then condgene = True
+  
+  While GeneEnd + 1 <= 32000
+    If (DNA(GeneEnd + 1).tipo = 10) Then GoTo getout ' end of genome
+    If (DNA(GeneEnd + 1).tipo = 9 And ((DNA(GeneEnd + 1).value = 1) Or DNA(GeneEnd + 1).value = 4)) Then  ' cond or stop
+      If (DNA(GeneEnd + 1).value = 4) Then GeneEnd = GeneEnd + 1 ' Include the stop as part of the gene
+      GoTo getout
+    End If
+    If (DNA(GeneEnd + 1).tipo = 9 And ((DNA(GeneEnd + 1).value = 2) Or DNA(GeneEnd + 1).value = 3)) And Not condgene Then GoTo getout ' start or else
+    If (DNA(GeneEnd + 1).tipo = 9 And ((DNA(GeneEnd + 1).value = 2) Or DNA(GeneEnd + 1).value = 3)) And condgene Then condgene = False ' start or else
+    GeneEnd = GeneEnd + 1
+  Wend
+getout:
+End Function
+
 Public Function PrevStop(ByRef DNA() As block, ByVal inizio As Long) As Integer
   PrevStop = inizio
   While Not ((DNA(PrevStop).tipo = 9 And _
     DNA(PrevStop).value <> 4) Or DNA(PrevStop).tipo = 10)
     PrevStop = PrevStop - 1
-    If PrevStop < 1 Then Exit Function
+    If PrevStop < 1 Then GoTo getout
   Wend
+getout:
 End Function
 
 'returns position of gene n
 Public Function genepos(ByRef DNA() As block, ByVal n As Integer) As Integer
   Dim k As Integer
   Dim genenum As Integer
+  Dim ingene As Boolean
+  
+  ingene = False
   genepos = 0
   k = 1
   
   If n = 0 Then
     genepos = 0
-    Exit Function
+    GoTo getout
   End If
   
   While k > 0 And genepos = 0 And k <= 32000
-   ' If DNA(k).tipo = 9 And (DNA(k).value = 2 Or DNA(k).value = 3) Then
-    If DNA(k).tipo = 9 And (DNA(k).value = 1) Then
-      genenum = genenum + 1
-      If genenum = n Then genepos = k
+    'A start or else
+    If DNA(k).tipo = 9 And (DNA(k).value = 2 Or DNA(k).value = 3) Then
+      If Not ingene Then ' Does not follow a cond.  Make it a new gene
+        genenum = genenum + 1
+        If genenum = n Then
+          genepos = k
+          GoTo getout
+        End If
+      Else
+        ingene = False ' First Start or Else following a cond
+      End If
     End If
+ 
+    ' If a Cond
+    If DNA(k).tipo = 9 And (DNA(k).value = 1) Then
+      ingene = True
+      genenum = genenum + 1
+      If genenum = n Then
+        genepos = k
+        GoTo getout
+      End If
+    End If
+    ' If a stop
+    If DNA(k).tipo = 9 And DNA(k).value = 4 Then ingene = False
+    
     k = k + 1
     If DNA(k).tipo = 10 And DNA(k).value = 1 Then k = -1
   Wend
+getout:
 End Function
 
 ' executes program of robot n with genes activation display on

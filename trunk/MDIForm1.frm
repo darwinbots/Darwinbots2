@@ -1,22 +1,23 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.MDIForm MDIForm1 
    AutoShowChildren=   0   'False
-   BackColor       =   &H00808080&
-   Caption         =   "DarwinBots 2.43"
-   ClientHeight    =   7140
+   BackColor       =   &H00400000&
+   Caption         =   "DarwinBots"
+   ClientHeight    =   6360
    ClientLeft      =   3570
-   ClientTop       =   3315
-   ClientWidth     =   15810
+   ClientTop       =   2565
+   ClientWidth     =   13785
    Icon            =   "MDIForm1.frx":0000
    LinkTopic       =   "MDIForm1"
+   Picture         =   "MDIForm1.frx":08CA
    StartUpPosition =   2  'CenterScreen
    Tag             =   "1000"
    Begin VB.Timer Timer1 
       Interval        =   200
-      Left            =   7320
-      Top             =   3360
+      Left            =   4200
+      Top             =   1560
    End
    Begin MSComctlLib.ImageList ImageList1 
       Left            =   2520
@@ -29,101 +30,109 @@ Begin VB.MDIForm MDIForm1
       MaskColor       =   12632256
       _Version        =   393216
       BeginProperty Images {2C247F25-8591-11D1-B16A-00C0F0283628} 
-         NumListImages   =   24
+         NumListImages   =   26
          BeginProperty ListImage1 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":08CA
+            Picture         =   "MDIForm1.frx":095C
             Key             =   ""
          EndProperty
          BeginProperty ListImage2 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":0E64
+            Picture         =   "MDIForm1.frx":0EF6
             Key             =   ""
          EndProperty
          BeginProperty ListImage3 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":13FE
+            Picture         =   "MDIForm1.frx":1490
             Key             =   ""
          EndProperty
          BeginProperty ListImage4 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":1998
+            Picture         =   "MDIForm1.frx":1A2A
             Key             =   ""
          EndProperty
          BeginProperty ListImage5 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":1F32
+            Picture         =   "MDIForm1.frx":1FC4
             Key             =   ""
          EndProperty
          BeginProperty ListImage6 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":24CC
+            Picture         =   "MDIForm1.frx":255E
             Key             =   ""
          EndProperty
          BeginProperty ListImage7 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":2A66
+            Picture         =   "MDIForm1.frx":2AF8
             Key             =   ""
          EndProperty
          BeginProperty ListImage8 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":3000
+            Picture         =   "MDIForm1.frx":3092
             Key             =   ""
          EndProperty
          BeginProperty ListImage9 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":359A
+            Picture         =   "MDIForm1.frx":362C
             Key             =   ""
          EndProperty
          BeginProperty ListImage10 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":3B34
+            Picture         =   "MDIForm1.frx":3BC6
             Key             =   ""
          EndProperty
          BeginProperty ListImage11 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":40CE
+            Picture         =   "MDIForm1.frx":4160
             Key             =   ""
          EndProperty
          BeginProperty ListImage12 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":4668
+            Picture         =   "MDIForm1.frx":46FA
             Key             =   ""
          EndProperty
          BeginProperty ListImage13 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":4C02
+            Picture         =   "MDIForm1.frx":4C94
             Key             =   ""
          EndProperty
          BeginProperty ListImage14 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":519C
+            Picture         =   "MDIForm1.frx":522E
             Key             =   ""
          EndProperty
          BeginProperty ListImage15 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":5736
+            Picture         =   "MDIForm1.frx":57C8
             Key             =   ""
          EndProperty
          BeginProperty ListImage16 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":5CD0
+            Picture         =   "MDIForm1.frx":5D62
             Key             =   ""
          EndProperty
          BeginProperty ListImage17 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":626A
+            Picture         =   "MDIForm1.frx":62FC
             Key             =   ""
          EndProperty
          BeginProperty ListImage18 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":6804
+            Picture         =   "MDIForm1.frx":6896
             Key             =   ""
          EndProperty
          BeginProperty ListImage19 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":6D9E
+            Picture         =   "MDIForm1.frx":6E30
             Key             =   ""
          EndProperty
          BeginProperty ListImage20 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":7678
+            Picture         =   "MDIForm1.frx":770A
             Key             =   ""
          EndProperty
          BeginProperty ListImage21 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":84CA
+            Picture         =   "MDIForm1.frx":855C
             Key             =   ""
          EndProperty
          BeginProperty ListImage22 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":931C
+            Picture         =   "MDIForm1.frx":93AE
             Key             =   ""
          EndProperty
          BeginProperty ListImage23 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":9395
+            Picture         =   "MDIForm1.frx":9427
             Key             =   ""
          EndProperty
          BeginProperty ListImage24 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "MDIForm1.frx":A1E7
+            Picture         =   "MDIForm1.frx":A279
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage25 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "MDIForm1.frx":AB55
+            Key             =   ""
+         EndProperty
+         BeginProperty ListImage26 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "MDIForm1.frx":C6A7
             Key             =   ""
          EndProperty
       EndProperty
@@ -134,8 +143,8 @@ Begin VB.MDIForm MDIForm1
       Left            =   0
       TabIndex        =   1
       Top             =   0
-      Width           =   15810
-      _ExtentX        =   27887
+      Width           =   13785
+      _ExtentX        =   24315
       _ExtentY        =   741
       ButtonWidth     =   609
       ButtonHeight    =   582
@@ -143,7 +152,7 @@ Begin VB.MDIForm MDIForm1
       ImageList       =   "ImageList1"
       _Version        =   393216
       BeginProperty Buttons {66833FE8-8583-11D1-B16A-00C0F0283628} 
-         NumButtons      =   26
+         NumButtons      =   25
          BeginProperty Button1 {66833FEA-8583-11D1-B16A-00C0F0283628} 
             Key             =   "newsim"
             Object.ToolTipText     =   "Start a new simulation"
@@ -160,7 +169,7 @@ Begin VB.MDIForm MDIForm1
             ImageIndex      =   3
          EndProperty
          BeginProperty Button4 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Style           =   4
+            Style           =   3
             Object.Width           =   500
          EndProperty
          BeginProperty Button5 {66833FEA-8583-11D1-B16A-00C0F0283628} 
@@ -179,12 +188,13 @@ Begin VB.MDIForm MDIForm1
             ImageIndex      =   6
          EndProperty
          BeginProperty Button8 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Style           =   4
+            Style           =   3
             Object.Width           =   300
          EndProperty
          BeginProperty Button9 {66833FEA-8583-11D1-B16A-00C0F0283628} 
             Key             =   "limit"
             Object.ToolTipText     =   "Limits speed to 15 cycles/sec"
+            ImageIndex      =   7
          EndProperty
          BeginProperty Button10 {66833FEA-8583-11D1-B16A-00C0F0283628} 
             Key             =   "fast"
@@ -214,8 +224,7 @@ Begin VB.MDIForm MDIForm1
             ImageIndex      =   16
          EndProperty
          BeginProperty Button15 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            ImageIndex      =   6
-            Style           =   4
+            Style           =   3
             Object.Width           =   300
          EndProperty
          BeginProperty Button16 {66833FEA-8583-11D1-B16A-00C0F0283628} 
@@ -226,7 +235,7 @@ Begin VB.MDIForm MDIForm1
          EndProperty
          BeginProperty Button17 {66833FEA-8583-11D1-B16A-00C0F0283628} 
             Style           =   4
-            Object.Width           =   1700
+            Object.Width           =   1500
          EndProperty
          BeginProperty Button18 {66833FEA-8583-11D1-B16A-00C0F0283628} 
             Key             =   "best"
@@ -234,17 +243,12 @@ Begin VB.MDIForm MDIForm1
             ImageIndex      =   10
          EndProperty
          BeginProperty Button19 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            ImageIndex      =   13
-            Style           =   4
-            Object.Width           =   300
-         EndProperty
-         BeginProperty Button20 {66833FEA-8583-11D1-B16A-00C0F0283628} 
             Key             =   "graph"
             Object.ToolTipText     =   "Select graph to display"
             ImageIndex      =   14
             Style           =   5
             BeginProperty ButtonMenus {66833FEC-8583-11D1-B16A-00C0F0283628} 
-               NumButtonMenus  =   12
+               NumButtonMenus  =   18
                BeginProperty ButtonMenu1 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "pop"
                   Text            =   "Population graph"
@@ -286,50 +290,97 @@ Begin VB.MDIForm MDIForm1
                   Text            =   "Dynamic Cost Stats"
                EndProperty
                BeginProperty ButtonMenu11 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "speciesdiversity"
+                  Text            =   "Species Diversity"
+               EndProperty
+               BeginProperty ButtonMenu12 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "maxgeneticdistance"
+                  Text            =   "Genetic Distance (Maximum)"
+               EndProperty
+               BeginProperty ButtonMenu13 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "maxgenerationaldistance"
+                  Text            =   "Generational Distance (Maximum)"
+               EndProperty
+               BeginProperty ButtonMenu14 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Enabled         =   0   'False
                   Text            =   "-"
                EndProperty
-               BeginProperty ButtonMenu12 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu15 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "internetpopulation"
+                  Text            =   "Internet Species Populations"
+               EndProperty
+               BeginProperty ButtonMenu16 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "internetsimpopulations"
+                  Text            =   "Internet Sim Populations"
+               EndProperty
+               BeginProperty ButtonMenu17 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Enabled         =   0   'False
+                  Text            =   "-"
+               EndProperty
+               BeginProperty ButtonMenu18 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "resgraph"
                   Text            =   "Reset all graphs"
                EndProperty
             EndProperty
          EndProperty
-         BeginProperty Button21 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Style           =   4
-            Object.Width           =   300
+         BeginProperty Button20 {66833FEA-8583-11D1-B16A-00C0F0283628} 
+            ImageIndex      =   13
+            Style           =   3
          EndProperty
-         BeginProperty Button22 {66833FEA-8583-11D1-B16A-00C0F0283628} 
+         BeginProperty Button21 {66833FEA-8583-11D1-B16A-00C0F0283628} 
             Key             =   "snapshot"
             Object.ToolTipText     =   "capture data on all living robots"
             ImageIndex      =   23
          EndProperty
-         BeginProperty Button23 {66833FEA-8583-11D1-B16A-00C0F0283628} 
+         BeginProperty Button22 {66833FEA-8583-11D1-B16A-00C0F0283628} 
             Key             =   "smileymode"
             Object.ToolTipText     =   "SmileyMode"
-            ImageIndex      =   22
+            ImageIndex      =   26
          EndProperty
-         BeginProperty Button24 {66833FEA-8583-11D1-B16A-00C0F0283628} 
-            Style           =   4
+         BeginProperty Button23 {66833FEA-8583-11D1-B16A-00C0F0283628} 
+            Style           =   3
             Object.Width           =   300
          EndProperty
-         BeginProperty Button25 {66833FEA-8583-11D1-B16A-00C0F0283628} 
+         BeginProperty Button24 {66833FEA-8583-11D1-B16A-00C0F0283628} 
             Key             =   "Stealth"
             ImageIndex      =   24
          EndProperty
-         BeginProperty Button26 {66833FEA-8583-11D1-B16A-00C0F0283628} 
+         BeginProperty Button25 {66833FEA-8583-11D1-B16A-00C0F0283628} 
             Key             =   "Ignore"
             Object.ToolTipText     =   "The program will attempt to ignore errors"
+            ImageIndex      =   12
          EndProperty
       EndProperty
+      Begin VB.CheckBox SunButton 
+         DownPicture     =   "MDIForm1.frx":CDB9
+         Height          =   375
+         Left            =   10200
+         Picture         =   "MDIForm1.frx":D161
+         Style           =   1  'Graphical
+         TabIndex        =   10
+         ToolTipText     =   "Toggles the Sun"
+         Top             =   0
+         Width           =   375
+      End
+      Begin VB.CheckBox F1InternetButton 
+         DownPicture     =   "MDIForm1.frx":D4F8
+         Height          =   375
+         Left            =   10680
+         Picture         =   "MDIForm1.frx":D86A
+         Style           =   1  'Graphical
+         TabIndex        =   9
+         ToolTipText     =   "Toggles Internet Mode"
+         Top             =   0
+         Width           =   375
+      End
       Begin VB.CommandButton Report 
          BackColor       =   &H80000004&
          Enabled         =   0   'False
          Height          =   375
          Left            =   14160
-         Picture         =   "MDIForm1.frx":AAC3
+         Picture         =   "MDIForm1.frx":DBDC
          Style           =   1  'Graphical
-         TabIndex        =   10
+         TabIndex        =   8
          ToolTipText     =   "Zoom out"
          Top             =   0
          Visible         =   0   'False
@@ -339,9 +390,9 @@ Begin VB.MDIForm MDIForm1
          Enabled         =   0   'False
          Height          =   375
          Left            =   13800
-         Picture         =   "MDIForm1.frx":B04D
+         Picture         =   "MDIForm1.frx":E166
          Style           =   1  'Graphical
-         TabIndex        =   9
+         TabIndex        =   7
          TabStop         =   0   'False
          ToolTipText     =   "Zoom in"
          Top             =   0
@@ -349,41 +400,20 @@ Begin VB.MDIForm MDIForm1
          Width           =   375
       End
       Begin VB.CheckBox ZoomLock 
-         DownPicture     =   "MDIForm1.frx":B5D7
+         DownPicture     =   "MDIForm1.frx":E6F0
          Height          =   375
-         Left            =   11160
-         Picture         =   "MDIForm1.frx":B919
+         Left            =   9000
+         Picture         =   "MDIForm1.frx":EA32
          Style           =   1  'Graphical
-         TabIndex        =   8
+         TabIndex        =   6
          ToolTipText     =   "Locks and unlocks being able to lock at areas outside of the arena."
          Top             =   0
          Width           =   375
       End
       Begin VB.PictureBox F1Piccy 
          Height          =   375
-         Left            =   13200
-         Picture         =   "MDIForm1.frx":BC5B
-         ScaleHeight     =   315
-         ScaleWidth      =   315
-         TabIndex        =   7
-         Top             =   0
-         Width           =   375
-      End
-      Begin VB.PictureBox nightpic 
-         Height          =   375
-         Left            =   12840
-         Picture         =   "MDIForm1.frx":C02B
-         ScaleHeight     =   315
-         ScaleWidth      =   315
-         TabIndex        =   6
-         Top             =   0
-         Visible         =   0   'False
-         Width           =   375
-      End
-      Begin VB.PictureBox daypic 
-         Height          =   375
-         Left            =   12480
-         Picture         =   "MDIForm1.frx":C3D3
+         Left            =   11160
+         Picture         =   "MDIForm1.frx":ED74
          ScaleHeight     =   315
          ScaleWidth      =   315
          TabIndex        =   5
@@ -392,20 +422,21 @@ Begin VB.MDIForm MDIForm1
       End
       Begin VB.ComboBox Combo1 
          Height          =   315
-         ItemData        =   "MDIForm1.frx":C76A
-         Left            =   5640
-         List            =   "MDIForm1.frx":C76C
+         IntegralHeight  =   0   'False
+         ItemData        =   "MDIForm1.frx":F144
+         Left            =   4800
+         List            =   "MDIForm1.frx":F146
          Style           =   2  'Dropdown List
          TabIndex        =   4
          ToolTipText     =   "Select the species for robot insertion"
-         Top             =   30
-         Width           =   1290
+         Top             =   25
+         Width           =   1530
       End
       Begin VB.CommandButton czo 
          BackColor       =   &H80000004&
          Height          =   375
-         Left            =   11880
-         Picture         =   "MDIForm1.frx":C76E
+         Left            =   9720
+         Picture         =   "MDIForm1.frx":F148
          Style           =   1  'Graphical
          TabIndex        =   3
          ToolTipText     =   "Zoom out"
@@ -414,8 +445,8 @@ Begin VB.MDIForm MDIForm1
       End
       Begin VB.CommandButton czin 
          Height          =   375
-         Left            =   11520
-         Picture         =   "MDIForm1.frx":CCF8
+         Left            =   9360
+         Picture         =   "MDIForm1.frx":F6D2
          Style           =   1  'Graphical
          TabIndex        =   2
          TabStop         =   0   'False
@@ -429,9 +460,9 @@ Begin VB.MDIForm MDIForm1
       Height          =   270
       Left            =   0
       TabIndex        =   0
-      Top             =   6870
-      Width           =   15810
-      _ExtentX        =   27887
+      Top             =   6090
+      Width           =   13785
+      _ExtentX        =   24315
       _ExtentY        =   476
       _Version        =   393216
       BeginProperty Panels {8E3867A5-8586-11D1-B16A-00C0F0283628} 
@@ -547,13 +578,13 @@ Begin VB.MDIForm MDIForm1
          Shortcut        =   ^{F3}
       End
       Begin VB.Menu pause 
-         Caption         =   "Pause simulation"
+         Caption         =   "Pause Simulation"
          Shortcut        =   {F12}
       End
       Begin VB.Menu sep10 
          Caption         =   "-"
       End
-      Begin VB.Menu autos 
+      Begin VB.Menu AutoS 
          Caption         =   "Autosave..."
          Shortcut        =   {F4}
       End
@@ -569,7 +600,7 @@ Begin VB.MDIForm MDIForm1
    Begin VB.Menu edit 
       Caption         =   "Edit"
       Begin VB.Menu inssp 
-         Caption         =   "Insert organism..."
+         Caption         =   "Insert Organism..."
          Shortcut        =   ^I
       End
       Begin VB.Menu sep11 
@@ -580,7 +611,7 @@ Begin VB.MDIForm MDIForm1
          Shortcut        =   ^X
       End
       Begin VB.Menu fisica 
-         Caption         =   "General settings..."
+         Caption         =   "General Settings..."
          Shortcut        =   ^P
       End
       Begin VB.Menu costi 
@@ -588,7 +619,7 @@ Begin VB.MDIForm MDIForm1
          Shortcut        =   {F5}
       End
       Begin VB.Menu moltiplicatore 
-         Caption         =   "Global mutation rates..."
+         Caption         =   "Global Mutation Rates..."
          Shortcut        =   ^G
       End
       Begin VB.Menu Leagues 
@@ -596,7 +627,7 @@ Begin VB.MDIForm MDIForm1
          Shortcut        =   ^F
       End
       Begin VB.Menu Recording 
-         Caption         =   "Recording options..."
+         Caption         =   "Recording Options..."
          Shortcut        =   ^V
       End
    End
@@ -610,8 +641,6 @@ Begin VB.MDIForm MDIForm1
       End
       Begin VB.Menu ScreenSaverMode 
          Caption         =   "Screen Saver Mode"
-         Enabled         =   0   'False
-         Visible         =   0   'False
       End
       Begin VB.Menu backsep 
          Caption         =   "-"
@@ -644,21 +673,21 @@ Begin VB.MDIForm MDIForm1
       End
    End
    Begin VB.Menu popup 
-      Caption         =   "Robots"
+      Caption         =   "Robot"
       Begin VB.Menu robinf 
-         Caption         =   "Show robot info"
+         Caption         =   "Show Robot Info"
          Shortcut        =   ^R
       End
       Begin VB.Menu par 
-         Caption         =   "Show family ties"
+         Caption         =   "Show Philogeny"
          Shortcut        =   ^T
       End
       Begin VB.Menu mutrat 
-         Caption         =   "Mutation rates"
+         Caption         =   "Mutation Rates"
          Shortcut        =   ^M
       End
       Begin VB.Menu col 
-         Caption         =   "Change color"
+         Caption         =   "Change Color"
          Shortcut        =   ^C
       End
       Begin VB.Menu sep 
@@ -666,53 +695,69 @@ Begin VB.MDIForm MDIForm1
          Index           =   14
       End
       Begin VB.Menu cons 
-         Caption         =   "Open console"
+         Caption         =   "Open Console"
          Shortcut        =   ^Y
       End
       Begin VB.Menu genact 
-         Caption         =   "View genes activations"
+         Caption         =   "View Gene Activations"
          Shortcut        =   ^Z
       End
       Begin VB.Menu sep3 
          Caption         =   "-"
       End
       Begin VB.Menu ucci 
-         Caption         =   "Kill robot"
+         Caption         =   "Kill Robot"
          Shortcut        =   ^K
       End
       Begin VB.Menu sdna 
-         Caption         =   "Save robot's DNA"
+         Caption         =   "Save Robot's DNA"
          Shortcut        =   ^S
+      End
+      Begin VB.Menu makenewspecies 
+         Caption         =   "Make New Species"
       End
       Begin VB.Menu sep4 
          Caption         =   "-"
       End
       Begin VB.Menu selorg 
-         Caption         =   "Select entire organism"
+         Caption         =   "Select Entire Organism"
          Shortcut        =   ^{F1}
       End
       Begin VB.Menu saveorg 
-         Caption         =   "Save entire organism"
+         Caption         =   "Save Entire Organism"
          Shortcut        =   ^{F2}
       End
       Begin VB.Menu killorg 
-         Caption         =   "Kill entire organism"
+         Caption         =   "Kill Entire Organism"
          Shortcut        =   ^E
       End
       Begin VB.Menu sep99 
          Caption         =   "-"
       End
       Begin VB.Menu fittest 
-         Caption         =   "Find best"
+         Caption         =   "Find Best"
          Shortcut        =   ^B
       End
    End
    Begin VB.Menu Objects 
       Caption         =   "Objects"
+      Begin VB.Menu SpeciesMenu 
+         Caption         =   "Species"
+         Begin VB.Menu AutoSpeciationMenu 
+            Caption         =   "Speciation..."
+         End
+      End
       Begin VB.Menu ShotsMenu 
          Caption         =   "Shots"
          Begin VB.Menu DontDecayNrgShots 
             Caption         =   "Don't decay nrg shots"
+            Checked         =   -1  'True
+         End
+      End
+      Begin VB.Menu TiesMenu 
+         Caption         =   "Ties"
+         Begin VB.Menu DisableTies 
+            Caption         =   "Disable Ties"
             Checked         =   -1  'True
          End
       End
@@ -772,8 +817,43 @@ Begin VB.MDIForm MDIForm1
          End
       End
    End
+   Begin VB.Menu EGrid 
+      Caption         =   "E-Grid"
+      Index           =   45
+      Begin VB.Menu EGridEnabled 
+         Caption         =   "Enable"
+         Checked         =   -1  'True
+      End
+      Begin VB.Menu GridSize 
+         Caption         =   "Grid Size"
+         Begin VB.Menu EGridLarge 
+            Caption         =   "Large"
+            Checked         =   -1  'True
+         End
+         Begin VB.Menu EGridMedium 
+            Caption         =   "Medium"
+            Checked         =   -1  'True
+         End
+         Begin VB.Menu EGridSmall 
+            Caption         =   "Small"
+            Checked         =   -1  'True
+         End
+      End
+   End
    Begin VB.Menu icqtrans 
       Caption         =   "Internet"
+      Begin VB.Menu F1Internet 
+         Caption         =   "F1 Internet Mode"
+         Checked         =   -1  'True
+      End
+      Begin VB.Menu AdHocInternet 
+         Caption         =   "Ad Hoc Mode"
+         Checked         =   -1  'True
+         Enabled         =   0   'False
+      End
+      Begin VB.Menu sep12312 
+         Caption         =   "-"
+      End
       Begin VB.Menu listcont 
          Caption         =   "Show Internet options"
          Shortcut        =   ^O
@@ -781,30 +861,6 @@ Begin VB.MDIForm MDIForm1
       Begin VB.Menu showlogs 
          Caption         =   "Show Internet logs"
          Shortcut        =   ^L
-      End
-   End
-   Begin VB.Menu egrid 
-      Caption         =   "E-Grid"
-      Begin VB.Menu showgrid 
-         Caption         =   "Show E-Grid on Pause"
-         Begin VB.Menu O2 
-            Caption         =   "Oxygen"
-         End
-         Begin VB.Menu CO2 
-            Caption         =   "Carbon DiOxide"
-         End
-         Begin VB.Menu waste 
-            Caption         =   "Waste"
-         End
-         Begin VB.Menu silica 
-            Caption         =   "Silica"
-         End
-         Begin VB.Menu calcium 
-            Caption         =   "Calcium"
-         End
-         Begin VB.Menu Heat 
-            Caption         =   "Temperature"
-         End
       End
    End
    Begin VB.Menu help 
@@ -828,7 +884,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 ' DarwinBots - copyright 2003 Carlo Comis
 ' Modifications by Purple Youko and Numsgil - 2004, 2005
-' Post V2.42 modifications copyright (c) 2006 Eric Lockard  eric@sulaadventures.com
+' Post V2.42 modifications copyright (c) 2006, 2007 Eric Lockard  eric@sulaadventures.com
 '
 ' All rights reserved.
 '
@@ -859,6 +915,7 @@ Public nopoff As Boolean      ' don't anim deaths with particles
 Public Gridmode As Integer    ' Which display to use on the egrid
 Public stealthmode As Boolean
 
+
 Public limitgraphics As Boolean
 Public ignoreerror As Boolean
 
@@ -869,6 +926,8 @@ Public displayShotImpactsToggle As Boolean
 Public displayResourceGuagesToggle As Boolean
 Public displayMovementVectorsToggle As Boolean
 Public SaveWithoutMutations As Boolean
+
+Public HandlingMenuItem As Boolean ' global used to prevent recursion between internet mode button and menu
 Dim pro As Object
 
 Public exitDB As Boolean
@@ -933,6 +992,12 @@ Private Sub CO2_Click()
   'DispGrid
 End Sub
 
+
+
+Private Sub AutoSpeciationMenu_Click()
+  'Speciation.Show 'Commented out to remove error.
+End Sub
+
 Private Sub DeleteAllShapes_Click()
   DeleteAllObstacles
 End Sub
@@ -959,6 +1024,12 @@ End Sub
 
 Private Sub DeleteTenObstacles_Click()
   DeleteTenRandomObstacles
+End Sub
+
+Private Sub DisableTies_Click()
+  DisableTies.Checked = Not DisableTies.Checked
+  SimOpts.DisableTies = DisableTies.Checked
+  TmpOpts.DisableTies = DisableTies.Checked
 End Sub
 
 Private Sub DisplayMovementVectors_Click()
@@ -990,11 +1061,145 @@ Private Sub DrawSpiral_Click()
   Obstacles.DrawSpiral
 End Sub
 
+
+
+Public Sub F1Internet_Click()
+  Dim i As Integer
+  Dim b As Integer
+  Dim path As String
+  Dim fso As New FileSystemObject
+  Dim NewbieStart As Boolean
+  
+  HandlingMenuItem = True
+  
+  NewbieStart = False
+ 
+    
+  F1Internet.Checked = Not F1Internet.Checked
+  If F1Internet.Checked Then
+  
+    If IntOpts.IName = "" Then
+      IntOpts.IName = "Newbie" + Str(Random(1, 10000))
+      NewbieStart = True
+    End If
+  
+    If IntOpts.IName = "" Then
+      MsgBox "You must specify an Internet nickname before switching to Internet mode.", vbOKOnly
+      optionsform.SSTab1.Tab = 5
+      NetEvent.Timer1.Enabled = False
+      NetEvent.Hide
+      optionsform.Show vbModal
+      Exit Sub
+    End If
+    
+    On Error GoTo problem
+
+tryagain:
+    path = "\Transfers\F1"
+    Open MDIForm1.MainDir + path + "\foo" For Binary As 1
+    Close 1
+    Kill (MDIForm1.MainDir + path + "\foo")
+    DeleteLocalFiles (MDIForm1.MainDir + path + "\out")
+          
+    i = NewTeleporter(False, False, SimOpts.FieldHeight / 200, True)
+    
+    Teleporters(i).driftHorizontal = True
+    Teleporters(i).driftVertical = True
+    Teleporters(i).vel = VectorSet(0, 0)
+    Teleporters(i).local = False
+    Teleporters(i).In = False
+    Teleporters(i).Out = False
+    Teleporters(i).Internet = True
+    Teleporters(i).teleportVeggies = True
+    Teleporters(i).teleportCorpses = False
+    Teleporters(i).teleportHeterotrophs = True
+    Teleporters(i).RespectShapes = False
+    Teleporters(i).InboundPollCycles = 200
+    Teleporters(i).BotsPerPoll = 10
+    Teleporters(i).PollCountDown = 200
+    Teleporters(i).ServerAvailable = True
+  '  MDIForm1.InternetStatusGreen.Visible = True
+   ' MDIForm1.InternetStatus(0).FillColor = vbGreen
+   ' MDIForm1.InternetStatusRed.Visible = False
+    MDIForm1.F1InternetButton.DownPicture = Form1.ServerGood
+    MDIForm1.F1InternetButton.value = 1 ' checked
+    MDIForm1.F1InternetButton.Refresh
+    
+    
+    If Not NewbieStart Then LogForm.Show
+    
+   ' SaveSimPopulation (MDIForm1.MainDir + "\Transfers\F1\" + IntOpts.IName + ".pop")
+   ' UpdateInternetPopulations ' Initialize the Internet populations graph by counting the local bots
+    
+    If Not NewbieStart Then Form1.NewGraph 12, "Internet Populations"
+        
+    Form1.InternetMode.Visible = True
+    InternetMode = True
+    
+    MDIForm1.Caption = MDIForm1.Caption + "    Internet Mode"
+    MDIForm1.Toolbar1.Buttons.Item(19).ButtonMenus(13).Enabled = True
+    MDIForm1.Toolbar1.Buttons.Item(19).ButtonMenus(14).Enabled = True
+     
+  Else
+    InternetMode = False
+    MDIForm1.F1InternetButton.value = 0 ' checked
+    
+    MDIForm1.Toolbar1.Buttons.Item(19).ButtonMenus(13).Enabled = False
+    MDIForm1.Toolbar1.Buttons.Item(19).ButtonMenus(14).Enabled = False
+    
+    Form1.CloseGraph (12)
+    Form1.CloseGraph (13)
+    
+    If Not (LogForm Is Nothing) Then Unload LogForm
+          
+    For i = 1 To MAXTELEPORTERS
+      If Teleporters(i).Internet And Teleporters(i).exist Then
+        DeleteTeleporter (i)
+        i = i - 1
+      End If
+    Next i
+    Form1.InternetMode.Visible = False
+   ' MDIForm1.InternetStatusGreen.Visible = False
+   ' MDIForm1.InternetStatusRed.Visible = False
+   
+   If Right(MDIForm1.Caption, 17) = "    Internet Mode" Then
+     MDIForm1.Caption = Left(MDIForm1.Caption, Len(MDIForm1.Caption) - 17)
+   End If
+    
+    On Error GoTo bypass
+    IntOpts.DeleteRemotePopFile (IntOpts.IName + ".pop")                           ' Delete the remote file
+    'Do While Form1.Inet1.StillExecuting = True And InternetMode
+    '  DoEvents
+    'Loop
+bypass:
+  '  IntOpts.Disconnect
+    
+  End If
+  HandlingMenuItem = False
+  Exit Sub
+problem:
+  If Err.Number = 76 Then
+ '   b = MsgBox("Cannot find the Directory: " + path + vbCrLf, vbOKCancel)
+    MkDir (MDIForm1.MainDir + path)
+    MkDir (MDIForm1.MainDir + path + "\in")
+    MkDir (MDIForm1.MainDir + path + "\out")
+    GoTo tryagain
+  End If
+End Sub
+
+Private Sub F1InternetButton_Click()
+  If Not HandlingMenuItem Then MDIForm1.F1Internet_Click
+End Sub
+
 Private Sub fisica_Click()
   optionsform.SSTab1.Tab = 1
   NetEvent.Timer1.Enabled = False
   NetEvent.Hide
   optionsform.Show vbModal
+End Sub
+
+Private Sub fittest_Click()
+  robfocus = Form1.fittest
 End Sub
 
 Private Sub genact_Click()
@@ -1014,6 +1219,10 @@ Private Sub HorizontalMaze_Click()
   Obstacles.DrawHorizontalMaze
 End Sub
 
+Private Sub InternetStatusRed_Click()
+
+End Sub
+
 Private Sub InvokeLens_Click()
   MagLens.Show
 End Sub
@@ -1030,10 +1239,10 @@ On Error GoTo fine
   optionsform.Visible = False
   CommonDialog1.DialogTitle = "Load a Background picture file"
   CommonDialog1.InitDir = "C:\"
-  CommonDialog1.filename = ""
+  CommonDialog1.FileName = ""
   CommonDialog1.Filter = "*.bmp|*.jpg"
   CommonDialog1.ShowOpen
-  If CommonDialog1.filename <> "" Then Form1.BackPic = CommonDialog1.filename
+  If CommonDialog1.FileName <> "" Then Form1.BackPic = CommonDialog1.FileName
   Form1.PiccyMode = True
   Form1.Newpic = True
   
@@ -1048,6 +1257,74 @@ End Sub
 
 Private Sub CheckerMaze_Click()
   Obstacles.DrawCheckerboardMaze
+End Sub
+
+Private Sub makenewspecies_Click()
+  If robfocus > 0 Then
+    If rob(robfocus).Corpse Then
+      MsgBox ("Sorry, but you cannot make a new species from a corpse.")
+    ElseIf MsgBox("Start new species using this robot?", vbYesNo) = vbYes Then
+      'Change the species of the bot with the focus
+      MakeNewSpeciesFromBot robfocus
+    End If
+  End If
+End Sub
+
+Public Function MakeNewSpeciesFromBot(n As Integer)
+Dim i As Integer
+Dim OldSpeciesName As String
+
+  If Not rob(n).exist Or rob(n).Corpse Then Exit Function
+  'Change the species of bot n
+  OldSpeciesName = rob(n).FName
+  If Right(rob(n).FName, 4) = ".txt" Then
+    rob(n).FName = Left(rob(n).FName, Len(rob(n).FName) - 4)
+  End If
+ 
+  rob(n).FName = Left(rob(n).FName, 28) + Str(Random(1, 10000))
+    
+  AddSpecie n, False ' Species is forked in this sim so it's native
+  ChangeNameOfAllChildren n, OldSpeciesName
+  ChangeNameOfAllCloselyRelated n, 10, OldSpeciesName
+End Function
+
+
+'Recursivly changes the name of all extant descendants of bot n to be the same as bot n
+'Also changes the name of any other bots that have a subspecies number > bot n
+'Used when forking a species
+Private Sub ChangeNameOfAllChildren(n As Integer, OldSpeciesName As String)
+Dim t As Integer
+  If rob(n).SonNumber = 0 Then Exit Sub
+  For t = 1 To MaxRobs
+    If rob(t).exist And Not rob(t).Corpse And t <> n Then
+      If rob(t).parent = rob(n).AbsNum Then
+        rob(t).FName = rob(n).FName
+        ChangeNameOfAllChildren t, OldSpeciesName
+      End If
+    End If
+  Next t
+End Sub
+
+Private Sub ChangeNameOfAllCloselyRelated(n As Integer, d As Integer, OldSpeciesName As String)
+Dim t As Integer
+Dim l, ll As Long
+Dim simNum As Long
+Dim closestAncestor As Long
+
+  For t = 1 To MaxRobs
+    If rob(t).exist And Not rob(t).Corpse And t <> n Then
+      If rob(t).FName = OldSpeciesName Then
+         'closestAncestor = FindClosestCommonAncestor(t, n, simNum)
+         'If closestAncestor <> 0 Then
+         '  l = FindGeneticDistance(t, n, closestAncestor, simNum)
+         '  ll = FindGenerationalDistance(t, n, closestAncestor, simNum)
+         '  If (l < SimOpts.SpeciationGeneticDistance / 3) And (ll < SimOpts.SpeciationGenerationalDistance / 3) Then
+         '    rob(t).FName = rob(n).FName
+         '  End If
+         'End If
+      End If
+    End If
+  Next t
 End Sub
 
 Private Sub NewTeleportMenu_Click()
@@ -1108,7 +1385,6 @@ Private Sub robinf_Click()
   Dim n As Integer
   n = robfocus
   datirob.Show
-  rob(n).genenum = CountGenes(rob(n).DNA)
   datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime
 End Sub
 Private Sub mdiform1_keydown(KeyCode As Integer)
@@ -1175,10 +1451,16 @@ Private Sub silica_Click()
 End Sub
 
 Private Sub Species_Click()
-  optionsform.SSTab1.Tab = 0
-  NetEvent.Timer1.Enabled = False
-  NetEvent.Hide
-  optionsform.Show vbModal
+  If Not optionsform Is Nothing Then
+    optionsform.SSTab1.Tab = 0
+    NetEvent.Timer1.Enabled = False
+    NetEvent.Hide
+    optionsform.Show vbModal
+  End If
+End Sub
+
+Private Sub SunButton_Click()
+  SimOpts.Daytime = Not (SunButton.value * True)
 End Sub
 
 Private Sub Toolbar1_ButtonClick(ByVal button As MSComctlLib.button)
@@ -1217,8 +1499,6 @@ Private Sub Toolbar1_ButtonClick(ByVal button As MSComctlLib.button)
       End If
     Case "fast"
       oneonten = Not oneonten
-    Case "wall"
-      MuriForm.Show
     Case "best"
       robfocus = Form1.fittest
     Case "mutfreq"
@@ -1306,11 +1586,21 @@ Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
     Case "simnrg"
       Form1.NewGraph 9, "Total Energy/Species (x1000)"
     Case "autocost"
-      Form1.NewGraph 10, "Auto Cost Stats"
+      Form1.NewGraph 10, "Dynamic Costs"
+    Case "speciesdiversity"
+      Form1.NewGraph 11, "Species Diversity"
+    Case "internetpopulation"
+      Form1.NewGraph 12, "Internet Species Populations"
+    Case "internetsimpopulations"
+      Form1.NewGraph 13, "Internet Sim Populations"
+    Case "maxgeneticdistance"
+      Form1.NewGraph 14, "Genetic Distance (Maximum)"
+    Case "maxgenerationaldistance"
+      Form1.NewGraph 15, "Generational Distance (Maximum)"
     
     Case "resgraph"
-      If MsgBox("Are you sure you want to reset graphs?", vbOKCancel) = vbOK Then
-        Form1.ResetGraphs
+      If MsgBox("Are you sure you want to reset all graphs?", vbOKCancel) = vbOK Then
+        Form1.ResetGraphs (0)
         Form1.FeedGraph (0) ' EricL 4/7/2006 Update the graphs right now instead of waiting until the next update
       End If
   End Select
@@ -1342,26 +1632,26 @@ Private Sub costi_Click()
   optionsform.Show vbModal
 End Sub
 
-Private Sub czin_MouseDown(button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czin_MouseDown(button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = True
   ZoomInPremuto
 End Sub
 
-Private Sub czin_MouseUp(button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czin_MouseUp(button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = False
 End Sub
 
 Public Sub ZoomIn()
   If Form1.visiblew > RobSize * 4 Then
     If robfocus > 0 Then
-      xc = rob(robfocus).pos.x
-      yc = rob(robfocus).pos.y
+      xc = rob(robfocus).pos.X
+      yc = rob(robfocus).pos.Y
     Else
       xc = Form1.visiblew / 2 + Form1.ScaleLeft
       yc = Form1.visibleh / 2 + Form1.ScaleTop
     End If
-    Form1.visiblew = Form1.visiblew / 1.02
-    Form1.visibleh = Form1.visibleh / 1.02
+    Form1.visiblew = Form1.visiblew / 1.05
+    Form1.visibleh = Form1.visibleh / 1.05
     Form1.ScaleHeight = Form1.visibleh
     Form1.ScaleWidth = Form1.visiblew
     Form1.ScaleTop = yc - Form1.ScaleHeight / 2
@@ -1384,7 +1674,7 @@ Private Sub ZoomOutPremuto()
   Wend
 End Sub
 
-Private Sub czo_MouseDown(button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czo_MouseDown(button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = True
   ZoomOutPremuto
 End Sub
@@ -1400,8 +1690,8 @@ Public Sub ZoomOut()
   xc = Form1.visiblew / 2 + Form1.ScaleLeft
   yc = Form1.visibleh / 2 + Form1.ScaleTop
   
-  Form1.visiblew = Form1.visiblew / 0.98039
-  Form1.visibleh = Form1.visibleh / 0.98039
+  Form1.visiblew = Form1.visiblew / 0.95 '0.98039
+  Form1.visibleh = Form1.visibleh / 0.95 '0.98039
   
   If Form1.visiblew > SimOpts.FieldWidth And ZoomLock.value = 0 Then
     Form1.visiblew = SimOpts.FieldWidth
@@ -1434,18 +1724,18 @@ Public Sub ZoomOut()
   Form1.Redraw
 End Sub
 
-Private Sub czo_MouseUp(button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czo_MouseUp(button As Integer, Shift As Integer, X As Single, Y As Single)
  AspettaFlag = False
 End Sub
 
 Private Sub inssp_Click()
   On Error GoTo fine
   CommonDialog1.DialogTitle = "Load organism"
-  CommonDialog1.filename = ""
+  CommonDialog1.FileName = ""
   CommonDialog1.Filter = "Organism file(*.dbo)|*.dbo"
   CommonDialog1.InitDir = MainDir + "\robots"
   CommonDialog1.ShowOpen
-  If CommonDialog1.filename <> "" Then InsertOrganism CommonDialog1.filename
+  If CommonDialog1.FileName <> "" Then InsertOrganism CommonDialog1.FileName
   Exit Sub
 fine:
   MsgBox "Organism not inserted"
@@ -1474,30 +1764,47 @@ Private Sub simload(Optional path As String)
   Dim i As Integer
   Dim path2 As String
    
-  On Error GoTo fine ' Uncomment this line in the compiled version error.sim
+ ' On Error GoTo fine ' Uncomment this line in compiled version error.sim
+
   If path = "" Then
-    optionsform.Visible = False
+'    optionsform.Visible = False
     CommonDialog1.DialogTitle = MBLoadSim
     CommonDialog1.InitDir = MDIForm1.MainDir + "\saves"
-    CommonDialog1.filename = ""
+    CommonDialog1.FileName = ""
     CommonDialog1.Filter = "Simulation(*.sim)|*.sim"
     CommonDialog1.ShowOpen
-    If CommonDialog1.filename = "" Then
+    If CommonDialog1.CancelError Then
+      If Err.Number = 32755 Then
+        Exit Sub ' The user pressed the cancel button
+      End If
+    End If
+    If CommonDialog1.FileName = "" Then
       Exit Sub
     Else
-      path2 = CommonDialog1.filename
+      path2 = CommonDialog1.FileName
     End If
   Else
     path2 = path
+    If MsgBox("Would you like to connect to Internet Mode?", vbYesNo + vbExclamation, MBwarning) = vbYes Then
+        StartInInternetMode = True
+    Else
+       StartInInternetMode = False
+    End If
   End If
-      
+  
+  MDIForm1.Caption = "DarwinBots 2.44.1 " + path2
+  
   LoadSimulation path2
   
-  MDIForm1.Caption = "DarwinBots 2.43 " + path2
-  
-  'EricL 4/7/2006 Populate the Add Species dropdown combo when sims loaded
+  If StartInInternetMode Then MDIForm1.F1Internet_Click
+    
+ 'Populate the Add Species dropdown combo when sims loaded
   For i = 0 To SimOpts.SpeciesNum - 1
-    MDIForm1.Combo1.additem SimOpts.Specie(i).Name
+    If i > MAXNATIVESPECIES Then
+      MsgBox "Exceeded number of native species."
+    Else
+      If SimOpts.Specie(i).Native Then MDIForm1.Combo1.additem SimOpts.Specie(i).Name
+    End If
   Next i
   
   DisplayActivations = False ' EricL - Initialize the flag that controls displaying activations in the console
@@ -1506,19 +1813,20 @@ Private Sub simload(Optional path As String)
 fine:
 
   If Err.Number <> 32755 Then
-  MsgBox "An Error Occurred.  Darwinbots cannot continue.  Sorry.  " + Err.Description + " " + Err.Source + " " + Str$(Err.Number) + " " + Str$(Err.LastDllError) + ".", vbOKOnly
-End If
-Resume Next
+    MsgBox "An Error Occurred.  Darwinbots cannot continue.  Sorry.  " + Err.Description + " " + Err.Source + " " + Str$(Err.Number) + " " + Str$(Err.LastDllError) + ".", vbOKOnly
+  Else
+    Exit Sub
+  End If
 End Sub
 
 
 Private Sub MDIForm1_Click()
-  InfoForm.Hide
+ ' InfoForm.Hide
   NetEvent.stayontop
 End Sub
 
 Private Sub MDIForm1_ThumbScroll()
-  InfoForm.Hide
+ ' InfoForm.Hide
   NetEvent.stayontop
 End Sub
 
@@ -1560,11 +1868,11 @@ End Sub
 Private Sub saveorg_Click()
   On Error GoTo fine
   CommonDialog1.DialogTitle = "Save organism"
-  CommonDialog1.filename = ""
+  CommonDialog1.FileName = ""
   CommonDialog1.Filter = "Organism file(*.dbo)|*.dbo"
   CommonDialog1.InitDir = MainDir + "\robots"
   CommonDialog1.ShowSave
-  If CommonDialog1.filename <> "" Then SaveOrganism CommonDialog1.filename, robfocus
+  If CommonDialog1.FileName <> "" Then SaveOrganism CommonDialog1.FileName, robfocus
   Exit Sub
 fine:
   MsgBox "Organism not saved"
@@ -1578,11 +1886,11 @@ End Sub
 Private Sub simsave()
   On Error GoTo fine
   CommonDialog1.DialogTitle = MBSaveSim
-  CommonDialog1.filename = ""
+  CommonDialog1.FileName = ""
   CommonDialog1.Filter = "Simulation(*.sim)|*.sim"
   CommonDialog1.InitDir = MDIForm1.MainDir + "\saves"
   CommonDialog1.ShowSave
-  SaveSimulation CommonDialog1.filename
+  SaveSimulation CommonDialog1.FileName
   Exit Sub
 fine:
 MsgBox "Saving sim failed.  " + Err.Description, vbOKOnly
@@ -1590,16 +1898,21 @@ End Sub
 
 Private Sub MDIForm_Load()
 Dim path As String
+Dim fso As New FileSystemObject
+Dim lastSim As File
 
   globstrings
   strings Me
   MDIForm1.WindowState = 2
-  MDIForm1.Caption = "DarwinBots 2.43"
+  MDIForm1.Caption = "DarwinBots 2.44.1"
   startdir = App.path
   MainDir = App.path
   
+    'this little snippet insures that Prsn828 can run his code alright
+  If Left(MDIForm1.MainDir, 51) = "C:\Repositories\DarwinbotsVB\trunk" Then _
+    MDIForm1.MainDir = "C:\Program Files\DarwinBotsII"
     
-  'this little snippet insures that Numsgil can run his code alright
+    'Numsgil code
   If Left(MDIForm1.MainDir, 15) = "C:\darwinsource" Then _
     MDIForm1.MainDir = "C:\DarwinbotsII"
     
@@ -1608,8 +1921,8 @@ Dim path As String
     MDIForm1.MainDir = "C:\Program Files\DarwinBotsII"
   
   disablesim
-  SimOpts.FieldWidth = Me.Width
-  SimOpts.FieldHeight = Me.Height
+  'SimOpts.FieldWidth = Me.Width
+  'SimOpts.FieldHeight = Me.Height
   Me.Show
   
   Set Form1.t = New TrayIcon
@@ -1618,6 +1931,12 @@ Dim path As String
   Form1.t.Tooltip = "Darwinbots"
   
   'These are all defaults that might get overridden by the settings loaded below
+  InternetMode = False
+  F1Internet.Checked = False
+  MDIForm1.Toolbar1.Buttons.Item(19).ButtonMenus(13).Enabled = False
+  MDIForm1.Toolbar1.Buttons.Item(19).ButtonMenus(14).Enabled = False
+  AdHocInternet = False
+  
   ShowVisionGrid.Checked = True
   showVisionGridToggle = True
   displayShotImpactsToggle = True
@@ -1632,6 +1951,8 @@ Dim path As String
   HighLightTeleportersMenu.Checked = True
   HighLightAllTeleporters
   DontDecayNrgShots.Checked = False
+  DisableTies.Checked = False
+  TmpOpts.DisableTies = False
   TmpOpts.NoShotDecay = False
   TmpOpts.chartingInterval = 200
   TmpOpts.FieldWidth = 16000
@@ -1663,26 +1984,45 @@ Dim path As String
   TmpOpts.RepopAmount = 10
   TmpOpts.RepopCooldown = 10
   TmpOpts.PhysBrown = 0.5
-  DontDecayNrgShots.Checked = False
-  TmpOpts.NoShotDecay = False
   
   EnableRobotsMenu
     
   optionsform.ReadSett MDIForm1.MainDir + "\settings\lastexit.set"
+  optionsform.IntSettLoad
+
   If exitDB Then
     MDIForm_Unload (1)
     Exit Sub
   End If
     
-  optionsform.datatolist
+  'optionsform.datatolist
   'TmpOpts.Daytime = True ' Ericl March 15, 2006
  
-  
+ ' Unload optionsform  ' We do this here becuase reading in the settings above loads the Options dialog.
+                      ' We want it unloaded so that when the user loads it the next time, it gets properly
+                      ' populated by the form's load routine
   SimOpts = TmpOpts
   path = Command
   
   If path = "" Then
-    InfoForm.Show
+ 
+    On Error GoTo bypass
+    Set lastSim = fso.GetFile(MDIForm1.MainDir + "\Saves\lastexit.sim")
+    If lastSim.size > 0 Then
+      If MsgBox("Continue the last simulation?", vbYesNo + vbExclamation, MBwarning) = vbYes Then
+         simload MDIForm1.MainDir + "\saves\lastexit.sim"
+      End If
+    Else
+      InfoForm.Show
+    ' Put the code here to start up a default sim using internally defined bots
+      If MsgBox("Would you like to connect to Internet Mode?", vbYesNo + vbExclamation, MBwarning) = vbYes Then
+        MDIForm1.Caption = MDIForm1.Caption + "    Internet Mode"
+        Load Form1
+        F1InternetButton.value = 1
+        Form1.StartSimul
+      End If
+    End If
+     
   Else
     If InStr(Command, """") <> 0 Then path = Replace(Command, """", "")
     If InStr(Command, "\") <> 0 Then
@@ -1691,6 +2031,7 @@ Dim path As String
       simload MDIForm1.MainDir + "\saves\" + path
     End If
   End If
+bypass:
 End Sub
 
 Public Function EnableRobotsMenu()
@@ -1747,6 +2088,8 @@ Private Sub MDIForm_Unload(Cancel As Integer)
     TmpOpts = SimOpts
   End If
   optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
+  SaveSimulation MDIForm1.MainDir + "\saves\lastexit.sim" 'save last settings
+  
   End
 End Sub
 
@@ -1777,13 +2120,13 @@ Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Integer, br
   StatusBar1.Panels(9).text = "Restarts " + Str$(ReStarts) + " "
   StatusBar1.Panels(10).text = "Shots " + Str$(Shots_Module.ShotsThisCycle) + " "
   
-  AvgSimEnergyLastTenCycles = 0
+  'AvgSimEnergyLastTenCycles = 0
   'This delibertly counts the 10 cycles *before* this one to avoid cases where the timer invokes
   'this routine before the calculations for the current energy cycle have completed.
-  For i = 99 To 90 Step -1
-    k = (CurrentEnergyCycle + i) Mod 100
-    AvgSimEnergyLastTenCycles = AvgSimEnergyLastTenCycles + (TotalSimEnergy(k) * 0.1)
-  Next i
+  'For i = 99 To 90 Step -1
+  '  k = (CurrentEnergyCycle + i) Mod 100
+  '  AvgSimEnergyLastTenCycles = AvgSimEnergyLastTenCycles + (TotalSimEnergy(k) * 0.1)
+  'Next i
   
 ' AvgSimEnergyLastHundredCycles = AvgSimEnergyLastTenCycles
 '    k = (CurrentEnergyCycle + 100 - i) Mod 100
@@ -1792,7 +2135,9 @@ Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Integer, br
  ' AvgSimEnergyLastTenCycles = AvgSimEnergyLastTenCycles * 0.1
  ' AvgSimEnergyLastHundredCycles = AvgSimEnergyLastHundredCycles * 0.01
 
-  If AvgSimEnergyLastTenCycles <> 0 Then delta = TotalSimEnergyDisplayed - AvgSimEnergyLastTenCycles
+  'If AvgSimEnergyLastTenCycles <> 0 Then delta = TotalSimEnergyDisplayed - AvgSimEnergyLastTenCycles
+  k = (CurrentEnergyCycle + 98) Mod 100
+  delta = TotalSimEnergyDisplayed - TotalSimEnergy(k)
   
   StatusBar1.Panels(11).text = "Nrg " + Str$(TotalSimEnergyDisplayed) + " "
   StatusBar1.Panels(12).text = "Delta " + Str$(Round(delta, 5)) + " "
@@ -1809,7 +2154,21 @@ End Sub
 
 Private Sub quit_Click()
   MDIForm_QueryUnload 0, 0
-  If MsgBox(MBsure, vbYesNo + vbExclamation, MBwarning) = vbYes = vbYes Then MDIForm_Unload 0
+  If MsgBox(MBsure, vbYesNo + vbExclamation, MBwarning) = vbYes = vbYes Then
+    If InternetMode Then
+      InternetMode = False
+      On Error GoTo bypass
+      IntOpts.DeleteRemotePopFile (IntOpts.IName + ".pop")                           ' Delete the remote file
+     ' Do While Form1.Inet1.StillExecuting = True And (InternetMode <> 0)
+     '   DoEvents
+     ' Loop
+
+      IntOpts.Disconnect
+bypass:
+    End If
+    
+    MDIForm_Unload 0
+  End If
 End Sub
 
 Private Sub sdna_Click()
@@ -1819,11 +2178,11 @@ End Sub
 Private Sub robsave()
   On Error GoTo fine
   CommonDialog1.DialogTitle = MBSaveDNA
-  CommonDialog1.filename = ""
+  CommonDialog1.FileName = ""
   CommonDialog1.Filter = "DNA file(*.txt)|*.txt"
   CommonDialog1.InitDir = MainDir + "\robots"
   CommonDialog1.ShowSave
-  If CommonDialog1.filename <> "" Then salvarob robfocus, CommonDialog1.filename
+  If CommonDialog1.FileName <> "" Then salvarob robfocus, CommonDialog1.FileName
   Exit Sub
 fine:
   MsgBox MBDNANotSaved
@@ -1845,9 +2204,6 @@ Private Sub VerticaMaze_Click()
   Obstacles.DrawVerticalMaze
 End Sub
 
-Private Sub walls_Click()
-  MuriForm.Show
-End Sub
 
 Public Sub enablesim()
   edit.Enabled = True
@@ -1874,5 +2230,4 @@ Private Sub ZoomLock_Click()
   Else
      Form1.visiblew = 0.75 * Form1.visibleh
   End If
-       
 End Sub

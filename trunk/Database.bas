@@ -40,7 +40,7 @@ Private Sub SnapBrowse() 'creates a file to store the snapshot into
   Form1.CommonDialog1.DialogTitle = "Select a name for your snapshot file."
   Form1.CommonDialog1.Filter = "Snapshot Database (*.snp)|*.snp"
   Form1.CommonDialog1.ShowSave
-  SnapName = Form1.CommonDialog1.filename
+  SnapName = Form1.CommonDialog1.FileName
 End Sub
 
 Public Sub Snapshot()
@@ -52,7 +52,7 @@ Public Sub Snapshot()
   Dim ti As Integer
   Dim va As Integer
   Dim rn As Integer
-  Dim ok As Boolean
+  Dim OK As Boolean
   
   On Error GoTo fine
   SnapBrowse
@@ -68,14 +68,14 @@ Public Sub Snapshot()
 
   For rn = 1 To MaxRobs
     If rob(rn).Veg And SimOpts.DBExcludeVegs Then
-      ok = False
+      OK = False
     Else
-      ok = True
+      OK = True
     End If
 
-    If rob(rn).Exist And ok Then
+    If rob(rn).exist And OK Then
       With rob(rn)
-        Print #3, sstr(.AbsNum); v; sstr(.parent); v; .fname; v; sstr(.generation); v; sstr(.BirthCycle); v; sstr(.age); v; sstr(.Mutations); v;
+        Print #3, sstr(.AbsNum); v; sstr(.parent); v; .FName; v; sstr(.generation); v; sstr(.BirthCycle); v; sstr(.age); v; sstr(.Mutations); v;
         Print #3, sstr(.LastMut); v; sstr(.DnaLen); v; sstr(.SonNumber); v; sstr(TotalRobots); v; sstr(totvegs); v; sstr(totnvegs); v; sstr(.Kills); v;
         
         d = ""
@@ -86,7 +86,7 @@ Public Sub Snapshot()
   Next rn
   Close 3
   MsgBox ("Saved snapshot successfully.")
-  Exit Sub
+  GoTo getout
 
 fine:
   Close 3
@@ -96,6 +96,7 @@ fine:
     d = "File error " + Str$(Err.Number) + Err.Description
     MsgBox (d)
   End If
+getout:
 End Sub
 
 ' adds a record
@@ -111,14 +112,14 @@ Public Sub AddRecord(rn As Integer)
   On Error GoTo fine
   v = ","
   With rob(rn)
-  Print #2, sstr(.AbsNum); v; sstr(.parent); v; .fname; v; sstr(.generation); v; sstr(.BirthCycle); v; sstr(.age); v; sstr(.Mutations); v;
+  Print #2, sstr(.AbsNum); v; sstr(.parent); v; .FName; v; sstr(.generation); v; sstr(.BirthCycle); v; sstr(.age); v; sstr(.Mutations); v;
   Print #2, sstr(.LastMut); v; sstr(.DnaLen); v; sstr(.SonNumber); v; sstr(TotalRobots); v; sstr(totvegs); v; sstr(totnvegs); v; sstr(.Kills); v;
 
   d = ""
   d = d + DetokenizeDNA(rn, False)
   Print #2, d
   End With
-  Exit Sub
+  GoTo getout
 
 fine:
   d = "File error " + Str$(Err.Number) + Err.Description
@@ -127,9 +128,10 @@ fine:
   Else
     MsgBox (d)
   End If
+getout:
 End Sub
 
 ' when I wasn't aware of the existence of CStr()
-Private Function sstr(X) As String
-  sstr = Right(Str(X), Len(Str(X)) - 1)
+Private Function sstr(x) As String
+  sstr = Right(Str(x), Len(Str(x)) - 1)
 End Function

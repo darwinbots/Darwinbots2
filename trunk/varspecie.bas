@@ -33,4 +33,10 @@ Public Type datispecie
   DisableDNA As Boolean             ' Flag indicating DNA should not execute for this species
   DisableMovementSysvars As Boolean ' Flag indicating movement sysvars should be disabled for this species
   CantReproduce As Boolean          ' Flag indicating whether reproduction has been disabled for this species.
+  VirusImmune As Boolean            ' Flag indicating whether members of this species are suceptable to viruses.
+  population As Integer             ' Number of this species in the sim.  Updated each cycle.
+  SubSpeciesCounter As Integer      ' Using to increment the per-bot subspecies.
+  Native As Boolean                 ' Indicates this species was first added locally to this sim and not teleported in from another
+  DisplayImage As image
 End Type
+

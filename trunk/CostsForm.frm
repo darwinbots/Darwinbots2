@@ -4,30 +4,38 @@ Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form CostsForm 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Costs"
-   ClientHeight    =   8805
+   ClientHeight    =   9510
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   10035
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   1.306
+   ScaleHeight     =   1.411
    ScaleMode       =   0  'User
    ScaleWidth      =   0.894
    StartUpPosition =   1  'CenterOwner
    Begin VB.Frame Frame2 
       Caption         =   "Cost Overrides"
-      Height          =   3375
+      Height          =   4095
       Left            =   120
       TabIndex        =   106
       Top             =   5400
       Width           =   5655
+      Begin VB.CheckBox AllowNegativeCostXCheck 
+         Caption         =   "Allow Multiplier to go Negative"
+         Height          =   255
+         Left            =   3000
+         TabIndex        =   137
+         Top             =   360
+         Width           =   2535
+      End
       Begin VB.CheckBox DynamicCostsIncludePlantsCheck 
          Caption         =   "Include Autotrophs in Targets"
          Height          =   255
-         Left            =   240
+         Left            =   3000
          TabIndex        =   136
-         Top             =   360
+         Top             =   1800
          Width           =   2535
       End
       Begin VB.TextBox CostX 
@@ -41,7 +49,7 @@ Begin VB.Form CostsForm
             SubFormatType   =   1
          EndProperty
          Height          =   285
-         Left            =   4320
+         Left            =   1560
          TabIndex        =   134
          Text            =   "1.0"
          ToolTipText     =   "This value is applied to the costs to determine the actual costs per cycle"
@@ -54,7 +62,7 @@ Begin VB.Form CostsForm
          TabIndex        =   128
          Text            =   "0"
          ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
-         Top             =   1080
+         Top             =   1440
          Width           =   960
       End
       Begin VB.Frame Frame3 
@@ -62,7 +70,7 @@ Begin VB.Form CostsForm
          Height          =   1815
          Left            =   120
          TabIndex        =   110
-         Top             =   1440
+         Top             =   2160
          Width           =   5415
          Begin VB.TextBox DynamicCostsRangeL 
             Height          =   285
@@ -128,7 +136,7 @@ Begin VB.Form CostsForm
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "DynamicCostTargetPopulation"
-            BuddyDispid     =   196615
+            BuddyDispid     =   196616
             OrigLeft        =   3600
             OrigTop         =   360
             OrigRight       =   3855
@@ -151,7 +159,7 @@ Begin VB.Form CostsForm
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "DynamicCostsRangeU"
-            BuddyDispid     =   196614
+            BuddyDispid     =   196615
             OrigLeft        =   4800
             OrigTop         =   720
             OrigRight       =   5055
@@ -174,7 +182,7 @@ Begin VB.Form CostsForm
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "DynamicCostsRangeL"
-            BuddyDispid     =   196613
+            BuddyDispid     =   196614
             OrigLeft        =   4800
             OrigTop         =   1080
             OrigRight       =   5055
@@ -261,7 +269,7 @@ Begin VB.Form CostsForm
          TabIndex        =   107
          Text            =   "0"
          ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
-         Top             =   720
+         Top             =   1080
          Width           =   960
       End
       Begin ComCtl2.UpDown UpDown2 
@@ -269,7 +277,7 @@ Begin VB.Form CostsForm
          Left            =   5280
          TabIndex        =   108
          ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
-         Top             =   720
+         Top             =   1080
          Width           =   255
          _ExtentX        =   450
          _ExtentY        =   503
@@ -277,7 +285,7 @@ Begin VB.Form CostsForm
          Value           =   100
          AutoBuddy       =   -1  'True
          BuddyControl    =   "BotNoCostThreshold"
-         BuddyDispid     =   196625
+         BuddyDispid     =   196626
          OrigLeft        =   3600
          OrigTop         =   360
          OrigRight       =   3855
@@ -293,7 +301,7 @@ Begin VB.Form CostsForm
          Left            =   5280
          TabIndex        =   129
          ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
-         Top             =   1080
+         Top             =   1440
          Width           =   255
          _ExtentX        =   450
          _ExtentY        =   503
@@ -301,7 +309,7 @@ Begin VB.Form CostsForm
          Value           =   100
          AutoBuddy       =   -1  'True
          BuddyControl    =   "CostReinstate"
-         BuddyDispid     =   196611
+         BuddyDispid     =   196612
          OrigLeft        =   3600
          OrigTop         =   360
          OrigRight       =   3855
@@ -315,7 +323,7 @@ Begin VB.Form CostsForm
       Begin VB.Label Label19 
          Caption         =   "Cost Multiplier:"
          Height          =   195
-         Left            =   3000
+         Left            =   240
          TabIndex        =   135
          ToolTipText     =   "Target includes only extant hetertrophs"
          Top             =   375
@@ -326,7 +334,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Left            =   1320
          TabIndex        =   127
-         Top             =   1080
+         Top             =   1440
          Width           =   3015
       End
       Begin VB.Label Label9 
@@ -334,7 +342,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Left            =   1320
          TabIndex        =   109
-         Top             =   720
+         Top             =   1080
          Width           =   2895
       End
    End
@@ -445,7 +453,7 @@ Begin VB.Form CostsForm
       Height          =   375
       Left            =   6120
       TabIndex        =   97
-      Top             =   8160
+      Top             =   8640
       Width           =   1575
    End
    Begin VB.CommandButton ExitButton 
@@ -453,7 +461,7 @@ Begin VB.Form CostsForm
       Height          =   375
       Left            =   8160
       TabIndex        =   90
-      Top             =   8160
+      Top             =   8640
       Width           =   1575
    End
    Begin VB.Frame Frame1 
@@ -803,10 +811,10 @@ Begin VB.Form CostsForm
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   8
-         Left            =   1920
+         Left            =   1965
          TabIndex        =   7
          Text            =   "Text1"
-         Top             =   4800
+         Top             =   4765
          Visible         =   0   'False
          Width           =   975
       End
@@ -868,7 +876,7 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per instance"
          Height          =   255
          Index           =   9
-         Left            =   3060
+         Left            =   3120
          TabIndex        =   27
          Top             =   4320
          Width           =   1215
@@ -877,7 +885,7 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per instance"
          Height          =   255
          Index           =   8
-         Left            =   3000
+         Left            =   3120
          TabIndex        =   26
          Top             =   4800
          Visible         =   0   'False
@@ -887,7 +895,7 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per instance"
          Height          =   255
          Index           =   7
-         Left            =   3060
+         Left            =   3120
          TabIndex        =   25
          Top             =   3825
          Width           =   1215
@@ -896,7 +904,7 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per instance"
          Height          =   255
          Index           =   6
-         Left            =   3060
+         Left            =   3120
          TabIndex        =   24
          Top             =   3330
          Width           =   1215
@@ -905,7 +913,7 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per instance"
          Height          =   255
          Index           =   5
-         Left            =   3060
+         Left            =   3120
          TabIndex        =   23
          Top             =   2850
          Width           =   1215
@@ -914,7 +922,7 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per instance"
          Height          =   255
          Index           =   4
-         Left            =   3060
+         Left            =   3120
          TabIndex        =   22
          Top             =   2370
          Width           =   1215
@@ -923,7 +931,7 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per instance"
          Height          =   255
          Index           =   3
-         Left            =   3060
+         Left            =   3120
          TabIndex        =   21
          Top             =   1875
          Width           =   1215
@@ -932,7 +940,7 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per instance"
          Height          =   255
          Index           =   2
-         Left            =   3060
+         Left            =   3120
          TabIndex        =   20
          Top             =   1395
          Width           =   1215
@@ -941,7 +949,7 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per instance"
          Height          =   255
          Index           =   1
-         Left            =   3060
+         Left            =   3120
          TabIndex        =   19
          Top             =   900
          Width           =   1215
@@ -950,7 +958,7 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per instance"
          Height          =   255
          Index           =   0
-         Left            =   3060
+         Left            =   3120
          TabIndex        =   18
          Top             =   420
          Width           =   1215
@@ -959,7 +967,7 @@ Begin VB.Form CostsForm
          Caption         =   "number"
          Height          =   255
          Index           =   9
-         Left            =   960
+         Left            =   240
          TabIndex        =   17
          Top             =   4800
          Visible         =   0   'False
@@ -1053,7 +1061,7 @@ Begin VB.Form CostsForm
       Index           =   1
       Left            =   120
       TabIndex        =   28
-      Top             =   8040
+      Top             =   9120
       Visible         =   0   'False
       Width           =   4575
       Begin VB.TextBox Costs 
@@ -1350,22 +1358,26 @@ Private Sub AgeCostLog_Click()
   TmpOpts.Costs(AGECOSTMAKELOG) = AgeCostLog.value
 End Sub
 
+Private Sub AllowNegativeCostXCheck_Click()
+  TmpOpts.Costs(ALLOWNEGATIVECOSTX) = AllowNegativeCostXCheck.value
+End Sub
+
 Private Sub BotNoCostThreshold_Change()
-  TmpOpts.Costs(BOTNOCOSTLEVEL) = val(BotNoCostThreshold.text)
+  TmpOpts.Costs(BOTNOCOSTLEVEL) = val(ConvertCommasToDecimal(BotNoCostThreshold.text))
 End Sub
 
 Private Sub CostReinstate_Change()
-  TmpOpts.Costs(COSTXREINSTATEMENTLEVEL) = val(CostReinstate.text)
+  TmpOpts.Costs(COSTXREINSTATEMENTLEVEL) = val(ConvertCommasToDecimal(CostReinstate.text))
 End Sub
 
 Private Sub Costs_Change(Index As Integer)
-  TmpOpts.Costs(Index) = val(Costs(Index).text)
+  TmpOpts.Costs(Index) = val(ConvertCommasToDecimal(Costs(Index).text))
 End Sub
 
 Private Sub CostX_Change()
-  TmpOpts.Costs(COSTMULTIPLIER) = val(CostX.text)
-  SimOpts.Costs(COSTMULTIPLIER) = val(CostX.text) ' Have to do this here since DispSettings gets called again when the Options dialog repaints...
-  TmpOpts.oldCostX = val(CostX.text)
+  TmpOpts.Costs(COSTMULTIPLIER) = val(ConvertCommasToDecimal(CostX.text))
+  SimOpts.Costs(COSTMULTIPLIER) = val(ConvertCommasToDecimal(CostX.text)) ' Have to do this here since DispSettings gets called again when the Options dialog repaints...
+  TmpOpts.oldCostX = val(ConvertCommasToDecimal(CostX.text))
 End Sub
 
 Private Sub Default_Click()
@@ -1386,10 +1398,10 @@ Private Sub Default_Click()
   Costs(23).text = "2"
   Costs(24).text = "0"
   Costs(25).text = "0"
-  Costs(26).text = "1"
-  Costs(27).text = "1"
-  Costs(28).text = "1"
-  Costs(29).text = "1"
+  Costs(26).text = "0.01"
+  Costs(27).text = "0.01"
+  Costs(28).text = "0.1"
+  Costs(29).text = "0.1"
   Costs(AGECOSTSTART).text = "0"  'EricL 4/12/2006 New for 2.42.2
   AgeCostLog.value = 0 'EricL 4/12/2006 New for 4.24.2
   BotNoCostThreshold.text = "0"
@@ -1400,6 +1412,7 @@ Private Sub Default_Click()
   CostX.text = "1"
   Costs(BODYUPKEEP).text = "0.00001"
   Costs(AGECOST).text = "0.01"
+  
   
 End Sub
 
@@ -1470,6 +1483,11 @@ Private Sub Form_Load()
     Label17.Enabled = True
     LinearAgeCostCheck.value = 0
   End If
+  If TmpOpts.Costs(ALLOWNEGATIVECOSTX) = 1 Then
+    AllowNegativeCostXCheck.value = 1
+  Else
+    AllowNegativeCostXCheck.value = 0
+  End If
   
   'Need to load this as it changes and will get put back.
   TmpOpts.Costs(COSTMULTIPLIER) = SimOpts.Costs(COSTMULTIPLIER)
@@ -1489,7 +1507,7 @@ Private Sub Form_Load()
   DynamicCostsRangeL.text = TmpOpts.Costs(DYNAMICCOSTTARGETLOWERRANGE)
   DynamicCostsRangeL.Enabled = DynamicCosts.value * True
   DynamicCostsIncludePlantsCheck.value = IIf(TmpOpts.Costs(DYNAMICCOSTINCLUDEPLANTS) = 0, 0, 1)
-    
+     
 End Sub
 
 
@@ -1502,3 +1520,4 @@ Private Sub LinearAgeCostCheck_Click()
   End If
   TmpOpts.Costs(AGECOSTMAKELINEAR) = LinearAgeCostCheck.value
 End Sub
+

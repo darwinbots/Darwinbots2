@@ -113,12 +113,28 @@ fine:
   If Err.Number = 53 Or Err.Number = 76 Then
     Form1.CommonDialog1.DialogTitle = WScannotfind + path
     Form1.CommonDialog1.ShowOpen
-    path2 = Form1.CommonDialog1.filename
+    
+    If Form1.CommonDialog1.CancelError Then ' The user pressed the cancel button
+      LoadDNA = False
+      Exit Function
+    Else
+      path2 = Form1.CommonDialog1.FileName
+    End If
+    
+    If path = path2 Or path2 = "" Then ' The user hit okay but the path is the same
+      LoadDNA = False
+      Exit Function
+    Else
+      ' The user selected a new path
+      path = path2
+      SimOpts.Specie(SpeciesFromBot(n)).path = Left(path, Len(path) - Len(rob(n).FName) - 1)  ' Update the species struct
+      GoTo inizio
+    End If
+    
     If LeagueMode Then
       FileCopy path2, path
     End If
-    path = path2
-    GoTo inizio
+    
   Else
     Close 1
     MsgBox Err.Description + ".  Path: " + path + MBnovalidrob
@@ -268,6 +284,14 @@ Private Function BasicCommandDetok(n As Integer) As String
       BasicCommandDetok = "abs"
     Case 10
       BasicCommandDetok = "dup"
+    Case 11
+      BasicCommandDetok = "drop"
+    Case 12
+      BasicCommandDetok = "clear"
+    Case 13
+      BasicCommandDetok = "swap"
+    Case 14
+      BasicCommandDetok = "over"
   End Select
 End Function
 
@@ -295,6 +319,24 @@ Private Function BasicCommandTok(s As String) As block
       BasicCommandTok.value = 9
     Case "dup"
       BasicCommandTok.value = 10
+    Case "dupint"
+      BasicCommandTok.value = 10
+    Case "drop"
+      BasicCommandTok.value = 11
+    Case "dropint"
+      BasicCommandTok.value = 11
+    Case "clear"
+      BasicCommandTok.value = 12
+    Case "clearint"
+      BasicCommandTok.value = 12
+    Case "swap"
+      BasicCommandTok.value = 13
+    Case "swapint"
+      BasicCommandTok.value = 13
+    Case "over"
+      BasicCommandTok.value = 14
+    Case "overint"
+      BasicCommandTok.value = 14
   End Select
 End Function
 
@@ -452,6 +494,20 @@ Private Function LogicDetok(n As Integer) As String
       LogicDetok = "xor"
     Case 4
       LogicDetok = "not"
+    Case 5
+      LogicDetok = "true"
+    Case 6
+      LogicDetok = "false"
+    Case 7
+      LogicDetok = "dropbool"
+    Case 8
+      LogicDetok = "clearbool"
+    Case 9
+      LogicDetok = "dupbool"
+    Case 10
+      LogicDetok = "swapbool"
+    Case 11
+      LogicDetok = "overbool"
   End Select
 End Function
 
@@ -467,6 +523,20 @@ Private Function LogicTok(s As String) As block
       LogicTok.value = 3
     Case "not"
       LogicTok.value = 4
+    Case "true"
+      LogicTok.value = 5
+    Case "false"
+      LogicTok.value = 6
+    Case "dropbool"
+      LogicTok.value = 7
+    Case "clearbool"
+      LogicTok.value = 8
+    Case "dupbool"
+      LogicTok.value = 9
+    Case "swapbool"
+      LogicTok.value = 10
+    Case "overbool"
+      LogicTok.value = 11
   End Select
 End Function
 
@@ -506,6 +576,8 @@ Private Function FlowDetok(n As Integer) As String
       FlowDetok = "else"
     Case 4
       FlowDetok = "stop"
+ '   Case 5
+ '     FlowDetok = "cross"
   End Select
 End Function
 
@@ -521,6 +593,8 @@ Private Function FlowTok(s As String) As block
       FlowTok.value = 3
     Case "stop"
       FlowTok.value = 4
+ '   Case "cross"
+  '    FlowTok.value = 5
   End Select
 End Function
 
@@ -574,6 +648,9 @@ Private Sub getvals(n As Integer, ByVal a As String, hold As String)
  If Name = "mutations" Then
    Mutations = val(value)
  End If
+' If Name = "image" Then
+'   SimOpts.Specie(SpeciesFromBot(n)).DisplayImage = LoadPicture(value)
+' End If
  
  ' if the current parameter is the hash string, we take its value,
  ' calculate the hash for the dna string from the beginning to
@@ -630,8 +707,8 @@ End Function
 ' saves a robot's header informations; can be padded with any
 ' other information, such as color, base energy, etc.
 Public Function SaveRobHeader(n As Integer) As String
-  SaveRobHeader = "'#name: " + rob(n).FName + vbCrLf + _
-    "'#generation: " + CStr(rob(n).generation) + vbCrLf + _
+  'SaveRobHeader = "'#name: " + rob(n).FName + vbCrLf +
+    SaveRobHeader = "'#generation: " + CStr(rob(n).generation) + vbCrLf + _
     "'#mutations: " + CStr(rob(n).Mutations) + vbCrLf
 End Function
 
@@ -758,7 +835,7 @@ Public Sub LoadSysVars()
   sysvar(59).value = 336
   sysvar(60).Name = "vtimer"
   sysvar(60).value = 337
-  sysvar(61).Name = "vShoot"
+  sysvar(61).Name = "vshoot"
   sysvar(61).value = 338
   sysvar(62).Name = "genes"
   sysvar(62).value = 339
@@ -838,8 +915,8 @@ Public Sub LoadSysVars()
   sysvar(99).value = 470
   sysvar(100).Name = "readtie"
   sysvar(100).value = 471
-  sysvar(101).Name = "trefbody"
-  sysvar(101).value = 472
+  sysvar(101).Name = "fertilized"
+  sysvar(101).value = 303
   sysvar(102).Name = "memval"
   sysvar(102).value = 473
   sysvar(103).Name = "memloc"
@@ -1068,6 +1145,70 @@ Public Sub LoadSysVars()
   sysvar(214).value = 539
   sysvar(215).Name = "reftype"
   sysvar(215).value = 685
+  sysvar(216).Name = "totalbots"
+  sysvar(216).value = 401
+  sysvar(217).Name = "totalmyspecies"
+  sysvar(217).value = 402
+  sysvar(218).Name = "out6"
+  sysvar(218).value = 805
+  sysvar(219).Name = "out7"
+  sysvar(219).value = 806
+  sysvar(220).Name = "out8"
+  sysvar(220).value = 807
+  sysvar(221).Name = "out9"
+  sysvar(221).value = 808
+  sysvar(222).Name = "out10"
+  sysvar(222).value = 809
+  sysvar(223).Name = "in6"
+  sysvar(223).value = 815
+  sysvar(224).Name = "in7"
+  sysvar(224).value = 816
+  sysvar(225).Name = "in8"
+  sysvar(225).value = 817
+  sysvar(226).Name = "in9"
+  sysvar(226).value = 818
+  sysvar(227).Name = "in10"
+  sysvar(227).value = 819
+  sysvar(228).Name = "tout1"
+  sysvar(228).value = 410
+  sysvar(229).Name = "tout2"
+  sysvar(229).value = 411
+  sysvar(230).Name = "tout3"
+  sysvar(230).value = 412
+  sysvar(231).Name = "tout4"
+  sysvar(231).value = 413
+  sysvar(232).Name = "tout5"
+  sysvar(232).value = 414
+  sysvar(233).Name = "tout6"
+  sysvar(233).value = 415
+  sysvar(234).Name = "tout7"
+  sysvar(234).value = 416
+  sysvar(235).Name = "tout8"
+  sysvar(235).value = 417
+  sysvar(236).Name = "tout9"
+  sysvar(236).value = 418
+  sysvar(237).Name = "tout10"
+  sysvar(237).value = 419
+  sysvar(238).Name = "tin1"
+  sysvar(238).value = 420
+  sysvar(239).Name = "tin2"
+  sysvar(239).value = 421
+  sysvar(240).Name = "tin3"
+  sysvar(240).value = 422
+  sysvar(241).Name = "tin4"
+  sysvar(241).value = 423
+  sysvar(242).Name = "tin5"
+  sysvar(242).value = 424
+  sysvar(243).Name = "tin6"
+  sysvar(243).value = 425
+  sysvar(244).Name = "tin7"
+  sysvar(244).value = 426
+  sysvar(245).Name = "tin8"
+  sysvar(245).value = 427
+  sysvar(246).Name = "tin9"
+  sysvar(246).value = 428
+  sysvar(247).Name = "tin10"
+  sysvar(247).value = 429
  
 End Sub
 
@@ -1075,14 +1216,64 @@ Public Function DetokenizeDNA(n As Integer, forHash As Boolean) As String
   Dim temp As String, t As Long
   Dim tempint As Integer
   Dim converttosysvar As Boolean
-  Dim gene As Long
+  Dim gene As Integer
+  Dim lastgene As Integer
+  Dim ingene As Boolean
+  Dim GeneEnd As Boolean
+  Dim coding As Boolean
   
+  ingene = False
+  coding = False
   t = 1
   gene = 0
+  lastgene = 0
   While Not (rob(n).DNA(t).tipo = 10 And rob(n).DNA(t).value = 1)
-    temp = ""
-    converttosysvar = IIf(rob(n).DNA(t + 1).tipo = 7, True, False)
     
+    temp = ""
+   'Gene breaks
+    With rob(n)
+      ' If a Start or Else
+      If .DNA(t).tipo = 9 And (.DNA(t).value = 2 Or .DNA(t).value = 3) Then
+        If coding And Not ingene Then ' if terminating a coding region and not following a cond
+           DetokenizeDNA = DetokenizeDNA + vbCrLf + "''''''''''''''''''''''''  " + "Gene: " + Str(gene) + " Ends at position " + Str(t - 1) + "  '''''''''''''''''''''''"
+        End If
+        If Not ingene Then ' that is not the first to follow a cond
+           gene = gene + 1
+        Else
+          ingene = False
+        End If
+        coding = True
+      End If
+      ' If a Cond
+      If .DNA(t).tipo = 9 And (.DNA(t).value = 1) Then
+        If coding Then ' indicate gene ended before cond base pair
+          DetokenizeDNA = DetokenizeDNA + vbCrLf + "''''''''''''''''''''''''  " + "Gene: " + Str(gene) + " Ends at position " + Str(t - 1) + "  '''''''''''''''''''''''" + vbCrLf
+        End If
+        ingene = True
+        gene = gene + 1
+        coding = True
+      End If
+      ' If a stop
+      If .DNA(t).tipo = 9 And .DNA(t).value = 4 Then
+        If coding Then GeneEnd = True
+        ingene = False
+        coding = False
+      End If
+    End With
+       
+    If gene <> lastgene And Not forHash Then
+      temp = temp + vbCrLf
+      temp = temp + "''''''''''''''''''''''''  "
+      temp = temp + "Gene: " + Str(gene)
+      temp = temp + " Begins at position " + Str(t)
+      temp = temp + "  '''''''''''''''''''''''"
+      temp = temp + vbCrLf
+      DetokenizeDNA = DetokenizeDNA + temp
+      temp = ""
+      lastgene = gene
+    End If
+       
+    converttosysvar = IIf(rob(n).DNA(t + 1).tipo = 7, True, False)
     Parse temp, rob(n).DNA(t), n, converttosysvar
     If temp = "" Then temp = "VOID" 'alert user that there is an invalid DNA entry.
       'This is probably a BUG!
@@ -1090,27 +1281,21 @@ Public Function DetokenizeDNA(n As Integer, forHash As Boolean) As String
     tempint = rob(n).DNA(t).tipo
     
     'formatting
-    If tempint = 5 Or tempint = 6 Or tempint = 7 Or tempint = 9 Then
-      
-      If rob(n).DNA(t).tipo = 9 And rob(n).DNA(t).value = 1 Then gene = gene + 1
-      
-      temp = temp + vbCrLf
-      
-      If rob(n).DNA(t).tipo = 9 And rob(n).DNA(t).value = 4 And Right(DetokenizeDNA, 2) = vbCrLf And Not forHash Then
-        temp = temp + vbCrLf
-        temp = temp + "''''''''''''''''''''''''"
-        temp = temp + "Gene " + Str(gene)
-        temp = temp + ": Last 'stop' at position " + Str(t)
-        temp = temp + "''''''''''''''''''''''',"
-        temp = temp + vbCrLf + vbCrLf
-      End If
-    End If
+    If tempint = 5 Or tempint = 6 Or tempint = 7 Or tempint = 9 Then temp = temp + vbCrLf
     
     DetokenizeDNA = DetokenizeDNA + " " + temp
+        
+    If GeneEnd Then ' Indicate gene ended via a stop.  Needs to come after base pair
+      DetokenizeDNA = DetokenizeDNA + "''''''''''''''''''''''''  " + "Gene: " + Str(gene) + " Ends at position " + Str(t) + "  '''''''''''''''''''''''" + vbCrLf
+      GeneEnd = False
+    End If
     
     t = t + 1
   Wend
-  t = 0
+   If Not (rob(n).DNA(t - 1).tipo = 9 And rob(n).DNA(t - 1).value = 4) And coding Then ' End of DNA without a stop.
+    DetokenizeDNA = DetokenizeDNA + "''''''''''''''''''''''''  " + "Gene: " + Str(gene) + " Ends at position " + Str(t - 1) + "  '''''''''''''''''''''''" + vbCrLf
+  End If
+
 End Function
 
 Public Function TipoDetok(ByVal tipo As Long) As String

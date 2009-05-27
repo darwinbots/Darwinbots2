@@ -1,35 +1,24 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "MSINET.OCX"
 Begin VB.Form Form1 
    Appearance      =   0  'Flat
    AutoRedraw      =   -1  'True
-   BackColor       =   &H00511206&
+   BackColor       =   &H00400000&
    BorderStyle     =   0  'None
    Caption         =   "Form1"
-   ClientHeight    =   8520
+   ClientHeight    =   8445
    ClientLeft      =   30
    ClientTop       =   90
-   ClientWidth     =   11880
-   FillColor       =   &H00511206&
+   ClientWidth     =   12045
+   FillColor       =   &H00C00000&
+   ForeColor       =   &H00511206&
    Icon            =   "main.frx":0000
    LinkTopic       =   "Form1"
    MDIChild        =   -1  'True
    MinButton       =   0   'False
-   ScaleHeight     =   8520
-   ScaleWidth      =   11880
-   ShowInTaskbar   =   0   'False
-   Begin VB.PictureBox Picture1 
-      AutoRedraw      =   -1  'True
-      Height          =   1000
-      Left            =   2640
-      ScaleHeight     =   945
-      ScaleWidth      =   945
-      TabIndex        =   1
-      Top             =   120
-      Visible         =   0   'False
-      Width           =   1000
-   End
+   ScaleHeight     =   8445
+   ScaleWidth      =   12045
    Begin VB.Timer SecTimer 
       Interval        =   1000
       Left            =   2040
@@ -42,12 +31,10 @@ Begin VB.Form Form1
       _ExtentY        =   1005
       _Version        =   393216
       Protocol        =   2
-      RemoteHost      =   "sulaadventures.com"
+      RemoteHost      =   "ftp.darwinbots.com"
       RemotePort      =   21
-      URL             =   "ftp://db:DB@sulaadventures.com/db"
-      Document        =   "/db"
-      UserName        =   "db"
-      Password        =   "DB"
+      URL             =   "ftp://dbimuser@ftp.darwinbots.com"
+      UserName        =   "dbimuser"
    End
    Begin MSComDlg.CommonDialog CommonDialog1 
       Left            =   120
@@ -61,21 +48,106 @@ Begin VB.Form Form1
       Left            =   1440
       Top             =   120
    End
+   Begin VB.Image InternetModePopFileProblem 
+      Height          =   255
+      Left            =   5280
+      Picture         =   "main.frx":08CA
+      Top             =   5400
+      Visible         =   0   'False
+      Width           =   240
+   End
+   Begin VB.Image InternetModeBackPressure 
+      Height          =   255
+      Left            =   5280
+      Picture         =   "main.frx":0C3C
+      Top             =   5040
+      Visible         =   0   'False
+      Width           =   240
+   End
+   Begin VB.Image InternetModeStart 
+      Height          =   255
+      Left            =   5280
+      Picture         =   "main.frx":0FAE
+      Top             =   4680
+      Visible         =   0   'False
+      Width           =   240
+   End
+   Begin VB.Image InternetModeOff 
+      Height          =   255
+      Left            =   5280
+      Picture         =   "main.frx":1320
+      Top             =   4320
+      Visible         =   0   'False
+      Width           =   240
+   End
+   Begin VB.Image ServerGood 
+      Height          =   255
+      Left            =   5280
+      Picture         =   "main.frx":1692
+      Top             =   3600
+      Visible         =   0   'False
+      Width           =   240
+   End
+   Begin VB.Image ServerBad 
+      Height          =   255
+      Left            =   5280
+      Picture         =   "main.frx":1A04
+      Top             =   3960
+      Visible         =   0   'False
+      Width           =   240
+   End
+   Begin VB.Image PlantMask 
+      Height          =   720
+      Left            =   10200
+      Picture         =   "main.frx":1D76
+      Top             =   3600
+      Visible         =   0   'False
+      Width           =   720
+   End
+   Begin VB.Image Plant 
+      Height          =   720
+      Left            =   10800
+      Picture         =   "main.frx":38B8
+      Top             =   2640
+      Visible         =   0   'False
+      Width           =   720
+   End
+   Begin VB.Label InternetMode 
+      BackColor       =   &H80000007&
+      BackStyle       =   0  'Transparent
+      Caption         =   "Internet Mode"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   24
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FF0000&
+      Height          =   855
+      Left            =   720
+      TabIndex        =   1
+      Top             =   2880
+      Visible         =   0   'False
+      Width           =   5145
+   End
    Begin VB.Image TeleporterMask 
       Height          =   720
       Left            =   240
-      Picture         =   "main.frx":08CA
-      Top             =   2040
+      Picture         =   "main.frx":53FA
+      Top             =   7560
       Visible         =   0   'False
       Width           =   11520
    End
    Begin VB.Image Teleporter 
       Appearance      =   0  'Flat
       Height          =   720
-      Left            =   120
-      Picture         =   "main.frx":1B90C
+      Left            =   240
+      Picture         =   "main.frx":2043C
       Stretch         =   -1  'True
-      Top             =   1200
+      Top             =   6600
       Visible         =   0   'False
       Width           =   11520
    End
@@ -88,16 +160,16 @@ Begin VB.Form Form1
    End
    Begin VB.Image Grata 
       Height          =   3180
-      Left            =   3360
-      Picture         =   "main.frx":3694E
-      Top             =   4320
+      Left            =   960
+      Picture         =   "main.frx":3B47E
+      Top             =   3840
       Visible         =   0   'False
       Width           =   3180
    End
    Begin VB.Image Arrows 
       Height          =   3180
       Left            =   480
-      Picture         =   "main.frx":57840
+      Picture         =   "main.frx":5C370
       Top             =   3840
       Visible         =   0   'False
       Width           =   3180
@@ -105,7 +177,7 @@ Begin VB.Form Form1
    Begin VB.Image Vortice 
       Height          =   3180
       Left            =   6960
-      Picture         =   "main.frx":78732
+      Picture         =   "main.frx":7D262
       Top             =   3840
       Visible         =   0   'False
       Width           =   3180
@@ -125,10 +197,10 @@ Begin VB.Form Form1
       EndProperty
       ForeColor       =   &H000000FF&
       Height          =   1335
-      Left            =   480
+      Left            =   600
       TabIndex        =   0
       Tag             =   "30000"
-      Top             =   2640
+      Top             =   1440
       Visible         =   0   'False
       Width           =   10665
    End
@@ -142,7 +214,7 @@ Attribute VB_Exposed = False
 ' Revisions
 ' V2.11, V2.12, V2.13, V2.14, V2.15 pondmode, V2.2, V2.3, V2.31, V2.32, V2.33, V2.34 by PurpleYouko
 ' V2.35, 2.36.X, 2.37.X by PurpleYouko and Numsgil
-' Post V2.42 modifications copyright (c) 2006 Eric Lockard  eric@sulaadventures.com
+' Post V2.42 modifications copyright (c) 2006 2007 Eric Lockard  eric@sulaadventures.com
 '
 ' All rights reserved.
 '
@@ -170,6 +242,9 @@ Public BackPic As String
 
 Dim edat(10) As Single
 
+Const NUMGRAPHS = 15
+Const PIOVER4 = PI / 4
+
 ' for graphs
 Private Type Graph
   opened As Boolean
@@ -195,7 +270,7 @@ Private robminutescount As Integer  ' minutes counter for next robot auto save
 Private AutoRobNum As Integer       ' last autosaved rob index
 Private AutoSimNum As Integer       ' last autosaved sim index
 Public DNAMaxConds As Integer   ' max conditions per gene allowed by mutation
-Dim Charts(11) As Graph        ' array of graph pointers
+Dim Charts(NUMGRAPHS) As Graph        ' array of graph pointers
 
 Public MutCyc As Long     ' for oscillating mutation rates
 Private GridRef As Integer
@@ -206,31 +281,38 @@ Public Flickermode As Boolean 'Speed up graphics at the cost of some flicker
 Public MagX As Long
 Public MagY As Long
 
+Public twipWidth As Single
+Public TwipHeight As Single
+Public FortyEightOverTwipWidth As Single
+Public FortyEightOverTwipHeight As Single
+Public xDivisor As Single
+Public yDivisor As Single
 
+Public InTimer2 As Boolean
+
+  
 
 
 
 Private Sub Form_Load()
   Dim i As Integer
-  
    
   strings Me
   Set Consoleform.evnt = New cevent
   
   LoadSysVars
-  LoadLists
+ ' LoadLists
   If BackPic <> "" Then
     Form1.Picture = LoadPicture(BackPic)
   Else
     Form1.Picture = Nothing
   End If
-  MDIForm1.Caption = "DarwinBots 2.43"
   Form1.Top = 0
   Form1.Left = 0
   Form1.Width = MDIForm1.ScaleWidth
   Form1.Height = MDIForm1.ScaleHeight
-  SimOpts.FieldWidth = Form1.ScaleWidth
-  SimOpts.FieldHeight = Form1.ScaleHeight
+  'SimOpts.FieldWidth = Form1.ScaleWidth
+  'SimOpts.FieldHeight = Form1.ScaleHeight
   visiblew = SimOpts.FieldWidth
   visibleh = SimOpts.FieldHeight
   MDIForm1.visualize = True
@@ -248,7 +330,7 @@ Private Sub Form_Load()
   Form1.Active = True
   
   FlashColor(1) = vbBlack         ' Hit with memory shot
-  FlashColor(-1 + 10) = vbRed     ' Hit with NRg feeding shot
+  FlashColor(-1 + 10) = vbRed     ' Hit with Nrg feeding shot
   FlashColor(-2 + 10) = vbWhite   ' Hit with Nrg Shot
   FlashColor(-3 + 10) = vbBlue    ' Hit with venom shot
   FlashColor(-4 + 10) = vbGreen   ' Hit with waste shot
@@ -266,8 +348,8 @@ Private Sub Form_Load()
   IntOpts.LastUploadCycle = 1
  ' SimOpts.DayNight = False ' EricL March 15, 2006
  ' SimOpts.Daytime = True ' EricL March 15, 2006
-  MDIForm1.daypic.Visible = True
-  MDIForm1.nightpic.Visible = False
+ ' MDIForm1.daypic.Visible = True
+ ' MDIForm1.nightpic.Visible = False
   MDIForm1.F1Piccy.Visible = False
   ContestMode = False
   SimOpts.chartingInterval = 200 ' EricL 3/28/2006
@@ -308,6 +390,7 @@ Public Sub Redraw()
      MagX = (MagLens.Left / Form1.Width) * Form1.visiblew + Form1.ScaleLeft
      MagY = (MagLens.Top / Form1.Height) * Form1.visibleh + Form1.ScaleTop
   End If
+  If SimOpts.EGridEnabled Then DrawEgrid
   DrawArena
   DrawAllTies
   DrawAllRobs
@@ -335,6 +418,26 @@ Function GetTwipWidth() As Single
   Form1.ScaleLeft = scl
 End Function
 
+
+' calculates the pixel/twip ratio, since some graphic methods
+' need pixel values
+Function GetTwipHeight() As Single
+  Dim scw As Long, sch As Long, scm As Integer
+  Dim sct As Long, scl As Long
+  scm = Form1.ScaleMode
+  scw = Form1.ScaleWidth
+  sch = Form1.ScaleHeight
+  sct = Form1.ScaleTop
+  scl = Form1.ScaleLeft
+  Form1.ScaleMode = vbPixels
+  GetTwipHeight = Form1.ScaleHeight / sch
+  Form1.ScaleMode = scm
+  Form1.ScaleWidth = scw
+  Form1.ScaleHeight = sch
+  Form1.ScaleTop = sct
+  Form1.ScaleLeft = scl
+End Function
+
 Private Sub DrawArena()
     If MDIForm1.ZoomLock = 0 Then Exit Sub 'no need to draw boundaries if we aren't going to see them
     Line (0, 0)-(0, 0 + SimOpts.FieldHeight), vbWhite
@@ -343,7 +446,7 @@ Private Sub DrawArena()
     Line -(0, -0), vbWhite
 End Sub
 
-' draws rob perimeter - circle or square, if wall
+' draws rob perimeter
 Private Sub DrawRobPer(n As Integer)
   Dim Sides As Integer
   Dim t As Single
@@ -356,12 +459,17 @@ Private Sub DrawRobPer(n As Integer)
   Dim yc As Long
   Dim radius As Single
   Dim Percent As Single
+  Dim botDirection As Integer
+  Dim Diameter As Single
+  Dim topX As Single
+  Dim topY As Single
   
   
-  Sides = rob(n).Shape
-  If Sides > 0 Then Sdlen = 6.28 / Sides
-  CentreX = rob(n).pos.x
-  CentreY = rob(n).pos.y
+ 
+ ' Sides = rob(n).Shape
+ ' If Sides > 0 Then Sdlen = 6.28 / Sides
+  CentreX = rob(n).pos.X
+  CentreY = rob(n).pos.Y
   radius = rob(n).radius
    
   If rob(n).highlight Then Circle (CentreX, CentreY), radius * 1.2, vbYellow
@@ -378,8 +486,6 @@ Private Sub DrawRobPer(n As Integer)
 '  End If
   
   If Not Smileys Then
-       
-  '  If Not rob(n).wall Then
       Circle (CentreX, CentreY), rob(n).radius, rob(n).color 'new line
       
       'Update the magnifying lens
@@ -390,13 +496,9 @@ Private Sub DrawRobPer(n As Integer)
         End If
       End If
       
- '   Else
- '     Line (CentreX, CentreY)-Step(RobSize, RobSize), vbWhite, BF
- '   End If
-    
     If MDIForm1.displayResourceGuagesToggle = True Then
 
-      If rob(n).nrg > 0 Then
+      If rob(n).nrg > 0.5 Then
         If rob(n).nrg < 32000 Then
           Percent = rob(n).nrg / 32000
         Else
@@ -406,7 +508,7 @@ Private Sub DrawRobPer(n As Integer)
         Circle (CentreX, CentreY), rob(n).radius * 0.95, vbWhite, 0, (Percent * PI * 2#)
       End If
       
-      If rob(n).body > 0 Then
+      If rob(n).body > 0.5 Then
         If rob(n).body < 32000 Then
           Percent = rob(n).body / 32000
         Else
@@ -416,7 +518,7 @@ Private Sub DrawRobPer(n As Integer)
         Circle (CentreX, CentreY), rob(n).radius * 0.9, vbMagenta, 0, (Percent * PI * 2#)
       End If
       
-      If rob(n).Waste > 0 Then
+      If rob(n).Waste > 0.5 Then
         If rob(n).Waste < 32000 Then
           Percent = rob(n).Waste / 32000
         Else
@@ -426,7 +528,7 @@ Private Sub DrawRobPer(n As Integer)
         Circle (CentreX, CentreY), rob(n).radius * 0.85, vbGreen, 0, (Percent * PI * 2#)
       End If
       
-      If rob(n).venom > 0 Then
+      If rob(n).venom > 0.5 Then
         If rob(n).venom < 32000 Then
           Percent = rob(n).venom / 32000
         Else
@@ -436,7 +538,7 @@ Private Sub DrawRobPer(n As Integer)
         Circle (CentreX, CentreY), rob(n).radius * 0.8, vbBlue, 0, (Percent * PI * 2#)
       End If
       
-      If rob(n).shell > 0 Then
+      If rob(n).shell > 0.5 Then
         If rob(n).shell < 32000 Then
           Percent = rob(n).shell / 32000
         Else
@@ -446,27 +548,83 @@ Private Sub DrawRobPer(n As Integer)
         Circle (CentreX, CentreY), rob(n).radius * 0.75, vbRed, 0, (Percent * PI * 2#)
       End If
       
-      If rob(n).Slime > 0 Then
+      If rob(n).Slime > 0.5 Then
         If rob(n).Slime < 32000 Then
           Percent = rob(n).Slime / 32000
         Else
           Percent = 1
         End If
         If Percent > 0.99 Then Percent = 0.99 ' Do this because the cirlce won't draw if it goes all the way around for some reason...
-        Circle (CentreX, CentreY), rob(n).radius * 0.7, vbYellow, 0, (Percent * PI * 2#)
+        Circle (CentreX, CentreY), rob(n).radius * 0.7, vbBlack, 0, (Percent * PI * 2#)
+      End If
+      
+       If rob(n).poison > 0.5 Then
+        If rob(n).poison < 32000 Then
+          Percent = rob(n).poison / 32000
+        Else
+          Percent = 1
+        End If
+        If Percent > 0.99 Then Percent = 0.99 ' Do this because the cirlce won't draw if it goes all the way around for some reason...
+        Circle (CentreX, CentreY), rob(n).radius * 0.65, vbYellow, 0, (Percent * PI * 2#)
       End If
       
       If rob(n).Vtimer > 0 Then
         Percent = rob(n).Vtimer / 100
         If Percent > 0.99 Then Percent = 0.99 ' Do this because the cirlce won't draw if it goes all the way around for some reason...
-        Circle (CentreX, CentreY), rob(n).radius * 0.65, vbCyan, 0, (Percent * PI * 2#)
+        Circle (CentreX, CentreY), rob(n).radius * 0.6, vbCyan, 0, (Percent * PI * 2#)
       End If
       
     End If
   Else
-    For t = 0 To 6.28 Step Sdlen
-      Line (CentreX + Cos(rob(n).aim + t) * radius, CentreY - Sin(rob(n).aim + t) * radius)-(CentreX + Cos(rob(n).aim + t + Sdlen) * radius, CentreY - Sin(rob(n).aim + t + Sdlen) * radius), rob(n).color
-    Next t
+    Diameter = 2 * radius
+    topX = CentreX - radius
+    topY = CentreY - radius
+    
+    If rob(n).Veg Then
+
+      Form1.PaintPicture Form1.PlantMask.Picture, _
+      topX, _
+      topY, _
+      Diameter, _
+      Diameter, _
+      Form1.ScaleLeft, _
+      Form1.ScaleTop, , , vbMergePaint
+      
+      Form1.PaintPicture Form1.Plant.Picture, _
+      topX, _
+      topY, _
+      Diameter, _
+      Diameter, _
+      Form1.ScaleLeft, _
+      Form1.ScaleTop, , , vbSrcAnd
+  
+    Else
+     
+      botDirection = 7 - CInt((rob(n).aim) / PIOVER4 + 5) Mod 8
+     
+      'Form1.PaintPicture Bots.AntMask.Picture, _
+      topX, _
+      topY, _
+      Diameter, _
+      Diameter, _
+      Form1.ScaleLeft, _
+      CSng(Form1.ScaleTop + FortyEightOverTwipHeight * botDirection), _
+      FortyEightOverTwipWidth, FortyEightOverTwipHeight, vbMergePaint
+      
+      'Form1.PaintPicture Bots.Ant.Picture, _
+      topX, _
+      topY, _
+      Diameter, _
+      Diameter, _
+      Form1.ScaleLeft, _
+      CSng(Form1.ScaleTop + FortyEightOverTwipHeight * botDirection), _
+      FortyEightOverTwipWidth, FortyEightOverTwipHeight, vbSrcAnd
+    End If
+      
+ ' Else
+ '   For t = 0 To 6.28 Step Sdlen
+ '    Line (CentreX + Cos(rob(n).aim + t) * radius, CentreY - Sin(rob(n).aim + t) * radius)-(CentreX + Cos(rob(n).aim + t + Sdlen) * radius, CentreY - Sin(rob(n).aim + t + Sdlen) * radius), rob(n).color
+ '   Next t
   End If
 End Sub
 
@@ -477,8 +635,8 @@ Private Sub DrawRobDistPer(n As Integer)
   Dim nrgPercent As Single
   Dim bodyPercent As Single
   
-  CentreX = rob(n).pos.x
-  CentreY = rob(n).pos.y
+  CentreX = rob(n).pos.X
+  CentreY = rob(n).pos.Y
    
   If rob(n).highlight Then Circle (CentreX, CentreY), RobSize * 2, vbYellow 'new line
   If n = robfocus Then Circle (CentreX, CentreY), RobSize * 2, vbWhite
@@ -495,27 +653,31 @@ End Sub
 
 ' draws rob aim
 Private Sub DrawRobAim(n As Integer)
-  Dim x As Long, y As Long
+  Dim X As Long, Y As Long
   Dim pos As vector
   Dim pos2 As vector
   Dim vol As vector
+  Dim arrow1 As vector
+  Dim arrow2 As vector
+  Dim arrow3 As vector
+  Dim temp As vector
   
   'If Not rob(n).wall And Not rob(n).Corpse Then
   If Not rob(n).Corpse Then
     With rob(n)
   
     'We have to remember that the upper left corner is (0,0)
-    pos.x = .aimvector.x
-    pos.y = -.aimvector.y
+    pos.X = .aimvector.X
+    pos.Y = -.aimvector.Y
        
-    pos2 = VectorAdd(.pos, VectorScalar(pos, .radius))
-    PSet (pos2.x, pos2.y), vbWhite
+    pos2 = VectorAdd(.pos, VectorScalar(VectorUnit(pos), .radius))
+    PSet (pos2.X, pos2.Y), vbWhite
     
     'Update the magnifying lens
     If MagLens.Visible Then
-      If pos2.x > MagX And pos2.x < MagX + MagLens.ScaleWidth And _
-         pos2.y > MagY And pos2.y < MagY + MagLens.ScaleHeight Then
-         MagLens.PSet (pos2.x - MagX, pos2.y - MagY), vbWhite
+      If pos2.X > MagX And pos2.X < MagX + MagLens.ScaleWidth And _
+         pos2.Y > MagY And pos2.Y < MagY + MagLens.ScaleHeight Then
+         MagLens.PSet (pos2.X - MagX, pos2.Y - MagY), vbWhite
       End If
     End If
     
@@ -524,33 +686,74 @@ Private Sub DrawRobAim(n As Integer)
       If .lastup <> 0 Then
         If .lastup < -1000 Then .lastup = -1000
         If .lastup > 1000 Then .lastup = 1000
+        'pos2 = VectorAdd(.pos, VectorScalar(pos, .radius)) 'done above
         vol = VectorAdd(pos2, VectorScalar(pos, CSng(.lastup)))
-        Line (pos2.x, pos2.y)-(vol.x, vol.y), .color
+        Line (pos2.X, pos2.Y)-(vol.X, vol.Y), .color
+        
+        arrow3 = VectorAdd(vol, VectorScalar(pos, 15)) ' point of the arrowhead
+        temp = VectorSet(Cos(.aim - PI / 2), Sin(.aim - PI / 2))
+        temp.Y = -temp.Y
+        pos2 = VectorScalar(temp, 10)
+        arrow1 = VectorAdd(vol, pos2) ' left side of arrowhead
+        arrow2 = VectorSub(vol, pos2) ' right side of arrowhead
+        Line (arrow1.X, arrow1.Y)-(arrow3.X, arrow3.Y), .color
+        Line (arrow2.X, arrow2.Y)-(arrow3.X, arrow3.Y), .color
+        Line (arrow1.X, arrow1.Y)-(arrow2.X, arrow2.Y), .color
       End If
       If .lastdown <> 0 Then
         If .lastdown < -1000 Then .lastdown = -1000
         If .lastdown > 1000 Then .lastdown = 1000
         pos2 = VectorSub(.pos, VectorScalar(pos, .radius))
         vol = VectorSub(pos2, VectorScalar(pos, CSng(.lastdown)))
-        Line (pos2.x, pos2.y)-(vol.x, vol.y), .color
+        Line (pos2.X, pos2.Y)-(vol.X, vol.Y), .color
+        
+        arrow3 = VectorAdd(vol, VectorScalar(pos, -15)) ' point of the arrowhead
+        temp = VectorSet(Cos(.aim - PI / 2), Sin(.aim - PI / 2))
+        temp.Y = -temp.Y
+        pos2 = VectorScalar(temp, 10)
+        arrow1 = VectorAdd(vol, pos2) ' left side of arrowhead
+        arrow2 = VectorSub(vol, pos2) ' right side of arrowhead
+        Line (arrow1.X, arrow1.Y)-(arrow3.X, arrow3.Y), .color
+        Line (arrow2.X, arrow2.Y)-(arrow3.X, arrow3.Y), .color
+        Line (arrow1.X, arrow1.Y)-(arrow2.X, arrow2.Y), .color
       End If
       If .lastleft <> 0 Then
         If .lastleft < -1000 Then .lastleft = -1000
         If .lastleft > 1000 Then .lastleft = 1000
         pos = VectorSet(Cos(.aim - PI / 2), Sin(.aim - PI / 2))
-        pos.y = -pos.y
+        pos.Y = -pos.Y
         pos2 = VectorAdd(.pos, VectorScalar(pos, .radius))
         vol = VectorAdd(pos2, VectorScalar(pos, CSng(.lastleft)))
-        Line (pos2.x, pos2.y)-(vol.x, vol.y), .color
+        Line (pos2.X, pos2.Y)-(vol.X, vol.Y), .color
+        
+        arrow3 = VectorAdd(vol, VectorScalar(pos, 15)) ' point of the arrowhead
+        temp = .aimvector
+        temp.Y = -temp.Y
+        pos2 = VectorScalar(temp, 10)
+        arrow1 = VectorAdd(vol, pos2) ' left side of arrowhead
+        arrow2 = VectorSub(vol, pos2) ' right side of arrowhead
+        Line (arrow1.X, arrow1.Y)-(arrow3.X, arrow3.Y), .color
+        Line (arrow2.X, arrow2.Y)-(arrow3.X, arrow3.Y), .color
+        Line (arrow1.X, arrow1.Y)-(arrow2.X, arrow2.Y), .color
       End If
       If .lastright <> 0 Then
         If .lastright < -1000 Then .lastright = -1000
         If .lastright > 1000 Then .lastright = 1000
         pos = VectorSet(Cos(.aim + PI / 2), Sin(.aim + PI / 2))
-        pos.y = -pos.y
+        pos.Y = -pos.Y
         pos2 = VectorAdd(.pos, VectorScalar(pos, .radius))
-        vol = VectorAdd(pos2, VectorScalar(pos, CSng(.lastleft)))
-        Line (pos2.x, pos2.y)-(vol.x, vol.y), .color
+        vol = VectorAdd(pos2, VectorScalar(pos, CSng(.lastright)))
+        Line (pos2.X, pos2.Y)-(vol.X, vol.Y), .color
+        
+        arrow3 = VectorAdd(vol, VectorScalar(pos, 15)) ' point of the arrowhead
+        temp = .aimvector
+        temp.Y = -temp.Y
+        pos2 = VectorScalar(temp, 10)
+        arrow1 = VectorAdd(vol, pos2) ' left side of arrowhead
+        arrow2 = VectorSub(vol, pos2) ' right side of arrowhead
+        Line (arrow1.X, arrow1.Y)-(arrow3.X, arrow3.Y), .color
+        Line (arrow2.X, arrow2.Y)-(arrow3.X, arrow3.Y), .color
+        Line (arrow1.X, arrow1.Y)-(arrow2.X, arrow2.Y), .color
       End If
     End If
     End With
@@ -590,19 +793,19 @@ Private Sub DrawRobSkin(n As Integer)
       With rob(n)
         .OSkin(0) = (Cos(.Skin(1) / 100 - .aim) * .Skin(0)) * .radius / 60
         .OSkin(1) = (Sin(.Skin(1) / 100 - .aim) * .Skin(0)) * .radius / 60
-        PSet (.OSkin(0) + .pos.x, .OSkin(1) + .pos.y)
+        PSet (.OSkin(0) + .pos.X, .OSkin(1) + .pos.Y)
         For t = 2 To 6 Step 2
           .OSkin(t) = (Cos(.Skin(t + 1) / 100 - .aim) * .Skin(t)) * .radius / 60
           .OSkin(t + 1) = (Sin(.Skin(t + 1) / 100 - .aim) * .Skin(t)) * .radius / 60
-          Line -(.OSkin(t) + .pos.x, .OSkin(t + 1) + .pos.y), .color
+          Line -(.OSkin(t) + .pos.X, .OSkin(t + 1) + .pos.Y), .color
         Next t
         .oaim = .aim
       End With
     Else
       With rob(n)
-        PSet (.OSkin(0) + .pos.x, .OSkin(1) + .pos.y)
+        PSet (.OSkin(0) + .pos.X, .OSkin(1) + .pos.Y)
         For t = 2 To 6 Step 2
-          Line -(.OSkin(t) + .pos.x, .OSkin(t + 1) + .pos.y), .color
+          Line -(.OSkin(t) + .pos.X, .OSkin(t + 1) + .pos.Y), .color
         Next t
       End With
     End If
@@ -624,13 +827,13 @@ Private Sub DrawRobTies(t As Integer, w As Integer, ByVal s As Integer)
   
   k = 1
   With rob(t)
-  CentreX = .pos.x
-  CentreY = .pos.y
+  CentreX = .pos.X
+  CentreY = .pos.Y
   While .Ties(k).pnt > 0
     If Not .Ties(k).back Then
       rp = .Ties(k).pnt
-      CentreX1 = rob(rp).pos.x
-      CentreY1 = rob(rp).pos.y
+      CentreX1 = rob(rp).pos.X
+      CentreY1 = rob(rp).pos.Y
       DrawWidth = drawsmall
       If .Ties(k).last > 0 Then
         If w > 2 Then
@@ -661,13 +864,13 @@ Private Sub DrawRobTiesCol(t As Integer, w As Integer, ByVal s As Integer)
   If drawsmall = 0 Then drawsmall = 1
   k = 1
   With rob(t)
-  CentreX = .pos.x
-  CentreY = .pos.y
+  CentreX = .pos.X
+  CentreY = .pos.Y
   While .Ties(k).pnt > 0
     If Not .Ties(k).back Then
       rp = .Ties(k).pnt
-      CentreX1 = rob(rp).pos.x
-      CentreY1 = rob(rp).pos.y
+      CentreX1 = rob(rp).pos.X
+      CentreY1 = rob(rp).pos.Y
       DrawWidth = drawsmall
       col = .color
       If w < 2 Then w = 2
@@ -700,20 +903,20 @@ Public Sub DrawShots()
   FillStyle = 0
   For t = 1 To maxshotarray
     If Shots(t).flash And MDIForm1.displayShotImpactsToggle Then
-      If Shots(t).shottype < 0 And Shots(t).shottype >= -7 Then
+       If Shots(t).shottype < 0 And Shots(t).shottype >= -7 Then
         FillColor = FlashColor(Shots(t).shottype + 10)
-        Form1.Circle (Shots(t).opos.x, Shots(t).opos.y), 20, FlashColor(Shots(t).shottype + 10)
+        Form1.Circle (Shots(t).opos.X, Shots(t).opos.Y), 20, FlashColor(Shots(t).shottype + 10)
       Else
         FillColor = vbBlack
-        Form1.Circle (Shots(t).opos.x, Shots(t).opos.y), 20, vbBlack
+        Form1.Circle (Shots(t).opos.X, Shots(t).opos.Y), 20, vbBlack
       End If
     ElseIf Shots(t).exist And Shots(t).stored = False Then
-      PSet (Shots(t).pos.x, Shots(t).pos.y), Shots(t).color
+      PSet (Shots(t).pos.X, Shots(t).pos.Y), Shots(t).color
        'Update the magnifying lens
       If MagLens.Visible Then
-        If Shots(t).pos.x > MagX And Shots(t).pos.x < MagX + MagLens.ScaleWidth And _
-           Shots(t).pos.y > MagY And Shots(t).pos.y < MagY + MagLens.ScaleHeight Then
-           MagLens.PSet (Shots(t).pos.x - MagX, Shots(t).pos.y - MagY), vbWhite
+        If Shots(t).pos.X > MagX And Shots(t).pos.X < MagX + MagLens.ScaleWidth And _
+           Shots(t).pos.Y > MagY And Shots(t).pos.Y < MagY + MagLens.ScaleHeight Then
+           MagLens.PSet (Shots(t).pos.X - MagX, Shots(t).pos.Y - MagY), vbWhite
         End If
       End If
     End If
@@ -745,6 +948,29 @@ Public Sub DrawAllRobs()
   Dim PixBorderSize As Integer
   Dim offset As Single
   Dim halfeyewidth As Single
+  Dim visibleLeft As Long
+  Dim visibleRight As Long
+  Dim visibleTop As Long
+  Dim visibleBottom As Long
+  Dim low As Single
+  Dim highest As Single
+  Dim hi As Single
+  Dim length As Single
+  Dim a As Integer
+  Dim r As Single
+  
+  visibleLeft = Form1.ScaleLeft
+  visibleRight = Form1.ScaleLeft + Form1.ScaleWidth
+  visibleTop = Form1.ScaleTop
+  visibleBottom = Form1.ScaleTop + Form1.ScaleHeight
+ 
+  
+  
+  twipWidth = GetTwipWidth
+  TwipHeight = GetTwipHeight
+  
+  FortyEightOverTwipWidth = 48 / twipWidth
+  FortyEightOverTwipHeight = 48 / TwipHeight
   
 '  PixelsPerTwip = GetTwipWidth
 '  PixRobSize = PixelsPerTwip * RobSize
@@ -752,19 +978,14 @@ Public Sub DrawAllRobs()
 '  If PixBorderSize < 1 Then PixBorderSize = 1
   noeyeskin = False
   w = Int(30 / (Form1.visiblew / RobSize) + 1)
-'  If (Form1.visiblew / RobSize) > 200 Then noeyeskin = True
+  If (Form1.visiblew / RobSize) > 500 Then noeyeskin = True
   DrawMode = 13
   DrawStyle = 0
   DrawWidth = w
-  If IntOpts.Active Then DrawInternetBoxes
+ ' If IntOpts.Active Then DrawInternetBoxes
   
   If robfocus > 0 And MDIForm1.showVisionGridToggle Then
-    Dim low As Single
-    Dim highest As Single
-    Dim hi As Single
-    Dim length As Single
-    Dim a As Integer
-  
+    
     length = RobSize * 12
     highest = rob(robfocus).aim + PI / 4
          
@@ -784,18 +1005,21 @@ Public Sub DrawAllRobs()
       'a + 1 = eye
       If rob(robfocus).mem(EyeStart + a + 1) > 0 Then
         DrawMode = vbNotMergePen
-        length = (RobSize * 100) / rob(robfocus).mem(EyeStart + a + 1) - RobSize + rob(robfocus).radius + rob(robfocus).radius + 1
+        'length = (RobSize * 100) / rob(robfocus).mem(EyeStart + a + 1) - RobSize + rob(robfocus).radius + rob(robfocus).radius + 1
+  
+        length = (1 / Sqr(rob(robfocus).mem(EyeStart + a + 1))) * (EyeSightDistance(AbsoluteEyeWidth(rob(robfocus).mem(EYE1WIDTH + a))) + rob(robfocus).radius) + rob(robfocus).radius ' + rob(robfocus).radius
+ '       length = Buckets_Module.eyeDistance(a + 1)
+  '      Buckets_Module.eyeDistance(a + 1) = 0
         If length < 0 Then length = 0
       Else
         DrawMode = vbCopyPen
-        length = RobSize * 12
+        length = EyeSightDistance(AbsoluteEyeWidth(rob(robfocus).mem(EYE1WIDTH + a))) + rob(robfocus).radius + rob(robfocus).radius
       End If
-       
-      
-      Circle (rob(robfocus).pos.x, rob(robfocus).pos.y), length, vbCyan, -low, -hi
+            
+      Circle (rob(robfocus).pos.X, rob(robfocus).pos.Y), length, vbCyan, -low, -hi
       
       If (a = Abs(rob(robfocus).mem(FOCUSEYE) + 4) Mod 9) Then
-        Circle (rob(robfocus).pos.x, rob(robfocus).pos.y), length, vbRed, low, hi
+        Circle (rob(robfocus).pos.X, rob(robfocus).pos.Y), length, vbRed, low, hi
       End If
        
     Next a
@@ -804,6 +1028,7 @@ Public Sub DrawAllRobs()
     '  (rob(robfocus).pos.x + Cos(-rob(robfocus).aim) * length, _
     '  rob(robfocus).pos.y + Sin(-rob(robfocus).aim) * length)
   End If
+
   
   DrawMode = vbCopyPen
   'DrawWidth = PixBorderSize
@@ -811,21 +1036,37 @@ Public Sub DrawAllRobs()
   
   If noeyeskin Then
     For a = 1 To MaxRobs
-      If rob(a).exist Then DrawRobDistPer a
+      If rob(a).exist Then
+        r = rob(a).radius
+        If rob(a).pos.X + r > visibleLeft And rob(a).pos.X - r < visibleRight And _
+           rob(a).pos.Y + r > visibleTop And rob(a).pos.Y - r < visibleBottom Then
+           DrawRobDistPer a
+        End If
+      End If
     Next a
-    
   Else
     FillColor = BackColor
-    
     For a = 1 To MaxRobs
-      If rob(a).exist Then DrawRobPer a
+      If rob(a).exist Then
+         r = rob(a).radius
+         If rob(a).pos.X + r > visibleLeft And rob(a).pos.X - r < visibleRight And _
+            rob(a).pos.Y + r > visibleTop And rob(a).pos.Y - r < visibleBottom Then
+            DrawRobPer a
+         End If
+      End If
     Next a
   End If
+  
   
   DrawStyle = 0
   If dispskin And Not noeyeskin Then
     For a = 1 To MaxRobs
-      If rob(a).exist Then DrawRobSkin a
+      If rob(a).exist Then
+        If rob(a).pos.X + r > visibleLeft And rob(a).pos.X - r < visibleRight And _
+           rob(a).pos.Y + r > visibleTop And rob(a).pos.Y - r < visibleBottom Then
+           DrawRobSkin a
+        End If
+      End If
     Next a
   End If
   
@@ -833,24 +1074,58 @@ Public Sub DrawAllRobs()
   
   If Not noeyeskin Then
     For a = 1 To MaxRobs
-      If rob(a).exist Then DrawRobAim a
+     If rob(a).exist Then
+       If rob(a).pos.X + r > visibleLeft And rob(a).pos.X - r < visibleRight And _
+          rob(a).pos.Y + r > visibleTop And rob(a).pos.Y - r < visibleBottom Then
+          DrawRobAim a
+       End If
+     End If
     Next a
   End If
+  
 End Sub
 
 Public Sub DrawAllTies()
   Dim nd As node, t As Integer
-  
   Dim PixelsPerTwip As Single
   Dim PixRobSize As Integer
+  Dim visibleLeft As Long
+  Dim visibleRight As Long
+  Dim visibleTop As Long
+  Dim visibleBottom As Long
+  
+  visibleLeft = Form1.ScaleLeft
+  visibleRight = Form1.ScaleLeft + Form1.ScaleWidth
+  visibleTop = Form1.ScaleTop
+  visibleBottom = Form1.ScaleTop + Form1.ScaleHeight
   
   PixelsPerTwip = GetTwipWidth
   PixRobSize = PixelsPerTwip * RobSize
   
   For t = 1 To MaxRobs
-    If rob(t).exist Then DrawRobTiesCol t, PixelsPerTwip * rob(t).radius * 2, rob(t).radius
+    If rob(t).exist Then
+      If rob(t).pos.X > visibleLeft And rob(t).pos.X < visibleRight And _
+         rob(t).pos.Y > visibleTop And rob(t).pos.Y < visibleBottom Then
+         DrawRobTiesCol t, PixelsPerTwip * rob(t).radius * 2, rob(t).radius
+      End If
+    End If
   Next t
 End Sub
+
+Public Function DrawEgrid()
+Dim i As Long
+
+'Draw Vertical Lines
+For i = 0 To SimOpts.FieldWidth Step SimOpts.EGridWidth
+  Line (i, 0)-(i, SimOpts.FieldHeight), vbBlack
+Next i
+  
+'Draw Horizontal Lines
+For i = 0 To SimOpts.FieldHeight Step SimOpts.EGridWidth
+  Line (0, i)-(SimOpts.FieldWidth, i), vbBlack
+Next i
+
+End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''
@@ -869,6 +1144,7 @@ End Sub
 
 ' counts minutes for autosaves
 Private Sub Timer2_Timer()
+  InTimer2 = True
   If SimOpts.AutoSimTime > 0 Then
     minutescount = minutescount + 1
     If minutescount = SimOpts.AutoSimTime Then
@@ -883,7 +1159,7 @@ Private Sub Timer2_Timer()
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As File
+          Dim fileToDelete As file
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -901,7 +1177,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As File
+          Dim fileToDelete2 As file
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -910,6 +1186,7 @@ bypass2:
       End If
     End If
   End If
+   InTimer2 = False
 End Sub
 
 ' initializes a simulation.
@@ -920,9 +1197,9 @@ Sub StartSimul()
   Else
     Randomize Timer
   End If
-  
+  SimOpts.SimGUID = CLng(Rnd)
   Over = False
-  Init_Buckets
+  
   'LoadSysVars
   LoadLists
   
@@ -937,7 +1214,17 @@ Sub StartSimul()
   Form1.ScaleHeight = SimOpts.FieldHeight
   Form1.visiblew = SimOpts.FieldWidth
   Form1.visibleh = SimOpts.FieldHeight
+  xDivisor = 1
+  yDivisor = 1
+  
+  If SimOpts.FieldWidth > 32000 Then xDivisor = SimOpts.FieldWidth / 32000
+  If SimOpts.FieldHeight > 32000 Then yDivisor = SimOpts.FieldHeight / 32000
+  
+  
   MDIForm1.DontDecayNrgShots.Checked = SimOpts.NoShotDecay
+  MDIForm1.DisableTies.Checked = SimOpts.DisableTies
+  
+  
   
   'SimOpts.MutCurrMult = 1 'EricL 4/1/2006 Commented out as it was overriding saved values
   'SimOpts.TotRunCycle = -1 'EricL 4/7/2006 Now initialized in Options Dialog Start New button Click
@@ -963,11 +1250,15 @@ Sub StartSimul()
   MaxBotShotSeperation = Sqr((FindRadius(32000) ^ 2) + ((SimOpts.MaxVelocity * 2 + RobSize / 3) ^ 2))
   
   Dim t As Integer
-  For t = 1 To MaxRobs
+  
+  ReDim rob(500)
+  
+  For t = 1 To 500
     rob(t).exist = False
     rob(t).virusshot = 0
   Next t
-  
+  MaxRobs = 0
+  Init_Buckets
   ReDim Shots(50)
   maxshotarray = 50
   shotpointer = 1
@@ -981,13 +1272,17 @@ Sub StartSimul()
   For t = 1 To MAXOBSTACLES
     Obstacles.Obstacles(t).exist = False
   Next t
+  numObstacles = 0
   
  ' SimOpts.shapeDriftRate = 5
  ' SimOpts.makeAllShapesBlack = False
  ' SimOpts.makeAllShapesTransparent = False
   defaultWidth = 0.2
   defaultHeight = 0.2
-    
+  
+  'Egrid Stuff
+  'InitEGrid
+       
   MaxRobs = 0
  ' maxshots = 0
  ' MaxAbsNum = 0
@@ -1016,7 +1311,7 @@ Sub StartSimul()
   End If
   
   If LeagueMode Then
-    LeagueForm.Show
+    'LeagueForm.Show
     SimOpts.TotRunCycle = -1
   End If
   
@@ -1051,6 +1346,14 @@ Sub startloaded()
   End If
   Form1.ScaleWidth = SimOpts.FieldWidth
   Form1.ScaleHeight = SimOpts.FieldHeight
+  Form1.visiblew = SimOpts.FieldWidth
+  Form1.visibleh = SimOpts.FieldHeight
+  
+  xDivisor = 1
+  yDivisor = 1
+  If SimOpts.FieldWidth > 32000 Then xDivisor = SimOpts.FieldWidth / 32000
+  If SimOpts.FieldHeight > 32000 Then yDivisor = SimOpts.FieldHeight / 32000
+  
   MDIForm1.visualize = True
   Active = True
   MaxMem = 1000
@@ -1097,6 +1400,7 @@ Sub startloaded()
   defaultHeight = 0.2
     
   MDIForm1.DontDecayNrgShots.Checked = SimOpts.NoShotDecay
+  MDIForm1.DisableTies.Checked = SimOpts.DisableTies
     
   Timer2.Enabled = True
   SecTimer.Enabled = True
@@ -1113,8 +1417,13 @@ Sub startloaded()
   IntOpts.LastUploadCycle = 1
   NoDeaths = True
   
-  Vegs.cooldown = 0
-  totnvegsDisplayed = SimOpts.Costs(DYNAMICCOSTTARGET) ' Just set this high for the first cycle so the cost low water mark doesn't trigger.
+  'Egrid Stuff
+  'InitEGrid
+  
+  'Vegs.cooldown = 0
+  Vegs.cooldown = -SimOpts.RepopCooldown
+  totnvegsDisplayed = -1 ' Just set this to -1 for the first cycle so the cost low water mark doesn't trigger.
+  totvegs = -1 ' Set to -1 to avoid veggy reproduction on first cycle
   totnvegs = SimOpts.Costs(DYNAMICCOSTTARGET) ' Just set this high for the first cycle so the cost low water mark doesn't trigger.
 '  MDIForm1.ZoomOut
   main
@@ -1130,11 +1439,20 @@ Private Sub loadrobs()
   For cc = 1 To SimOpts.SpeciesNum
     For t = 1 To SimOpts.Specie(k).qty
       a = RobScriptLoad(respath(SimOpts.Specie(k).path) + "\" + SimOpts.Specie(k).Name)
+      If a < 0 Then
+        t = SimOpts.Specie(k).qty
+        SimOpts.Specie(k).Native = False
+        GoTo bypassThisSpecies
+      Else
+        SimOpts.Specie(k).Native = True
+      End If
       rob(a).Veg = SimOpts.Specie(k).Veg
       rob(a).Fixed = SimOpts.Specie(k).Fixed
       If rob(a).Fixed Then rob(a).mem(216) = 1
-      rob(a).pos.x = Random(SimOpts.Specie(k).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(k).Posrg * (SimOpts.FieldWidth - 60))
-      rob(a).pos.y = Random(SimOpts.Specie(k).Postp * (SimOpts.FieldHeight - 60), SimOpts.Specie(k).Posdn * (SimOpts.FieldHeight - 60))
+      rob(a).pos.X = Random(SimOpts.Specie(k).Poslf * CSng(SimOpts.FieldWidth - 60#), SimOpts.Specie(k).Posrg * CSng(SimOpts.FieldWidth - 60#))
+      rob(a).pos.Y = Random(SimOpts.Specie(k).Postp * CSng(SimOpts.FieldHeight - 60#), SimOpts.Specie(k).Posdn * CSng(SimOpts.FieldHeight - 60#))
+      'rob(a).BucketPos.x = -2
+      'rob(a).BucketPos.Y = -2
       'UpdateBotBucket a
       rob(a).nrg = SimOpts.Specie(k).Stnrg
       rob(a).body = 1000
@@ -1157,17 +1475,20 @@ Private Sub loadrobs()
       Next i
       
       rob(a).color = SimOpts.Specie(k).color
-      'UpdateBotBucket a
-      'robocount = robocount + 1
       rob(a).mem(timersys) = Random(-32000, 32000)
-      
       rob(a).CantSee = SimOpts.Specie(k).CantSee
       rob(a).DisableDNA = SimOpts.Specie(k).DisableDNA
       rob(a).DisableMovementSysvars = SimOpts.Specie(k).DisableMovementSysvars
       rob(a).CantReproduce = SimOpts.Specie(k).CantReproduce
+      rob(a).VirusImmune = SimOpts.Specie(k).VirusImmune
       rob(a).virusshot = 0
       rob(a).Vtimer = 0
+      rob(a).genenum = CountGenes(rob(a).DNA)
+      rob(a).DnaLen = DnaLen(rob(a).DNA())
+      rob(a).mem(DnaLenSys) = rob(a).DnaLen
+      rob(a).mem(GenesSys) = rob(a).genenum
     Next t
+bypassThisSpecies:
     k = k + 1
   Next cc
 End Sub
@@ -1197,7 +1518,7 @@ Sub parentfocus()
 End Sub
 
 ' which rob has been clicked?
-Private Function whichrob(x As Single, y As Single) As Integer
+Private Function whichrob(X As Single, Y As Single) As Integer
   Dim dist As Double, pist As Double
   Dim t As Integer
   whichrob = 0
@@ -1205,8 +1526,8 @@ Private Function whichrob(x As Single, y As Single) As Integer
   Dim nd As node
   For t = 1 To MaxRobs
     If rob(t).exist Then
-      pist = Abs(rob(t).pos.x - x) ^ 2 + Abs(rob(t).pos.y - y) ^ 2
-      If Abs(rob(t).pos.x - x) < rob(t).radius And Abs(rob(t).pos.y - y) < rob(t).radius And pist < dist And rob(t).exist Then
+      pist = Abs(rob(t).pos.X - X) ^ 2 + Abs(rob(t).pos.Y - Y) ^ 2
+      If Abs(rob(t).pos.X - X) < rob(t).radius And Abs(rob(t).pos.Y - Y) < rob(t).radius And pist < dist And rob(t).exist Then
         whichrob = t
         dist = pist
       End If
@@ -1216,7 +1537,7 @@ End Function
 
 ' stuff for clicking, dragging, etc
 ' move+click: drags robot if one selected, else drags screen
-Private Sub Form_MouseMove(button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Form_MouseMove(button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim st As Long
   Dim sl As Long
   Dim vsv As Long
@@ -1224,25 +1545,23 @@ Private Sub Form_MouseMove(button As Integer, Shift As Integer, x As Single, y A
   Dim t As Byte
   Dim vel As vector
   
- 
-  
   visibleh = Int(Form1.ScaleHeight)
   If button = 0 Then
-    MouseClickX = x
-    MouseClickY = y
+    MouseClickX = X
+    MouseClickY = Y
   End If
   
   If button = 1 And Not MDIForm1.insrob And obstaclefocus = 0 And teleporterFocus = 0 Then
     If MouseClicked Then
-      st = ScaleTop + MouseClickY - y
-      sl = ScaleLeft + MouseClickX - x
+      st = ScaleTop + MouseClickY - Y
+      sl = ScaleLeft + MouseClickX - X
       If st < 0 And MDIForm1.ZoomLock.value = 0 Then
         st = 0
-        MouseClickY = y
+        MouseClickY = Y
       End If
       If sl < 0 And MDIForm1.ZoomLock.value = 0 Then
         sl = 0
-        MouseClickX = x
+        MouseClickX = X
       End If
       If st > SimOpts.FieldHeight - visibleh And MDIForm1.ZoomLock.value = 0 Then
         st = SimOpts.FieldHeight - visibleh
@@ -1259,31 +1578,31 @@ Private Sub Form_MouseMove(button As Integer, Shift As Integer, x As Single, y A
   End If
   
   If button = 1 And robfocus > 0 And DraggingBot Then
-    vel = VectorSub(rob(robfocus).pos, VectorSet(x, y))
-    rob(robfocus).pos = VectorSet(x, y)
+    vel = VectorSub(rob(robfocus).pos, VectorSet(X, Y))
+    rob(robfocus).pos = VectorSet(X, Y)
     rob(robfocus).vel = VectorSet(0, 0)
     If Not Active Then Redraw
   End If
   
   If button = 1 And obstaclefocus > 0 Then
   ' Obstacles.Obstacles(obstaclefocus).pos = VectorSet(x - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.x), y - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.y))
-   Obstacles.Obstacles(obstaclefocus).pos = VectorSet(x - (Obstacles.Obstacles(obstaclefocus).Width / 2), y - (Obstacles.Obstacles(obstaclefocus).Height / 2))
+   Obstacles.Obstacles(obstaclefocus).pos = VectorSet(X - (Obstacles.Obstacles(obstaclefocus).Width / 2), Y - (Obstacles.Obstacles(obstaclefocus).Height / 2))
     If Not Active Then Redraw
   End If
   
   If button = 1 And teleporterFocus > 0 Then
   ' Obstacles.Obstacles(obstaclefocus).pos = VectorSet(x - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.x), y - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.y))
-   Teleport.Teleporters(teleporterFocus).pos = VectorSet(x - (Teleport.Teleporters(teleporterFocus).Width / 2), y - (Teleport.Teleporters(teleporterFocus).Height / 2))
+   Teleport.Teleporters(teleporterFocus).pos = VectorSet(X - (Teleport.Teleporters(teleporterFocus).Width / 2), Y - (Teleport.Teleporters(teleporterFocus).Height / 2))
     If Not Active Then Redraw
   End If
   
-  If GetInputState() <> 0 Then DoEvents
+ ' If GetInputState() <> 0 Then DoEvents
 End Sub
 
 ' it seems that there's no simple way to know the mouse status
 ' outside of a Form event. So I've used the event to switch
 ' on and off some global vars
-Private Sub Form_MouseUp(button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Form_MouseUp(button As Integer, Shift As Integer, X As Single, Y As Single)
   MouseClicked = False
   MousePointer = 0
   ZoomFlag = False ' EricL - stop zooming in!
@@ -1300,20 +1619,21 @@ End Sub
 
 ' double clicking on a rob pops up the info window
 ' elsewhere closes it
-' there's also the case we're drawing a wall path
 Private Sub Form_DblClick()
   Dim n As Integer
   Dim m As Integer
   n = whichrob(CSng(MouseClickX), CSng(MouseClickY))
-  If n = 0 Then m = whichTeleporter(CSng(MouseClickX), CSng(MouseClickY))
-  If n > 0 And MuriForm.stat = 0 Then
+  If n = 0 Then
+    m = whichTeleporter(CSng(MouseClickX), CSng(MouseClickY))
+    If Teleporters(m).Internet Then m = 0
+  End If
+  If n > 0 Then
     robfocus = n
     MDIForm1.EnableRobotsMenu
     If Not rob(n).highlight Then deletemark
     datirob.Visible = True
     datirob.RefreshDna
     datirob.ZOrder
-    rob(n).genenum = CountGenes(rob(n).DNA)
     datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime
   ElseIf m > 0 Then
     TeleportForm.teleporterFormMode = 1
@@ -1323,7 +1643,6 @@ Private Sub Form_DblClick()
     robfocus = 0
     MDIForm1.DisableRobotsMenu
     If ActivForm.Visible Then ActivForm.NoFocus
-    If MuriForm.stat = 1 Then MuriForm.storepoints CSng(MouseClickX), CSng(MouseClickY)
   End If
 End Sub
 
@@ -1341,12 +1660,13 @@ Private Sub Form_Click()
     MDIForm1.WindowState = 2
   End If
   
-  LogForm.Visible = False
+  'LogForm.Visible = False
   n = whichrob(CSng(MouseClickX), CSng(MouseClickY))
    
+  'Click on teleporter unless its the internet mode teleporter.
   If n = 0 Then
     m = whichTeleporter(CSng(MouseClickX), CSng(MouseClickY))
-    If m <> 0 Then
+    If m <> 0 And Teleporters(m).Internet = False Then
       teleporterFocus = m
       'MDIForm1.DeleteTeleporter.Enabled = True
     End If
@@ -1360,19 +1680,18 @@ Private Sub Form_Click()
     End If
   End If
   
-  If n = 0 And m = 0 And MuriForm.stat = 0 Then
+  If n = 0 And m = 0 Then
     datirob.Form_Unload 0
     robfocus = 0
     MDIForm1.DisableRobotsMenu
     If ActivForm.Visible Then ActivForm.NoFocus
-    If MuriForm.stat = 1 Then MuriForm.storepoints CSng(MouseClickX), CSng(MouseClickY)
   End If
 End Sub
 
 ' clicking (well, half-clicking) on a robot selects it
 ' clicking outside can add a robot if we're in robot insertion
 ' mode.
-Private Sub Form_MouseDown(button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Form_MouseDown(button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim n As Integer
   Dim k As Integer
   Dim m As Integer
@@ -1381,18 +1700,20 @@ Private Sub Form_MouseDown(button As Integer, Shift As Integer, x As Single, y A
   If button = 4 Then
     ZoomFlag = True
     While ZoomFlag = True
-      Form1.visiblew = Form1.visiblew / 1.02
-      Form1.visibleh = Form1.visibleh / 1.02
-      Form1.ScaleHeight = Form1.visibleh
-      Form1.ScaleWidth = Form1.visiblew
-      Form1.ScaleTop = y - Form1.ScaleHeight / 2
-      Form1.ScaleLeft = x - Form1.ScaleWidth / 2
-      Form1.Redraw
-      DoEvents
-    Wend
+      If Form1.visiblew > 100 And Form1.visibleh > 100 Then
+        Form1.visiblew = Form1.visiblew / 1.05
+        Form1.visibleh = Form1.visibleh / 1.05
+        Form1.ScaleHeight = Form1.visibleh
+        Form1.ScaleWidth = Form1.visiblew
+        Form1.ScaleTop = Y - Form1.ScaleHeight / 2
+        Form1.ScaleLeft = X - Form1.ScaleWidth / 2
+      End If
+        Form1.Redraw
+        DoEvents
+     Wend
   End If
     
-  n = whichrob(x, y)
+  n = whichrob(X, Y)
   
   If n = 0 Then
     DraggingBot = False
@@ -1401,20 +1722,20 @@ Private Sub Form_MouseDown(button As Integer, Shift As Integer, x As Single, y A
   End If
   
   If n = 0 Then
-    teleporterFocus = whichTeleporter(x, y)
+    teleporterFocus = whichTeleporter(X, Y)
     If teleporterFocus <> 0 Then
       'MDIForm1.DeleteTeleporter.Enabled = True
-      mousepos = VectorSet(x, y)
+      mousepos = VectorSet(X, Y)
     Else
      ' MDIForm1.DeleteTeleporter.Enabled = False
     End If
   End If
   
   If n = 0 And teleporterFocus = 0 Then
-    obstaclefocus = whichobstacle(x, y)
+    obstaclefocus = whichobstacle(X, Y)
     If obstaclefocus <> 0 Then
       MDIForm1.DeleteShape.Enabled = True
-      mousepos = VectorSet(x, y)
+      mousepos = VectorSet(X, Y)
     Else
       MDIForm1.DeleteShape.Enabled = False
     End If
@@ -1428,12 +1749,10 @@ Private Sub Form_MouseDown(button As Integer, Shift As Integer, x As Single, y A
     End If
   End If
   
-  If n > 0 And MuriForm.stat = 0 Then
+  If n > 0 Then
     robfocus = n
     MDIForm1.EnableRobotsMenu
     If Not rob(n).highlight Then deletemark
-  ElseIf MuriForm.stat = 1 Then
-    MuriForm.storepoints CSng(x), CSng(y)
   End If
   
   If n = 0 And button = 1 And MDIForm1.insrob Then
@@ -1444,8 +1763,10 @@ Private Sub Form_MouseDown(button As Integer, Shift As Integer, x As Single, y A
     
     If SimOpts.Specie(k).path = "Invalid Path" Then
       MsgBox ("The path for this robot is invalid.")
+    'ElseIf Not SimOpts.Specie(k).Native Then
+    '   MsgBox ("Sorry, but you can't insert a species which did not originate in this simulation.")
     Else
-      aggiungirob k, x, y
+      aggiungirob k, X, Y
     End If
   End If
   
@@ -1453,9 +1774,8 @@ Private Sub Form_MouseDown(button As Integer, Shift As Integer, x As Single, y A
     MouseClicked = True
   End If
   
-  If Not MuriForm.stat = 1 Then
-    Redraw
-  End If
+  Redraw
+ 
 End Sub
 
 ' deletes the yellow highlight mark around robots
@@ -1537,9 +1857,9 @@ Private Sub SecTimer_Timer()
   ' switch on the internet upload if at least WaitForUpload cycles
   ' have passed from last upload. LastUploadCycle=0 is used as a flag
   ' to indicate upload enabled
-  If SimOpts.TotRunCycle - IntOpts.LastUploadCycle > IntOpts.WaitForUpload Then
-    IntOpts.LastUploadCycle = 0
-  End If
+'  If SimOpts.TotRunCycle - IntOpts.LastUploadCycle > IntOpts.WaitForUpload Then
+'    IntOpts.LastUploadCycle = 0
+'  End If
   
   ' update status bar in MDI formMod
   
@@ -1549,12 +1869,12 @@ Private Sub SecTimer_Timer()
   cyccaption SimOpts.CycSec
   
   ' show cycles to next u/l d/l in title of internet log win (bugged!)
-  If LogForm.Visible Then
-    TitLog = "Log window  ---  "
-    TitLog = TitLog + "Cycles to: next d/l: " + CStr(IntOpts.Cycles - SimOpts.TotRunCycle + LastDownload)
-    TitLog = TitLog + "  next u/l: " + CStr(50000 - SimOpts.TotRunCycle + LastDownload)
-    LogForm.Caption = TitLog
-  End If
+'  If LogForm.Visible Then
+'    TitLog = "Log window  ---  "
+'    TitLog = TitLog + "Cycles to: next d/l: " + CStr(IntOpts.Cycles - SimOpts.TotRunCycle + LastDownload)
+'    TitLog = TitLog + "  next u/l: " + CStr(50000 - SimOpts.TotRunCycle + LastDownload)
+'    LogForm.Caption = TitLog
+'  End If
   
 ' ' when all robots are dead, stop everything or, if possible,
 ' ' download one frome internet
@@ -1575,10 +1895,10 @@ Private Sub SecTimer_Timer()
 ' End If
 
   ' download organism from server every IntOpts.Cycles
-  If IntOpts.Active And (SimOpts.TotRunCycle - LastDownload) > IntOpts.Cycles Then
-    LoadRandomOrg CSng(IntOpts.XSpawn + IntOpts.RUpload / 4), CSng(IntOpts.YSpawn + IntOpts.RUpload / 4)
-    LastDownload = SimOpts.TotRunCycle
-  End If
+  'If IntOpts.Active And (SimOpts.TotRunCycle - LastDownload) > IntOpts.Cycles Then
+  '  LoadRandomOrgs 1, CSng(IntOpts.XSpawn + IntOpts.RUpload / 4), CSng(IntOpts.YSpawn + IntOpts.RUpload / 4)
+  '  LastDownload = SimOpts.TotRunCycle
+  'End If
   
   ' provides the mutation rates oscillation
   If SimOpts.MutOscill Then
@@ -1593,6 +1913,12 @@ Private Sub SecTimer_Timer()
       SimOpts.MutCurrMult = 16
     End If
   End If
+  
+  'Decrement the internet operation time out counter
+  If IntOpts.InternetMode Then
+    If IntOpts.InternetSaftyNet > 0 Then IntOpts.InternetSaftyNet = IntOpts.InternetSaftyNet - 1
+  End If
+  
 End Sub
 
 
@@ -1609,7 +1935,7 @@ Private Sub main()
       If MDIForm1.ignoreerror = True Then
         On Error Resume Next
       Else
-        On Error GoTo SaveError  'EricL - Uncomment this line in compiled version! error.sim
+    '    On Error GoTo SaveError  'EricL - Uncomment this line in compiled version! error.sim
       End If
       
       Form1.SecTimer.Enabled = True
@@ -1636,7 +1962,7 @@ Private Sub main()
       
       ' feeds graphs with data:
       If SimOpts.TotRunCycle Mod SimOpts.chartingInterval = 0 Then
-        For i = 1 To 10
+        For i = 1 To NUMGRAPHS
           If Not (Charts(i).graf Is Nothing) Then
             FeedGraph (i)
           End If
@@ -1658,7 +1984,7 @@ Private Sub main()
 SaveError:
   MsgBox "Error. " + Err.Description + ".  Saving sim in saves directory as error.sim"
   
-TryAgain:
+tryagain:
   On Error GoTo missingdir
   SaveSimulation MDIForm1.MainDir + "\saves\error.sim"
 missingdir:
@@ -1668,7 +1994,7 @@ missingdir:
             "If this is a new install, choose OK.", vbOKCancel + vbQuestion)
     If b = vbOK Then
        MkDir (MDIForm1.MainDir + "\saves")
-       GoTo TryAgain
+       GoTo tryagain
     Else
       MsgBox ("Exiting without saving error.sim.")
     End If
@@ -1679,7 +2005,6 @@ missingdir:
   End
 End Sub
 
-
 '
 ' M A N A G E M E N T   A N D   R E P R O D U C T I O N
 '
@@ -1687,42 +2012,11 @@ End Sub
 'should remove highlight on a robot whenever the simulation is restarted after a pause
 Public Sub unfocus()
   Dim t As Integer
-  For t = 1 To UBound(rob())
+  For t = 1 To MaxRobs
     rob(t).highlight = False
   Next t
 End Sub
 
-'
-'   W A L L S
-'
-
-' creates a single wall block in pos x,y
-Sub CreaMuro(x As Long, y As Long)
-  Dim n As Integer, t As Integer
-  n = posto
-  rob(n).FName = "Wall"
-  rob(n).exist = True
-  rob(n).wall = True
-  rob(n).Fixed = True
-  rob(n).pos.x = x
-  rob(n).pos.y = y
-  'UpdateBotBucket n
-  rob(n).nrg = 1
-  rob(n).color = vbWhite
-  rob(n).condnum = 0
-  Erase rob(n).mem
-  ReDim rob(n).DNA(10)
-  For t = 1 To 10
-    rob(n).DNA(t).tipo = 4
-    rob(n).DNA(t).value = 4
-  Next t
-  For t = 0 To 10
-    rob(n).occurr(t) = 0
-  Next t
-  For t = 0 To 12
-    rob(n).Skin(t) = 0
-  Next t
-End Sub
 
 '
 '   S E R V I C E S
@@ -1749,53 +2043,81 @@ Public Sub NewGraph(n As Integer, YLab As String)
   
 End Sub
 
+
+Public Sub CloseGraph(n As Integer)
+  If Not (Charts(n).graf Is Nothing) Then
+     Unload Charts(n).graf
+  End If
+End Sub
+
 ' resets all graphs
-Public Sub ResetGraphs()
+Public Sub ResetGraphs(i As Integer)
   Dim k As Integer
-  For k = 1 To 10
-    If Not (Charts(k).graf Is Nothing) Then
-      Charts(k).graf.ResetGraph
+  
+  If i > 0 Then
+    If Not (Charts(i).graf Is Nothing) Then
+      Charts(i).graf.ResetGraph
     End If
-  Next k
+  Else
+    For k = 1 To NUMGRAPHS
+      If Not (Charts(k).graf Is Nothing) Then
+        Charts(k).graf.ResetGraph
+          
+      End If
+    Next k
+  End If
 End Sub
 
 ' feeds graphs with new data
-Public Sub FeedGraph(graphNumber As Integer)
-  Dim nomi(30) As String
-  Dim dati(30, 10) As Single
-  Dim t As Integer, k As Integer, P As Integer
+Public Sub FeedGraph(GraphNumber As Integer)
+  Dim nomi(MAXSPECIES) As String
+  Dim dati(MAXSPECIES, NUMGRAPHS) As Single
+  Dim t As Integer, k As Integer, P As Integer, i As Integer
   Dim startingChart As Integer, endingChart As Integer
   
   ' This should never be the case.
-  If graphNumber < 0 Or graphNumber > 10 Then Exit Sub
+  If GraphNumber < 0 Or GraphNumber > NUMGRAPHS Then Exit Sub
   
-  CalcStats nomi, dati, graphNumber
+  CalcStats nomi, dati, GraphNumber
   
-  If graphNumber = 0 Then
+  If GraphNumber = 0 Then
     ' Update all the graphs
     startingChart = 1
-    endingChart = 10
+    endingChart = NUMGRAPHS
   Else
     ' Only update one graph
-    startingChart = graphNumber
-    endingChart = graphNumber
+    startingChart = GraphNumber
+    endingChart = GraphNumber
   End If
     
   t = Flex.last(nomi)
-  
+   
   For k = startingChart To endingChart
     If k = 10 Then t = 1
+    If k = 12 Then
+      SaveSimPopulation (MDIForm1.MainDir + "\Transfers\F1\" + IntOpts.IName + ".pop")
+      UpdateInternetPopulations
+      t = Flex.last(namesOfInternetBots)
+    End If
+    If k = 13 Then ' Internet sims graph
+      For i = 1 To numInternetSims
+        If Not (Charts(k).graf Is Nothing) Then Charts(k).graf.SetValues InternetSims(i).Name, dati(i, k)
+      Next i
+      t = 0 ' Don't do the loop below
+    End If
     For P = 1 To t
       If Not (Charts(k).graf Is Nothing) Then
-        If k <> 10 Then
-          Charts(k).graf.SetValues nomi(P), dati(P, k)
-        Else
+        If k = 12 Then
+          Charts(k).graf.SetValues namesOfInternetBots(P), dati(P, k)
+        ElseIf k = 10 Then
           Charts(k).graf.SetValues "Cost Multiplier", dati(1, k)
           Charts(k).graf.SetValues "Population / Target", dati(2, k)
           Charts(k).graf.SetValues "Upper Range", dati(3, k)
           Charts(k).graf.SetValues "Lower Range", dati(4, k)
           Charts(k).graf.SetValues "Zero Level", dati(5, k)
           Charts(k).graf.SetValues "Reinstatement Level", dati(6, k)
+        Else
+          Charts(k).graf.SetValues nomi(P), dati(P, k)
         End If
       End If
     Next P
@@ -1803,30 +2125,44 @@ Public Sub FeedGraph(graphNumber As Integer)
   For k = startingChart To endingChart
     If Not (Charts(k).graf Is Nothing) Then
       Charts(k).graf.NewPoints
-      If Charts(k).graf.Visible Then
-        Charts(k).graf.RedrawGraph
-      End If
+    '  If Charts(k).graf.Visible Then
+    '    Charts(k).graf.RedrawGraph
+      'End If
     End If
   Next k
 End Sub
 
 ' calculates data for the different graph types
 Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer)
-  Dim P As Integer, t As Integer
+  Dim P As Integer, t As Integer, i As Integer, X As Integer
   Dim n As node
-  Dim Population As Integer
+  Dim population As Integer
+  Dim ListOSubSpecies(500, 10000) As Integer
+  Dim speciesListIndex(500) As Integer
+  Dim SubSpeciesNumber, closestAncestor As Long
+  Dim l, ll As Long
+  Dim sim As Long
+  
+  
  ' Dim numbots As Integer
  
+  For t = 0 To SimOpts.SpeciesNum
+    speciesListIndex(t) = 0
+  Next t
+ 
   If SimOpts.Costs(DYNAMICCOSTINCLUDEPLANTS) = 0 Then
-    Population = totnvegsDisplayed
+    population = totnvegsDisplayed
   Else
-    Population = totnvegsDisplayed + totvegsDisplayed
+    population = totnvegsDisplayed + totvegsDisplayed
   End If
     
   'EricL - Modified in 2.42.5 to handle each graph separatly for perf reasons
  ' numbots = 0
   Select Case graphNum
   Case 0 ' Do all the graphs
+  
+'    t = Flex.last(nomi)
+      
     For t = 1 To MaxRobs
       With rob(t)
       'If Not .wall And .exist Then
@@ -1840,41 +2176,87 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer)
         dati(P, 6) = dati(P, 6) + .DnaLen
         dati(P, 7) = dati(P, 7) + .condnum
         dati(P, 8) = dati(P, 8) + (.LastMut + .Mutations) / .DnaLen
-        dati(P, 9) = dati(P, 9) + (.nrg + .body * 10) * 0.001
+        dati(P, 9) = Round(dati(P, 9) + (.nrg + .body * 10) * 0.001, 2)
+        
+        
+        'Look through the subspecies we have seen so far and see if this bot has the same as any of them
+        i = 0
+        While i < speciesListIndex(P) And .SubSpecies <> ListOSubSpecies(P, i)
+          i = i + 1
+        Wend
+                                
+        If i = speciesListIndex(P) Then ' New sub species
+           ListOSubSpecies(P, i) = .SubSpecies
+           speciesListIndex(P) = speciesListIndex(P) + 1
+           dati(P, 11) = dati(P, 11) + 1
+        End If
+        If Not .Corpse Then
+          If .SubSpecies < 0 Then
+            SubSpeciesNumber = 32000 + CLng(Abs(.SubSpecies))
+          Else
+            SubSpeciesNumber = .SubSpecies
+          End If
+          
+          For X = t + 1 To MaxRobs
+            If rob(X).exist And rob(X).FName = .FName And Not rob(X).Corpse Then ' Must exist and be of same species
+              'closestAncestor = FindClosestCommonAncestor(t, X, sim)
+              'If closestAncestor <> 0 Then
+              '  l = FindGeneticDistance(t, X, closestAncestor, sim)
+              '  If l > dati(P, 14) Then dati(P, 14) = l
+              '  ll = FindGenerationalDistance(t, X, closestAncestor, sim)
+              '  If ll > dati(P, 15) Then dati(P, 15) = ll
+              'End If
+            End If
+          Next X
+                    
+        End If
       End If
       End With
     Next t
+    
     t = Flex.last(nomi)
     If dati(P, 1) <> 0 Then
     For P = 1 To t
-      dati(P, 2) = dati(P, 2) / dati(P, 1)
-      dati(P, 3) = dati(P, 3) / dati(P, 1)
-      dati(P, 4) = dati(P, 4) / dati(P, 1)
-      dati(P, 5) = dati(P, 5) / dati(P, 1)
-      dati(P, 6) = dati(P, 6) / dati(P, 1)
-      dati(P, 7) = dati(P, 7) / dati(P, 1)
-      dati(P, 8) = dati(P, 8) / dati(P, 1)
+      dati(P, 2) = Round(dati(P, 2) / dati(P, 1), 1)
+      dati(P, 3) = Round(dati(P, 3) / dati(P, 1), 1)
+      dati(P, 4) = Round(dati(P, 4) / dati(P, 1), 1)
+      dati(P, 5) = Round(dati(P, 5) / dati(P, 1), 1)
+      dati(P, 6) = Round(dati(P, 6) / dati(P, 1), 1)
+      dati(P, 7) = Round(dati(P, 7) / dati(P, 1), 1)
+      dati(P, 8) = Round(dati(P, 8) / dati(P, 1), 1)
   '    dati(P, 9) = dati(P, 9) / dati(P, 1)
     Next P
     End If
     dati(1, 10) = SimOpts.Costs(COSTMULTIPLIER)
     
     If SimOpts.Costs(DYNAMICCOSTTARGET) = 0 Then ' Divide by zero protection
-      dati(2, 10) = Population
+      dati(2, 10) = population
     Else
-      dati(2, 10) = Population / SimOpts.Costs(DYNAMICCOSTTARGET)
+      dati(2, 10) = population / SimOpts.Costs(DYNAMICCOSTTARGET)
     End If
     
     dati(3, 10) = 1 + (SimOpts.Costs(DYNAMICCOSTTARGETUPPERRANGE) * 0.01)
     dati(4, 10) = 1 - (SimOpts.Costs(DYNAMICCOSTTARGETLOWERRANGE) * 0.01)
-     If SimOpts.Costs(DYNAMICCOSTTARGET) = 0 Then ' Divide by zero protection
+    If SimOpts.Costs(DYNAMICCOSTTARGET) = 0 Then ' Divide by zero protection
       dati(5, 10) = SimOpts.Costs(BOTNOCOSTLEVEL)
       dati(6, 10) = SimOpts.Costs(COSTXREINSTATEMENTLEVEL)
     Else
       dati(5, 10) = SimOpts.Costs(BOTNOCOSTLEVEL) / SimOpts.Costs(DYNAMICCOSTTARGET)
       dati(6, 10) = SimOpts.Costs(COSTXREINSTATEMENTLEVEL) / SimOpts.Costs(DYNAMICCOSTTARGET)
     End If
-      
+    
+    For t = 0 To numInternetSpecies - 1
+      If t > MAXINTERNETSPECIES Then GoTo getout
+      P = Flex.Position(InternetSpecies(t).Name, namesOfInternetBots)
+      If P > MAXSPECIES Then GoTo getout
+      dati(P, 12) = dati(P, 12) + InternetSpecies(t).population
+    Next t
+getout:
+    For t = 1 To numInternetSims
+      If t > MAXSPECIES Then GoTo getout2
+      dati(t, 13) = InternetSims(t).population
+    Next t
+getout2:
     
   Case 1
     For t = 1 To MaxRobs
@@ -1901,7 +2283,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer)
     Next t
     t = Flex.last(nomi)
     For P = 1 To t
-      If dati(P, 1) <> 0 Then dati(P, 2) = dati(P, 2) / dati(P, 1)
+      If dati(P, 1) <> 0 Then dati(P, 2) = Round(dati(P, 2) / dati(P, 1), 1)
     Next P
     
     
@@ -1919,7 +2301,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer)
     Next t
     t = Flex.last(nomi)
     For P = 1 To t
-      If dati(P, 1) <> 0 Then dati(P, 3) = dati(P, 3) / dati(P, 1)
+      If dati(P, 1) <> 0 Then dati(P, 3) = Round(dati(P, 3) / dati(P, 1), 1)
     Next P
 
   Case 4
@@ -1936,7 +2318,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer)
     Next t
     t = Flex.last(nomi)
     For P = 1 To t
-      If dati(P, 1) <> 0 Then dati(P, 4) = dati(P, 4) / dati(P, 1)
+      If dati(P, 1) <> 0 Then dati(P, 4) = Round(dati(P, 4) / dati(P, 1), 1)
     Next P
 
    
@@ -1954,7 +2336,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer)
     Next t
     t = Flex.last(nomi)
     For P = 1 To t
-      If dati(P, 1) <> 0 Then dati(P, 5) = dati(P, 5) / dati(P, 1)
+      If dati(P, 1) <> 0 Then dati(P, 5) = Round(dati(P, 5) / dati(P, 1), 1)
     Next P
 
    
@@ -1972,7 +2354,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer)
     Next t
     t = Flex.last(nomi)
     For P = 1 To t
-      If dati(P, 1) <> 0 Then dati(P, 6) = dati(P, 6) / dati(P, 1)
+      If dati(P, 1) <> 0 Then dati(P, 6) = Round(dati(P, 6) / dati(P, 1), 1)
     Next P
 
    
@@ -1990,7 +2372,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer)
     Next t
     t = Flex.last(nomi)
     For P = 1 To t
-      If dati(P, 1) <> 0 Then dati(P, 7) = dati(P, 7) / dati(P, 1)
+      If dati(P, 1) <> 0 Then dati(P, 7) = Round(dati(P, 7) / dati(P, 1), 1)
     Next P
 
    
@@ -2008,12 +2390,12 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer)
     Next t
     t = Flex.last(nomi)
     For P = 1 To t
-      If dati(P, 1) <> 0 Then dati(P, 8) = dati(P, 8) / dati(P, 1)
+      If dati(P, 1) <> 0 Then dati(P, 8) = Round(dati(P, 8) / dati(P, 1), 1)
     Next P
 
    
   Case 9
-  For t = 1 To MaxRobs
+    For t = 1 To MaxRobs
       With rob(t)
       'If Not .wall And .exist Then
       If .exist Then
@@ -2025,11 +2407,11 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer)
     Next t
     
   Case 10
-    dati(1, 10) = SimOpts.Costs(COSTMULTIPLIER)
+    dati(1, 10) = Round(SimOpts.Costs(COSTMULTIPLIER), 4)
     If SimOpts.Costs(DYNAMICCOSTTARGET) = 0 Then ' Divide by zero protection
-      dati(2, 10) = Population
+      dati(2, 10) = population
     Else
-      dati(2, 10) = Population / SimOpts.Costs(DYNAMICCOSTTARGET)
+      dati(2, 10) = population / SimOpts.Costs(DYNAMICCOSTTARGET)
     End If
         
     dati(3, 10) = 1 + (SimOpts.Costs(DYNAMICCOSTTARGETUPPERRANGE) * 0.01)
@@ -2041,6 +2423,91 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer)
       dati(5, 10) = SimOpts.Costs(BOTNOCOSTLEVEL) / SimOpts.Costs(DYNAMICCOSTTARGET)
       dati(6, 10) = SimOpts.Costs(COSTXREINSTATEMENTLEVEL) / SimOpts.Costs(DYNAMICCOSTTARGET)
     End If
+    
+  Case 11
+    For t = 1 To MaxRobs
+      With rob(t)
+      If .exist Then
+        P = Flex.Position(rob(t).FName, nomi)
+        
+        'Look through the subspecies we have seen so far and see if this bot has the same as any of them
+        i = 0
+        While i < speciesListIndex(P) And .SubSpecies <> ListOSubSpecies(P, i)
+          i = i + 1
+        Wend
+                                
+        If i = speciesListIndex(P) Then ' New sub species
+           ListOSubSpecies(P, i) = .SubSpecies
+           speciesListIndex(P) = speciesListIndex(P) + 1
+           dati(P, 11) = dati(P, 11) + 1
+        End If
+        
+      End If
+      End With
+    Next t
+    
+   Case 12
+    For t = 0 To numInternetSpecies - 1
+      If t > MAXINTERNETSPECIES Then GoTo getout3
+      P = Flex.Position(InternetSpecies(t).Name, namesOfInternetBots)
+      If P > MAXSPECIES Then GoTo getout3
+      dati(P, 12) = dati(P, 12) + InternetSpecies(t).population
+    Next t
+getout3:
+              
+   Case 13
+    For t = 1 To numInternetSims
+      dati(t, 13) = InternetSims(t).population
+    Next t
+    
+   Case 14
+    t = Flex.last(nomi)
+    
+    For P = 1 To t
+      dati(P, 14) = 0
+    Next P
+    
+    For t = 1 To MaxRobs
+      With rob(t)
+      If .exist And Not .Corpse Then
+        P = Flex.Position(rob(t).FName, nomi)
+        For X = t + 1 To MaxRobs
+          If rob(X).exist And Not rob(X).Corpse And rob(X).FName = .FName Then ' Must exist and be of same species
+            'closestAncestor = FindClosestCommonAncestor(t, X, sim)
+            'If closestAncestor <> 0 Then
+            '  l = FindGeneticDistance(t, X, closestAncestor, sim)
+            '  If l > dati(P, 14) Then dati(P, 14) = l
+            'End If
+          End If
+        Next X
+      End If
+      End With
+    Next t
+    
+   Case 15
+    t = Flex.last(nomi)
+    
+    For P = 1 To t
+      dati(P, 15) = 0
+    Next P
+    
+    For t = 1 To MaxRobs
+      With rob(t)
+      If .exist And Not .Corpse Then
+        P = Flex.Position(rob(t).FName, nomi)
+        For X = t + 1 To MaxRobs
+          If rob(X).exist And Not rob(X).Corpse And rob(X).FName = .FName Then ' Must exist and be of same species
+            'closestAncestor = FindClosestCommonAncestor(t, X, sim)
+            'If closestAncestor <> 0 Then
+            '  l = FindGenerationalDistance(t, X, closestAncestor, sim)
+            '  If l > dati(P, 15) Then dati(P, 15) = l
+            'End If
+          End If
+        Next X
+      End If
+      End With
+    Next t
+
   End Select
 End Sub
 
@@ -2148,16 +2615,16 @@ Function score(ByVal r As Integer, ByVal reclev As Integer, maxrec As Integer, t
         score = score + InvestedEnergy(t)
         If tipo = 1 Then rob(t).highlight = True
         If tipo = 3 Then
-          dx = (rob(r).pos.x - rob(t).pos.x) / 2
-          dy = (rob(r).pos.y - rob(t).pos.y) / 2
+          dx = (rob(r).pos.X - rob(t).pos.X) / 2
+          dy = (rob(r).pos.Y - rob(t).pos.Y) / 2
           cr = RGB(128, 128, 128)
           ct = vbWhite
           If rob(r).AbsNum > rob(t).AbsNum Then
             cr = vbWhite
             ct = RGB(128, 128, 128)
           End If
-          Line (rob(t).pos.x, rob(t).pos.y)-Step(dx, dy), ct
-          Line -(rob(r).pos.x, rob(r).pos.y), cr
+          Line (rob(t).pos.X, rob(t).pos.Y)-Step(dx, dy), ct
+          Line -(rob(r).pos.X, rob(r).pos.Y), cr
         End If
       End If
     End If

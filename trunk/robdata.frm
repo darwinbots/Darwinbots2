@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
+Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "Richtx32.ocx"
 Begin VB.Form datirob 
    BorderStyle     =   4  'Fixed ToolWindow
    Caption         =   "Dati del robot"
@@ -238,7 +238,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   120
          TabIndex        =   39
-         Top             =   3840
+         Top             =   4080
          Width           =   1215
       End
       Begin VB.Label robshell 
@@ -255,7 +255,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   120
          TabIndex        =   37
-         Top             =   4080
+         Top             =   3840
          Width           =   1215
       End
       Begin VB.Label robvenom 
@@ -335,13 +335,13 @@ Begin VB.Form datirob
          Width           =   1845
       End
       Begin VB.Label Label1 
-         Caption         =   "Coming from:"
+         Caption         =   "Last Sim:"
          Height          =   195
          Left            =   105
          TabIndex        =   25
          Tag             =   "15015"
          Top             =   480
-         Width           =   1170
+         Width           =   810
       End
       Begin VB.Label totlenlab 
          Alignment       =   1  'Right Justify
@@ -700,8 +700,8 @@ Sub infoupdate(n As Integer, nrg As Single, par As Long, mut As Integer, age As 
   robbody.Caption = Str$(Round(body, 2)) 'EricL 4/14/2006 Removed Int()  Need to see the decimal value
   robmass.Caption = Str$(Round(mass, 2))
   robvenom.Caption = Str$(Round(venom, 2))
-  robshell.Caption = Str$(Round(shell, 2))
-  robslime.Caption = Str$(Round(Slime, 2))
+  robshell.Caption = Str$(Round(rob(n).shell, 2))
+  robslime.Caption = Str$(Round(rob(n).Slime, 2))
   PoisonLabel.Caption = Str$(Round(rob(n).poison, 2))
   VTimerLabel.Caption = Str$(rob(n).Vtimer)
   robparent.Caption = Str$(par)
@@ -711,7 +711,7 @@ Sub infoupdate(n As Integer, nrg As Single, par As Long, mut As Integer, age As 
   robfname.Caption = FName
   robgene.Caption = Str$(gn)
   robover.Caption = Str$(mut)
-  robgener.Caption = Str$(gennum)
+  robgener.Caption = rob(n).generation
   totlenlab.Caption = Str$(DnaLen)
   wasteval.Caption = Str$(Round(Waste, 2))
   VelocityLabel.Caption = Str$(Round(VectorMagnitude(rob(n).vel), 2))

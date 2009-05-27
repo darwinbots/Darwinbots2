@@ -6,33 +6,37 @@ Option Explicit
 '
 
 ' moves the organism of which robot n is part to the position x,y
-Public Sub ReSpawn(n As Integer, ByVal X As Long, ByVal Y As Long)
+Public Sub ReSpawn(n As Integer, x As Single, Y As Single)
   Dim clist(50) As Integer 'changed from 20 to 50
   Dim Min As Single, nmin As Integer
-  Dim t As Integer, dx As Long, dy As Long
+  Dim t As Integer, dx As Single, dy As Single
   clist(0) = n
   ListCells clist()
   Min = 999999999999#
   t = 0
   While clist(t) > 0
-    If ((rob(clist(t)).pos.X - X) ^ 2 + (rob(clist(t)).pos.Y - Y) ^ 2) <= Min Then
-      Min = (rob(clist(t)).pos.X - X) ^ 2 + (rob(clist(t)).pos.Y - Y) ^ 2
+    If ((rob(clist(t)).pos.x - x) ^ 2 + (rob(clist(t)).pos.Y - Y) ^ 2) <= Min Then
+      Min = (rob(clist(t)).pos.x - x) ^ 2 + (rob(clist(t)).pos.Y - Y) ^ 2
       nmin = clist(t)
     End If
     t = t + 1
-    If t > 50 Then Exit Sub
+    If t > 50 Then GoTo getout
   Wend
-  dx = X - CLng(rob(nmin).pos.X)
-  dy = Y - CLng(rob(nmin).pos.Y)
+  dx = x - rob(nmin).pos.x
+  dy = Y - rob(nmin).pos.Y
   dx = dx - 1 * Sgn(dx)
   dy = dy - 1 * Sgn(dy)
   t = 0
   While clist(t) > 0
-    rob(clist(t)).pos.X = rob(clist(t)).pos.X + dx
+    rob(clist(t)).pos.x = rob(clist(t)).pos.x + dx
     rob(clist(t)).pos.Y = rob(clist(t)).pos.Y + dy
+    'Bot is already part of a bucket...
+    'rob(clist(t)).BucketPos.x = -2
+    'rob(clist(t)).BucketPos.Y = -2
+    UpdateBotBucket clist(t)
     t = t + 1
-    'UpdateBotBucket clist(t)
   Wend
+getout:
 End Sub
 
 ' kill organism
@@ -71,8 +75,10 @@ Public Sub ListCells(lst() As Integer)
   Dim n As Long
   w = 0
   n = lst(w)
+  
   While n > 0
     With rob(n)
+    If Not rob(n).Multibot Then GoTo skipties  ' If the bot isn't a multibot, then ignore connected cells
     k = 1
     While .Ties(k).pnt > 0
       pres = False
@@ -85,15 +91,17 @@ Public Sub ListCells(lst() As Integer)
       If Not pres Then lst(j) = .Ties(k).pnt
       k = k + 1
     Wend
-    End With
+skipties:
+   End With
     w = w + 1
     If w > 50 Then
       w = 50   'don't know what effect this will have. Should stop overflows
       lst(w) = 0 'EricL - added June 2006 to prevent overflows
-      Exit Sub
+      GoTo getout
     End If
     n = lst(w)
   Wend
+getout:
 End Sub
 
 'Made obsolete by TieHooke

@@ -8,10 +8,14 @@ Option Explicit
 ' inserts organism file in the simulation
 ' remember that organisms could be made of more than one robot
 Public Sub InsertOrganism(path As String)
-  Dim x As Single, y As Single
-  x = Random(Form1.ScaleLeft, Form1.ScaleWidth)
-  y = Random(Form1.ScaleTop, Form1.ScaleHeight)
-  LoadOrganism path, x, y
+  Dim X As Single, Y As Single
+  Dim n As Integer
+  X = Random(Form1.ScaleLeft, Form1.ScaleWidth)
+  Y = Random(Form1.ScaleTop, Form1.ScaleHeight)
+  n = LoadOrganism(path, X, Y)
+  'rob(n).BucketPos.x = -2
+  'rob(n).BucketPos.Y = -2
+  'UpdateBotBucket n
 End Sub
 
 ' saves organism file
@@ -28,22 +32,83 @@ Public Sub SaveOrganism(path As String, r As Integer)
   Open path For Binary As 1
     Put #1, , cnum
     For k = 0 To cnum - 1
+      rob(clist(k)).LastOwner = IntOpts.IName
       SaveRobotBody 1, clist(k)
     Next k
   Close 1
   Exit Sub
 problem:
+
  ' MsgBox ("Error saving organism.")
   Close 1
 End Sub
 
+'Adds a record to the species array when a bot with a new species is loaded or teleported in
+Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
+  Dim k As Integer
+  Dim fso As New FileSystemObject
+  Dim robotFile As file
+  
+  If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
+    AddSpecie = 0
+    Exit Function
+  End If
+  
+  k = SimOpts.SpeciesNum
+  If k < MAXNATIVESPECIES Then SimOpts.SpeciesNum = SimOpts.SpeciesNum + 1
+   
+  SimOpts.Specie(k).Name = rob(n).FName
+  SimOpts.Specie(k).Veg = rob(n).Veg
+  SimOpts.Specie(k).CantSee = rob(n).CantSee
+  SimOpts.Specie(k).DisableMovementSysvars = rob(n).DisableMovementSysvars
+  SimOpts.Specie(k).DisableDNA = rob(n).DisableDNA
+  SimOpts.Specie(k).CantReproduce = rob(n).CantReproduce
+  SimOpts.Specie(k).VirusImmune = rob(n).VirusImmune
+  SimOpts.Specie(k).population = 1
+  SimOpts.Specie(k).SubSpeciesCounter = 0
+  'If rob(n).FName = "Corpse" Then
+  '  SimOpts.Specie(k).color = vbBlack
+  'Else
+   SimOpts.Specie(k).color = rob(n).color
+  'End If
+  SimOpts.Specie(k).Comment = "Species arrived from the Internet"
+  SimOpts.Specie(k).Posrg = 1
+  SimOpts.Specie(k).Posdn = 1
+  SimOpts.Specie(k).Poslf = 0
+  SimOpts.Specie(k).Postp = 0
+  
+  SetDefaultMutationRates SimOpts.Specie(k).Mutables
+  SimOpts.Specie(k).Mutables.Mutations = rob(n).Mutables.Mutations
+  SimOpts.Specie(k).qty = 5
+  SimOpts.Specie(k).Stnrg = 3000
+  SimOpts.Specie(k).Native = IsNative
+'  On Error GoTo bypass
+'  Set robotFile = fso.GetFile(MDIForm1.MainDir + "\robots\" + rob(n).FName)
+ ' If robotFile.size > 0 Then
+ '   SimOpts.Specie(k).Native = True
+'    MDIForm1.Combo1.additem rob(n).FName
+'  End If
+'bypass:
+  SimOpts.Specie(k).path = MDIForm1.MainDir + "\robots"
+  
+  ' Have to do this becuase of the crazy way SimOpts is NOT copied into TmpOpts when the options dialog is opened
+ ' TmpOpts.Specie(k) = SimOpts.Specie(k)
+ ' TmpOpts.SpeciesNum = SimOpts.SpeciesNum
+  
+  AddSpecie = k
+  
+End Function
+
 ' loads an organism file
-Public Sub LoadOrganism(path As String, x As Single, y As Single)
+Public Function LoadOrganism(path As String, X As Single, Y As Single) As Integer
   Dim clist(50) As Integer
   Dim OList(50) As Integer
   Dim k As Integer, cnum As Integer
+  Dim i As Integer
   Dim nuovo As Integer
-TryAgain:
+  Dim foundSpecies As Boolean
+  
+tryagain:
   On Error GoTo problem
   Open path For Binary As 1
     Get #1, , cnum
@@ -51,34 +116,53 @@ TryAgain:
       nuovo = posto()
       clist(k) = nuovo
       LoadRobot 1, nuovo
-    '  rob(nuovo).pos.y = rob(nuovo).pos.y
+      LoadOrganism = nuovo
+      i = SimOpts.SpeciesNum
+      foundSpecies = False
+      While i > 0
+        i = i - 1
+        If rob(nuovo).FName = SimOpts.Specie(i).Name Then
+          foundSpecies = True
+          i = 0
+        End If
+      Wend
+      If Not foundSpecies Then AddSpecie nuovo, False
+      
     Next k
   Close 1
-  If x > -1 And y > -1 Then
-    PlaceOrganism clist(), x, y
+  If X > -1 And Y > -1 Then
+    PlaceOrganism clist(), X, Y
   End If
   RemapTies clist(), OList, cnum
-  Exit Sub
+
+  Exit Function
 problem:
   Close 1
+  LoadOrganism = -1
+  If nuovo > 0 Then
+    rob(nuovo).exist = False
+    UpdateBotBucket nuovo
+  End If
  ' MsgBox ("Error Loading Organism.  Will try next cycle.")
   'GoTo TryAgain
-End Sub
+End Function
 
 ' places an organism (made of robots listed in clist())
-' in the specified x,y positions
-Public Sub PlaceOrganism(clist() As Integer, x As Single, y As Single)
+' in the specified x,y position
+Public Sub PlaceOrganism(clist() As Integer, X As Single, Y As Single)
   Dim k As Integer
   Dim dx As Single, dy As Single
   k = 0
   
-  dx = x - rob(clist(0)).pos.x
-  dy = y - rob(clist(0)).pos.y
+  dx = X - rob(clist(0)).pos.X
+  dy = Y - rob(clist(0)).pos.Y
   While clist(k) > 0
-    rob(clist(k)).pos.x = rob(clist(k)).pos.x + dx
-    rob(clist(k)).pos.y = rob(clist(k)).pos.y + dy
+    rob(clist(k)).pos.X = rob(clist(k)).pos.X + dx
+    rob(clist(k)).pos.Y = rob(clist(k)).pos.Y + dy
+    rob(clist(k)).BucketPos.X = -2
+    rob(clist(k)).BucketPos.Y = -2
+    UpdateBotBucket clist(k)
     k = k + 1
-    'UpdateBotBucket clist(k)
   Wend
 End Sub
 
@@ -142,12 +226,12 @@ Dim i As Long
 Dim j As Integer
   
   For i = 1 To numOfShots
-    If Shots(i).exist And Shots(i).stored Then
+    If Shots(i).exist Then
       For j = 1 To MaxRobs
         If rob(j).exist Then
           If Shots(i).parent = rob(j).oldBotNum Then
             Shots(i).parent = j
-            rob(j).virusshot = i
+            If Shots(i).stored Then rob(j).virusshot = i
             GoTo nextshot
           End If
         End If
@@ -158,10 +242,102 @@ nextshot:
   Next i
 End Function
 
+'Saves a small file with per species population informaton
+'Used for aggregating the population stats from multiple connected sims
+Public Sub SaveSimPopulation(path As String)
+  Dim X As Integer
+  Dim numSpecies As Integer
+  Const Fe As Byte = 254
+  Dim fso As New FileSystemObject
+  Dim fileToDelete As file
+  
+  Form1.MousePointer = vbHourglass
+  On Error GoTo bypass
+  Set fileToDelete = fso.GetFile(path)
+  fileToDelete.Delete
+    
+bypass:
+  Open path For Binary As 10
+  
+  Put #10, , Len(IntOpts.IName)
+  Put #10, , IntOpts.IName
+  
+  numSpecies = 0
+  For X = 0 To SimOpts.SpeciesNum - 1
+     If SimOpts.Specie(X).population > 0 Then numSpecies = numSpecies + 1
+  Next X
+  
+  Put #10, , numSpecies  ' Only save non-zero populations
+  
+      
+  For X = 0 To SimOpts.SpeciesNum - 1
+    If SimOpts.Specie(X).population > 0 Then
+      Put #10, , Len(SimOpts.Specie(X).Name)
+      Put #10, , SimOpts.Specie(X).Name
+      Put #10, , SimOpts.Specie(X).population
+      Put #10, , SimOpts.Specie(X).Veg
+      Put #10, , SimOpts.Specie(X).color
+      
+      'write any future data here
+    
+      'Record ending bytes
+      Put #10, , Fe
+      Put #10, , Fe
+      Put #10, , Fe
+    End If
+            
+  Next X
+  
+  
+  Close 10
+  Form1.MousePointer = vbArrow
+
+End Sub
+
+Public Sub LoadSimPopulationFile(path As String)
+Dim X As Integer
+Dim k As Long
+Dim Fe As Byte
+Dim internetName As String
+Dim numSpeciesThisFile As Integer
+
+  
+  Form1.MousePointer = vbHourglass
+  Open path For Binary As 10
+   
+  Get #10, , k: internetName = Space(k)
+  Get #10, , internetName
+  Get #10, , numSpeciesThisFile
+      
+  'numInternetSims is set to the current sim number before this routine is called.  So sloppy...
+  InternetSims(numInternetSims).population = 0
+  For X = numInternetSpecies To (numInternetSpecies + numSpeciesThisFile - 1)
+    Get #10, , k: InternetSpecies(X).Name = Space(k)
+    Get #10, , InternetSpecies(X).Name
+    Get #10, , InternetSpecies(X).population
+    InternetSims(numInternetSims).population = InternetSims(numInternetSims).population + InternetSpecies(X).population
+    Get #10, , InternetSpecies(X).Veg
+    Get #10, , InternetSpecies(X).color
+    If InternetSpecies(X).Name = "Corpse" Then InternetSpecies(X).color = vbBlack
+      
+    'grab the three FE codes
+    Get #10, , Fe
+    Get #10, , Fe
+    Get #10, , Fe
+            
+  Next X
+  numInternetSpecies = numInternetSpecies + numSpeciesThisFile
+  Close 10
+  Form1.MousePointer = vbArrow
+
+
+End Sub
+
 ' saves a whole simulation
 Public Sub SaveSimulation(path As String)
   Dim t As Integer
-  Dim x As Integer
+  Dim n As Integer
+  Dim X As Integer
   Dim j As Long
   Dim s2 As String
   Dim temp As String
@@ -171,9 +347,9 @@ Public Sub SaveSimulation(path As String)
   
   numOfExistingBots = 0
   
-  For x = 1 To MaxRobs
-    If rob(x).exist Then numOfExistingBots = numOfExistingBots + 1
-  Next x
+  For X = 1 To MaxRobs
+    If rob(X).exist Then numOfExistingBots = numOfExistingBots + 1
+  Next X
   
   
   Open path For Binary As 1
@@ -355,15 +531,15 @@ Public Sub SaveSimulation(path As String)
     
     Put #1, , numTeleporters
     
-    For x = 1 To numTeleporters
-      SaveTeleporter 1, x
-    Next x
+    For X = 1 To numTeleporters
+      SaveTeleporter 1, X
+    Next X
                 
     Put #1, , numObstacles
     
-    For x = 1 To numObstacles
-      SaveObstacle 1, x
-    Next x
+    For X = 1 To numObstacles
+      SaveObstacle 1, X
+    Next X
     
     Put #1, , SimOpts.AutoSaveDeleteOldBotFiles
     
@@ -394,6 +570,30 @@ Public Sub SaveSimulation(path As String)
     
     Put #1, , SimOpts.MaxAbsNum
     
+   For k = 0 To SimOpts.SpeciesNum - 1
+      Put #1, , SimOpts.Specie(k).VirusImmune
+    Next k
+    
+   For k = 0 To SimOpts.SpeciesNum - 1
+      Put #1, , SimOpts.Specie(k).population
+      Put #1, , SimOpts.Specie(k).SubSpeciesCounter
+   Next k
+   
+   For k = 0 To SimOpts.SpeciesNum - 1
+     Put #1, , SimOpts.Specie(k).Native
+   Next k
+   
+   Put #1, , SimOpts.EGridWidth
+   Put #1, , SimOpts.EGridEnabled
+   Put #1, , SimOpts.oldCostX
+   Put #1, , SimOpts.DisableMutations
+   Put #1, , SimOpts.SimGUID
+   Put #1, , SimOpts.SpeciationGenerationalDistance
+   Put #1, , SimOpts.SpeciationGeneticDistance
+   Put #1, , SimOpts.EnableAutoSpeciation
+   Put #1, , SimOpts.SpeciationMinimumPopulation
+   Put #1, , SimOpts.SpeciationForkInterval
+       
   Close 1
   Form1.MousePointer = vbArrow
 End Sub
@@ -405,7 +605,8 @@ Public Sub LoadSimulation(path As String)
   '(not 2.37.2, but everything that comes after)
   Dim j As Long
   Dim k As Long
-  Dim x As Integer
+  Dim X As Integer
+  Dim t As Integer
   Dim s As Single 'EricL 4/1/2006 Use this to read in single values
   Dim tempbool As Boolean
   Dim temp As String
@@ -414,17 +615,21 @@ Public Sub LoadSimulation(path As String)
   
   Form1.MousePointer = vbHourglass
     
-  For k = 0 To MaxRobs
-    Erase rob(k).DNA()
-    ReDim rob(k).DNA(1)
-    rob(k).exist = False
-  Next k
-  Erase rob()
+  'For k = 0 To MaxRobs
+  '  Erase rob(k).DNA()
+  '  ReDim rob(k).DNA(1)
+  '  rob(k).exist = False
+  'Next k
+  'Erase rob()
+  'Init_Buckets
   
   Open path For Binary As 1
     
     'As of 2.42.8, indicates a value less than the "real" MaxRobs, not a high water mark, since only existing bots are stored post 2.42.8
     Get #1, , MaxRobs
+    
+    'Round up to the next multiple of 500
+    ReDim rob(MaxRobs + (500 - (MaxRobs Mod 500)))
     
     For k = 1 To MaxRobs
      LoadRobot 1, k
@@ -436,10 +641,10 @@ Public Sub LoadSimulation(path As String)
     RemapAllTies MaxRobs
 
     
-    Get #1, , k: SimOpts.AutoRobPath = space(k)
+    Get #1, , k: SimOpts.AutoRobPath = Space(k)
     Get #1, , SimOpts.AutoRobPath
     Get #1, , SimOpts.AutoRobTime
-    Get #1, , k: SimOpts.AutoSimPath = space(k)
+    Get #1, , k: SimOpts.AutoSimPath = Space(k)
     Get #1, , SimOpts.AutoSimPath
     Get #1, , SimOpts.AutoSimTime
     Get #1, , SimOpts.BlockedVegs
@@ -448,7 +653,7 @@ Public Sub LoadSimulation(path As String)
     Get #1, , SimOpts.Costs(COSTSTORE)
     Get #1, , SimOpts.DBEnable
     Get #1, , SimOpts.DBExcludeVegs
-    Get #1, , k: SimOpts.DBName = space(k)
+    Get #1, , k: SimOpts.DBName = Space(k)
     Get #1, , SimOpts.DBName
     Get #1, , SimOpts.DBRecDna
     Get #1, , SimOpts.DisableTies
@@ -472,7 +677,7 @@ Public Sub LoadSimulation(path As String)
     Get #1, , SimOpts.PhysMoving
     Get #1, , SimOpts.PhysSwim
     Get #1, , SimOpts.PopLimMethod
-    Get #1, , k: SimOpts.SimName = space(Abs(k))
+    Get #1, , k: SimOpts.SimName = Space(Abs(k))
     Get #1, , SimOpts.SimName
     Get #1, , SimOpts.SpeciesNum
     Get #1, , SimOpts.Toroidal
@@ -514,14 +719,14 @@ Public Sub LoadSimulation(path As String)
       If Not EOF(1) Then Get #1, , SimOpts.Specie(k).Fixed
       If Not EOF(1) Then Get #1, , SimOpts.Specie(k).Mutables.mutarray
       If Not EOF(1) Then Get #1, , SimOpts.Specie(k).Mutables.Mutations
-      If Not EOF(1) Then Get #1, , j: SimOpts.Specie(k).Name = space(Abs(j))
+      If Not EOF(1) Then Get #1, , j: SimOpts.Specie(k).Name = Space(Abs(j))
       If Not EOF(1) Then Get #1, , SimOpts.Specie(k).Name
       
       'obsolete
       'If Not EOF(1) Then Get #1, , SimOpts.Specie(k).omnifeed
       If Not EOF(1) Then Get #1, , tempbool
       
-      If Not EOF(1) Then Get #1, , j: SimOpts.Specie(k).path = space(j)
+      If Not EOF(1) Then Get #1, , j: SimOpts.Specie(k).path = Space(j)
       If Not EOF(1) Then
         Get #1, , SimOpts.Specie(k).path
         
@@ -649,16 +854,24 @@ Public Sub LoadSimulation(path As String)
     numTeleporters = 0
     If Not EOF(1) Then Get #1, , numTeleporters
     
-    For x = 1 To numTeleporters
-      LoadTeleporter 1, x
-    Next x
+    t = numTeleporters
+        
+    For X = 1 To numTeleporters
+      LoadTeleporter 1, X
+    Next X
+    
+    For X = 1 To numTeleporters
+     If Teleporters(X).Internet Then
+       DeleteTeleporter (X)
+     End If
+    Next X
     
     numObstacles = 0
     If Not EOF(1) Then Get #1, , numObstacles
            
-    For x = 1 To numObstacles
-      LoadObstacle 1, x
-    Next x
+    For X = 1 To numObstacles
+      LoadObstacle 1, X
+    Next X
     
     SimOpts.AutoSaveDeleteOldBotFiles = False
     If Not EOF(1) Then Get #1, , SimOpts.AutoSaveDeleteOldBotFiles
@@ -726,10 +939,53 @@ Public Sub LoadSimulation(path As String)
     
     SimOpts.MaxAbsNum = MaxRobs
     If Not EOF(1) Then Get #1, , SimOpts.MaxAbsNum
+    
+    For k = 0 To SimOpts.SpeciesNum - 1
+      SimOpts.Specie(k).VirusImmune = False
+      If Not EOF(1) Then Get #1, , SimOpts.Specie(k).VirusImmune
+    Next k
+    
+    For k = 0 To SimOpts.SpeciesNum - 1
+      SimOpts.Specie(k).population = 0
+      If Not EOF(1) Then Get #1, , SimOpts.Specie(k).population
+      
+      SimOpts.Specie(k).SubSpeciesCounter = 0
+      If Not EOF(1) Then Get #1, , SimOpts.Specie(k).SubSpeciesCounter
+    Next k
+    
+    For k = 0 To SimOpts.SpeciesNum - 1
+      SimOpts.Specie(k).Native = True  ' Default
+      If Not EOF(1) Then Get #1, , SimOpts.Specie(k).Native
+    Next k
         
+    If Not EOF(1) Then Get #1, , SimOpts.EGridWidth
+    
+    SimOpts.EGridEnabled = False
+    If Not EOF(1) Then Get #1, , SimOpts.EGridEnabled
+    
+    If Not EOF(1) Then Get #1, , SimOpts.oldCostX
+    
+    SimOpts.DisableMutations = False
+    If Not EOF(1) Then Get #1, , SimOpts.DisableMutations
+    If CInt(SimOpts.DisableMutations) > 1 Or CInt(SimOpts.DisableMutations) < 0 Then
+      SimOpts.DisableMutations = False
+    End If
+              
+    SimOpts.SimGUID = CLng(Rnd)
+    If Not EOF(1) Then Get #1, , SimOpts.SimGUID
+    If Not EOF(1) Then Get #1, , SimOpts.SpeciationGenerationalDistance
+    If Not EOF(1) Then Get #1, , SimOpts.SpeciationGeneticDistance
+    If Not EOF(1) Then Get #1, , SimOpts.EnableAutoSpeciation
+    
+    SimOpts.SpeciationMinimumPopulation = 10
+    If Not EOF(1) Then Get #1, , SimOpts.SpeciationMinimumPopulation
+    
+    SimOpts.SpeciationForkInterval = 5000
+    If Not EOF(1) Then Get #1, , SimOpts.SpeciationForkInterval
+    
   Close 1
   
-   If SimOpts.Costs(DYNAMICCOSTSENSITIVITY) = 0 Then SimOpts.Costs(DYNAMICCOSTSENSITIVITY) = 500
+  If SimOpts.Costs(DYNAMICCOSTSENSITIVITY) = 0 Then SimOpts.Costs(DYNAMICCOSTSENSITIVITY) = 500
    
   'EricL 3/28/2006 This line insures that all the simulation dialog options get set to match the loaded sim
   TmpOpts = SimOpts
@@ -745,7 +1001,10 @@ Public Sub LoadRobot(fnum As Integer, ByVal n As Integer)
     ScanUsedVars n
     makeoccurrlist n
     rob(n).DnaLen = DnaLen(rob(n).DNA())
-    'UpdateBotBucket n
+    rob(n).genenum = CountGenes(rob(n).DNA())
+    rob(n).mem(DnaLenSys) = rob(n).DnaLen
+    rob(n).mem(GenesSys) = rob(n).genenum
+   ' UpdateBotBucket n
   End If
 End Sub
 
@@ -758,8 +1017,10 @@ Public Sub GiveAbsNum(k As Integer)
   '  End If
   'Next n
   'rob(k).AbsNum = Max + 1
-  SimOpts.MaxAbsNum = SimOpts.MaxAbsNum + 1
-  rob(k).AbsNum = SimOpts.MaxAbsNum
+  If rob(k).AbsNum = 0 Then
+    SimOpts.MaxAbsNum = SimOpts.MaxAbsNum + 1
+    rob(k).AbsNum = SimOpts.MaxAbsNum
+  End If
 End Sub
 
 ' saves a single robot
@@ -772,7 +1033,7 @@ End Sub
 Private Sub LoadRobotBody(n As Integer, r As Integer)
 'robot r
 'file #n,
-  Dim t As Integer, k As Integer, ind As Integer, Fe As Byte, L1 As Single
+  Dim t As Integer, k As Integer, ind As Integer, Fe As Byte, L1 As Long
   Dim MessedUpMutations As Boolean
   
   MessedUpMutations = False
@@ -781,13 +1042,16 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     Get #n, , .wall
     Get #n, , .Fixed
     
-    Get #n, , .pos.x
-    Get #n, , .pos.y
-    Get #n, , .vel.x
-    Get #n, , .vel.y
+    Get #n, , .pos.X
+    Get #n, , .pos.Y
+    Get #n, , .vel.X
+    Get #n, , .vel.Y
     Get #n, , .aim
     Get #n, , .ma           'momento angolare
     Get #n, , .mt           'momento torcente
+    
+    .BucketPos.X = -2
+    .BucketPos.Y = -2
      
     'ties
     For t = 0 To 10
@@ -811,7 +1075,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     Get #n, , .nrg
     
     For t = 1 To 50
-      Get #n, , k: .vars(t).Name = space(k)
+      Get #n, , k: .vars(t).Name = Space(k)
       Get #n, , .vars(t).Name   '|
       Get #n, , .vars(t).value
     Next t
@@ -825,6 +1089,11 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
       Get #n, , .DNA(t).tipo
       Get #n, , .DNA(t).value
     Next t
+    
+    'Force an end base pair to protect against DNA corruption
+    .DNA(k).tipo = 10
+    .DNA(k).value = 1
+        
         
     'EricL Set reasonable default values to protect against corrupted sims that don't read these values
     SetDefaultMutationRates .Mutables
@@ -860,13 +1129,14 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     If FileContinue(1) Then Get #n, , .exist
     If FileContinue(1) Then Get #n, , .Dead
     
-    If FileContinue(1) Then Get #1, , k: .FName = space(k)
-    If FileContinue(1) Then Get #1, , .FName
+    If FileContinue(1) Then Get #n, , k: .FName = Space(k)
+    If FileContinue(1) Then Get #n, , .FName
             
-    If FileContinue(1) Then Get #1, , k: .LastOwner = space(k)
-    If FileContinue(1) Then Get #1, , .LastOwner
+    If FileContinue(1) Then Get #n, , k: .LastOwner = Space(k)
+    If FileContinue(1) Then Get #n, , .LastOwner
+    If .LastOwner = "" Then .LastOwner = "Local"
     
-    If FileContinue(1) Then Get #1, , k
+    If FileContinue(1) Then Get #n, , k
        
     'EricL 5/2/2006  This needs some explaining.  The length of the mutation details can exceed 2^15 -1 for bots with lots
     'of mutations.  If we are reading an old file, the length could be negative in which case we read what we can and then punt and skip the
@@ -874,14 +1144,25 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     'If the sim file was stored with 2.42.4 or later and this bot has a ton of mutation details, then an Int value of 1
     'indicates the actual length of the mutation details is stored as a Long in which case we read that and continue.
     If k < 0 Then
-      'Its an old corrupted file with > 2^15 worth of mutation details.  Read as much as we can then bail.
-      .LastMutDetail = space(2 ^ 15 - 1)
-      If FileContinue(1) Then Get #1, , .LastMutDetail
-      .Mutables.Mutations = False
-      'EricL Set reasonable default values to protect against corrupted sims that don't read these values
+      'Its an old corrupted file with > 2^15 worth of mutation details.  Bail.
+      .LastMutDetail = "Problem reading mutation details.  May be a very old sim.  Please tell the developers.  Mutation Details deleted."
+      
+      'EricL Set reasonable default values for everything read from this point on.
+      .Mutables.Mutations = True
+
       SetDefaultMutationRates .Mutables
+    
       .View = True
       .NewMove = False
+      .oldBotNum = 0
+      .CantSee = False
+      .DisableDNA = False
+      .DisableMovementSysvars = False
+      .CantReproduce = False
+      .VirusImmune = False
+      .shell = 0
+      .Slime = 0
+                     
       GoTo OldFile
     End If
     If k = 1 Then
@@ -894,12 +1175,10 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
       L1 = CLng(k)
     End If
     
-    .LastMutDetail = space(L1)
+    .LastMutDetail = Space(L1)
     If FileContinue(1) Then Get #1, , .LastMutDetail
     
     If FileContinue(1) Then Get #1, , .Mutables.Mutations
-    
-
     
     For t = 0 To 20
       If FileContinue(1) Then Get #1, , .Mutables.Mean(t)
@@ -930,12 +1209,19 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
       
     .CantSee = False
     If FileContinue(1) Then Get #1, , .CantSee
+    If CInt(.CantSee) > 0 Or CInt(.CantSee) < -1 Then .CantSee = False ' Protection against corrpt sim files.
+    
     .DisableDNA = False
     If FileContinue(1) Then Get #1, , .DisableDNA
+    If CInt(.DisableDNA) > 0 Or CInt(.DisableDNA) < -1 Then .DisableDNA = False ' Protection against corrpt sim files.
+    
     .DisableMovementSysvars = False
     If FileContinue(1) Then Get #1, , .DisableMovementSysvars
+    If CInt(.DisableMovementSysvars) > 0 Or CInt(.DisableMovementSysvars) < -1 Then .DisableMovementSysvars = False    ' Protection against corrpt sim files.
+    
     .CantReproduce = False
     If FileContinue(1) Then Get #1, , .CantReproduce
+    If CInt(.CantReproduce) > 0 Or CInt(.CantReproduce) < -1 Then .CantReproduce = False ' Protection against corrpt sim files.
     
     .shell = 0
     If FileContinue(1) Then Get #1, , .shell
@@ -949,6 +1235,33 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     If .Slime > 32000 Then .Slime = 32000
     If .Slime < 0 Then .Slime = 0
     
+    .VirusImmune = False
+    If FileContinue(1) Then Get #1, , .VirusImmune
+    If CInt(.VirusImmune) > 0 Or CInt(.VirusImmune) < -1 Then .VirusImmune = False ' Protection against corrpt sim files.
+    
+    .SubSpecies = 0 ' For older sims saved before this was implemented, set the sup species to be the bot's number.  Every bot is a sub species.
+    If FileContinue(1) Then Get #1, , .SubSpecies
+    
+    .spermDNAlen = 0
+    If FileContinue(1) Then Get #1, , .spermDNAlen: ReDim .spermDNA(.spermDNAlen)
+    For t = 1 To .spermDNAlen
+      If FileContinue(1) Then Get #1, , .spermDNA(t).tipo
+      If FileContinue(1) Then Get #1, , .spermDNA(t).value
+    Next t
+    
+    .fertilized = -1
+    If FileContinue(1) Then Get #1, , .fertilized
+    
+    If FileContinue(1) Then Get #1, , .AncestorIndex
+    For t = 0 To 500
+      If FileContinue(1) Then Get #1, , .Ancestors(t).mut
+      If FileContinue(1) Then Get #1, , .Ancestors(t).num
+      If FileContinue(1) Then Get #1, , .Ancestors(t).sim
+    Next t
+    
+    .sim = 0
+    If FileContinue(1) Then Get #1, , .sim
+    If FileContinue(1) Then Get #1, , .AbsNum
     
     'read in any future data here
     
@@ -1007,7 +1320,7 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
   Dim temp As String
   
   Const Fe As Byte = 254
-  Dim space As Integer
+ ' Dim space As Integer
   
   s = "Mutation Details removed in last save."
   
@@ -1018,10 +1331,10 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     Put #n, , .Fixed
     
     ' fisiche
-    Put #n, , .pos.x
-    Put #n, , .pos.y
-    Put #n, , .vel.x
-    Put #n, , .vel.y
+    Put #n, , .pos.X
+    Put #n, , .pos.Y
+    Put #n, , .vel.X
+    Put #n, , .vel.Y
     Put #n, , .aim
     Put #n, , .ma           'momento angolare
     Put #n, , .mt           'momento torcente
@@ -1113,7 +1426,7 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
       'the interger 1 there instead of the actual length.  Since the actual details, being string descriptions,
       'should never have length 1, this is a signal to the sim file read routine that the real length is a Long
       'stored right after the Int.
-      If Len(.LastMutDetail) > (2 ^ 15 - 1) Then
+      If CLng(Len(.LastMutDetail)) > CLng((2 ^ 15 - 1)) Then
         ' Lots of mutations.  Tell the read routine that the real length is Long valued and coming up next.
         Put #n, , CInt(1)
         Put #n, , CLng(Len(.LastMutDetail)) ' The real length
@@ -1145,6 +1458,28 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     Put #n, , .CantReproduce
     Put #n, , .shell
     Put #n, , .Slime
+    Put #n, , .VirusImmune
+    Put #n, , .SubSpecies
+    
+    If .fertilized < 0 Then .spermDNAlen = 0
+    
+    Put #n, , .spermDNAlen
+    For t = 1 To .spermDNAlen
+      Put #n, , .spermDNA(t).tipo
+      Put #n, , .spermDNA(t).value
+    Next t
+    Put #n, , .fertilized
+    
+    Put #n, , .AncestorIndex
+    For t = 0 To 500
+      Put #n, , .Ancestors(t).mut
+      Put #n, , .Ancestors(t).num
+      Put #n, , .Ancestors(t).sim
+    Next t
+    
+    Put #n, , .sim
+    Put #n, , .AbsNum
+    
     
     'write any future data here
     
@@ -1186,7 +1521,7 @@ Public Function Load_League_File(Leaguename As String) As Integer
 '-3 if leaguefile contains too many entrants
 '-4 if leaguefile contains too few entrants
 '-5 if leaguefile contains an unknown error
-  Dim filename As String
+  Dim FileName As String
   Dim Line As String
   Dim singlecharacter As String
   Dim currpos As Long
@@ -1194,10 +1529,10 @@ Public Function Load_League_File(Leaguename As String) As Integer
   Dim robotcomment As String
   Dim length As Long
  
-  filename = MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt"
+  FileName = MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt"
   
   On Error GoTo Nosuchfile
-  Open filename For Input As 1
+  Open FileName For Input As 1
     
   Line Input #1, Line
   Line = Line + "'"
@@ -1253,7 +1588,7 @@ endloop:
   Dim Index As Integer
   
   For Index = 0 To 30
-    filename = MDIForm1.MainDir + "\Leagues\" + Leaguename + "league\" 'directory of league robots
+    FileName = MDIForm1.MainDir + "\Leagues\" + Leaguename + "league\" 'directory of league robots
     Line = Line + "'"
     
     length = InStr(Line, "'") - 1
@@ -1265,7 +1600,7 @@ endloop:
     If robotname = "EMPTY" Or robotname = "" Then
       Add_Blank_Specie Index
     Else
-      robotname = filename + robotname + ".txt" 'now we have the path and filename of the robot
+      robotname = FileName + robotname + ".txt" 'now we have the path and filename of the robot
       'add robot robotname to LeagueEntrants array
       Add_Specie robotname, Index, robotcomment
     End If
@@ -1288,12 +1623,12 @@ endloop2:
   
 Nosuchfile:
   Close_League_File
-  MsgBox filename + " doesn't exist.", vbOKOnly, "League File Not Found"
+  MsgBox FileName + " doesn't exist.", vbOKOnly, "League File Not Found"
   Load_League_File = -1
   Exit Function
 invalidfile:
   Close_League_File
-  MsgBox "Error reading from " + filename + ".  Abandoning attempt.", vbOKOnly, "File Reading Error"
+  MsgBox "Error reading from " + FileName + ".  Abandoning attempt.", vbOKOnly, "File Reading Error"
   Load_League_File = -5
   Exit Function
 End Function
@@ -1337,7 +1672,7 @@ Private Sub Add_Blank_Specie(k As Integer)
 End Sub
 
 Public Function Save_League_File(FName As String) As Integer
-  Dim filename As String
+  Dim FileName As String
   Dim tofilename As String
   Dim Line As String
   Dim singlecharacter As String
@@ -1347,7 +1682,7 @@ Public Function Save_League_File(FName As String) As Integer
   Dim loopdone As Boolean
   Dim originalleague As Boolean
  
-  filename = MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt"
+  FileName = MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt"
   tofilename = MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.tmp"
      
   'EricL - new code added March 15, 2006
@@ -1363,7 +1698,7 @@ Public Function Save_League_File(FName As String) As Integer
   End If
   
   On Error GoTo Nosuchfile
-  Open filename For Input As 1
+  Open FileName For Input As 1
 enderror:
    
   On Error GoTo problem
@@ -1485,6 +1820,7 @@ Private Sub SaveTeleporter(n As Integer, t As Integer)
     Put #n, , .InboundPollCycles
     Put #n, , .BotsPerPoll
     Put #n, , .PollCountDown
+    Put #n, , .Internet
         
     'write any future data here
     
@@ -1507,7 +1843,7 @@ Private Sub LoadTeleporter(n As Integer, t As Integer)
     Get #n, , .Height
     Get #n, , .color
     Get #n, , .vel
-    Get #n, , k: .path = space(k)
+    Get #n, , k: .path = Space(k)
     Get #n, , .path
     Get #n, , .In
     Get #n, , .Out
@@ -1525,11 +1861,13 @@ Private Sub LoadTeleporter(n As Integer, t As Integer)
     .BotsPerPoll = 10
     .PollCountDown = 10
     
-    If FileContinue(1) Then Get #n, , .teleportHeterotrophs
-    If FileContinue(1) Then Get #n, , .InboundPollCycles
-    If FileContinue(1) Then Get #n, , .BotsPerPoll
-    If FileContinue(1) Then Get #n, , .PollCountDown
+    If FileContinue(n) Then Get #n, , .teleportHeterotrophs
+    If FileContinue(n) Then Get #n, , .InboundPollCycles
+    If FileContinue(n) Then Get #n, , .BotsPerPoll
+    If FileContinue(n) Then Get #n, , .PollCountDown
+    If FileContinue(n) Then Get #n, , .Internet
     
+        
     'burn through any new data from a newer version
     While FileContinue(n)
       Get #n, , Fe
@@ -1598,7 +1936,7 @@ End Sub
 'New routine by EricL
 Private Sub SaveShot(n As Integer, t As Long)
   Dim k As Integer
-  Dim x As Integer
+  Dim X As Integer
   
   Const Fe As Byte = 254
 
@@ -1620,19 +1958,20 @@ Private Sub SaveShot(n As Integer, t As Long)
     Put #n, , .Memloc      ' Memory location for custom poison and venom
     Put #n, , .Memval      ' Value to insert into custom venom location
     
-    ' Somewhere to store genetic code for a virus
-    If IsRobDNABounded(.DNA()) And .shottype = -7 And .exist Then
-      k = UBound(.DNA()): Put #n, , k
-      For x = 1 To k
-        Put #n, , .DNA(x).tipo
-        Put #n, , .DNA(x).value
-      Next x
+    ' Somewhere to store genetic code for a virus or sperm
+    If (.shottype = -7 Or .shottype = -8) And .exist And .DnaLen > 0 Then
+      Put #n, , .DnaLen
+      For X = 1 To .DnaLen
+        Put #n, , .DNA(X).tipo
+        Put #n, , .DNA(X).value
+      Next X
     Else
       k = 0: Put #n, , k
     End If
     
     Put #n, , .genenum     ' which gene to copy in host bot
     Put #n, , .stored      ' for virus shots (and maybe future types) this shot is stored inside the bot until it's ready to be launched
+  
     
     'write any future data here
     
@@ -1648,7 +1987,7 @@ End Sub
 'New routine from EricL
 Private Sub LoadShot(n As Integer, t As Long)
   Dim k As Integer
-  Dim x As Integer
+  Dim X As Integer
   Dim Fe As Byte
 
   With Shots(t)
@@ -1665,22 +2004,25 @@ Private Sub LoadShot(n As Integer, t As Long)
     Get #n, , .shottype    ' carried location/value couple
     Get #n, , .fromveg     ' does shot come from veg?
     
-    Get #n, , k: .FromSpecie = space(k)
+    Get #n, , k: .FromSpecie = Space(k)
     Get #n, , .FromSpecie  ' Which species fired the shot
     
     Get #n, , .Memloc      ' Memory location for custom poison and venom
     Get #n, , .Memval      ' Value to insert into custom venom location
+
     
     ' Somewhere to store genetic code for a virus
     Get #n, , k
     If k > 0 Then
       ReDim .DNA(k)
-      For x = 1 To k
-        Get #n, , .DNA(x).tipo
-        Get #n, , .DNA(x).value
-      Next x
+      For X = 1 To k
+        Get #n, , .DNA(X).tipo
+        Get #n, , .DNA(X).value
+      Next X
     End If
-  
+    
+    .DnaLen = k
+    
     Get #n, , .genenum     ' which gene to copy in host bot
     Get #n, , .stored      ' for virus shots (and maybe future types) this shot is stored inside the bot until it's ready to be launched
     

@@ -25,7 +25,8 @@ Public Type shot
  Memloc As Integer      ' Memory location for custom poison and venom
  Memval As Integer      ' Value to insert into custom venom location
  
- DNA() As block         ' Somewhere to store genetic code for a virus
+ DNA() As block         ' Somewhere to store genetic code for a virus or sperm
+ DnaLen As Integer      ' length of DNA  stored on this shot
  genenum As Integer     ' which gene to copy in host bot
  stored As Boolean      ' for virus shots (and maybe future types) this shot is stored
                         ' inside the bot until it's ready to be launched
@@ -41,7 +42,7 @@ Public maxshotarray As Long
 Const shotdecay As Integer = 40 'increase to have shots lose power slower
 Const ShellEffectiveness As Integer = 20 'how strong each unit of shell is
 Const SlimeEffectiveness As Integer = 20 'how strong each unit of slime is against viruses
-Const MinBotRadius = 0.4 'A total hack.  Used to bypass checking the rest of the bots if the collision occurred during this
+Const MinBotRadius = 0.2 'A total hack.  Used to bypass checking the rest of the bots if the collision occurred during this
                            'intial fraction of the cycle.  We assume that no bot is small enough to possibly have been hit earlier
                            'in the cycle.  We risk not detecting collisions with tiny bots in the case where the shot hits it early
                            'in the cycle, but the perf benefit of skipping the rest of the bots is significant.
@@ -81,11 +82,12 @@ End Function
 
 ' creates a shot shooted by robot n, with couple location/value
 ' returns the shot num of the shot
-Public Function newshot(n As Integer, ByVal shottype As Integer, ByVal val As Long, rngmultiplier As Single) As Long
+Public Function newshot(n As Integer, ByVal shottype As Integer, ByVal val As Single, rngmultiplier As Single) As Long
   Dim a As Long
   Dim ran As Single
   Dim angle As vector
   Dim ShAngle As Single
+  Dim X As Integer
   
   
   'If IsArrayBounded(Shots) = False Then
@@ -107,9 +109,15 @@ Public Function newshot(n As Integer, ByVal shottype As Integer, ByVal val As Lo
   Shots(a).FromSpecie = rob(n).FName    'Which species fired the shot
   Shots(a).fromveg = rob(n).Veg 'does shot come from a veg or not?
   Shots(a).color = rob(n).color
+  Shots(a).value = Int(val)
+  
+  If (shottype > 0) Or (shottype = -100) Then
+    Shots(a).shottype = shottype
+  Else
+    Shots(a).shottype = -(Abs(shottype) Mod 8)  ' EricL 6/2006 essentially Mod 8 so as to increse probabiltiy that mutations do something interesting
+    If Shots(a).shottype = 0 Then Shots(a).shottype = -8 ' want multiples of -8 to be -8
+  End If
   If shottype = -2 Then Shots(a).color = vbWhite
-  Shots(a).value = val
-  Shots(a).shottype = shottype
   Shots(a).Memloc = rob(n).mem(835)     'location for venom to target
   If Shots(a).Memloc < 1 Then Shots(a).Memloc = ((Shots(a).Memloc - 1) Mod 1000) + 1
   If Shots(a).Memloc > 1000 Then Shots(a).Memloc = ((Shots(a).Memloc - 1) Mod 1000) + 1
@@ -136,19 +144,19 @@ Public Function newshot(n As Integer, ByVal shottype As Integer, ByVal val As Lo
   
   angle = VectorSet(Cos(ShAngle), -Sin(ShAngle))
   Shots(a).pos = VectorAdd(rob(n).pos, VectorScalar(angle, rob(n).radius))
-  Shots(a).velocity = VectorAdd(rob(n).vel, VectorScalar(angle, RobSize / 3))
+  Shots(a).velocity = VectorAdd(rob(n).vel, VectorScalar(angle, 40))
   
   Shots(a).opos = VectorSub(Shots(a).pos, Shots(a).velocity)
   
   If rob(n).vbody > 10 Then
     Shots(a).nrg = Log(Abs(rob(n).vbody)) * 60 * rngmultiplier
     Dim temp As Long
-    temp = (Shots(a).nrg + (RobSize \ 3) + 1) \ (RobSize / 3) 'divides and rounds up
+    temp = (Shots(a).nrg + 40 + 1) \ 40 'divides and rounds up
     Shots(a).Range = temp
-    Shots(a).nrg = temp * (RobSize / 3)
+    Shots(a).nrg = temp * 40
   Else
     Shots(a).Range = rngmultiplier
-    Shots(a).nrg = (RobSize / 3) * rngmultiplier
+    Shots(a).nrg = 40 * rngmultiplier
   End If
   
   'return the new shot
@@ -169,11 +177,18 @@ Public Function newshot(n As Integer, ByVal shottype As Integer, ByVal val As Lo
   End If
   
   If shottype = -2 Then Shots(a).nrg = val
-    
+  
+  ' sperm shot
+  If shottype = -8 Then
+    'ReDim Shots(a).DNA(rob(n).dnalen)
+    Shots(a).DNA = rob(n).DNA
+    Shots(a).DnaLen = rob(n).DnaLen
+  End If
+      
 End Function
 
 ' creates a generic particle with arbitrary x & y, vx & vy, etc
-Public Sub createshot(ByVal x As Long, ByVal y As Long, ByVal vx As Integer, _
+Public Sub createshot(ByVal X As Long, ByVal Y As Long, ByVal vx As Integer, _
   ByVal vy As Integer, loc As Integer, par As Integer, val As Single, Range As Single, col As Long)
   Dim a As Long
   
@@ -192,30 +207,38 @@ Public Sub createshot(ByVal x As Long, ByVal y As Long, ByVal vx As Integer, _
   Shots(a).FromSpecie = rob(par).FName
   Shots(a).fromveg = rob(par).Veg
   
-  Shots(a).pos.x = x '+ vx
-  Shots(a).pos.y = y '+ vy
-  Shots(a).velocity.x = vx
-  Shots(a).velocity.y = vy
+  Shots(a).pos.X = X '+ vx
+  Shots(a).pos.Y = Y '+ vy
+  Shots(a).velocity.X = vx
+  Shots(a).velocity.Y = vy
   Shots(a).opos = VectorSub(Shots(a).pos, Shots(a).velocity)
     
   Shots(a).age = 0
   Shots(a).color = col
   Shots(a).exist = True
   Shots(a).stored = False
+  Shots(a).DnaLen = 0
     
   Dim temp As Long
-  temp = (Range + (RobSize \ 3) + 1) \ (RobSize \ 3) 'divides and rounds up ie: range / (Robsize/3)
+  temp = (Range + 40 + 1) \ 40 'divides and rounds up ie: range / (Robsize/3)
   
-  Shots(a).nrg = temp * (RobSize / 3)
+  Shots(a).nrg = Range + 40 + 1
   If val > 32000 Then val = 32000 ' Overflow protection
   If loc = -2 Then Shots(a).nrg = val
   Shots(a).Range = temp
   Shots(a).value = CInt(val)
-  Shots(a).shottype = loc
-  Shots(a).Memloc = rob(par).mem(834)
-  If Shots(a).Memloc < 0 Then Shots(a).Memloc = 0
-  If Shots(a).Memloc > 1000 Then Shots(a).Memloc = 1000
-  
+  If loc > 0 Or loc = -100 Then
+    Shots(a).shottype = loc
+  Else
+    Shots(a).shottype = -(Abs(loc) Mod 8)  ' EricL 6/2006 essentially Mod 8 so as to increse probabiltiy that mutations do something interesting
+    If Shots(a).shottype = 0 Then Shots(a).shottype = -8 ' want multiples of -8 to be -8
+  End If
+  If rob(par).mem(834) <= 0 Then
+    Shots(a).Memloc = 0
+  Else
+    Shots(a).Memloc = rob(par).mem(834) Mod 1000
+    If Shots(a).Memloc = 0 Then Shots(a).Memloc = 1000
+  End If
 End Sub
 
 ' searches some place to insert the new shot in the
@@ -253,8 +276,8 @@ Public Sub updateshots()
   Dim rp As Integer
   Dim jj As Integer
   Dim ti As Single
-  Dim x As Long
-  Dim y As Long
+  Dim X As Long
+  Dim Y As Long
   Dim onrg As Long
   Dim tempnum As Single
   
@@ -268,6 +291,7 @@ Public Sub updateshots()
     If Shots(t).flash Then
         Shots(t).exist = False
         Shots(t).flash = False
+        Shots(t).DnaLen = 0
     End If
       If Shots(t).exist Then
         numshots = numshots + 1 ' Counts the number of existing shots each cycle for display purposes
@@ -305,15 +329,14 @@ Public Sub updateshots()
           If Shots(t).shottype > 0 Then
             Shots(t).shottype = Shots(t).shottype Mod 1000 ' EricL 6/2006 Mod 1000 so as to increse probabiltiy that mutations do something interesting
             If Shots(t).shottype <> DelgeneSys Then
-            '  Dim power As Long
               If Shots(t).shottype = 312 Or Shots(t).shottype = 313 Or _
                 Shots(t).shottype = 824 Or Shots(t).shottype = 826 And _
                 Shots(t).value > 100 Then Shots(t).value = 100
                 
-              If Shots(t).nrg / 2 > rob(h).poison Then
+              If (Shots(t).nrg / 2 > rob(h).poison) Or (rob(h).poison = 0) Then
                 rob(h).mem(Shots(t).shottype) = Shots(t).value
               Else
-                createshot Shots(t).pos.x, Shots(t).pos.y, -Shots(t).velocity.x, -Shots(t).velocity.y, -5, h, Shots(t).nrg / 2, Shots(t).Range * RobSize / 3, vbYellow
+                createshot Shots(t).pos.X, Shots(t).pos.Y, -Shots(t).velocity.X, -Shots(t).velocity.Y, -5, h, Shots(t).nrg / 2, Shots(t).Range * 40, vbYellow
                 rob(h).poison = rob(h).poison - (Shots(t).nrg / 2) * 0.9
                 rob(h).Waste = rob(h).Waste + (Shots(t).nrg / 2) * 0.1
                 If rob(h).poison < 0 Then rob(h).poison = 0
@@ -321,8 +344,8 @@ Public Sub updateshots()
               End If
             End If
           Else
-            Shots(t).shottype = ((Shots(t).shottype + 1) Mod 7) - 1 ' EricL 6/2006 essentially Mod 7 so as to increse probabiltiy that mutations do something interesting
-            
+            ' Shots(t).shottype = -(Abs(Shots(t).shottype) Mod 8)  ' EricL 6/2006 essentially Mod 8 so as to increse probabiltiy that mutations do something interesting
+            ' If Shots(t).shottype = 0 Then Shots(t).shottype = -8 ' want multiples of -8 to be -8
             Select Case Shots(t).shottype
             'Problem with this: returning nrg shots appear where the shot would have been instead of where
             'it hit the bot - EricL 5/20/2006 - Not anymore as of 2.42.5!
@@ -333,12 +356,12 @@ Public Sub updateshots()
               Case -5: takepoison h, t
               Case -6: releasebod h, t
               Case -7: addgene h, t
-            End Select
+              Case -8: takesperm h, t ' bot hit by a sperm shot for sexual reproduction
+             End Select
           End If
-          taste h, Shots(t).opos.x, Shots(t).opos.y, Shots(t).shottype
+          taste h, Shots(t).opos.X, Shots(t).opos.Y, Shots(t).shottype
           Shots(t).flash = True
-          'rob(h).flash = .shottype ' Fill the bot in with a color appropraite to the shot type
-          
+                
         End If
         If numObstacles > 0 Then DoShotObstacleCollisions t
         Shots(t).opos = Shots(t).pos
@@ -352,7 +375,10 @@ Public Sub updateshots()
           Shots(t).age = Shots(t).age + 1
         End If
         
-        If Shots(t).age > Shots(t).Range Then Shots(t).exist = False ' Kill shots once they reach maturity
+        If Shots(t).age > Shots(t).Range Then
+          Shots(t).exist = False ' Kill shots once they reach maturity
+          Shots(t).DnaLen = 0
+        End If
           
       End If
     Next t
@@ -364,7 +390,7 @@ Public Sub updateshots()
       If numshots < 90 Then
         maxshotarray = CLng(100)
       Else
-        maxshotarray = CLng(numshots * 1.1)
+        maxshotarray = CLng(numshots * 1.2)
       End If
       shotpointer = numshots ' set the shot pointer at the beginning of the free space in the newly shrunk array
       ReDim Preserve Shots(maxshotarray)
@@ -374,6 +400,7 @@ End Sub
 Public Sub CompactShots()
   Dim i As Long
   Dim j As Long
+  Dim X As Integer
   
   j = 1
   For i = 1 To maxshotarray
@@ -384,12 +411,18 @@ Public Sub CompactShots()
         Else
           Shots(i).exist = False
           Shots(i).stored = False
+          Shots(i).DnaLen = 0
         End If
       End If
-      Shots(j) = Shots(i)
       If i <> j Then
+        If (Shots(j).shottype = -8 Or Shots(j).shottype = -7) And Shots(i).DnaLen > 0 Then
+          ReDim Shots(j).DNA(Shots(i).DnaLen)
+        End If
+        Shots(j) = Shots(i)
         Shots(i).exist = False
         Shots(i).stored = False
+        Shots(i).DnaLen = 0
+        'ReDim Shots(i).DNA(1) ' 1 so as to not hit the bounded routine exception everytime
       End If
       j = j + 1
     End If
@@ -437,8 +470,7 @@ Public Sub defacate(n As Integer) 'only used to get rid of massive amounts of wa
   If rob(n).Waste > 32000 Then rob(n).Waste = 31500: va = 500
   
   rob(n).Waste = rob(n).Waste - va
-  rob(n).nrg = rob(n).nrg - (SimOpts.Costs(SHOTCOST) * SimOpts.Costs(COSTMULTIPLIER)) / (rob(n).Numties + 1)
- ' EnergyLostPerCycle = EnergyLostPerCycle - SimOpts.Costs(SHOTCOST) / (rob(n).Numties + 1)
+  rob(n).nrg = rob(n).nrg - (SimOpts.Costs(SHOTCOST) * SimOpts.Costs(COSTMULTIPLIER)) / (rob(n).numties + 1)
   newshot n, SH, va, 1
   rob(n).Pwaste = rob(n).Pwaste + va / 1000
 End Sub
@@ -459,29 +491,28 @@ Public Sub releasenrg(n As Integer, t As Long)
   Dim incoming As vector
   Dim offcenter As Single
   Dim shotNow As vector
-  Dim x As Single
-  Dim y As Single
+  Dim X As Single
+  Dim Y As Single
   Dim angle As Single
   Dim relVel As vector
   Dim EnergyLost As Single
     
-  If rob(n).nrg <= 0 Then
-    rob(n).Dead = True
-    Exit Sub
+  If rob(n).nrg <= 0.5 Then
+   ' rob(n).Dead = True ' Don't kill them here so they can be corpses.  Still might have body.
+    GoTo getout
   End If
 
-  relVel = VectorSub(rob(n).vel, Shots(t).velocity) ' relative velocity of shot relative to target bot
-  
-  vel = VectorScalar(relVel, 0.5) 'half the relative velocity of the shot to the hit bot.  We do this to
-                                  'slow the returned shots down a little relative to the incoming shot
-                                  'so as to increase the probability if impact.
+  vel = VectorSub(rob(n).vel, Shots(t).velocity) 'negative relative velocity of shot hitting bot
+                                                             'the shot to the hit bot
+  vel = VectorAdd(vel, VectorScalar(rob(n).vel, 0.5)) 'then add in half the velocity of hit robot
+ 
   If SimOpts.EnergyExType Then
     If Shots(t).Range = 0 Then ' Divide by zero protection
       power = 0#
     Else
       power = CSng(Shots(t).value) * Shots(t).nrg / CSng((Shots(t).Range * (RobSize / 3))) * SimOpts.EnergyProp
     End If
-    If Shots(t).nrg < 0 Then Exit Sub
+    If Shots(t).nrg < 0 Then GoTo getout
   Else
     power = SimOpts.EnergyFix
   End If
@@ -495,8 +526,8 @@ Public Sub releasenrg(n As Integer, t As Long)
   Range = Shots(t).Range * 2 'returned energy shots have twice the range as the shot that it came from (but half the velocity)
   
   If rob(n).poison > power Then 'create poison shot
-    createshot Shots(t).pos.x, Shots(t).pos.y, vel.x, vel.y, -5, n, power, Range * (RobSize / 3), vbYellow
-    rob(n).Waste = rob(n).Waste + (power * 0.1)
+    createshot Shots(t).pos.X, Shots(t).pos.Y, vel.X, vel.Y, -5, n, power, Range * (RobSize / 3), vbYellow
+  '  rob(n).Waste = rob(n).Waste + (power * 0.1)
     rob(n).poison = rob(n).poison - (power * 0.9)
     If rob(n).poison < 0 Then rob(n).poison = 0
     rob(n).mem(poison) = rob(n).poison
@@ -522,18 +553,19 @@ Public Sub releasenrg(n As Integer, t As Long)
     End If
     
     ' pass local vars to createshot so that no Shots array elements are on the stack in case the Shots array gets redimmed
-    x = Shots(t).pos.x
-    y = Shots(t).pos.y
+    X = Shots(t).pos.X
+    Y = Shots(t).pos.Y
     
-    createshot x, y, vel.x, vel.y, -2, n, power, Range * (RobSize / 3), vbWhite
+    createshot X, Y, vel.X, vel.Y, -2, n, power, Range * (RobSize / 3), vbWhite
     rob(n).radius = FindRadius(rob(n).body)
   End If
   
-  If rob(n).body <= 0 Or rob(n).nrg <= 0 Then
+  If rob(n).body <= 0.5 Or rob(n).nrg <= 0.5 Then
     rob(n).Dead = True
     rob(Shots(t).parent).Kills = rob(Shots(t).parent).Kills + 1
     rob(Shots(t).parent).mem(220) = rob(Shots(t).parent).Kills
   End If
+getout:
 End Sub
 Private Sub releasebod(n As Integer, t As Long) 'a robot is shot by a -6 shot and releases energy directly from body points
   'much more effective against a corpse
@@ -544,12 +576,17 @@ Private Sub releasebod(n As Integer, t As Long) 'a robot is shot by a -6 shot an
   Dim EnergyLost As Single
   
   
-  'If rob(n).body <= 0 Or rob(n).wall Then Exit Sub
-  If rob(n).body <= 0 Then Exit Sub
+  'If rob(n).body <= 0 Or rob(n).wall Then goto getout
+  If rob(n).body <= 0 Then GoTo getout
   
-  vel = VectorScalar(VectorSub(rob(n).vel, Shots(t).velocity), 0.5) 'half the relative velocity of
+  
+  
+  vel = VectorSub(rob(n).vel, Shots(t).velocity) 'negative relative velocity of shot hitting bot
+                                                 'the shot to the hit bot
+  vel = VectorAdd(vel, VectorScalar(rob(n).vel, 0.5)) 'then add in half the velocity of hit robot
+ ' vel = VectorScalar(VectorSub(rob(n).vel, Shots(t).velocity), 0.5) 'half the relative velocity of
                                                                      'the shot to the hit bot
-  vel = VectorAdd(vel, rob(n).vel) 'then add in the velocity of hit robot
+  'vel = VectorAdd(vel, rob(n).vel) 'then add in the velocity of hit robot
   
   If SimOpts.EnergyExType Then
     If Shots(t).Range = 0 Then ' Divide by zero protection
@@ -572,14 +609,16 @@ Private Sub releasebod(n As Integer, t As Long) 'a robot is shot by a -6 shot an
   If power < shell Then
     rob(n).shell = rob(n).shell - power / ShellEffectiveness
     If rob(n).shell < 0 Then rob(n).shell = 0
-    Exit Sub
+    rob(n).mem(823) = rob(n).shell
+    GoTo getout
   Else
     rob(n).shell = rob(n).shell - power / ShellEffectiveness
     If rob(n).shell < 0 Then rob(n).shell = 0
+    rob(n).mem(823) = rob(n).shell
     power = power - shell
   End If
   
-  If power <= 0 Then Exit Sub
+  If power <= 0 Then GoTo getout
   
   Range = Shots(t).Range * 2   'new range formula based on range of incoming shot
   
@@ -639,21 +678,23 @@ Private Sub releasebod(n As Integer, t As Long) 'a robot is shot by a -6 shot an
     rob(n).radius = FindRadius(rob(n).body)
   End If
   
-  If rob(n).body <= 0 Or rob(n).nrg <= 0 Then
+  If rob(n).body <= 0.5 Or rob(n).nrg <= 0.5 Then
     rob(n).Dead = True
     rob(Shots(t).parent).Kills = rob(Shots(t).parent).Kills + 1
     rob(Shots(t).parent).mem(220) = rob(Shots(t).parent).Kills
   End If
   
-  createshot Shots(t).pos.x, Shots(t).pos.y, vel.x, vel.y, -2, n, power, Range * (RobSize / 3), vbWhite
+  createshot Shots(t).pos.X, Shots(t).pos.Y, vel.X, vel.Y, -2, n, power, Range * (RobSize / 3), vbWhite
+getout:
 End Sub
 
 ' robot n takes the energy carried by shot t
 Private Sub takenrg(n As Integer, t As Long)
   Dim partial As Single
-   
-  'If rob(n).Corpse Or rob(n).wall Then Exit Sub
-  If rob(n).Corpse Then Exit Sub
+  Dim overflow As Single
+     
+  'If rob(n).Corpse Or rob(n).wall Then goto getout
+  If rob(n).Corpse Then GoTo getout
   
   If Shots(t).Range < 0.00001 Then
     partial = 0
@@ -665,34 +706,36 @@ Private Sub takenrg(n As Integer, t As Long)
    ' End If
   End If
 
-  If (rob(n).nrg + partial * 0.8) > 32000 Then
-    rob(n).nrg = 32000
+  If (rob(n).nrg + partial * 0.95) > 32000 Then
+   overflow = rob(n).nrg + (partial * 0.95) - 32000
+   rob(n).nrg = 32000
   Else
-    rob(n).nrg = rob(n).nrg + partial * 0.8       'most of energy goes to nrg
+    rob(n).nrg = rob(n).nrg + partial * 0.95       '95% of energy goes to nrg
   End If
   
-  If (rob(n).body + partial * 0.019) > 32000 Then
+  If (rob(n).body + partial * 0.004) + (overflow * 0.1) > 32000 Then
     rob(n).body = 32000
   Else
-    rob(n).body = rob(n).body + partial * 0.019       'a bit goes to body
+    rob(n).body = rob(n).body + (partial * 0.004) + (overflow * 0.1)      '4% goes to body
   End If
   
-  rob(n).Waste = rob(n).Waste + partial * 0.01  'tiny amount goes to waste
+  rob(n).Waste = rob(n).Waste + partial * 0.01  '1% goes to waste
  
   'Shots(t).Exist = False
   rob(n).radius = FindRadius(rob(n).body)
+getout:
 End Sub
 '  robot takes a venomous shot and becomes seriously messed up
 Private Sub takeven(n As Integer, t As Long)
   Dim power As Single
   Dim temp As Single
    
-  'If rob(n).Corpse Or rob(n).wall Then Exit Sub
-  If rob(n).Corpse Then Exit Sub
+  'If rob(n).Corpse Or rob(n).wall Then goto getout
+  If rob(n).Corpse Then GoTo getout
   
   power = CSng(Shots(t).nrg / CSng((Shots(t).Range * (RobSize / 3))) * Shots(t).value)
   
-  If Shots(t).Memloc = 340 Or power < 1 Then Exit Sub 'protection from delgene attacks
+  If Shots(t).Memloc = 340 Or power < 1 Then GoTo getout 'protection from delgene attacks
   
   If Shots(t).FromSpecie = rob(n).FName Then   'Robot is immune to venom from his own species
     rob(n).venom = rob(n).venom + power   'Robot absorbs venom fired by conspec
@@ -704,14 +747,16 @@ Private Sub takeven(n As Integer, t As Long)
   Else
     If power < rob(n).shell * ShellEffectiveness Then
       rob(n).shell = rob(n).shell - power / ShellEffectiveness
+      rob(n).mem(823) = rob(n).shell
     Else
       temp = power
       power = power - rob(n).shell * ShellEffectiveness
       rob(n).shell = rob(n).shell - temp / ShellEffectiveness
       If rob(n).shell < 0 Then rob(n).shell = 0
+      rob(n).mem(823) = rob(n).shell
     End If
     
-    If power < 0 Then Exit Sub
+    If power < 0 Then GoTo getout
     
     rob(n).Paralyzed = True
     
@@ -732,28 +777,30 @@ Private Sub takeven(n As Integer, t As Long)
     rob(n).Vval = Shots(t).Memval
   End If
   'Shots(t).Exist = False
+getout:
 End Sub
 '  Robot n takes shot t and adds its value to his waste reservoir
 Private Sub takewaste(n As Integer, t As Long)
   Dim power As Single
   
-'  If rob(n).wall Then Exit Sub
+'  If rob(n).wall Then goto getout
   
   power = Shots(t).nrg / (Shots(t).Range * (RobSize / 3)) * Shots(t).value
-  If power < 0 Then Exit Sub
+  If power < 0 Then GoTo getout
   rob(n).Waste = rob(n).Waste + power
  ' Shots(t).Exist = False
+getout:
 End Sub
 ' Robot receives poison shot and becomes disorientated
 Private Sub takepoison(n As Integer, t As Long)
   Dim power As Single
    
-  'If rob(n).Corpse Or rob(n).wall Then Exit Sub
-  If rob(n).Corpse Then Exit Sub
+  'If rob(n).Corpse Or rob(n).wall Then goto getout
+  If rob(n).Corpse Then GoTo getout
   
-  power = Shots(t).nrg / (Shots(t).Range * (RobSize / 3)) * Shots(t).value
+  power = Shots(t).nrg / (Shots(t).Range * 40) * Shots(t).value
   
-  If Shots(t).FromSpecie = rob(n).FName Then    'Robot is imune to poison from his own species
+  If Shots(t).FromSpecie = rob(n).FName Then    'Robot is immune to poison from his own species
     rob(n).poison = rob(n).poison + power 'Robot absorbs poison fired by conspecs
     If rob(n).poison > 32000 Then rob(n).poison = 32000
     rob(n).mem(827) = rob(n).poison
@@ -768,6 +815,20 @@ Private Sub takepoison(n As Integer, t As Long)
     End If
   End If
 '  Shots(t).Exist = False
+getout:
+End Sub
+
+'Robot is hit by sperm shot and becomes fertilized for potential sexual reproduction
+Private Sub takesperm(n As Integer, t As Long)
+  Dim X As Integer
+  
+  If Shots(t).DnaLen = 0 Then GoTo getout
+  rob(n).fertilized = 10                      ' bots stay fertilized for 10 cycles currently
+  rob(n).mem(SYSFERTILIZED) = 10
+  ReDim rob(n).spermDNA(Shots(t).DnaLen)      ' copy the male's DNA to the female's bot structure
+  rob(n).spermDNA = Shots(t).DNA
+  rob(n).spermDNAlen = Shots(t).DnaLen
+getout:
 End Sub
 
 '' checks the collisions between robots and shots
@@ -836,43 +897,43 @@ Private Function NewShotCollision(shotnum As Long) As Integer
   Dim P As vector 'Position Vector - Realtive positions of bot and shot over time
   Dim L1 As Single
   Dim P2 As Single
-  Dim x As Single
-  Dim y As Single
+  Dim X As Single
+  Dim Y As Single
   Dim DdotP As Single
   Dim usetime0 As Boolean
   Dim usetime1 As Boolean
   
-  ' Check for collisions with teh field edges
+  ' Check for collisions with the field edges
   With Shots(shotnum)
     If SimOpts.Updnconnected = True Then
-      If .pos.y > SimOpts.FieldHeight Then
-        .pos.y = .pos.y - SimOpts.FieldHeight
-      ElseIf .pos.y < 0 Then
-        .pos.y = .pos.y + SimOpts.FieldHeight
+      If .pos.Y > SimOpts.FieldHeight Then
+        .pos.Y = .pos.Y - SimOpts.FieldHeight
+      ElseIf .pos.Y < 0 Then
+        .pos.Y = .pos.Y + SimOpts.FieldHeight
       End If
     Else
-      If .pos.y > SimOpts.FieldHeight Then
-        .pos.y = SimOpts.FieldHeight
-        .velocity.y = -1 * Abs(.velocity.y)
-      ElseIf .pos.y < 0 Then
-        .pos.y = 0
-        .velocity.y = Abs(.velocity.y)
+      If .pos.Y > SimOpts.FieldHeight Then
+        .pos.Y = SimOpts.FieldHeight
+        .velocity.Y = -1 * Abs(.velocity.Y)
+      ElseIf .pos.Y < 0 Then
+        .pos.Y = 0
+        .velocity.Y = Abs(.velocity.Y)
       End If
     End If
      
     If SimOpts.Dxsxconnected = True Then
-      If .pos.x > SimOpts.FieldWidth Then
-        .pos.x = .pos.x - SimOpts.FieldWidth
-      ElseIf .pos.x < 0 Then
-        .pos.x = .pos.x + SimOpts.FieldWidth
+      If .pos.X > SimOpts.FieldWidth Then
+        .pos.X = .pos.X - SimOpts.FieldWidth
+      ElseIf .pos.X < 0 Then
+        .pos.X = .pos.X + SimOpts.FieldWidth
       End If
     Else
-      If .pos.x > SimOpts.FieldWidth Then
-        .pos.x = SimOpts.FieldWidth
-        .velocity.x = -1 * Abs(.velocity.x)
-      ElseIf .pos.x < 0 Then
-        .pos.x = 0
-        .velocity.x = Abs(.velocity.x)
+      If .pos.X > SimOpts.FieldWidth Then
+        .pos.X = SimOpts.FieldWidth
+        .velocity.X = -1 * Abs(.velocity.X)
+      ElseIf .pos.X < 0 Then
+        .pos.X = 0
+        .velocity.X = Abs(.velocity.X)
       End If
     End If
   End With
@@ -893,7 +954,7 @@ Private Function NewShotCollision(shotnum As Long) As Integer
     'fired the shot, it can't be a wall bot and it has to be close enough that an impact is possible.  Note that for perf reasons we
     'ignore edge cases here where the field is a torus and a shot wraps around so it's possible to miss collisons in such cases.
     If rob(robnum).exist And (Shots(shotnum).parent <> robnum) And _
-     (Abs(Shots(shotnum).opos.x - rob(robnum).pos.x) < MaxBotShotSeperation And Abs(Shots(shotnum).opos.y - rob(robnum).pos.y) < MaxBotShotSeperation) Then
+     (Abs(Shots(shotnum).opos.X - rob(robnum).pos.X) < MaxBotShotSeperation And Abs(Shots(shotnum).opos.Y - rob(robnum).pos.Y) < MaxBotShotSeperation) Then
         
         r = rob(robnum).radius ' + 5 ' Tweak the bot radius up a bit to handle the issue with bots appearing a little larger than then are
        
@@ -913,21 +974,21 @@ Private Function NewShotCollision(shotnum As Long) As Integer
         End If
         
         vb = rob(robnum).vel
-        d = VectorSub(vs, vb) ' Vector of velocity change from both both and shot over time t
+        d = VectorSub(vs, vb) ' Vector of velocity change from both bot and shot over time t
         P2 = VectorMagnitudeSquare(P) ' |P|^2
           
         D2 = VectorMagnitudeSquare(d) ' |D|^2
         If D2 = 0 Then GoTo CheckRestOfBots
         DdotP = Dot(d, P)
-        x = -DdotP
-        y = DdotP ^ 2 - D2 * (P2 - r ^ 2)
+        X = -DdotP
+        Y = DdotP ^ 2 - D2 * (P2 - r ^ 2)
         
-        If y < 0 Then GoTo CheckRestOfBots ' No collision
+        If Y < 0 Then GoTo CheckRestOfBots ' No collision
         
-        y = Sqr(y)
+        Y = Sqr(Y)
                 
-        time0 = (x - y) / D2
-        time1 = (x + y) / D2
+        time0 = (X - Y) / D2
+        time1 = (X + Y) / D2
         
         usetime0 = False
         usetime1 = False
@@ -973,47 +1034,6 @@ FinialCollisionDetected:
   End If
 End Function
 
-'Private Function OldShotColl(n As Integer) As Long
-'  Dim ab As vector, ac As vector, bc As vector
-'  Dim MagAB As Single, a As Integer, robnumber As Integer
-'  Dim PXY As vector
-'  Dim dist As Single
-'
-'  With Shots(n)
-'  ab = VectorSub(.pos, .opos)
-'  MagAB = VectorMagnitudeSquare(ab)
-'
-'  For robnumber = 1 To MaxRobs
-'    If rob(robnumber).Exist Then
-'      PXY = rob(robnumber).pos
-'
-'      ac = VectorSub(PXY, .opos)
-'      bc = VectorSub(PXY, .pos)
-'
-'      'The below looks simple and like it makes no sense.  Trust me, it's accurate,
-'      'I've checked it twice
-'      If Dot(ab, ac) > 0 Then
-'        'if AB dot AC > 0 then nearest point is point B
-'        dist = VectorMagnitudeSquare(bc)
-'      ElseIf Dot(ab, bc) <= 0 Then
-'        'if AB dot BC < 0 then nearest point is point A
-'        dist = VectorMagnitudeSquare(ac)
-'      ElseIf MagAB > 0 Then
-'        '(AB cross AC)  / ||AB|| = distance
-'        'square both sides
-'        dist = Cross(ab, ac) ^ 2 / MagAB
-'      End If
-'
-'      If dist <= rob(robnumber).radius * rob(robnumber).radius Then
-'        If Shots(n).parent <> robnumber And rob(robnumber).Wall = False Then
-'          OldShotColl = robnumber
-'          Exit Function
-'        End If
-'      End If
-'    End If
-'  Next robnumber
-'  End With
-'End Function
 
 Public Sub Vshoot(n As Integer, thisshot As Long)
 'here we shoot a virus
@@ -1021,8 +1041,8 @@ Public Sub Vshoot(n As Integer, thisshot As Long)
 Dim tempa As Single
 Dim ShAngle As Single
 
-  If Not Shots(thisshot).exist Then Exit Sub
-  If Not Shots(thisshot).stored Then Exit Sub
+  If Not Shots(thisshot).exist Then GoTo getout
+  If Not Shots(thisshot).stored Then GoTo getout
   
   tempa = CSng(rob(n).mem(VshootSys)) * 20# '.vshoot * 20
   If tempa > 32000 Then tempa = 32000
@@ -1040,18 +1060,19 @@ Dim ShAngle As Single
   With Shots(thisshot)
     ShAngle = Random(1, 1256) / 200
     .stored = False
-    .pos.x = (rob(n).pos.x + Cos(ShAngle) * rob(n).radius)
-    .pos.y = (rob(n).pos.y - Sin(ShAngle) * rob(n).radius)
+    .pos.X = (rob(n).pos.X + Cos(ShAngle) * rob(n).radius)
+    .pos.Y = (rob(n).pos.Y - Sin(ShAngle) * rob(n).radius)
   
-    .velocity.x = absx(ShAngle, RobSize / 3, 0, 0, 0) ' set shot speed x seems to not work well at high bot speeds
-    .velocity.y = absy(ShAngle, RobSize / 3, 0, 0, 0) ' set shot speed y
+    .velocity.X = absx(ShAngle, RobSize / 3, 0, 0, 0) ' set shot speed x seems to not work well at high bot speeds
+    .velocity.Y = absy(ShAngle, RobSize / 3, 0, 0, 0) ' set shot speed y
   
-    .velocity.x = .velocity.x + rob(n).vel.x
-    .velocity.y = .velocity.y + rob(n).vel.y
+    .velocity.X = .velocity.X + rob(n).vel.X
+    .velocity.Y = .velocity.Y + rob(n).vel.Y
     
-    .opos.x = .pos.x - .velocity.x
-    .opos.y = .pos.y - .velocity.y
+    .opos.X = .pos.X - .velocity.X
+    .opos.Y = .pos.Y - .velocity.Y
   End With
+getout:
 End Sub
 
 Public Function MakeVirus(robn As Integer, ByVal gene As Integer) As Boolean
@@ -1069,35 +1090,39 @@ Public Function copygene(n As Long, ByVal P As Integer) As Boolean
   Dim parent As Integer
   Dim genelen As Integer
   Dim GeneStart As Long
-  Dim GeneEnd As Integer
+  Dim GeneEnding As Integer
   
   parent = Shots(n).parent
   
-  If P > CountGenes(rob(parent).DNA) Or P < 1 Then
-    ' target gene is not beyond the DNA bounds
+  If (P > rob(parent).genenum) Or P < 1 Then
+    ' target gene is beyond the DNA bounds
     copygene = False
-    Exit Function
+    GoTo getout
   End If
   
   GeneStart = genepos(rob(parent).DNA, P)
-  GeneEnd = NextStop(rob(parent).DNA, GeneStart + 1)
-  genelen = GeneEnd - GeneStart
+  GeneEnding = GeneEnd(rob(parent).DNA, GeneStart)
+  genelen = GeneEnding - GeneStart + 1
   
-  If genelen < 0 Then
+  If genelen < 1 Then
     copygene = False
-    Exit Function
+    GoTo getout
   End If
   
-  ReDim Preserve Shots(n).DNA(genelen + 1)
+  ReDim Shots(n).DNA(genelen)
   
-  Shots(n).DNA(genelen + 1).tipo = 10
-  Shots(n).DNA(genelen + 1).value = 1
+  ' Put an end on it just in case...
+ ' Shots(n).DNA(genelen).tipo = 10
+  'Shots(n).DNA(genelen).value = 1
   
-  For t = 0 To genelen
+  For t = 0 To genelen - 1
     Shots(n).DNA(t) = rob(parent).DNA(GeneStart + t)
   Next t
   
+  Shots(n).DnaLen = genelen
+  
   copygene = True
+getout:
 End Function
 ' adds gene from shot p to robot n dna
 Public Function addgene(n As Integer, ByVal P As Long) As Integer
@@ -1107,44 +1132,51 @@ Public Function addgene(n As Integer, ByVal P As Long) As Integer
   Dim Position As Integer   'gene position to insert the virus
   Dim power As Single
   
-  'If rob(n).Corpse Or rob(n).wall Then Exit Function
-  If rob(n).Corpse Then Exit Function
+  'Dead bodies and virus immune bots can't catch a virus
+  'In Internet mode, all non-veggy bots can catch a virus.  All vegs are virus immune in intenet mode.
+  If rob(n).Corpse Or (rob(n).VirusImmune And Not InternetMode) Or (InternetMode And rob(n).Veg) Then GoTo getout
   
   power = Shots(P).nrg / (Shots(P).Range * RobSize / 3) * Shots(P).value
   
   If power < rob(n).Slime * SlimeEffectiveness Then
     rob(n).Slime = rob(n).Slime - power / SlimeEffectiveness
-    Exit Function
+    GoTo getout
   Else
-  '  Dim temp As Single
-  '  temp = rob(n).Slime
-    
     rob(n).Slime = rob(n).Slime - power / SlimeEffectiveness
     power = power - rob(n).Slime * SlimeEffectiveness
-    If rob(n).Slime < 1 Then rob(n).Slime = 1
+    If rob(n).Slime < 0.5 Then rob(n).Slime = 0
   End If
   
-  Position = Random(0, CountGenes(rob(n).DNA))                  'randomize the gene number
-  Position = CountGenes(rob(n).DNA)
+  Position = Random(0, rob(n).genenum)                  'randomize the gene number
   If Position = 0 Then
-    Insert = 1
+    Insert = 0
   Else
-    Insert = NextStop(rob(n).DNA, genepos(rob(n).DNA, Position)) + 1 ' EricL Missing a +1 here?
-  '  If Insert > (rob(n).DnaLen - 1) Then Insert = rob(n).DnaLen - 1
+    Insert = GeneEnd(rob(n).DNA, genepos(rob(n).DNA, Position))
+    If Insert = (rob(n).DnaLen) Then
+      Insert = rob(n).DnaLen
+    End If
   End If
-  'insert now points to the space directly after the gene we're adding this after
   
-  vlen = DnaLen(Shots(P).DNA())
+'  vlen = DnaLen(Shots(P).DNA())
+  vlen = Shots(P).DnaLen
   
-  If MakeSpace(rob(n).DNA, Insert - 1, vlen) Then 'Moves gene back to make space
+  If MakeSpace(rob(n).DNA, Insert, vlen) Then 'Moves genes back to make space
     For t = Insert To Insert + vlen - 1
-      rob(n).DNA(t) = Shots(P).DNA(t - Insert)
+      rob(n).DNA(t + 1) = Shots(P).DNA(t - Insert)
     Next t
   End If
   
   makeoccurrlist n
   rob(n).DnaLen = DnaLen(rob(n).DNA())
   rob(n).genenum = CountGenes(rob(n).DNA)
+  rob(n).mem(DnaLenSys) = rob(n).DnaLen
+  rob(n).mem(GenesSys) = rob(n).genenum
+  
+  rob(n).SubSpecies = NewSubSpecies(n) ' Infection with a virus counts as a new subspecies
+  rob(n).LastMutDetail = "Infected with virus of length " + Str(vlen) + " during cycle " + Str(SimOpts.TotRunCycle) + " at pos " + Str(Insert) + vbCrLf + rob(n).LastMutDetail
+  rob(n).Mutations = rob(n).Mutations + 1
+  rob(n).LastMut = rob(n).LastMut + 1
+getout:
 End Function
 
 Private Function IsArrayBounded(ByRef ArrayIn() As shot) As Boolean
