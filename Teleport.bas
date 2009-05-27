@@ -62,11 +62,12 @@ Public Type InternetSim
 End Type
 
 Public Const MAXINTERNETSPECIES = 500
+Public Const MAXINTERNETSIMS = 100
 Public InternetSpecies(MAXINTERNETSPECIES) As datispecie ' Used for graphing the number of species in the inter connected internet sim
 Public numInternetSpecies As Integer
 Public namesOfInternetBots(MAXINTERNETSPECIES) As String
 Public numInternetSims As Integer
-Public InternetSims(100) As InternetSim
+Public InternetSims(MAXINTERNETSIMS) As InternetSim
 
 Public Function NewTeleporter(PortIn As Boolean, PortOut As Boolean, Height As Single, Internet As Boolean) As Integer
 Dim i As Integer
@@ -404,7 +405,7 @@ Dim currentFile As File
    
     ' Delete all remote pop files at midnight every night
     If Hour(DateTime.Now) = 0 And Minute(DateTime.Now) <= 5 Then
-      If Right(currentFile.Name, 3) = "pop" Then
+      If Right(currentFile.Name, 3) = "pop" Or Right(currentFile.Name, 3) = "del" Then
          IntOpts.DeleteRemotePopFile currentFile.Name ' Delete the remote file
       End If
     End If
@@ -417,9 +418,9 @@ Dim currentFile As File
         currentFile.Delete
 bypass:
   
-   ElseIf Right(currentFile.Name, 3) = "pop" Then
+   ElseIf Right(currentFile.Name, 3) = "pop" Or Right(currentFile.Name, 3) = "del" Then
       numInternetSims = numInternetSims + 1
-      If numInternetSims > MAXINTERNETSPECIES Then numInternetSims = MAXINTERNETSPECIES
+      If numInternetSims > MAXINTERNETSIMS Then numInternetSims = MAXINTERNETSIMS
       LoadSimPopulationFile (MDIForm1.MainDir + "\Transfers\F1\" + currentFile.Name)
       InternetSims(numInternetSims).Name = Left(currentFile.Name, Len(currentFile.Name) - 4)
     End If

@@ -345,7 +345,7 @@ End Function
 ' root for organisms download
 ' downloads the directory (deciding in case to delete part of it)
 ' choses a random file and loads it
-Function LoadRandomOrgs(num As Integer, x As Single, Y As Single, Teleporter As Integer) As Boolean
+Function LoadRandomOrgs(num As Integer, X As Single, Y As Single, Teleporter As Integer) As Boolean
   On Error GoTo fine
   Dim DirList(150) As String
   Dim k, i, dirnum As Integer
@@ -391,7 +391,7 @@ Function LoadRandomOrgs(num As Integer, x As Single, Y As Single, Teleporter As 
   If i > dirnum Then i = dirnum
   While i > 0
     'k = Random(1, CInt(val(DirList(0))))
-    If DownloadOrganism(DirList(i), x, Y) = False Then GoTo getout
+    If DownloadOrganism(DirList(i), X, Y) = False Then GoTo getout
     If DeleteFile(DirList(i)) = False Then GoTo getout
     i = i - 1
   Wend
@@ -529,7 +529,7 @@ End Function
 ' organism download: takes the file name and spawn
 ' position, downloads it and loads it in the simulation
 ' Assumes FTP session is in place!!!!
-Private Function DownloadOrganism(Name As String, x As Single, Y As Single) As Boolean
+Private Function DownloadOrganism(Name As String, X As Single, Y As Single) As Boolean
   DownloadOrganism = False
   If DownloadFile(Name, MDIForm1.MainDir + "\Transfers\F1\in\") Then
     DownloadOrganism = True
