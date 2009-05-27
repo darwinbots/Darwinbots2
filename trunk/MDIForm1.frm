@@ -973,11 +973,6 @@ Function GetScreenBitmap(Optional ActiveWindow As Boolean) As Picture
 End Function
 
 
-
-Private Sub Smileys_Click()
-  Form1.Smileys = Not Form1.Smileys
-End Sub
-
 Private Sub AddTenObstacles_Click()
   AddRandomObstacles (10)
 End Sub
@@ -1348,29 +1343,6 @@ Private Sub Recording_Click()
   optionsform.Show vbModal
 End Sub
 
-Private Sub RemovePiccy_Click()
-  Form1.BackPic = ""
-  Form1.Picture = Nothing
-  Form1.PiccyMode = False
-End Sub
-'Private Sub DispGrid()
-'  Form1.Active = False
-'  Form1.SecTimer.Enabled = False
-'  envir.DrawGrid Gridmode
-'  Form1.DrawAllTies
-'  Form1.DrawAllRobs
-'  Form1.DrawShots
-'End Sub
-
-Private Sub Heat_Click()
-  Gridmode = 9
-  'DispGrid
-End Sub
-
-Private Sub O2_Click()
-  Gridmode = 5
-  'DispGrid
-End Sub
 
 Private Sub pause_Click()
   Form1.Active = Not Form1.Active
@@ -1545,8 +1517,6 @@ Private Sub Toolbar1_ButtonClick(ByVal button As MSComctlLib.button)
       insrob = Not insrob
     Case "snapshot"
       Snapshot
-    Case "smileymode"
-      Form1.Smileys = Not Form1.Smileys
     Case "Stealth"
       'hide the program from the task bar
       Form1.t.Add
@@ -1899,7 +1869,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
 
   globstrings
   strings Me

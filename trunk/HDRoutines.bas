@@ -47,7 +47,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As file
+  Dim robotFile As File
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -249,7 +249,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As file
+  Dim fileToDelete As File
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -310,7 +310,11 @@ Dim numSpeciesThisFile As Integer
   Get #10, , numSpeciesThisFile
       
   'numInternetSims is set to the current sim number before this routine is called.  So sloppy...
+  
+  
+  
   InternetSims(numInternetSims).population = 0
+  If (numInternetSpecies + numSpeciesThisFile - 1) < MAXINTERNETSPECIES Then
   For X = numInternetSpecies To (numInternetSpecies + numSpeciesThisFile - 1)
     Get #10, , k: InternetSpecies(X).Name = Space(k)
     Get #10, , InternetSpecies(X).Name
@@ -327,9 +331,9 @@ Dim numSpeciesThisFile As Integer
             
   Next X
   numInternetSpecies = numInternetSpecies + numSpeciesThisFile
+  End If
   Close 10
   Form1.MousePointer = vbArrow
-
 
 End Sub
 
@@ -1054,7 +1058,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     .BucketPos.Y = -2
      
     'ties
-    For t = 0 To 10
+    For t = 0 To MAXTIES
       Get #n, , .Ties(t).Port
       Get #n, , .Ties(t).pnt
       Get #n, , .Ties(t).ptt
@@ -1339,7 +1343,7 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     Put #n, , .ma           'momento angolare
     Put #n, , .mt           'momento torcente
     
-    For t = 0 To 10
+    For t = 0 To MAXTIES
       Put #n, , .Ties(t).Port
       Put #n, , .Ties(t).pnt
       Put #n, , .Ties(t).ptt

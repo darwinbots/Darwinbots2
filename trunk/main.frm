@@ -261,7 +261,6 @@ Dim DraggingBot As Boolean     ' EricL True while mouse is down dragging bot aro
 Public cyc As Integer          ' cycles/second
 Dim minutescount As Integer
 Public dispskin As Boolean  ' skin drawing enabled?
-Public Smileys As Boolean   ' silly routine to make smily faces
 Public Active As Boolean    ' sim running?
 Public visiblew As Single     ' field visible portion (for zoom)
 Public visibleh As Long
@@ -485,7 +484,6 @@ Private Sub DrawRobPer(n As Integer)
     FillColor = BackColor
 '  End If
   
-  If Not Smileys Then
       Circle (CentreX, CentreY), rob(n).radius, rob(n).color 'new line
       
       'Update the magnifying lens
@@ -575,57 +573,7 @@ Private Sub DrawRobPer(n As Integer)
       End If
       
     End If
-  Else
-    Diameter = 2 * radius
-    topX = CentreX - radius
-    topY = CentreY - radius
-    
-    If rob(n).Veg Then
-
-      Form1.PaintPicture Form1.PlantMask.Picture, _
-      topX, _
-      topY, _
-      Diameter, _
-      Diameter, _
-      Form1.ScaleLeft, _
-      Form1.ScaleTop, , , vbMergePaint
-      
-      Form1.PaintPicture Form1.Plant.Picture, _
-      topX, _
-      topY, _
-      Diameter, _
-      Diameter, _
-      Form1.ScaleLeft, _
-      Form1.ScaleTop, , , vbSrcAnd
   
-    Else
-     
-      botDirection = 7 - CInt((rob(n).aim) / PIOVER4 + 5) Mod 8
-     
-      'Form1.PaintPicture Bots.AntMask.Picture, _
-      topX, _
-      topY, _
-      Diameter, _
-      Diameter, _
-      Form1.ScaleLeft, _
-      CSng(Form1.ScaleTop + FortyEightOverTwipHeight * botDirection), _
-      FortyEightOverTwipWidth, FortyEightOverTwipHeight, vbMergePaint
-      
-      'Form1.PaintPicture Bots.Ant.Picture, _
-      topX, _
-      topY, _
-      Diameter, _
-      Diameter, _
-      Form1.ScaleLeft, _
-      CSng(Form1.ScaleTop + FortyEightOverTwipHeight * botDirection), _
-      FortyEightOverTwipWidth, FortyEightOverTwipHeight, vbSrcAnd
-    End If
-      
- ' Else
- '   For t = 0 To 6.28 Step Sdlen
- '    Line (CentreX + Cos(rob(n).aim + t) * radius, CentreY - Sin(rob(n).aim + t) * radius)-(CentreX + Cos(rob(n).aim + t + Sdlen) * radius, CentreY - Sin(rob(n).aim + t + Sdlen) * radius), rob(n).color
- '   Next t
-  End If
 End Sub
 
 ' draws rob perimeter if in distance
@@ -768,26 +716,6 @@ Private Sub DrawRobSkin(n As Integer)
   Dim y2 As Integer
   
   If rob(n).Corpse Then Exit Sub
-  
-  'If Smileys Then
-  '  With rob(n)
-  '    'Circle (rob(n).x + Half, rob(n).Y + Half), Half + rob(n).body / factor, rob(n).color 'new line
-  '    Circle (rob(n).x + (Half - 20), rob(n).Y + (Half - 20)), 20, rob(n).color
-  '    Circle (rob(n).x + (Half + 20), rob(n).Y + (Half - 20)), 20, rob(n).color
-  '    x1 = rob(n).x + Half - 30
-  '    y1 = rob(n).Y + Half + 20
-  '    x2 = rob(n).x + Half
-  '    y2 = rob(n).Y + Half + 45
-  '    Line (x1, y1)-(x2, y2), rob(n).color
-  '    x1 = x2
-  '    y1 = y2
-  '    x2 = rob(n).x + Half + 30
-  '    y2 = rob(n).Y + Half + 20
-  '    Line (x1, y1)-(x2, y2), rob(n).color
-      
-      'Line (rob(n).x + (Half - 25), rob(n).Y + (Half + 20))-(rob(n).x + (Half - 10), rob(n).Y + (Half + 25))
-  '  End With
-  If Not Smileys Then
     If rob(n).oaim <> rob(n).aim Then
       Dim t As Integer
       With rob(n)
@@ -809,7 +737,6 @@ Private Sub DrawRobSkin(n As Integer)
         Next t
       End With
     End If
-  End If
 End Sub
 
 ' draws ties

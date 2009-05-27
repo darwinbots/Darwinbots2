@@ -40,6 +40,8 @@ Public Const MAXNATIVESPECIES As Integer = 76 ' Max number of species that can b
 
 Public Species(MAXSPECIES) As datispecie
 
+Public Const MAXNUMEYES As Integer = 8
+
 
 ' definition of the SimOpts structure
 'BE VERY CAREFUL changing the TYPE of a variable

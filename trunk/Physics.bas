@@ -168,7 +168,7 @@ Dim a As Long
 'EricL 5/26/2006 Added for Perf
 If rob(n).numties = 0 Then GoTo getout
 
-For a = 0 To 10
+For a = 0 To MAXTIES
   If rob(n).Ties(a).pnt > 0 Then
     'If rob(n).Ties(a).pnt > n Then TieDrag2 n, rob(n).Ties(a).pnt
     TieDrag n, rob(n).Ties(a).pnt
@@ -520,7 +520,7 @@ Public Sub TieHooke(n As Integer, Optional timestep As Single = 0)
   With rob(n)
   
   k = 1
-  While k <= 10 And .Ties(k).pnt <> 0
+  While k <= MAXTIES And .Ties(k).pnt <> 0
     uv = VectorSub(.pos, rob(.Ties(k).pnt).pos)
     length = VectorMagnitude(uv)
           

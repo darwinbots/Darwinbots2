@@ -219,7 +219,7 @@ Public Sub Update_Ties(t As Integer)
    ' If tn Then  'routines only carried out if .tienum has a value
       
       k = 1
-      While .Ties(k).pnt > 0 And k < 10
+      While .Ties(k).pnt > 0 And k < MAXTIES
         If .Multibot And .Ties(k).type = 3 Then ' Has to be a multibot and tie has to have hardened
          
           'FixAng - fixes tie angle
@@ -658,7 +658,7 @@ End Sub
 Public Sub delallties(a As Integer)
   Dim i As Integer
   i = 1
-  While rob(a).Ties(1).pnt <> 0 And i <= 10
+  While rob(a).Ties(1).pnt <> 0 And i <= MAXTIES
     DeleteTie a, rob(a).Ties(1).pnt
     i = i + 1
   Wend
@@ -679,15 +679,15 @@ Public Sub DeleteTie(ByVal a As Integer, ByVal b As Integer)
   
   'Only allows 9 ties at present.  Change this?
   
-  While rob(a).Ties(k).pnt <> b And k < 10
+  While rob(a).Ties(k).pnt <> b And k < MAXTIES
     k = k + 1
   Wend
     
-  While rob(b).Ties(j).pnt <> a And j < 10
+  While rob(b).Ties(j).pnt <> a And j < MAXTIES
     j = j + 1
   Wend
   
-  If k < 10 Then
+  If k < MAXTIES Then
     rob(a).numties = rob(a).numties - 1 ' Decrement numties
     rob(a).mem(numties) = rob(a).numties
     If rob(a).mem(TIEPRES) = rob(a).Ties(k).Port Then ' we are deleting the last tie created.  Have to update .tiepres.
@@ -699,7 +699,7 @@ Public Sub DeleteTie(ByVal a As Integer, ByVal b As Integer)
     End If
   End If
   
-  If j < 10 Then
+  If j < MAXTIES Then
     rob(b).numties = rob(b).numties - 1 ' Decrement numties
     rob(b).mem(numties) = rob(b).numties
     If rob(b).mem(TIEPRES) = rob(b).Ties(j).Port Then ' we are deleting the last tie created.  Have to update .tiepres.
@@ -712,17 +712,17 @@ Public Sub DeleteTie(ByVal a As Integer, ByVal b As Integer)
   End If
     
     
-  For t = k To 9
+  For t = k To MAXTIES - 1
     rob(a).Ties(t) = rob(a).Ties(t + 1)
   Next t
       
-  rob(a).Ties(10).pnt = 0
+  rob(a).Ties(MAXTIES).pnt = 0
   
-  For t = j To 9
+  For t = j To MAXTIES - 1
     rob(b).Ties(t) = rob(b).Ties(t + 1)
   Next t
       
-  rob(b).Ties(10).pnt = 0
+  rob(b).Ties(MAXTIES).pnt = 0
 getout:
 End Sub
 
@@ -749,7 +749,7 @@ Public Function maketie(ByVal a As Integer, ByVal b As Integer, c As Long, last 
   If rob(a).exist = False Then GoTo getout
  
   deflect = Random(2, 92) 'random number which allows for the effect of slime on the target robot. If slime is greater then no tie is formed
-  Max = 10
+  Max = MAXTIES
   OK = True
   k = 1
   j = 1
