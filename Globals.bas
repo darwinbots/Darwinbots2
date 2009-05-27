@@ -77,22 +77,22 @@ Public Sub makepoff(n As Integer)
   Dim vs As Integer
   Dim vx As Integer
   Dim vy As Integer
-  Dim X As Long
+  Dim x As Long
   Dim Y As Long
   Dim t As Byte
   For t = 1 To 20
     an = (640 / 20) * t
     vs = Random(RobSize / 40, RobSize / 30)
-    vx = rob(n).vel.X + absx(an / 100, vs, 0, 0, 0)
+    vx = rob(n).vel.x + absx(an / 100, vs, 0, 0, 0)
     vy = rob(n).vel.Y + absy(an / 100, vs, 0, 0, 0)
     With rob(n)
-    X = Random(.pos.X - .radius, .pos.X + .radius)
+    x = Random(.pos.x - .radius, .pos.x + .radius)
     Y = Random(.pos.Y - .radius, .pos.Y + .radius)
     End With
     If Random(1, 2) = 1 Then
-      createshot X, Y, vx, vy, -100, 0, 0, RobSize * 2, rob(n).color
+      createshot x, Y, vx, vy, -100, 0, 0, RobSize * 2, rob(n).color
     Else
-      createshot X, Y, vx, vy, -100, 0, 0, RobSize * 2, DBrite(rob(n).color)
+      createshot x, Y, vx, vy, -100, 0, 0, RobSize * 2, DBrite(rob(n).color)
     End If
   Next t
 End Sub
@@ -100,35 +100,48 @@ End Sub
 ' not sure where to put this function, so it's going here
 ' adds robots on the fly loading the script of specie(r)
 ' if r=-1 loads a vegetable (used for repopulation)
-Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
+Public Sub aggiungirob(r As Integer, x As Single, Y As Single)
   Dim k As Integer
   Dim a As Integer
   Dim i As Integer
+  Dim counter As Integer
+  
   If r = -1 Then
-    r = 0
+    counter = 0
+    r = Random(0, SimOpts.SpeciesNum - 1)  ' start randomly in the list of species
     
-    While Not SimOpts.Specie(r).Veg And r < 40
-      r = r + 1
+    'Now walk all the species to find a veg.  Should repopulate randomly form all the vegs in the sim
+    While ((Not SimOpts.Specie(r).Veg) Or (Not SimOpts.Specie(r).Native)) And counter < SimOpts.SpeciesNum
+       r = r + 1
+       If r = SimOpts.SpeciesNum Then r = 0
+       counter = counter + 1
     Wend
     
-    If Not SimOpts.Specie(r).Veg Then
-      'MsgBox "Cannot repopulate with vegetables: add autotroph species or disable repopulation", vbOKOnly + vbCritical, "Warning!"
+    If Not SimOpts.Specie(r).Veg Or Not SimOpts.Specie(r).Native Then
+    '  MsgBox "Cannot repopulate with vegetables: add autotroph species or disable repopulation", vbOKOnly + vbCritical, "Warning!"
       'Active = False
       'Form1.SecTimer.Enabled = False
-      Exit Sub
+      GoTo getout
     End If
     
-    X = fRnd(SimOpts.Specie(r).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(r).Posrg * (SimOpts.FieldWidth - 60))
+    x = fRnd(SimOpts.Specie(r).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(r).Posrg * (SimOpts.FieldWidth - 60))
     Y = fRnd(SimOpts.Specie(r).Postp * (SimOpts.FieldHeight - 60), SimOpts.Specie(r).Posdn * (SimOpts.FieldHeight - 60))
   End If
   
   If SimOpts.Specie(r).Name <> "" And SimOpts.Specie(r).path <> "Invalid Path" Then
     a = RobScriptLoad(respath(SimOpts.Specie(r).path) + "\" + SimOpts.Specie(r).Name)
+    If a < 0 Then
+      SimOpts.Specie(r).Native = False
+      GoTo getout
+    End If
     
     'Check to see if we were able to load the bot.  If we can't, the path may be wrong, the sim may have
     'come from another machine with a different install path.  Set the species path to an empty string to
     'prevent endless looping of error dialogs.
-    If Not rob(a).exist Then SimOpts.Specie(r).path = "Invalid Path"
+    If Not rob(a).exist Then
+      SimOpts.Specie(r).path = "Invalid Path"
+      GoTo getout
+    End If
     
     rob(a).Veg = SimOpts.Specie(r).Veg
     'NewMove loaded via robscriptload
@@ -137,6 +150,7 @@ Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
     rob(a).DisableDNA = SimOpts.Specie(r).DisableDNA
     rob(a).DisableMovementSysvars = SimOpts.Specie(r).DisableMovementSysvars
     rob(a).CantReproduce = SimOpts.Specie(r).CantReproduce
+    rob(a).VirusImmune = SimOpts.Specie(r).VirusImmune
     rob(a).Corpse = False
     rob(a).Dead = False
     rob(a).body = 1000
@@ -161,15 +175,22 @@ Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
       rob(a).Shape = Random(3, 5)
     End If
     If rob(a).Fixed Then rob(a).mem(216) = 1
-    rob(a).pos.X = X
+    rob(a).pos.x = x
     rob(a).pos.Y = Y
-    'UpdateBotBucket a
+    'Bot is already in a bucket due to the prepare routine
+   ' rob(a).BucketPos.x = -2
+   ' rob(a).BucketPos.Y = -2
+    UpdateBotBucket a
     rob(a).nrg = SimOpts.Specie(r).Stnrg
    ' EnergyAddedPerCycle = EnergyAddedPerCycle + rob(a).nrg
     rob(a).Mutables = SimOpts.Specie(r).Mutables
     
     rob(a).Vtimer = 0
     rob(a).virusshot = 0
+    rob(a).genenum = CountGenes(rob(a).DNA)
+    rob(a).DnaLen = DnaLen(rob(a).DNA())
+    rob(a).mem(DnaLenSys) = rob(a).DnaLen
+    rob(a).mem(GenesSys) = rob(a).genenum
     
     
     For i = 1 To 13
@@ -178,5 +199,6 @@ Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
     rob(a).color = SimOpts.Specie(r).color
     makeoccurrlist a
   End If
+getout:
 End Sub
 

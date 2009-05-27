@@ -18,7 +18,7 @@ End Sub
 
 ' touch: tells a robot whether it has been hit by another one
 ' and where: up, dn dx, sx
-Public Sub touch(ByVal a As Long, ByVal X As Long, ByVal Y As Long)
+Public Sub touch(ByVal a As Long, ByVal x As Long, ByVal Y As Long)
   Dim xc As Single
   Dim yc As Single
   Dim dx As Single
@@ -28,9 +28,9 @@ Public Sub touch(ByVal a As Long, ByVal X As Long, ByVal Y As Long)
   Dim aim As Single
   Dim dang As Single
   aim = 6.28 - rob(a).aim
-  xc = rob(a).pos.X
+  xc = rob(a).pos.x
   yc = rob(a).pos.Y
-  dx = X - xc
+  dx = x - xc
   dy = Y - yc
   
   If dx <> 0 Then
@@ -58,7 +58,7 @@ End Sub
 ' taste: same as for touch, but for shots, and gives back
 ' also the flavour of the shot, that is, its shottype
 ' value
-Public Sub taste(a As Integer, ByVal X As Long, ByVal Y As Long, value As Integer)
+Public Sub taste(a As Integer, ByVal x As Single, ByVal Y As Single, value As Integer)
   Dim xc As Single
   Dim yc As Single
   Dim dx As Single
@@ -68,9 +68,9 @@ Public Sub taste(a As Integer, ByVal X As Long, ByVal Y As Long, value As Intege
   Dim aim As Single
   Dim dang As Single
   aim = 6.28 - rob(a).aim
-  xc = rob(a).pos.X
+  xc = rob(a).pos.x
   yc = rob(a).pos.Y
-  dx = X - xc
+  dx = x - xc
   dy = Y - yc
   If dx <> 0 Then
     tn = dy / dx
@@ -102,11 +102,14 @@ Public Sub EraseSenses(n As Integer)
     .mem(hitdn) = 0
     .mem(hitdx) = 0
     .mem(hitsx) = 0
+    .mem(hit) = 0
     .mem(shup) = 0
     .mem(shdn) = 0
     .mem(shdx) = 0
     .mem(shsx) = 0
     .mem(214) = 0   'edge collision detection
+    EraseLookOccurr (n)
+    
    'EricL - *trefvars now persist across cycles
    ' For l = 1 To 10 ' resets *trefvars
    '   .mem(455 + l) = 0
@@ -122,23 +125,22 @@ Public Function BasicProximity(n As Integer, Optional force As Boolean = False) 
   Dim counter As Integer
   Dim u As vector
   Dim dotty As Long, crossy As Long
-  Dim X As Integer
+  Dim x As Integer
   
   'until I get some better data structures, this will ahve to do
   
   rob(n).lastopp = 0
   rob(n).lastopptype = 0 ' set the default type of object seen to a bot.
   rob(n).mem(EYEF) = 0
-  For X = EyeStart + 1 To EyeEnd - 1
-    rob(n).mem(X) = 0
-  Next X
+  For x = EyeStart + 1 To EyeEnd - 1
+    rob(n).mem(x) = 0
+  Next x
   
-  'Commented out the line below because we have to populate eyes for every bot, even for those without .eye sysvars
+  'We have to populate eyes for every bot, even for those without .eye sysvars
   'since they could evolve indirect addressing of the eye sysvars.
-  'If rob(n).View = True Or force = True Then
   For counter = 1 To MaxRobs
     If n <> counter And rob(counter).exist Then
-       CompareRobots3 n, counter, 12
+       CompareRobots3 n, counter
     End If
   Next counter
   
@@ -147,17 +149,34 @@ Public Function BasicProximity(n As Integer, Optional force As Boolean = False) 
   BasicProximity = rob(n).lastopp ' return the index of the last viewed object
 End Function
 
+'Returns the index into the Specie array to which a given bot conforms
+Public Function SpeciesFromBot(n As Integer) As Integer
+Dim i As Integer
+
+i = 0
+While SimOpts.Specie(i).Name <> rob(n).FName And i < SimOpts.SpeciesNum
+   i = i + 1
+Wend
+SpeciesFromBot = i
+End Function
+
+
 ' writes some senses: view, .ref* vars, absvel
 ' pain, pleas, nrg
 Public Sub WriteSenses(n As Integer)
   Dim t As Integer
+  Dim i As Integer
+  Dim temp As Single
+  
   LandMark n
   With rob(n)
-    'view isn't working some of the time
-    'BucketsProximity n
+   
+    .mem(TOTALBOTS) = TotalRobots
+    .mem(TOTALMYSPECIES) = SimOpts.Specie(SpeciesFromBot(n)).population
     
     If Not .CantSee And Not .Corpse Then
-      If BasicProximity(n) > 0 Then
+      If BucketsProximity(n) > 0 Then
+      'If BasicProximity(n) > 0 Then
         'There is somethign visable in the focus eye
         If .lastopptype = 0 Then lookoccurr n, .lastopp ' It's a bot.  Populate the refvar sysvars
         If .lastopptype = 1 Then lookoccurrShape n, .lastopp
@@ -177,13 +196,20 @@ Public Sub WriteSenses(n As Integer)
     .mem(pleas) = CInt(.nrg - .onrg)
     .mem(bodloss) = CInt(.obody - .body)
     .mem(bodgain) = CInt(.body - .obody)
+    
     .onrg = .nrg
     .obody = .body
     .mem(Energy) = CInt(.nrg)
     If .age = 0 And .mem(body) = 0 Then .mem(body) = .body 'to stop an odd bug in birth.  Don't ask
     If .Fixed Then .mem(215) = 1 Else .mem(215) = 0
-    If .pos.Y <= 32000 And .pos.Y >= 0 Then .mem(217) = .pos.Y
-    If .pos.X <= 32000 And .pos.X >= 0 Then .mem(219) = .pos.X
+    'If .pos.Y <= 32000 And .pos.Y >= 0 Then .mem(217) = .pos.Y
+    temp = Int((.pos.Y / Form1.yDivisor) / 32000#)
+    temp = (.pos.Y / Form1.yDivisor) - (temp * 32000#)
+    .mem(217) = CInt(temp Mod 32000)
+    'If .pos.X <= 32000 And .pos.X >= 0 Then .mem(219) = .pos.X
+    temp = Int((.pos.x / Form1.xDivisor) / 32000#)
+    temp = (.pos.x / Form1.xDivisor) - (temp * 32000#)
+    .mem(219) = CInt(temp Mod 32000)
     If SimOpts.Daytime Then
       .mem(218) = 1
     Else
@@ -195,7 +221,7 @@ End Sub
 ' copies the occurr array of a viewed robot
 ' in the ref* vars of the viewing one
 Public Sub lookoccurr(ByVal n As Integer, ByVal o As Integer)
-  If rob(n).Corpse Then Exit Sub
+  If rob(n).Corpse Then GoTo getout
   Dim t As Byte
   
   rob(n).mem(REFTYPE) = 0
@@ -204,7 +230,9 @@ Public Sub lookoccurr(ByVal n As Integer, ByVal o As Integer)
     rob(n).mem(occurrstart + t) = rob(o).occurr(t)
   Next t
   
-  If rob(o).nrg < 32001 Then
+  If rob(o).nrg < 0 Then
+     rob(n).mem(occurrstart + 9) = 0
+  ElseIf rob(o).nrg < 32001 Then
     rob(n).mem(occurrstart + 9) = rob(o).nrg
   Else
     rob(n).mem(occurrstart + 9) = 32000
@@ -221,6 +249,12 @@ Public Sub lookoccurr(ByVal n As Integer, ByVal o As Integer)
   rob(n).mem(in3) = rob(o).mem(out3)
   rob(n).mem(in4) = rob(o).mem(out4)
   rob(n).mem(in5) = rob(o).mem(out5)
+  rob(n).mem(in6) = rob(o).mem(out6)
+  rob(n).mem(in7) = rob(o).mem(out7)
+  rob(n).mem(in8) = rob(o).mem(out8)
+  rob(n).mem(in9) = rob(o).mem(out9)
+  rob(n).mem(in10) = rob(o).mem(out10)
+  
   rob(n).mem(711) = rob(o).mem(18)      'refaim
   rob(n).mem(712) = rob(o).occurr(9)    'reftie
   rob(n).mem(refshell) = rob(o).shell
@@ -228,9 +262,9 @@ Public Sub lookoccurr(ByVal n As Integer, ByVal o As Integer)
   rob(n).mem(refypos) = rob(o).mem(217)
   rob(n).mem(refxpos) = rob(o).mem(219)
   'give reference variables from the bots frame of reference
-  rob(n).mem(refvelup) = (rob(o).vel.X * Cos(rob(n).aim) + rob(o).vel.Y * Sin(rob(n).aim) * -1) - rob(n).mem(velup)
+  rob(n).mem(refvelup) = (rob(o).vel.x * Cos(rob(n).aim) + rob(o).vel.Y * Sin(rob(n).aim) * -1) - rob(n).mem(velup)
   rob(n).mem(refveldn) = rob(n).mem(refvelup) * -1
-  rob(n).mem(refveldx) = (rob(o).vel.Y * Cos(rob(n).aim) + rob(o).vel.X * Sin(rob(n).aim)) - rob(n).mem(veldx)
+  rob(n).mem(refveldx) = (rob(o).vel.Y * Cos(rob(n).aim) + rob(o).vel.x * Sin(rob(n).aim)) - rob(n).mem(veldx)
   rob(n).mem(refvelsx) = rob(n).mem(refvelsx) * -1
   Dim temp As Single
   temp = Sqr(CLng(rob(n).mem(refvelup) ^ 2) + CLng(rob(n).mem(refveldx) ^ 2))  ' how fast is this robot moving compared to me?
@@ -256,16 +290,55 @@ Public Sub lookoccurr(ByVal n As Integer, ByVal o As Integer)
   Else
     rob(n).mem(477) = 0
   End If
-  rob(n).mem(825) = rob(n).venom
-  rob(n).mem(827) = rob(n).poison
+ ' rob(n).mem(825) = Int(rob(o).venom)
+  'rob(n).mem(827) = Int(rob(o).poison)
+getout:
 End Sub
 
-' sets up teh refvars for a viewed shape
+' Erases the occurr array
+Public Sub EraseLookOccurr(ByVal n As Integer)
+  
+  If rob(n).Corpse Then GoTo getout
+  
+  Dim t As Byte
+  
+  rob(n).mem(REFTYPE) = 0
+  
+  For t = 1 To 10
+    rob(n).mem(occurrstart + t) = 0
+  Next t
+  
+  rob(n).mem(in1) = 0
+  rob(n).mem(in2) = 0
+  rob(n).mem(in3) = 0
+  rob(n).mem(in4) = 0
+  rob(n).mem(in5) = 0
+  rob(n).mem(711) = 0      'refaim
+  rob(n).mem(712) = 0    'reftie
+  rob(n).mem(refshell) = 0
+  rob(n).mem(refbody) = 0
+  rob(n).mem(refypos) = 0
+  rob(n).mem(refxpos) = 0
+  rob(n).mem(refvelup) = 0
+  rob(n).mem(refveldn) = 0
+  rob(n).mem(refveldx) = 0
+  rob(n).mem(refvelsx) = 0
+  rob(n).mem(refvelscalar) = 0
+  rob(n).mem(713) = 0        'refpoison. current value of poison. not poison commands
+  rob(n).mem(714) = 0        'refvenom (as with poison)
+  rob(n).mem(715) = 0        'refkills
+  rob(n).mem(refmulti) = 0
+  rob(n).mem(473) = 0
+  rob(n).mem(477) = 0
+getout:
+End Sub
+
+' sets up the refvars for a viewed shape
 ' in the ref* vars of the viewing one
 Public Sub lookoccurrShape(ByVal n As Integer, ByVal o As Integer)
   ' bot n has shape o in it's focus eye
   
-  If rob(n).Corpse Then Exit Sub
+  If rob(n).Corpse Then GoTo getout
   Dim t As Byte
   
   rob(n).mem(REFTYPE) = 1
@@ -288,26 +361,13 @@ Public Sub lookoccurrShape(ByVal n As Integer, ByVal o As Integer)
   rob(n).mem(refshell) = 0
   rob(n).mem(refbody) = 0
   
-  If Obstacles.Obstacles(o).pos.X > 32000 Then
-    rob(n).mem(refxpos) = 32000
-  ElseIf Obstacles.Obstacles(o).pos.X < 32000 Then
-    rob(n).mem(refxpos) = -32000
-  Else
-    rob(n).mem(refxpos) = CInt(Obstacles.Obstacles(o).pos.X)
-  End If
-  
-  If Obstacles.Obstacles(o).pos.Y > 32000 Then
-    rob(n).mem(refypos) = 32000
-  ElseIf Obstacles.Obstacles(o).pos.Y < 32000 Then
-    rob(n).mem(refypos) = -32000
-  Else
-    rob(n).mem(refypos) = CInt(Obstacles.Obstacles(o).pos.Y)
-  End If
+  rob(n).mem(refxpos) = CInt((rob(n).lastopppos.x / Form1.xDivisor) Mod 32000)
+  rob(n).mem(refypos) = CInt((rob(n).lastopppos.Y / Form1.yDivisor) Mod 32000)
     
   'give reference variables from the bots frame of reference
-  rob(n).mem(refvelup) = (Obstacles.Obstacles(o).vel.X * Cos(rob(n).aim) + Obstacles.Obstacles(o).vel.Y * Sin(rob(n).aim) * -1) - rob(n).mem(velup)
+  rob(n).mem(refvelup) = (Obstacles.Obstacles(o).vel.x * Cos(rob(n).aim) + Obstacles.Obstacles(o).vel.Y * Sin(rob(n).aim) * -1) - rob(n).mem(velup)
   rob(n).mem(refveldn) = rob(n).mem(refvelup) * -1
-  rob(n).mem(refveldx) = (Obstacles.Obstacles(o).vel.Y * Cos(rob(n).aim) + Obstacles.Obstacles(o).vel.X * Sin(rob(n).aim)) - rob(n).mem(veldx)
+  rob(n).mem(refveldx) = (Obstacles.Obstacles(o).vel.Y * Cos(rob(n).aim) + Obstacles.Obstacles(o).vel.x * Sin(rob(n).aim)) - rob(n).mem(veldx)
   rob(n).mem(refvelsx) = rob(n).mem(refvelsx) * -1
   
   Dim temp As Single
@@ -323,14 +383,15 @@ Public Sub lookoccurrShape(ByVal n As Integer, ByVal o As Integer)
  'readmem and memloc couple used to read a specified memory location of the target robot
   rob(n).mem(473) = 0
   
-  If Obstacles.Obstacles(o).vel.X = 0 And Obstacles.Obstacles(o).vel.Y = 0 Then                  'reffixed. Tells if a viewed robot is fixed by .fixpos.
+  If Obstacles.Obstacles(o).vel.x = 0 And Obstacles.Obstacles(o).vel.Y = 0 Then                  'reffixed. Tells if a viewed robot is fixed by .fixpos.
     rob(n).mem(477) = 1
   Else
     rob(n).mem(477) = 0
   End If
   
-  rob(n).mem(825) = 0 ' venom
-  rob(n).mem(827) = 0 ' poison
+'  rob(n).mem(825) = 0 ' venom
+'  rob(n).mem(827) = 0 ' poison
+getout:
 End Sub
 
 ' creates the array which is copied to the ref* variables
@@ -339,6 +400,8 @@ Public Sub makeoccurrlist(n As Integer)
   Dim t As Long
   Dim k As Integer
   With rob(n)
+  
+    
     For t = 1 To 12
       .occurr(t) = 0
     Next t

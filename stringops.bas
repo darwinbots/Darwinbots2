@@ -3,11 +3,11 @@ Attribute VB_Name = "stringops"
 
 Function extractpath(path As String) As String
   Dim k As Integer
-  Dim ok As Integer
+  Dim OK As Integer
   If path <> "" Then
     k = 1
     While InStr(k, path, "\") > 0
-      ok = k
+      OK = k
       k = InStr(k, path, "\") + 1
     Wend
     'EricL - If condition below added March 15, 2006
@@ -21,11 +21,11 @@ End Function
 
 Function extractname(path As String) As String
   Dim k As Integer
-  Dim ok As Integer
+  Dim OK As Integer
   If path <> "" Then
     k = 1
     While InStr(k, path, "\") > 0
-      ok = k
+      OK = k
       k = InStr(k, path, "\") + 1
     Wend
     extractname = Right(path, Len(path) - k + 1)
@@ -43,5 +43,12 @@ Function respath(path As String) As String
   If Left(path, 2) = "&#" Then
     path = MDIForm1.MainDir + Right(path, Len(path) - 2)
   End If
+  If path = "" Then path = MDIForm1.MainDir + "\Robots"
   respath = path
+End Function
+
+Function ConvertCommasToDecimal(s As String) As String
+
+  ConvertCommasToDecimal = Replace(s, ",", ".")
+
 End Function

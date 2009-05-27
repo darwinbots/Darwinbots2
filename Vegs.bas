@@ -70,7 +70,7 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
         SimOpts.Daytime = True
         FeedThisCycle = True
       Case PERMSUNSUSPEND:
-        'We don't care about cycles.  We are just councing back and forth between the thresholds.
+        'We don't care about cycles.  We are just bouncing back and forth between the thresholds.
         'We want to feed this cycle.
         'We also want to turn on the sun.  The test below should avoid trying to execute day/night cycles.
         FeedThisCycle = True
@@ -119,21 +119,23 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
   End If
   
   If FeedThisCycle Then
-    MDIForm1.daypic.Visible = True
-    MDIForm1.nightpic.Visible = False
+'    MDIForm1.daypic.Visible = True
+ '   MDIForm1.nightpic.Visible = False
+    MDIForm1.SunButton.value = 0
   Else
-    MDIForm1.daypic.Visible = False
-    MDIForm1.nightpic.Visible = True
+ '   MDIForm1.daypic.Visible = False
+'    MDIForm1.nightpic.Visible = True
+    MDIForm1.SunButton.value = 1
   End If
    
-  If Not FeedThisCycle Then Exit Sub
+  If Not FeedThisCycle Then GoTo getout
    
   If SimOpts.Daytime Then daymod = 1 Else daymod = 0
  
   For t = 1 To MaxRobs
     If rob(t).Veg And rob(t).nrg > 0 And rob(t).exist Then
       If SimOpts.Pondmode Then
-        depth = (rob(t).pos.y / 2000) + 1
+        depth = (rob(t).pos.Y / 2000) + 1
         If depth < 1 Then depth = 1
         tok = (SimOpts.LightIntensity / depth ^ SimOpts.Gradient) * daymod + 1
       Else
@@ -170,13 +172,15 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
      ' EnergyAddedPerCycle = EnergyAddedPerCycle + energy + (body * 10)
     End If
     Next t
+getout:
 End Sub
 
 Public Sub feedveg2(t As Integer) 'gives veg an additional meal based on waste
   With rob(t)
   If .nrg + (.Waste / 2) < 32000 Then
     .nrg = .nrg + (.Waste / 2)
-    .Waste = .Waste - (.Waste / 2)
+    '.Waste = .Waste - (.Waste / 2)
+    .Waste = 0
   End If
   End With
 End Sub

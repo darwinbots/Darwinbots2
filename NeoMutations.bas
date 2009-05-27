@@ -76,7 +76,7 @@ Public Function MakeSpace(ByRef DNA() As block, ByVal beginning As Long, ByVal l
   If DNALength < 0 Then DNALength = DnaLen(DNA)
   If length < 1 Or beginning < 0 Or beginning > DNALength - 1 Or (DNALength + length > 32000) Then
     MakeSpace = False
-    Exit Function
+    GoTo getout
   End If
   
   MakeSpace = True
@@ -87,13 +87,14 @@ Public Function MakeSpace(ByRef DNA() As block, ByVal beginning As Long, ByVal l
     DNA(t + length) = DNA(t)
     EraseUnit DNA(t)
   Next t
+getout:
 End Function
 
 Public Sub Delete(ByRef DNA() As block, ByRef beginning As Long, ByRef elements As Long, Optional DNALength As Integer = -1)
   'delete elements starting at beginning
   Dim t As Integer
   If DNALength < 0 Then DNALength = DnaLen(DNA)
-  If elements < 1 Or beginning < 1 Or beginning > DNALength - 1 Then Exit Sub
+  If elements < 1 Or beginning < 1 Or beginning > DNALength - 1 Then GoTo getout
  ' If elements + beginning > DNALength - 1 Then elements = DNALength - 1 - beginning
 
   For t = beginning + elements To DNALength
@@ -102,7 +103,18 @@ Public Sub Delete(ByRef DNA() As block, ByRef beginning As Long, ByRef elements 
 
   DNALength = DnaLen(DNA)
   ReDim Preserve DNA(DNALength)
+getout:
 End Sub
+
+Public Function NewSubSpecies(n As Integer) As Integer
+Dim i As Integer
+
+  i = SpeciesFromBot(n)  ' Get the index into the species array for this bot
+  SimOpts.Specie(i).SubSpeciesCounter = SimOpts.Specie(i).SubSpeciesCounter + 1 ' increment the counter
+  If SimOpts.Specie(i).SubSpeciesCounter > 32000 Then SimOpts.Specie(i).SubSpeciesCounter = -32000 'wrap the counter if necessary
+  NewSubSpecies = SimOpts.Specie(i).SubSpeciesCounter
+
+End Function
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -112,23 +124,32 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False)
   Dim delta As Long
 
   With rob(robn)
+    If Not .Mutables.Mutations Or SimOpts.DisableMutations Then GoTo getout
+    delta = CLng(.LastMut)
+    
+    If Not reproducing Then
+      If .Mutables.mutarray(PointUP) > 0 Then PointMutation robn
+      If .Mutables.mutarray(DeltaUP) > 0 Then DeltaMut robn
+    Else
+      If .Mutables.mutarray(CopyErrorUP) > 0 Then CopyError robn
+      If .Mutables.mutarray(InsertionUP) > 0 Then Insertion robn
+      If .Mutables.mutarray(ReversalUP) > 0 Then Reversal robn
+      'If .Mutables.mutarray(TranslocationUP) > 0 Then Translocation robn 'disabled for now for being buggy
+      'If .Mutables.mutarray(AmplificationUP) > 0 Then Amplification robn
+      If .Mutables.mutarray(MajorDeletionUP) > 0 Then MajorDeletion robn
+      If .Mutables.mutarray(MinorDeletionUP) > 0 Then MinorDeletion robn
+    End If
   
-  delta = CLng(.LastMut)
-  If Not .Mutables.Mutations Then Exit Sub
-  If Not reproducing Then
-    If .Mutables.mutarray(PointUP) > 0 Then PointMutation robn
-    If .Mutables.mutarray(DeltaUP) > 0 Then DeltaMut robn
-  Else
-    If .Mutables.mutarray(CopyErrorUP) > 0 Then CopyError robn
-    If .Mutables.mutarray(InsertionUP) > 0 Then Insertion robn
-    If .Mutables.mutarray(ReversalUP) > 0 Then Reversal robn
-     'If .Mutables.mutarray(TranslocationUP) > 0 Then Translocation robn 'disabled for now for being buggy
-    'If .Mutables.mutarray(AmplificationUP) > 0 Then Amplification robn
-    If .Mutables.mutarray(MajorDeletionUP) > 0 Then MajorDeletion robn
-     If .Mutables.mutarray(MinorDeletionUP) > 0 Then MinorDeletion robn
-  End If
-  delta = CLng(.LastMut) - delta
-   If (delta > 0) Then mutatecolors robn, delta
+    delta = CLng(.LastMut) - delta
+    If (delta > 0) Then  'The bot has mutated.
+      mutatecolors robn, delta
+      .SubSpecies = NewSubSpecies(robn)
+      .genenum = CountGenes(rob(robn).DNA())
+      .DnaLen = DnaLen(rob(robn).DNA())
+      .mem(DnaLenSys) = .DnaLen
+      .mem(GenesSys) = .genenum
+    End If
+getout:
   End With
 End Sub
 
@@ -141,10 +162,11 @@ Private Sub PointMutation(robn As Integer)
  
   With rob(robn)
     If .age = 0 Or .PointMutCycle < .age Then PointMutWhereAndWhen Rnd, robn, .PointMutBP
-    'in case we get two point mutations in a single cycle, this must be a while
-    While .age = .PointMutCycle And .age > 0 ' Avoid endless loop when .age = 0 and .DNALen = 1
+    
+    'Do it again in case we get two point mutations in a single cycle
+    While .age = .PointMutCycle And .age > 0 And .DnaLen > 1 ' Avoid endless loop when .age = 0 and/or .DNALen = 1
       temp = Gauss(.Mutables.StdDev(PointUP), .Mutables.Mean(PointUP))
-      temp2 = CLng(temp) '<- Overflow was here when huge single is assigned to a Long
+      temp2 = Int(temp) Mod 32000        '<- Overflow was here when huge single is assigned to a Long
       ChangeDNA robn, .PointMutBP, temp2, .Mutables.PointWhatToChange
       PointMutWhereAndWhen Rnd, robn, .PointMutBP
     Wend
@@ -156,13 +178,21 @@ Private Sub PointMutWhereAndWhen(randval As Single, robn As Integer, Optional of
  
   'If randval = 0 Then randval = 0.0001
   With rob(robn)
-  If .Mutables.mutarray(PointUP) > 0 And .DnaLen > 1 Then
+    If .DnaLen = 1 Then GoTo getout ' avoid divide by 0 below
+    
+    'Here we test to make sure the probability of a point mutation isn't crazy high.
+    'A value of 1 is the probability of mutating every base pair every 1000 cycles
+    'Lets not let it get lower than 1 shall we?
+    If .Mutables.mutarray(PointUP) < 1# And .Mutables.mutarray(PointUP) <> 0 Then
+      .Mutables.mutarray(PointUP) = 1#
+    End If
+  
     'result = offset + Fix(Log(randval) / Log(1 - 1 / (1000 * .Mutables.mutarray(PointUP))))
     result = Log(1 - randval) / Log(1 - 1 / (1000 * .Mutables.mutarray(PointUP)))
     .PointMutBP = (result Mod (.DnaLen - 1)) + 1 'note that DNA(DNALen) = end.
-      'We don't mutate end.  Also note that DNA does NOT start at 0th element
-       .PointMutCycle = .age + result / (.DnaLen - 1)
-  End If
+    'We don't mutate end.  Also note that DNA does NOT start at 0th element
+    .PointMutCycle = .age + result / (.DnaLen - 1)
+getout:
   End With
 End Sub
 
@@ -218,19 +248,23 @@ End Sub
 
 'Private Sub ChangeDNA(ByRef DNA() As block, nth As Long, Optional length As Long = 1)
 Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal length As Long = 1, Optional ByVal PointWhatToChange As Integer = 50, Optional Mtype As Integer = PointUP)
-  'currently only mutates the value.  Later we may change it to accept changes
-  'in type
-  
-  'we need to rework .lastmutdetail
 
-  With rob(robn)
+  'we need to rework .lastmutdetail
+  Dim Max As Long
+  Dim temp As String
+  Dim bp As block
+  Dim tempbp As block
+  Dim Name As String
+  Dim oldname As String
   Dim t As Long
-  'Dim t As Single
-    
+  Dim old As Long
+  
+  With rob(robn)
+     
   For t = nth To (nth + length - 1) 'if length is 1, it's only one bp we're mutating, remember?
-    If t >= .DnaLen Then Exit Sub 'don't mutate end either
-    If .DNA(t).tipo = 10 Then Exit Sub 'mutations can't cross control barriers
-    Dim old As Long
+    If t >= .DnaLen Then GoTo getout 'don't mutate end either
+    If .DNA(t).tipo = 10 Then GoTo getout 'mutations can't cross control barriers
+    
     If Random(0, 99) < PointWhatToChange Then
       '''''''''''''''''''''''''''''''''''''''''
       'Mutate VALUE
@@ -244,11 +278,7 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal length 
         .DNA(t).value = Gauss(500, 0) 'generates values roughly between -1000 and 1000
       End If
       
-      Dim Max As Long
-      Dim temp As String
-      Dim bp As block
-      Dim Name As String
-      Dim oldname As String
+
       old = .DNA(t).value
       If .DNA(t).tipo = 0 Or .DNA(t).tipo = 1 Then '(number or *number)
         Do
@@ -259,6 +289,7 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal length 
         .Mutations = .Mutations + 1
         .LastMut = .LastMut + 1
         .LastMutDetail = MutationType(Mtype) + " changed " + TipoDetok(.DNA(t).tipo) + " from" + Str(old) + " to" + Str(.DNA(t).value) + " at position" + Str(t) + " during cycle" + Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
+        
       Else
         'find max legit value
         'this should really be done a better way
@@ -271,7 +302,7 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal length 
           Parse temp, bp
         Loop While temp <> ""
         Max = Max - 1
-        If Max <= 1 Then Exit Sub 'failsafe in case its an invalid type or there's no way to mutate it
+        If Max <= 1 Then GoTo getout 'failsafe in case its an invalid type or there's no way to mutate it
         
         Do
           .DNA(t).value = Random(1, Max)
@@ -279,9 +310,11 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal length 
 
         bp.tipo = .DNA(t).tipo
         bp.value = old
-
-        Parse Name, .DNA(t)
+        
+        tempbp = .DNA(t)
+        Parse Name, tempbp  ' Have to use a temp var because Parse() can change the arguments
         Parse oldname, bp
+        
         .Mutations = .Mutations + 1
         .LastMut = .LastMut + 1
         .LastMutDetail = MutationType(Mtype) + " changed value of " + TipoDetok(.DNA(t).tipo) + " from " + _
@@ -303,7 +336,7 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal length 
           Parse temp, .DNA(t)
         Loop While temp <> ""
         Max = Max - 1
-        If Max <= 1 Then Exit Sub 'failsafe in case its an invalid type or there's no way to mutate it
+        If Max <= 1 Then GoTo getout 'failsafe in case its an invalid type or there's no way to mutate it
         .DNA(t).value = (bp.value Mod Max) 'put values in range
         If .DNA(t).value <= 0 Then
           .DNA(t).value = 1
@@ -311,16 +344,19 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal length 
       Else
         'we do nothing, it has to be in range
       End If
-      Parse Name, .DNA(t)
-      Parse oldname, bp
+       tempbp = .DNA(t)
+       Parse Name, tempbp ' Have to use a temp var because Parse() can change the arguments
+       Parse oldname, bp
       .Mutations = .Mutations + 1
       .LastMut = .LastMut + 1
       
       .LastMutDetail = MutationType(Mtype) + " changed the " + TipoDetok(bp.tipo) + ": " + _
           oldname + " to the " + TipoDetok(.DNA(t).tipo) + ": " + Name + " at position" + Str(t) + " during cycle" + _
           Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
+      
     End If
   Next t
+getout:
   End With
 End Sub
 
@@ -340,9 +376,11 @@ Private Sub Insertion(robn As Integer)
       
       MakeSpace .DNA(), t + accum, length, .DnaLen
       rob(robn).DnaLen = rob(robn).DnaLen + length
-      accum = accum + length
-      ChangeDNA robn, t + accum, length, 100, InsertionUP 'set a good value up
-      ChangeDNA robn, t + accum, length, 0, InsertionUP 'change type
+   '   accum = accum + length
+   '   ChangeDNA robn, t + accum, length, 100, InsertionUP 'set a good value up
+   '   ChangeDNA robn, t + accum, length, 0, InsertionUP 'change type
+       ChangeDNA robn, t + 1, length, 0, InsertionUP 'change the type first so that the mutated value is within the space of the new type
+       ChangeDNA robn, t + 1, length, 100, InsertionUP 'set a good value up
     End If
   Next t
   End With
@@ -387,6 +425,7 @@ Private Sub Reversal(robn As Integer)
           .LastMut = .LastMut + 1
           .LastMutDetail = "Reversal of" + Str(length * 2 + 1) + "bps centered at " + Str(t) + " during cycle" + _
             Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
+         
         End If
       End If
     Next t
@@ -412,6 +451,7 @@ Private Sub MinorDeletion(robn As Integer)
         .LastMutDetail = "Minor Deletion deleted a run of" + _
           Str(length) + " bps at position" + Str(t) + " during cycle" + _
           Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
+        
       End If
     Next t
   End With
@@ -438,6 +478,7 @@ Private Sub MajorDeletion(robn As Integer)
         .LastMutDetail = "Major Deletion deleted a run of" + _
           Str(length) + " bps at position" + Str(t) + " during cycle" + _
           Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
+        
       End If
     Next t
   End With
@@ -495,6 +536,7 @@ Private Sub Amplification(robn As Integer)
         .LastMut = .LastMut + 1
         .LastMutDetail = "Amplification copied a series at" + Str(t) + Str(length * 2 + 1) + "bps long to " + Str(start) + " during cycle" + _
           Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
+       
       End If
     End If
   Next t
@@ -591,6 +633,8 @@ Private Sub Translocation(robn As Integer)
       .LastMutDetail = "Translocation moved a series " + Str(length + 1) + "long at position " + Str(t) + _
         " to position " + Str(start + 1) + " during cycle" + _
         Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
+      
+      
       End If
     End If
   Next t
@@ -638,22 +682,26 @@ End Sub
 
 Public Function delgene(n As Integer, g As Integer) As Boolean
   Dim k As Integer, t As Integer
-  k = CountGenes(rob(n).DNA)
+  k = rob(n).genenum
   If g > 0 And g <= k Then
     DeleteSpecificGene rob(n).DNA, g
     delgene = True
+    rob(n).DnaLen = DnaLen(rob(n).DNA)
+    rob(n).genenum = CountGenes(rob(n).DNA)
+    rob(n).mem(DnaLenSys) = rob(n).DnaLen
+    rob(n).mem(GenesSys) = rob(n).genenum
     makeoccurrlist n
   End If
-  rob(n).DnaLen = DnaLen(rob(n).DNA) ' EricL Added lien to update robot properties dialog
 End Function
 
 Public Sub DeleteSpecificGene(ByRef DNA() As block, k As Integer)
   Dim i As Long, f As Long
   
   i = genepos(DNA, k)
-  If i < 0 Then Exit Sub
-  f = NextStop(DNA, i)
+  If i < 0 Then GoTo getout
+  f = GeneEnd(DNA, i)
   Delete DNA, i, f - i + 1 ' EricL Added +1
+getout:
 End Sub
 
 Public Sub SetDefaultMutationRates(ByRef changeme As mutationprobs)
@@ -662,6 +710,8 @@ Public Sub SetDefaultMutationRates(ByRef changeme As mutationprobs)
   
   For a = 0 To 20
     .mutarray(a) = 5000
+    .Mean(a) = 1
+    .StdDev(a) = 0
   Next a
   
   .Mean(PointUP) = 1

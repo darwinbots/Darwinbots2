@@ -1,11 +1,11 @@
 VERSION 5.00
 Begin VB.Form InfoForm 
    BackColor       =   &H00800000&
-   BorderStyle     =   0  'None
-   Caption         =   "Darwinbots: per cominciare..."
+   BorderStyle     =   1  'Fixed Single
+   Caption         =   "Darwinbots"
    ClientHeight    =   6000
-   ClientLeft      =   2160
-   ClientTop       =   2115
+   ClientLeft      =   2205
+   ClientTop       =   2550
    ClientWidth     =   9600
    Icon            =   "InfoForm.frx":0000
    LinkTopic       =   "Form10"
@@ -247,21 +247,21 @@ Private Sub Form_Load()
 End Sub
 
 Private Sub Form_lostfocus()
-  InfoForm.Hide
-  MDIForm1.Show
+ ' InfoForm.Hide
+'  MDIForm1.Show
 End Sub
 
 Private Sub Image1_Click()
-  InfoForm.Hide
-  MDIForm1.Show
+'  InfoForm.Hide
+ ' MDIForm1.Show
 End Sub
 
 Private Sub Form_Click()
-  InfoForm.Hide
-  MDIForm1.Show
+'  InfoForm.Hide
+ ' MDIForm1.Show
 End Sub
 
 Private Sub Label9_Click()
-  InfoForm.Hide
-  MDIForm1.Show
+'  InfoForm.Hide
+'  MDIForm1.Show
 End Sub

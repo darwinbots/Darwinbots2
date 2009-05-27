@@ -79,7 +79,7 @@ Public Function DrawCheckerboardMaze()
   Dim i As Integer
   Dim j As Integer
   Dim k As Integer
-  Dim X As Single
+  Dim x As Single
   Dim Y As Single
   Dim numBlocksAcross As Single
   Dim numBlocksDown As Single
@@ -96,9 +96,9 @@ Public Function DrawCheckerboardMaze()
        
   For i = 0 To numBlocksAcross - 1
     For j = 0 To numBlocksDown - 1
-      X = CSng(i * blockWidth) + CSng(i + 1#) * CSng(mazeCorridorWidth) - acrossGap
+      x = CSng(i * blockWidth) + CSng(i + 1#) * CSng(mazeCorridorWidth) - acrossGap
       Y = CSng(j * blockWidth) + CSng(j + 1#) * CSng(mazeCorridorWidth) - downGap
-      k = NewObstacle(X, Y, blockWidth, blockWidth)
+      k = NewObstacle(x, Y, blockWidth, blockWidth)
     Next j
   Next i
  'allowHorizontalShapeDrift = True
@@ -138,19 +138,19 @@ Public Function InitTrashCompactorMaze()
   leftCompactor = NewObstacle(-blockWidth + 1, SimOpts.FieldHeight * -0.1, blockWidth, blockHeight)
   rightCompactor = NewObstacle(SimOpts.FieldWidth - 1, SimOpts.FieldHeight * -0.1, blockWidth, blockHeight)
   'SimOpts.shapeDriftRate = 100
-  Obstacles(leftCompactor).vel.X = SimOpts.shapeDriftRate * 0.1
-  Obstacles(rightCompactor).vel.X = -SimOpts.shapeDriftRate * 0.1
+  Obstacles(leftCompactor).vel.x = SimOpts.shapeDriftRate * 0.1
+  Obstacles(rightCompactor).vel.x = -SimOpts.shapeDriftRate * 0.1
   
 End Function
 
 Public Function TrashCompactorMove()
-  If Obstacles(leftCompactor).pos.X > Obstacles(rightCompactor).pos.X + 400 Then
-    Obstacles(leftCompactor).vel.X = -Obstacles(leftCompactor).vel.X
-    Obstacles(rightCompactor).vel.X = -Obstacles(rightCompactor).vel.X
+  If Obstacles(leftCompactor).pos.x > Obstacles(rightCompactor).pos.x + 400 Then
+    Obstacles(leftCompactor).vel.x = -Obstacles(leftCompactor).vel.x
+    Obstacles(rightCompactor).vel.x = -Obstacles(rightCompactor).vel.x
   End If
-  If Obstacles(leftCompactor).pos.X <= -Obstacles(leftCompactor).Width Then
-    Obstacles(leftCompactor).vel.X = SimOpts.shapeDriftRate * 0.1
-    Obstacles(rightCompactor).vel.X = -SimOpts.shapeDriftRate * 0.1
+  If Obstacles(leftCompactor).pos.x <= -Obstacles(leftCompactor).Width Then
+    Obstacles(leftCompactor).vel.x = SimOpts.shapeDriftRate * 0.1
+    Obstacles(rightCompactor).vel.x = -SimOpts.shapeDriftRate * 0.1
   End If
 End Function
 
@@ -180,7 +180,7 @@ Dim j As Integer
   Next i
 End Function
 
-Public Function NewObstacle(X As Single, Y As Single, Width As Single, Height As Single) As Integer
+Public Function NewObstacle(x As Single, Y As Single, Width As Single, Height As Single) As Integer
 Dim i As Integer
   
   If numObstacles + 1 > MAXOBSTACLES Then
@@ -189,11 +189,11 @@ Dim i As Integer
     numObstacles = numObstacles + 1
     NewObstacle = numObstacles
     Obstacles(numObstacles).exist = True
-    Obstacles(numObstacles).pos.X = X
+    Obstacles(numObstacles).pos.x = x
     Obstacles(numObstacles).pos.Y = Y
     Obstacles(numObstacles).Width = Width
     Obstacles(numObstacles).Height = Height
-    Obstacles(numObstacles).vel.X = 0
+    Obstacles(numObstacles).vel.x = 0
     Obstacles(numObstacles).vel.Y = 0
     If SimOpts.makeAllShapesBlack Then
       Obstacles(numObstacles).color = vbBlack
@@ -213,12 +213,12 @@ Form1.FillStyle = 1
   For i = 1 To numObstacles
     If Obstacles(i).exist Then
       If SimOpts.makeAllShapesTransparent Then
-        Form1.Line (Obstacles(i).pos.X, Obstacles(i).pos.Y)-(Obstacles(i).pos.X + Obstacles(i).Width, Obstacles(i).pos.Y + Obstacles(i).Height), Obstacles(i).color, B
+        Form1.Line (Obstacles(i).pos.x, Obstacles(i).pos.Y)-(Obstacles(i).pos.x + Obstacles(i).Width, Obstacles(i).pos.Y + Obstacles(i).Height), Obstacles(i).color, B
       Else
-        Form1.Line (Obstacles(i).pos.X, Obstacles(i).pos.Y)-(Obstacles(i).pos.X + Obstacles(i).Width, Obstacles(i).pos.Y + Obstacles(i).Height), Obstacles(i).color, BF
+        Form1.Line (Obstacles(i).pos.x, Obstacles(i).pos.Y)-(Obstacles(i).pos.x + Obstacles(i).Width, Obstacles(i).pos.Y + Obstacles(i).Height), Obstacles(i).color, BF
       End If
       If i = obstaclefocus Then
-        Form1.Line (Obstacles(i).pos.X - 2, Obstacles(i).pos.Y - 2)-(Obstacles(i).pos.X + Obstacles(i).Width + 2, Obstacles(i).pos.Y + Obstacles(i).Height + 2), vbWhite, B
+        Form1.Line (Obstacles(i).pos.x - 2, Obstacles(i).pos.Y - 2)-(Obstacles(i).pos.x + Obstacles(i).Width + 2, Obstacles(i).pos.Y + Obstacles(i).Height + 2), vbWhite, B
       End If
     End If
   Next i
@@ -229,7 +229,7 @@ End Function
 Public Function AddRandomObstacles(n As Integer) As Integer
 Dim i As Integer
 Dim randomX As Single
-Dim randomY As Single
+Dim randomy As Single
 Dim RandomWidth As Single
 Dim RandomHeight As Single
 
@@ -241,21 +241,21 @@ Dim RandomHeight As Single
   i = 0
   While i <> -1 And n > 0
     randomX = Rnd * SimOpts.FieldWidth
-    randomY = Rnd * SimOpts.FieldHeight
+    randomy = Rnd * SimOpts.FieldHeight
       
     RandomWidth = Rnd * SimOpts.FieldWidth * defaultWidth
     RandomHeight = Rnd * SimOpts.FieldHeight * defaultHeight
     
     'Shift everything up and left by half the max dimensions then trim to more evenly distribute obstacles across the field
     randomX = randomX - SimOpts.FieldWidth * (defaultWidth / 2)
-    randomY = randomY - SimOpts.FieldHeight * (defaultHeight / 2)
+    randomy = randomy - SimOpts.FieldHeight * (defaultHeight / 2)
     
     If randomX < 0 Then randomX = 0
-    If randomY < 0 Then randomY = 0
+    If randomy < 0 Then randomy = 0
     
     If randomX + RandomWidth > SimOpts.FieldWidth Then RandomWidth = SimOpts.FieldWidth - randomX
-    If randomY + RandomHeight > SimOpts.FieldHeight Then RandomHeight = SimOpts.FieldHeight - randomY
-    i = NewObstacle(randomX, randomY, RandomWidth, RandomHeight)
+    If randomy + RandomHeight > SimOpts.FieldHeight Then RandomHeight = SimOpts.FieldHeight - randomy
+    i = NewObstacle(randomX, randomy, RandomWidth, RandomHeight)
     n = n - 1
   Wend
   
@@ -329,17 +329,17 @@ Public Function MoveObstacles()
       If Obstacles(i).exist Then
         Obstacles(i).pos = VectorAdd(Obstacles(i).pos, Obstacles(i).vel)
         'Keep obstalces from drifting off into space.
-        If Obstacles(i).pos.X < -Obstacles(i).Width Then
-          Obstacles(i).pos.X = -Obstacles(i).Width
-          Obstacles(i).vel.X = SimOpts.shapeDriftRate * 0.01
+        If Obstacles(i).pos.x < -Obstacles(i).Width Then
+          Obstacles(i).pos.x = -Obstacles(i).Width
+          Obstacles(i).vel.x = SimOpts.shapeDriftRate * 0.01
         End If
         If Obstacles(i).pos.Y < -Obstacles(i).Height Then
           Obstacles(i).pos.Y = -Obstacles(i).Height
           Obstacles(i).vel.Y = SimOpts.shapeDriftRate * 0.01
         End If
-        If Obstacles(i).pos.X > SimOpts.FieldWidth Then
-          Obstacles(i).pos.X = SimOpts.FieldWidth
-          Obstacles(i).vel.X = -SimOpts.shapeDriftRate * 0.01
+        If Obstacles(i).pos.x > SimOpts.FieldWidth Then
+          Obstacles(i).pos.x = SimOpts.FieldWidth
+          Obstacles(i).vel.x = -SimOpts.shapeDriftRate * 0.01
         End If
         If Obstacles(i).pos.Y > SimOpts.FieldHeight Then
           Obstacles(i).pos.Y = SimOpts.FieldHeight
@@ -355,7 +355,7 @@ Dim i As Integer
   For i = 1 To numObstacles
     If Obstacles(i).exist And (i <> leftCompactor And i <> rightCompactor) Then
       If SimOpts.allowHorizontalShapeDrift Then
-        Obstacles(i).vel.X = Obstacles(i).vel.X + Random(-SimOpts.shapeDriftRate, SimOpts.shapeDriftRate) * Rnd * 0.01
+        Obstacles(i).vel.x = Obstacles(i).vel.x + Random(-SimOpts.shapeDriftRate, SimOpts.shapeDriftRate) * Rnd * 0.01
       End If
       If SimOpts.allowVerticalShapeDrift Then
         Obstacles(i).vel.Y = Obstacles(i).vel.Y + Random(-SimOpts.shapeDriftRate, SimOpts.shapeDriftRate) * Rnd * 0.01
@@ -381,7 +381,7 @@ Public Function StopAllHorizontalObstacleMovement()
  
   For i = 1 To numObstacles
     If Obstacles(i).exist Then
-      Obstacles(i).vel.X = 0
+      Obstacles(i).vel.x = 0
     End If
   Next i
 End Function
@@ -395,13 +395,13 @@ Dim botbottomedge As Single
 
   ObstacleCollision = False
   
-  botrightedge = rob(n).pos.X + rob(n).radius
-  botleftedge = rob(n).pos.X - rob(n).radius
+  botrightedge = rob(n).pos.x + rob(n).radius
+  botleftedge = rob(n).pos.x - rob(n).radius
   bottopedge = rob(n).pos.Y - rob(n).radius
   botbottomedge = rob(n).pos.Y + rob(n).radius
 
-  If (botrightedge > Obstacles(o).pos.X) And _
-     (botleftedge < Obstacles(o).pos.X + Obstacles(o).Width) And _
+  If (botrightedge > Obstacles(o).pos.x) And _
+     (botleftedge < Obstacles(o).pos.x + Obstacles(o).Width) And _
      (botbottomedge > Obstacles(o).pos.Y) And _
      (bottopedge < Obstacles(o).pos.Y + Obstacles(o).Height) Then
     ObstacleCollision = True
@@ -414,13 +414,13 @@ Dim i As Integer
   With Shots(n)
   For i = 1 To numObstacles
     If Obstacles(i).exist Then
-      If .pos.X >= Obstacles(i).pos.X And _
-         .pos.X <= Obstacles(i).pos.X + Obstacles(i).Width And _
+      If .pos.x >= Obstacles(i).pos.x And _
+         .pos.x <= Obstacles(i).pos.x + Obstacles(i).Width And _
          .pos.Y >= Obstacles(i).pos.Y And _
          .pos.Y <= Obstacles(i).pos.Y + Obstacles(i).Height Then
            If SimOpts.shapesAbsorbShots Then .exist = False
-           If .opos.X < Obstacles(i).pos.X Or .opos.X > (Obstacles(i).pos.X + Obstacles(i).Width) Then
-             .velocity.X = -.velocity.X
+           If .opos.x < Obstacles(i).pos.x Or .opos.x > (Obstacles(i).pos.x + Obstacles(i).Width) Then
+             .velocity.x = -.velocity.x
            End If
            If .opos.Y < Obstacles(i).pos.Y Or .opos.Y > (Obstacles(i).pos.Y + Obstacles(i).Height) Then
              .velocity.Y = -.velocity.Y
@@ -455,43 +455,43 @@ With rob(n)
         numofcollisions = numofcollisions + 1
         If numofcollisions >= 3 Then
          ' Prevents getting trapped
-          .pos.X = .pos.X + 200 * Sgn((SimOpts.TotRunCycle Mod 40) - 20)
+          .pos.x = .pos.x + 200 * Sgn((SimOpts.TotRunCycle Mod 40) - 20)
           .pos.Y = .pos.Y + 200 * Sgn((SimOpts.TotRunCycle Mod 50) - 25)
-          Exit Function
+          GoTo getout
         End If
         'Push the bot out the closest edge
         distup = (rob(n).pos.Y + rob(n).radius) - Obstacles(i).pos.Y '- (rob(n).vel.y / 2)
         distdown = Obstacles(i).pos.Y + Obstacles(i).Height - (rob(n).pos.Y - rob(n).radius) '- (rob(n).vel.y / 2)
-        distleft = (rob(n).pos.X + rob(n).radius) - Obstacles(i).pos.X '- (rob(n).vel.x / 2)
-        distright = Obstacles(i).pos.X + Obstacles(i).Width - (rob(n).pos.X - rob(n).radius) '- (rob(n).vel.x / 2)
+        distleft = (rob(n).pos.x + rob(n).radius) - Obstacles(i).pos.x '- (rob(n).vel.x / 2)
+        distright = Obstacles(i).pos.x + Obstacles(i).Width - (rob(n).pos.x - rob(n).radius) '- (rob(n).vel.x / 2)
                
         If (Min(distleft, distright) < Min(distup, distdown) And _
            (LastPush <> 1 And LastPush <> 2)) Or _
            (LastPush = 3 Or LastPush = 4) Then
           'Push out left or right
           If ((distleft <= distright) Or _
-             (Obstacles(i).pos.X + Obstacles(i).Width) >= SimOpts.FieldWidth) And _
-             (Obstacles(i).pos.X > 0) Then
+             (Obstacles(i).pos.x + Obstacles(i).Width) >= SimOpts.FieldWidth) And _
+             (Obstacles(i).pos.x > 0) Then
           
-            If rob(n).pos.X - rob(n).radius < Obstacles(i).pos.X Then
-              .pos.X = Obstacles(i).pos.X - rob(n).radius
-              .ImpulseRes.X = .ImpulseRes.X + .vel.X * b
-               touch n, .pos.X + .radius, .pos.Y ' Update hit senses, right side
+            If rob(n).pos.x - rob(n).radius < Obstacles(i).pos.x Then
+              .pos.x = Obstacles(i).pos.x - rob(n).radius
+              .ImpulseRes.x = .ImpulseRes.x + .vel.x * b
+               touch n, .pos.x + .radius, .pos.Y ' Update hit senses, right side
             Else
-              .ImpulseRes.X = .ImpulseRes.X + distleft * k
+              .ImpulseRes.x = .ImpulseRes.x + distleft * k
             '  If .Fixed Then .pos = VectorSub(.pos, .ImpulseRes) ' force .fixed guys to move without changing their fixedness
-              .pos.X = Obstacles(i).pos.X - rob(n).radius
+              .pos.x = Obstacles(i).pos.x - rob(n).radius
             End If
             LastPush = 1
           Else
-            If rob(n).pos.X + rob(n).radius > Obstacles(i).pos.X + Obstacles(i).Width Then
-              .pos.X = Obstacles(i).pos.X + Obstacles(i).Width + rob(n).radius
-              .ImpulseRes.X = .ImpulseRes.X + .vel.X * b
-              touch n, .pos.X - .radius, .pos.Y ' Update hit senses, left side
+            If rob(n).pos.x + rob(n).radius > Obstacles(i).pos.x + Obstacles(i).Width Then
+              .pos.x = Obstacles(i).pos.x + Obstacles(i).Width + rob(n).radius
+              .ImpulseRes.x = .ImpulseRes.x + .vel.x * b
+              touch n, .pos.x - .radius, .pos.Y ' Update hit senses, left side
             Else
-              .ImpulseRes.X = .ImpulseRes.X - distright * k
+              .ImpulseRes.x = .ImpulseRes.x - distright * k
            '   If .Fixed Then .pos = VectorSub(.pos, .ImpulseRes) ' force .fixed guys to move without changing their fixedness
-              .pos.X = Obstacles(i).pos.X + Obstacles(i).Width + rob(n).radius
+              .pos.x = Obstacles(i).pos.x + Obstacles(i).Width + rob(n).radius
             End If
             LastPush = 2
           End If
@@ -503,7 +503,7 @@ With rob(n)
             If rob(n).pos.Y - rob(n).radius < Obstacles(i).pos.Y Then
               .pos.Y = Obstacles(i).pos.Y - rob(n).radius
               .ImpulseRes.Y = .ImpulseRes.Y + .vel.Y * b
-              touch n, .pos.X, .pos.Y + .radius  ' Update hit senses, bottom
+              touch n, .pos.x, .pos.Y + .radius  ' Update hit senses, bottom
             Else
               .ImpulseRes.Y = .ImpulseRes.Y + distup * k
           '    If .Fixed Then .pos = VectorSub(.pos, .ImpulseRes) ' force .fixed guys to move without changing their fixedness
@@ -514,7 +514,7 @@ With rob(n)
             If rob(n).pos.Y + rob(n).radius > Obstacles(i).pos.Y + Obstacles(i).Height Then
               .pos.Y = Obstacles(i).pos.Y + Obstacles(i).Height + rob(n).radius
               .ImpulseRes.Y = .ImpulseRes.Y + .vel.Y * b
-              touch n, .pos.X, .pos.Y - .radius  ' Update hit senses, bottom
+              touch n, .pos.x, .pos.Y - .radius  ' Update hit senses, bottom
             Else
               .ImpulseRes.Y = .ImpulseRes.Y - distdown * k
             '  If .Fixed Then .pos = VectorSub(.pos, .ImpulseRes) ' force .fixed guys to move without changing their fixedness
@@ -540,16 +540,17 @@ With rob(n)
     'ImpulseRes.y = .ImpulseRes.y - SimOpts.MaxVelocity * (Rnd(1) * -2 + 1) * Rnd(1)
 '    .ImpulseRes.x = .ImpulseRes.x - SimOpts.MaxVelocity * (Rnd(1) * -2 + 1) * Rnd(1)
 '  End If
+getout:
 
   End With
 End Function
 
-Public Function whichobstacle(X As Single, Y As Single) As Integer
+Public Function whichobstacle(x As Single, Y As Single) As Integer
   Dim t As Integer
   whichobstacle = 0
   For t = numObstacles To 1 Step -1
     If Obstacles(t).exist Then
-      If X >= Obstacles(t).pos.X And X <= Obstacles(t).pos.X + Obstacles(t).Width And _
+      If x >= Obstacles(t).pos.x And x <= Obstacles(t).pos.x + Obstacles(t).Width And _
          Y >= Obstacles(t).pos.Y And Y <= Obstacles(t).pos.Y + Obstacles(t).Height Then
          whichobstacle = t
          Exit Function

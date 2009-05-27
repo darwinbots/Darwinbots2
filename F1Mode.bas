@@ -3,7 +3,7 @@ Option Explicit
 
 Public Type pop
   SpName As String
-  Population As Integer
+  population As Integer
   Wins As Integer
   exist As Integer
 End Type
@@ -43,7 +43,7 @@ Public Sub ResetContest()
   Contest_Form.Winner1.Caption = ""
   For t = 1 To 5
     PopArray(t).SpName = ""
-    PopArray(t).Population = 0
+    PopArray(t).population = 0
     PopArray(t).Wins = 0
   Next t
 End Sub
@@ -60,33 +60,33 @@ Public Sub FindSpecies()
   
   For t = 1 To 20
     PopArray(t).SpName = ""
-    PopArray(t).Population = 0
+    PopArray(t).population = 0
     'If Contests = 0 Then PopArray(t).Wins = 0
   Next t
   Contest_Form.Show
   Contest_Form.Contests.Caption = Str(Contests)
   
   For t = 1 To MaxRobs
-    With rob(t)
+  
       'If Not .Veg And Not .Corpse And Not .wall And .exist Then
-      If Not .Veg And Not .Corpse And .exist Then
+      If Not rob(t).Veg And Not rob(t).Corpse And rob(t).exist Then
         For SpeciePointer = 1 To 20
           
-          realname = Left(.FName, Len(.FName) - 4)
+          realname = Left(rob(t).FName, Len(rob(t).FName) - 4)
           If realname = PopArray(SpeciePointer).SpName Then
-            PopArray(SpeciePointer).Population = PopArray(SpeciePointer).Population + 1
+            PopArray(SpeciePointer).population = PopArray(SpeciePointer).population + 1
             Exit For
           End If
           If PopArray(SpeciePointer).SpName = "" Then
             TotSpecies = TotSpecies + 1
             PopArray(SpeciePointer).SpName = realname
-            PopArray(SpeciePointer).Population = PopArray(SpeciePointer).Population + 1
-            robcol(SpeciePointer) = .color
+            PopArray(SpeciePointer).population = PopArray(SpeciePointer).population + 1
+            robcol(SpeciePointer) = rob(t).color
             Exit For
           End If
         Next SpeciePointer
       End If
-    End With
+   
   Next t
   If TotSpecies = 1 Then
 '    If Not LeagueMode Then
@@ -94,13 +94,13 @@ Public Sub FindSpecies()
       MDIForm1.F1Piccy.Visible = False
       Contest_Form.Visible = False
       t = MsgBox("You have only selected one species for combat. Formula 1 mode disabled", vbOKOnly)
-      Exit Sub
+      GoTo getout
  '   End If
   End If
   If PopArray(1).SpName <> "" Then
     Contest_Form.Robname1.Caption = PopArray(1).SpName
     Contest_Form.wins1.Caption = Str(PopArray(1).Wins)
-    Contest_Form.Pop1.Caption = Str(PopArray(1).Population)
+    Contest_Form.Pop1.Caption = Str(PopArray(1).population)
     Contest_Form.Robname1.ForeColor = robcol(1)
     Contest_Form.Option1(1).Visible = True
   Else
@@ -112,7 +112,7 @@ Public Sub FindSpecies()
   If PopArray(2).SpName <> "" Then
     Contest_Form.Robname2.Caption = PopArray(2).SpName
     Contest_Form.Wins2.Caption = Str(PopArray(2).Wins)
-    Contest_Form.Pop2.Caption = Str(PopArray(2).Population)
+    Contest_Form.Pop2.Caption = Str(PopArray(2).population)
     Contest_Form.Robname2.ForeColor = robcol(2)
     Contest_Form.Option1(2).Visible = True
   Else
@@ -124,7 +124,7 @@ Public Sub FindSpecies()
   If PopArray(3).SpName <> "" Then
     Contest_Form.Robname3.Caption = PopArray(3).SpName
     Contest_Form.Wins3.Caption = Str(PopArray(3).Wins)
-    Contest_Form.Pop3.Caption = Str(PopArray(3).Population)
+    Contest_Form.Pop3.Caption = Str(PopArray(3).population)
     Contest_Form.Robname3.ForeColor = robcol(3)
     Contest_Form.Option1(3).Visible = True
   Else
@@ -136,7 +136,7 @@ Public Sub FindSpecies()
   If PopArray(4).SpName <> "" Then
     Contest_Form.Robname4.Caption = PopArray(4).SpName
     Contest_Form.Wins4.Caption = Str(PopArray(4).Wins)
-    Contest_Form.Pop4.Caption = Str(PopArray(4).Population)
+    Contest_Form.Pop4.Caption = Str(PopArray(4).population)
     Contest_Form.Robname4.ForeColor = robcol(4)
     Contest_Form.Option1(4).Visible = True
   Else
@@ -148,7 +148,7 @@ Public Sub FindSpecies()
   If PopArray(5).SpName <> "" Then
     Contest_Form.Robname5.Caption = PopArray(5).SpName
     Contest_Form.Wins5.Caption = Str(PopArray(5).Wins)
-    Contest_Form.Pop5.Caption = Str(PopArray(5).Population)
+    Contest_Form.Pop5.Caption = Str(PopArray(5).population)
     Contest_Form.Robname5.ForeColor = robcol(5)
     Contest_Form.Option1(5).Visible = True
   Else
@@ -161,6 +161,7 @@ Public Sub FindSpecies()
     Contest_Form.Visible = True
     'Contests = 0
   End If
+getout:
 End Sub
 Public Sub Countpop()
 'counts population of robots at regular intervals
@@ -176,37 +177,37 @@ Public Sub Countpop()
   
   
   For t = 1 To 20
-    PopArray(t).Population = 0
+    PopArray(t).population = 0
     PopArray(t).exist = 0
   Next t
   
   For t = 1 To MaxRobs
-    With rob(t)
+  
       'If Not .Veg And Not .Corpse And Not .wall And .exist Then
-      If Not .Veg And Not .Corpse And .exist Then
+      If Not rob(t).Veg And Not rob(t).Corpse And rob(t).exist Then
         For SpeciePointer = 1 To TotSpecies
-          realname = Left(.FName, Len(.FName) - 4)
+          realname = Left(rob(t).FName, Len(rob(t).FName) - 4)
           If realname = PopArray(SpeciePointer).SpName Then
-            PopArray(SpeciePointer).Population = PopArray(SpeciePointer).Population + 1
+            PopArray(SpeciePointer).population = PopArray(SpeciePointer).population + 1
             PopArray(SpeciePointer).exist = 1
             Exit For
           End If
         Next SpeciePointer
       End If
-    End With
+    
   Next t
   If Contests < Maxrounds Then
     Contest_Form.Contests.Caption = Contests + 1
   End If
   Contest_Form.Maxrounds.Caption = Maxrounds
-  Contest_Form.Refresh
+'  Contest_Form.Refresh
   SpeciesLeft = 0
   For P = 1 To TotSpecies
     SpeciesLeft = SpeciesLeft + PopArray(P).exist
   Next P
   If SpeciesLeft = 1 And Contests + 1 <= Maxrounds And Over = False Then
     For t = 1 To TotSpecies
-      If PopArray(t).Population <> 0 Then
+      If PopArray(t).population <> 0 Then
         PopArray(t).Wins = PopArray(t).Wins + 1
       End If
     Next t
@@ -215,7 +216,7 @@ Public Sub Countpop()
   If PopArray(1).SpName <> "" Then
     Contest_Form.Robname1.Caption = PopArray(1).SpName
     Contest_Form.wins1.Caption = Str(PopArray(1).Wins)
-    Contest_Form.Pop1.Caption = Str(PopArray(1).Population)
+    Contest_Form.Pop1.Caption = Str(PopArray(1).population)
   Else
     Contest_Form.Robname1.Caption = ""
     Contest_Form.wins1.Caption = ""
@@ -224,7 +225,7 @@ Public Sub Countpop()
   If PopArray(2).SpName <> "" Then
     Contest_Form.Robname2.Caption = PopArray(2).SpName
     Contest_Form.Wins2.Caption = Str(PopArray(2).Wins)
-    Contest_Form.Pop2.Caption = Str(PopArray(2).Population)
+    Contest_Form.Pop2.Caption = Str(PopArray(2).population)
   Else
     Contest_Form.Robname2.Caption = ""
     Contest_Form.Wins2.Caption = ""
@@ -233,7 +234,7 @@ Public Sub Countpop()
   If PopArray(3).SpName <> "" Then
     Contest_Form.Robname3.Caption = PopArray(3).SpName
     Contest_Form.Wins3.Caption = Str(PopArray(3).Wins)
-    Contest_Form.Pop3.Caption = Str(PopArray(3).Population)
+    Contest_Form.Pop3.Caption = Str(PopArray(3).population)
   Else
     Contest_Form.Robname3.Caption = ""
     Contest_Form.Wins3.Caption = ""
@@ -242,7 +243,7 @@ Public Sub Countpop()
   If PopArray(4).SpName <> "" Then
     Contest_Form.Robname4.Caption = PopArray(4).SpName
     Contest_Form.Wins4.Caption = Str(PopArray(4).Wins)
-    Contest_Form.Pop4.Caption = Str(PopArray(4).Population)
+    Contest_Form.Pop4.Caption = Str(PopArray(4).population)
   Else
     Contest_Form.Robname4.Caption = ""
     Contest_Form.Wins4.Caption = ""
@@ -251,13 +252,13 @@ Public Sub Countpop()
   If PopArray(5).SpName <> "" Then
     Contest_Form.Robname5.Caption = PopArray(5).SpName
     Contest_Form.Wins5.Caption = Str(PopArray(5).Wins)
-    Contest_Form.Pop5.Caption = Str(PopArray(5).Population)
+    Contest_Form.Pop5.Caption = Str(PopArray(5).population)
   Else
     Contest_Form.Robname5.Caption = ""
     Contest_Form.Wins5.Caption = ""
     Contest_Form.Pop5.Caption = ""
   End If
-  Contest_Form.Refresh
+'  Contest_Form.Refresh
   F1count = 0
   Wins = Sqr(Maxrounds) + (Maxrounds / 2)
   If SpeciesLeft = 1 And Contests + 1 <= Maxrounds Then
@@ -332,7 +333,7 @@ Public Sub Countpop()
               StartAnotherRound = False
             End If
           End If
-          Contest_Form.Refresh
+     '     Contest_Form.Refresh
           Exit Sub
         Else
           Winner = "Statistical Draw. Extending contest."
@@ -346,7 +347,7 @@ Public Sub Countpop()
         If MaxRoundsToDraw <> 0 And Maxrounds >= 10 And Maxrounds > MaxRoundsToDraw Then
           Contest_Form.Winner1.Caption = "Win By Draw"
           Winner = "Maximum Rounds Reached."
-          Contest_Form.Refresh
+        '  Contest_Form.Refresh
           Over = True
           
           'Declare Defender to have won
@@ -373,7 +374,7 @@ Public Sub Countpop()
           Else
             StartAnotherRound = False
           End If
-          Contest_Form.Refresh
+         ' Contest_Form.Refresh
           Exit Sub
         Else
           Contest_Form.Winner1.Caption = "No Winner"
@@ -381,7 +382,7 @@ Public Sub Countpop()
         End If
       End If
     End If
-    Contest_Form.Refresh
+  '  Contest_Form.Refresh
     If Contests + 1 <= Maxrounds And Over = False Then
       Contests = Contests + 1
       StartAnotherRound = True
@@ -393,12 +394,12 @@ Public Sub Countpop()
 End Sub
 
 Public Sub SetupLeague_Options()
-  If optionsform.Leaguename.text <> "" And LeagueMode Then
-    Dim LeagueError As Integer
+  Dim LeagueError As Integer
+  
+  If LeagueMode Then
+    'F1Mode.Leaguename = Leaguename
     
-    F1Mode.Leaguename = optionsform.Leaguename.text
-    
-    LeagueError = Load_League_File(F1Mode.Leaguename)
+    LeagueError = Load_League_File(Leaguename)
     If LeagueError = -1 Then
       If MsgBox("League file does not exist.  Make a new one?", vbYesNo, "League Undetected") = vbNo Then
         Exit Sub
@@ -414,11 +415,7 @@ Public Sub SetupLeague_Options()
         'delete robot leaguerror from league table
       End If
     End If
-    LeagueForm.F1ChallengeOption.Caption = optionsform.Leaguename.text + " Challenge League"
-    'LeagueForm.Visible = True ' EricL 3/20/2006 Moved this to StartNew_Click in the Options Form
-  ElseIf optionsform.Leaguename.text = "" And LeagueMode Then
-    MsgBox "No league name.  League must have a name.", vbOKOnly, "League Name Needed"
-    Exit Sub
+    LeagueForm.F1ChallengeOption.Caption = Leaguename + " Challenge League"
   ElseIf LeagueMode = False Then
     LeagueForm.Visible = False
   End If

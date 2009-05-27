@@ -1,10 +1,8 @@
 Attribute VB_Name = "Master"
 Option Explicit
 Public DynamicCountdown As Integer ' Used to countdown the cycles until we modify the dynamic costs
-'Public oldCostX As Single ' Used to store the old CostX so it can be put back when the resinstate threshold is crossed
 Public CostsWereZeroed As Boolean ' Flag used to indicate to the reinstatement threshodl that the costs were zeroed
 Public PopulationLast10Cycles(10) As Integer
-
 
 
 Public Sub UpdateSim()
@@ -58,13 +56,15 @@ Public Sub UpdateSim()
        End If
        
       'Adjust the multiplier. The idea is to rachet this over time as bots evolve to be more effecient.
-      'We don't muck with it if the bots are within 10% of the target.  If they are outside the target, then
+      'We don't muck with it if the bots are within X% of the target.  If they are outside the target, then
       'we adjust only if the populatiuon isn't heading towards the range and then we do it my an amount that is a function
       'of how far out of the range we are (not how far from the target itself) and the sensitivity set in the sim
       SimOpts.Costs(COSTMULTIPLIER) = SimOpts.Costs(COSTMULTIPLIER) + (0.0000001 * CorrectionAmount * Sgn(AmountOff) * SimOpts.Costs(DYNAMICCOSTSENSITIVITY))
       
-      'Don't let the costs go negative
-      If SimOpts.Costs(COSTMULTIPLIER) < 0 Then SimOpts.Costs(COSTMULTIPLIER) = 0
+      'Don't let the costs go negative if the user doesn't want them to
+      If (SimOpts.Costs(ALLOWNEGATIVECOSTX) <> 1) Then
+        If SimOpts.Costs(COSTMULTIPLIER) < 0 Then SimOpts.Costs(COSTMULTIPLIER) = 0
+      End If
       DynamicCountdown = 10 ' Reset the countdown timer
     End If
  ' Else
@@ -93,7 +93,15 @@ Public Sub UpdateSim()
   If numObstacles > 0 Then MoveObstacles
   If numTeleporters > 0 Then UpdateTeleporters
    
-  If SimOpts.TotRunCycle Mod 200 = 0 And SimOpts.KillDistVegs Then KillDistVegs RobSize * 30
-  If totvegsDisplayed < SimOpts.MinVegs Then VegsRepopulate
+  'If SimOpts.TotRunCycle Mod 200 = 0 And SimOpts.KillDistVegs Then KillDistVegs RobSize * 30
+  If totvegsDisplayed < SimOpts.MinVegs Then
+    If totvegsDisplayed <> -1 Then VegsRepopulate  'Will be -1 first cycle after loading a sim.  Prevents spikes.
+  End If
   feedvegs SimOpts.MaxEnergy, totvegsDisplayed
+  
+  If SimOpts.EnableAutoSpeciation Then
+    'If SimOpts.TotRunCycle Mod SimOpts.SpeciationForkInterval = 0 Then ForkSpecies SimOpts.SpeciationGeneticDistance, SimOpts.SpeciationGenerationalDistance, SimOpts.SpeciationMinimumPopulation
+    
+  End If
+     
 End Sub

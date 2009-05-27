@@ -416,8 +416,8 @@ End Sub
 
 Private Sub DriftRateSlider_Change()
   SimOpts.shapeDriftRate = DriftRateSlider.value
-  If leftCompactor > 0 Then Obstacles.Obstacles(leftCompactor).vel.x = (SimOpts.shapeDriftRate * 0.1) * Sgn(Obstacles.Obstacles(leftCompactor).vel.x)
-  If rightCompactor > 0 Then Obstacles.Obstacles(rightCompactor).vel.x = (SimOpts.shapeDriftRate * 0.1) * Sgn(Obstacles.Obstacles(rightCompactor).vel.x)
+  If leftCompactor > 0 Then Obstacles.Obstacles(leftCompactor).vel.X = (SimOpts.shapeDriftRate * 0.1) * Sgn(Obstacles.Obstacles(leftCompactor).vel.X)
+  If rightCompactor > 0 Then Obstacles.Obstacles(rightCompactor).vel.X = (SimOpts.shapeDriftRate * 0.1) * Sgn(Obstacles.Obstacles(rightCompactor).vel.X)
 End Sub
 
 Public Sub InitShapesDialog()
@@ -448,11 +448,11 @@ End Sub
 
 Private Sub MakeShape_Click()
 Dim randomX As Single
-Dim randomY As Single
+Dim randomy As Single
 
 randomX = Random(0, SimOpts.FieldWidth) - SimOpts.FieldWidth * (defaultWidth / 2)
-randomY = Random(0, SimOpts.FieldHeight) - SimOpts.FieldHeight * (defaultHeight / 2)
-NewObstacle randomX, randomY, SimOpts.FieldWidth * defaultWidth, SimOpts.FieldHeight * defaultHeight
+randomy = Random(0, SimOpts.FieldHeight) - SimOpts.FieldHeight * (defaultHeight / 2)
+NewObstacle randomX, randomy, SimOpts.FieldWidth * defaultWidth, SimOpts.FieldHeight * defaultHeight
 End Sub
 
 Private Sub MazeWidthSlider_Change()

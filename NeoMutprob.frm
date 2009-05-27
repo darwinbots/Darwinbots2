@@ -16,7 +16,7 @@ Begin VB.Form MutationsProbability
       Height          =   495
       Index           =   0
       Left            =   3600
-      TabIndex        =   66
+      TabIndex        =   65
       Top             =   7920
       Width           =   1455
    End
@@ -25,7 +25,7 @@ Begin VB.Form MutationsProbability
       Height          =   285
       Index           =   2
       Left            =   1320
-      TabIndex        =   61
+      TabIndex        =   60
       Text            =   "Text1"
       Top             =   7020
       Visible         =   0   'False
@@ -36,7 +36,7 @@ Begin VB.Form MutationsProbability
       Height          =   285
       Index           =   1
       Left            =   1320
-      TabIndex        =   60
+      TabIndex        =   59
       Text            =   "Text1"
       Top             =   6600
       Width           =   855
@@ -46,19 +46,10 @@ Begin VB.Form MutationsProbability
       Left            =   3420
       MultiLine       =   -1  'True
       ScrollBars      =   2  'Vertical
-      TabIndex        =   58
+      TabIndex        =   57
       Text            =   "NeoMutprob.frx":0000
       Top             =   120
       Width           =   5595
-   End
-   Begin VB.CheckBox EnableAllCheck 
-      Caption         =   "All Disabled"
-      Height          =   495
-      Left            =   180
-      Style           =   1  'Graphical
-      TabIndex        =   50
-      Top             =   7920
-      Width           =   1455
    End
    Begin VB.Frame CustGauss 
       Caption         =   "Custom Gauss"
@@ -163,7 +154,7 @@ Begin VB.Form MutationsProbability
       End
    End
    Begin VB.CommandButton Command1 
-      Caption         =   "Exit"
+      Caption         =   "Okay"
       Height          =   495
       Index           =   1
       Left            =   1860
@@ -326,7 +317,7 @@ Begin VB.Form MutationsProbability
          Index           =   8
          Left            =   240
          Style           =   1  'Graphical
-         TabIndex        =   65
+         TabIndex        =   64
          Top             =   3540
          Visible         =   0   'False
          Width           =   1215
@@ -337,7 +328,7 @@ Begin VB.Form MutationsProbability
          Index           =   7
          Left            =   1680
          Style           =   1  'Graphical
-         TabIndex        =   59
+         TabIndex        =   58
          Top             =   420
          Width           =   1215
       End
@@ -347,7 +338,7 @@ Begin VB.Form MutationsProbability
          Index           =   0
          Left            =   240
          Style           =   1  'Graphical
-         TabIndex        =   57
+         TabIndex        =   56
          Top             =   420
          Width           =   1215
       End
@@ -357,7 +348,7 @@ Begin VB.Form MutationsProbability
          Index           =   1
          Left            =   1680
          Style           =   1  'Graphical
-         TabIndex        =   56
+         TabIndex        =   55
          Top             =   1980
          Width           =   1215
       End
@@ -367,7 +358,7 @@ Begin VB.Form MutationsProbability
          Index           =   2
          Left            =   240
          Style           =   1  'Graphical
-         TabIndex        =   55
+         TabIndex        =   54
          Top             =   1980
          Width           =   1215
       End
@@ -377,7 +368,7 @@ Begin VB.Form MutationsProbability
          Index           =   3
          Left            =   1680
          Style           =   1  'Graphical
-         TabIndex        =   54
+         TabIndex        =   53
          Top             =   1200
          Width           =   1215
       End
@@ -387,7 +378,7 @@ Begin VB.Form MutationsProbability
          Index           =   4
          Left            =   240
          Style           =   1  'Graphical
-         TabIndex        =   53
+         TabIndex        =   52
          Top             =   2760
          Visible         =   0   'False
          Width           =   1215
@@ -398,7 +389,7 @@ Begin VB.Form MutationsProbability
          Index           =   5
          Left            =   1680
          Style           =   1  'Graphical
-         TabIndex        =   52
+         TabIndex        =   51
          Top             =   2760
          Width           =   1215
       End
@@ -408,7 +399,7 @@ Begin VB.Form MutationsProbability
          Index           =   6
          Left            =   240
          Style           =   1  'Graphical
-         TabIndex        =   51
+         TabIndex        =   50
          Top             =   1200
          Width           =   1215
       End
@@ -624,7 +615,7 @@ Begin VB.Form MutationsProbability
       Caption         =   "Mutation Sumations:"
       Height          =   255
       Left            =   660
-      TabIndex        =   64
+      TabIndex        =   63
       Top             =   6240
       Width           =   1995
    End
@@ -633,7 +624,7 @@ Begin VB.Form MutationsProbability
       Height          =   255
       Index           =   2
       Left            =   420
-      TabIndex        =   63
+      TabIndex        =   62
       Top             =   7050
       Visible         =   0   'False
       Width           =   2415
@@ -643,7 +634,7 @@ Begin VB.Form MutationsProbability
       Height          =   255
       Index           =   1
       Left            =   420
-      TabIndex        =   62
+      TabIndex        =   61
       Top             =   6630
       Width           =   2415
    End
@@ -695,9 +686,9 @@ Private Sub Form_Load()
   TypeOption(8).value = True * True
   TypeOption(0).value = True * True
   
-  If (TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mutations = True) Then
-    EnableAllCheck.value = 1
-  End If
+'  If (TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mutations = True) Then
+'    EnableAllCheck.value = 1
+'  End If
 End Sub
 
 Private Sub Command1_Click(Index As Integer)
@@ -722,15 +713,15 @@ Private Sub Command1_Click(Index As Integer)
   End If
 End Sub
 
-Private Sub EnableAllCheck_Click()
-  If (EnableAllCheck.value = 0) Then
-    EnableAllCheck.Caption = "All Disabled"
-  Else
-    EnableAllCheck.Caption = "All Enabled"
-  End If
-  
-  TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mutations = (EnableAllCheck.value * True)
-End Sub
+'Private Sub EnableAllCheck_Click()
+'  If (EnableAllCheck.value = 0) Then
+'    EnableAllCheck.Caption = "All Disabled"
+'  Else
+'    EnableAllCheck.Caption = "All Enabled"
+'  End If
+'
+'  TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mutations = (EnableAllCheck.value * True)
+'End Sub
 
 Private Sub Lower_LostFocus(Index As Integer)
   Mean(Index).text = (val(Lower(Index).text) + val(Upper(Index).text)) / 2
