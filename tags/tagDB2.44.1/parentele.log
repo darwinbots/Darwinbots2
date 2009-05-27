@@ -1,0 +1,15 @@
+Line 62: Class ComCtl2.UpDown of control UpDown1 was not a loaded control class.
+Line 68: The property name _ExtentX in UpDown1 is invalid.
+Line 69: The property name _ExtentY in UpDown1 is invalid.
+Line 70: The property name _Version in UpDown1 is invalid.
+Line 71: The property name Value in UpDown1 is invalid.
+Line 72: The property name BuddyControl in UpDown1 is invalid.
+Line 73: The property name BuddyDispid in UpDown1 is invalid.
+Line 74: The property name OrigLeft in UpDown1 is invalid.
+Line 75: The property name OrigTop in UpDown1 is invalid.
+Line 76: The property name OrigRight in UpDown1 is invalid.
+Line 77: The property name OrigBottom in UpDown1 is invalid.
+Line 78: The property name Min in UpDown1 is invalid.
+Line 79: The property name SyncBuddy in UpDown1 is invalid.
+Line 80: The property name Wrap in UpDown1 is invalid.
+Line 81: The property name BuddyProperty in UpDown1 is invalid.
