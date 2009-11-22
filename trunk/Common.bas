@@ -11,8 +11,6 @@ Option Explicit
 Public Type vector
   X As Single
   Y As Single
-  magnitude As Single 'the only function that should
-    '_EVER_ address this is VectorMagnitude
 End Type
 
 Declare Function GetInputState Lib "user32" () As Long
@@ -112,11 +110,17 @@ Public Function VectorUnit(V1 As vector) As vector 'unit vector.  Called vector 
 End Function
 
 Public Function VectorMagnitude(V1 As vector) As Single
-'  If VectorMagnitudeSquare(V1) <> (V1.magnitude * V1.magnitude) Then
-'    V1.magnitude = Sqr(V1.x ^ 2 + V1.y ^ 2)
-'  End If
-  V1.magnitude = Sqr(V1.X ^ 2 + V1.Y ^ 2)
-  VectorMagnitude = V1.magnitude
+  ' This might seem overly complicated compared to sqr(X^2 + Y^2),
+  ' But it gives better numerical behavior
+  Dim minVal As Single
+  Dim maxVal As Single
+  minVal = Abs(min(V1.X, V1.Y))
+  maxVal = Abs(max(V1.X, V1.Y))
+  If maxVal < 0.00001 Then
+    VectorMagnitude = 0
+  Else
+    VectorMagnitude = maxVal * Sqr(1 + (minVal / maxVal) ^ 2)
+  End If
 End Function
 
 Public Function VectorInvMagnitude(V1 As vector) As Single
@@ -139,29 +143,29 @@ Public Function VectorSet(ByVal X As Single, ByVal Y As Single) As vector
 End Function
 
 Public Function VectorMax(ByRef X As vector, ByRef Y As vector) As vector
-    VectorMax.X = Max(X.X, Y.X)
-    VectorMax.Y = Max(X.Y, Y.Y)
+    VectorMax.X = max(X.X, Y.X)
+    VectorMax.Y = max(X.Y, Y.Y)
 End Function
 
 Public Function VectorMin(ByRef X As vector, ByRef Y As vector) As vector
-    VectorMin.X = Min(X.X, Y.X)
-    VectorMin.Y = Min(X.Y, Y.Y)
+    VectorMin.X = min(X.X, Y.X)
+    VectorMin.Y = min(X.Y, Y.Y)
 End Function
 
-Public Function Max(ByVal X As Single, ByVal Y As Single) As Single
+Public Function max(ByVal X As Single, ByVal Y As Single) As Single
     If (X > Y) Then
-        Max = X
+        max = X
         Exit Function
     End If
     
-    Max = Y
+    max = Y
 End Function
 
-Public Function Min(ByVal X As Single, ByVal Y As Single) As Single
+Public Function min(ByVal X As Single, ByVal Y As Single) As Single
     If (X < Y) Then
-        Min = X
+        min = X
         Exit Function
     End If
     
-    Min = Y
+    min = Y
 End Function
