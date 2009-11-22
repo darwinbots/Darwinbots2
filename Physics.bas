@@ -1110,7 +1110,6 @@ Public Sub Repel3(rob1 As Integer, rob2 As Integer)
     If rob(rob2).Fixed Then M2 = 32000
     
     unit = VectorUnit(normal) ' Create a unit vector pointing from bot 1 to bot 2
-    unit.magnitude = 1 ' VectorUnit doesn't set the magnitude!
     vel1 = rob(rob1).vel
     vel2 = rob(rob2).vel
     
