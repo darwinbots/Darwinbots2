@@ -114,8 +114,8 @@ Public Function VectorMagnitude(V1 As vector) As Single
   ' But it gives better numerical behavior
   Dim minVal As Single
   Dim maxVal As Single
-  minVal = Abs(min(V1.X, V1.Y))
-  maxVal = Abs(max(V1.X, V1.Y))
+  minVal = Min(Abs(V1.X), Abs(V1.Y))
+  maxVal = Max(Abs(V1.X), Abs(V1.Y))
   If maxVal < 0.00001 Then
     VectorMagnitude = 0
   Else
@@ -125,11 +125,14 @@ End Function
 
 Public Function VectorInvMagnitude(V1 As vector) As Single
   'VectorInvMagnitude = FastInvSqrt(v1.x * v1.x + v1.y * v1.y)
-    
-  If V1.X = 0# And V1.Y = 0# Then
+  
+  Dim mag As Single
+  mag = VectorMagnitude(V1)
+  
+  If mag = 0# Then
     VectorInvMagnitude = -1#
   Else
-    VectorInvMagnitude = 1# / Sqr(V1.X * V1.X + V1.Y * V1.Y)
+    VectorInvMagnitude = 1# / mag
   End If
 End Function
 
@@ -143,29 +146,29 @@ Public Function VectorSet(ByVal X As Single, ByVal Y As Single) As vector
 End Function
 
 Public Function VectorMax(ByRef X As vector, ByRef Y As vector) As vector
-    VectorMax.X = max(X.X, Y.X)
-    VectorMax.Y = max(X.Y, Y.Y)
+    VectorMax.X = Max(X.X, Y.X)
+    VectorMax.Y = Max(X.Y, Y.Y)
 End Function
 
 Public Function VectorMin(ByRef X As vector, ByRef Y As vector) As vector
-    VectorMin.X = min(X.X, Y.X)
-    VectorMin.Y = min(X.Y, Y.Y)
+    VectorMin.X = Min(X.X, Y.X)
+    VectorMin.Y = Min(X.Y, Y.Y)
 End Function
 
-Public Function max(ByVal X As Single, ByVal Y As Single) As Single
+Public Function Max(ByVal X As Single, ByVal Y As Single) As Single
     If (X > Y) Then
-        max = X
+        Max = X
         Exit Function
     End If
     
-    max = Y
+    Max = Y
 End Function
 
-Public Function min(ByVal X As Single, ByVal Y As Single) As Single
+Public Function Min(ByVal X As Single, ByVal Y As Single) As Single
     If (X < Y) Then
-        min = X
+        Min = X
         Exit Function
     End If
     
-    min = Y
+    Min = Y
 End Function

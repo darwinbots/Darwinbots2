@@ -1174,11 +1174,9 @@ bypass:
   Exit Sub
 problem:
   If Err.Number = 76 Then
-    b = MsgBox("Cannot find the Directory: " + path + " so will attempt to create." + vbCrLf, vbOK)
-    MkDir (MDIForm1.MainDir + path)
-    MkDir (MDIForm1.MainDir + path + "\in")
-    MkDir (MDIForm1.MainDir + path + "\out")
-    GoTo tryagain
+    MsgBox("Cannot find the Directory: " + path + " so will attempt to create." + vbCrLf, vbOK)
+    shell "mkdir -p " + path + "\out"
+    shell "mkdir -p " + path + "\in"
   End If
 End Sub
 

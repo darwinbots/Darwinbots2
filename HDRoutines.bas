@@ -337,6 +337,23 @@ Dim numSpeciesThisFile As Integer
 
 End Sub
 
+Public Function GetFilePath(FileName As String) As String
+    Dim i As Long
+    For i = Len(FileName) To 1 Step -1
+        Select Case Mid$(FileName, i, 1)
+            Case ":"
+                ' colons are always included in the result
+                GetFilePath = Left$(FileName, i)
+                Exit For
+            Case "\"
+                ' backslash aren't included in the result
+                GetFilePath = Left$(FileName, i - 1)
+                Exit For
+        End Select
+    Next
+End Function
+
+
 ' saves a whole simulation
 Public Sub SaveSimulation(path As String)
   Dim t As Integer
@@ -355,6 +372,15 @@ Public Sub SaveSimulation(path As String)
     If rob(X).exist Then numOfExistingBots = numOfExistingBots + 1
   Next X
   
+  Dim justPath As String
+  justPath = GetFilePath(path)
+  
+  Dim Command As String
+  Command = "cmd /c md -p " + """" + justPath + """"
+  
+  shell Command
+  
+  Exit Sub
   
   Open path For Binary As 1
     
@@ -1698,7 +1724,7 @@ Public Function Save_League_File(FName As String) As Integer
   'EricL - Moved following three lines here from below
   'Create the directory for the specific league name if it does not exist.
   If dir$(MDIForm1.MainDir + "\Leagues\" + Leaguename + "league\*.*") = "" Then
-    MkDir MDIForm1.MainDir + "\Leagues\" + Leaguename + "league"
+    shell "mkdir -p " + MDIForm1.MainDir + "\Leagues\" + Leaguename + "league"
   End If
   
   On Error GoTo Nosuchfile
