@@ -347,7 +347,7 @@ End Function
 ' choses a random file and loads it
 Function LoadRandomOrgs(num As Integer, X As Single, Y As Single, Teleporter As Integer) As Boolean
   On Error GoTo fine
-  Dim DirList(150) As String
+  Dim DirList() As String
   Dim k, i, dirnum As Integer
   Dim fase As Integer
   
@@ -422,7 +422,7 @@ End Function
 ' downloads all files in the directory without deleting anything
 Function DownloadPopFiles() As Boolean
   On Error GoTo fine
-  Dim DirList(150) As String
+  Dim DirList() As String
   Dim k, i, dirnum As Integer
   Dim fase As Integer
   
@@ -662,10 +662,15 @@ End Function
 
 ' cleans from the directory those files which don't match
 ' download requirements (such as cell number)
-Private Sub CompileDirlist(ByVal dr As String, dlist() As String)
+Private Sub CompileDirlist(ByVal dr As String, ByRef dlist() As String)
   Dim k As Integer
   Dim i As String, cn As Integer
   k = 1
+  Dim arrayOverflow As Integer
+  arrayOverflow = 50
+  
+  ReDim dlist(arrayOverflow) As String
+  
   While InStr(dr, vbCrLf) > 2
     i = Left(dr, InStr(dr, vbCrLf) - 1)
     If InStr(i, "/") < 1 Then
@@ -673,8 +678,18 @@ Private Sub CompileDirlist(ByVal dr As String, dlist() As String)
         'cn = InStr(i, "cn")
         'If cn > 0 Then
          ' If val(Mid(i, cn + 2)) >= IntOpts.MinCellsNum Then
-            dlist(k) = i
+            arrayOverflow = arrayOverflow - 1
             k = k + 1
+            
+            If arrayOverflow <= 0 Then
+              arrayOverflow = 50
+              Dim size As Integer
+              size = UBound(dlist) - LBound(dlist) + 1
+              size = size + arrayOverflow
+              ReDim dlist(size) As String
+            End If
+            
+            dlist(k) = i
           'End If
         'End If
       End If
@@ -689,19 +704,33 @@ End Sub
 ' download requirements
 Private Sub CompilePopDirlist(ByVal dr As String, dlist() As String)
   Dim k As Integer
-  Dim i As String, cn As Integer
   k = 1
+  Dim i As String, cn As Integer
+  Dim arrayOverflow As Integer
+  arrayOverflow = 50
+  
   While InStr(dr, vbCrLf) > 2
     i = Left(dr, InStr(dr, vbCrLf) - 1)
     If InStr(i, "/") < 1 Then
       If Len(i) > 4 And Right(i, 4) = ".pop" Then
-        dlist(k) = i
+        arrayOverflow = arrayOverflow - 1
         k = k + 1
+        
+        If arrayOverflow <= 0 Then
+          arrayOverflow = 50
+          Dim size As Integer
+          size = UBound(dlist) - LBound(dlist) + 1
+          size = size + arrayOverflow
+          ReDim dlist(size) As String
+        End If
+            
+        dlist(k) = i
       End If
     End If
     dr = Mid(dr, InStr(dr, vbCrLf) + 2)
   Wend
   dlist(0) = CStr(k - 1)
+  
 End Sub
 
 ' erase files
