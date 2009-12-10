@@ -1760,7 +1760,7 @@ Private Sub simload(Optional path As String)
     End If
   End If
   
-  MDIForm1.Caption = "DarwinBots " + App.Major + "." + App.Minor + "." + App.Revision + " " + path2
+  MDIForm1.Caption = "DarwinBots " + CStr(App.Major) + "." + CStr(App.Minor) + "." + CStr(App.Revision) + " " + path2
   
   LoadSimulation path2
   
@@ -1867,12 +1867,12 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As file
+Dim lastSim As File
 
   globstrings
   strings Me
   MDIForm1.WindowState = 2
-  MDIForm1.Caption = "DarwinBots " + App.Major + "." + App.Minor + "." + App.Revision
+  MDIForm1.Caption = "DarwinBots " + CStr(App.Major) + "." + CStr(App.Minor) + "." + CStr(App.Revision)
   startdir = App.path
   MainDir = App.path
   
