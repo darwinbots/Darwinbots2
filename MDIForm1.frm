@@ -1174,7 +1174,7 @@ bypass:
   Exit Sub
 problem:
   If Err.Number = 76 Then
-    MsgBox("Cannot find the Directory: " + path + " so will attempt to create." + vbCrLf, vbOK)
+    b = MsgBox("Cannot find the Directory: " + path + " so will attempt to create.", vbOKOnly)
     shell "mkdir " + path + "\out"
     shell "mkdir " + path + "\in"
   End If
@@ -1760,7 +1760,7 @@ Private Sub simload(Optional path As String)
     End If
   End If
   
-  MDIForm1.Caption = "DarwinBots 2.44.1 " + path2
+  MDIForm1.Caption = "DarwinBots " + App.Major + "." + App.Minor + "." + App.Revision + " " + path2
   
   LoadSimulation path2
   
@@ -1872,7 +1872,7 @@ Dim lastSim As file
   globstrings
   strings Me
   MDIForm1.WindowState = 2
-  MDIForm1.Caption = "DarwinBots 2.44.1"
+  MDIForm1.Caption = "DarwinBots " + App.Major + "." + App.Minor + "." + App.Revision
   startdir = App.path
   MainDir = App.path
   
