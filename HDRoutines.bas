@@ -47,7 +47,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As File
+  Dim robotFile As file
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -249,7 +249,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As File
+  Dim fileToDelete As file
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -1724,7 +1724,7 @@ Public Function Save_League_File(FName As String) As Integer
   'EricL - Moved following three lines here from below
   'Create the directory for the specific league name if it does not exist.
   If dir$(MDIForm1.MainDir + "\Leagues\" + Leaguename + "league\*.*") = "" Then
-    shell "mkdir -p " + MDIForm1.MainDir + "\Leagues\" + Leaguename + "league"
+    shell "mkdir " + MDIForm1.MainDir + "\Leagues\" + Leaguename + "league"
   End If
   
   On Error GoTo Nosuchfile

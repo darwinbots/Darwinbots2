@@ -1175,8 +1175,8 @@ bypass:
 problem:
   If Err.Number = 76 Then
     MsgBox("Cannot find the Directory: " + path + " so will attempt to create." + vbCrLf, vbOK)
-    shell "mkdir -p " + path + "\out"
-    shell "mkdir -p " + path + "\in"
+    shell "mkdir " + path + "\out"
+    shell "mkdir " + path + "\in"
   End If
 End Sub
 
@@ -1867,7 +1867,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
 
   globstrings
   strings Me
