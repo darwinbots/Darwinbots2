@@ -211,7 +211,7 @@ Private Sub Form_Load()
   strings Me
   SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
   Text1.text = ""
-  Text1.text = Text1.text + "DarwinBots v2.44.1" + vbCrLf
+  Text1.text = Text1.text + "DarwinBots v" + App.Major + "." + App.Minor + "." + App.Revision + vbCrLf
   Text1.text = Text1.text + "http://www.darwinbots.com" + vbCrLf
   Text1.text = Text1.text + "Original Copyright (C) 2003 Carlo Comis" + vbCrLf
   Text1.text = Text1.text + "comis@libero.it" + vbCrLf
