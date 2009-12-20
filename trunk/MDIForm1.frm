@@ -907,6 +907,7 @@ Option Explicit
 Public zoomval As Integer
 Public startdir As String
 Public MainDir As String
+Public BaseCaption As String
 Public insrob As Boolean
 Dim AspettaFlag As Boolean
 Public visualize As Boolean   ' video output on/off
@@ -1175,8 +1176,8 @@ bypass:
 problem:
   If Err.Number = 76 Then
     b = MsgBox("Cannot find the Directory: " + path + " so will attempt to create.", vbOKOnly)
-    shell "mkdir " + path + "\out"
-    shell "mkdir " + path + "\in"
+    RecursiveMkDir (MDIForm1.MainDir + path + "\out")
+    RecursiveMkDir (MDIForm1.MainDir + path + "\in")
   End If
 End Sub
 
@@ -1760,7 +1761,7 @@ Private Sub simload(Optional path As String)
     End If
   End If
   
-  MDIForm1.Caption = "DarwinBots " + CStr(App.Major) + "." + CStr(App.Minor) + "." + CStr(App.Revision) + " " + path2
+  MDIForm1.Caption = MDIForm1.BaseCaption + " " + path2
   
   LoadSimulation path2
   
@@ -1867,12 +1868,16 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
+Dim revision As String
 
   globstrings
   strings Me
   MDIForm1.WindowState = 2
-  MDIForm1.Caption = "DarwinBots " + CStr(App.Major) + "." + CStr(App.Minor) + "." + CStr(App.Revision)
+  
+  MDIForm1.BaseCaption = "DarwinBots " + CStr(App.Major) + "." + CStr(App.Minor) + "." + Format(App.revision, "00")
+  MDIForm1.Caption = MDIForm1.BaseCaption
+  
   startdir = App.path
   MainDir = App.path
   

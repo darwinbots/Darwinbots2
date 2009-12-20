@@ -5,6 +5,35 @@ Option Explicit
 '   D I S K    O P E R A T I O N S
 '
 
+Public Function RecursiveMkDir(destDir As String) As Boolean
+   
+   Dim i As Long
+   Dim prevDir As String
+   
+   On Error Resume Next
+   
+   For i = Len(destDir) To 1 Step -1
+       If Mid(destDir, i, 1) = "\" Then
+           prevDir = Left(destDir, i - 1)
+           Exit For
+       End If
+   Next i
+   
+   If prevDir = "" Then RecursiveMkDir = False: Exit Function
+   If Not Len(dir(prevDir & "\", vbDirectory)) > 0 Then
+       If Not RecursiveMkDir(prevDir) Then RecursiveMkDir = False: Exit Function
+   End If
+   
+   On Error GoTo errDirMake
+   MkDir destDir
+   RecursiveMkDir = True
+   Exit Function
+   
+errDirMake:
+   RecursiveMkDir = False
+
+End Function
+
 ' inserts organism file in the simulation
 ' remember that organisms could be made of more than one robot
 Public Sub InsertOrganism(path As String)
@@ -1718,13 +1747,13 @@ Public Function Save_League_File(FName As String) As Integer
   'EricL - new code added March 15, 2006
   'If the Leagues directory doesn't exist yet, create it
   If dir$(MDIForm1.MainDir + "\Leagues\*.*") = "" Then
-    MkDir MDIForm1.MainDir + "\Leagues"
+    RecursiveMkDir (MDIForm1.MainDir + "\Leagues")
   End If
        
   'EricL - Moved following three lines here from below
   'Create the directory for the specific league name if it does not exist.
   If dir$(MDIForm1.MainDir + "\Leagues\" + Leaguename + "league\*.*") = "" Then
-    shell "mkdir " + MDIForm1.MainDir + "\Leagues\" + Leaguename + "league"
+    RecursiveMkDir (MDIForm1.MainDir + "\Leagues\" + Leaguename + "league")
   End If
   
   On Error GoTo Nosuchfile
