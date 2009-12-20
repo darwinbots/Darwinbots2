@@ -5618,7 +5618,7 @@ aiuto:
             "Would you like me to create one?   " + vbCrLf + vbCrLf + _
             "If this is a new install, choose OK.", vbOKCancel + vbQuestion)
     If b = vbOK Then
-       MkDir (MDIForm1.MainDir + "\settings")
+       RecursiveMkDir (MDIForm1.MainDir + "\settings")
     Else
       MsgBox ("Darwinbots cannot continue.  Program will exit.")
       MDIForm1.exitDB = True
