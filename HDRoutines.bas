@@ -406,8 +406,6 @@ Public Sub SaveSimulation(path As String)
   
   RecursiveMkDir (justPath)
   
-  Exit Sub
-  
   Open path For Binary As 1
     
     Put #1, , numOfExistingBots
