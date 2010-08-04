@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.MDIForm MDIForm1 
    AutoShowChildren=   0   'False
@@ -1733,7 +1733,7 @@ Private Sub simload(Optional path As String)
   Dim i As Integer
   Dim path2 As String
    
- ' On Error GoTo fine ' Uncomment this line in compiled version error.sim
+  On Error GoTo fine ' Uncomment this line in compiled version error.sim
 
   If path = "" Then
 '    optionsform.Visible = False
@@ -1868,7 +1868,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As file
+Dim lastSim As File
 Dim revision As String
 
   globstrings
