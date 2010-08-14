@@ -171,7 +171,7 @@ Public Sub WriteSenses(n As Integer)
   LandMark n
   With rob(n)
    
-    .mem(TOTALBOTS) = TotalRobots
+    .mem(TotalBots) = TotalRobots
     .mem(TOTALMYSPECIES) = SimOpts.Specie(SpeciesFromBot(n)).population
     
     If Not .CantSee And Not .Corpse Then

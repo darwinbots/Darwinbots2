@@ -218,6 +218,7 @@ Public Sub createshot(ByVal X As Long, ByVal Y As Long, ByVal vx As Integer, _
   Shots(a).exist = True
   Shots(a).stored = False
   Shots(a).DnaLen = 0
+  
     
   Dim temp As Long
   temp = (Range + 40 + 1) \ 40 'divides and rounds up ie: range / (Robsize/3)
@@ -239,6 +240,9 @@ Public Sub createshot(ByVal X As Long, ByVal Y As Long, ByVal vx As Integer, _
     Shots(a).Memloc = rob(par).mem(834) Mod 1000
     If Shots(a).Memloc = 0 Then Shots(a).Memloc = 1000
   End If
+  
+  If Shots(a).shottype = -5 Then Shots(a).Memval = rob(Shots(a).parent).mem(839)
+  
 End Sub
 
 ' searches some place to insert the new shot in the
@@ -496,6 +500,9 @@ Public Sub releasenrg(n As Integer, t As Long)
   Dim angle As Single
   Dim relVel As vector
   Dim EnergyLost As Single
+  Dim a As Long
+  
+  a = FirstSlot
     
   If rob(n).nrg <= 0.5 Then
    ' rob(n).Dead = True ' Don't kill them here so they can be corpses.  Still might have body.
@@ -800,6 +807,8 @@ Private Sub takepoison(n As Integer, t As Long)
   
   power = Shots(t).nrg / (Shots(t).Range * 40) * Shots(t).value
   
+  If Shots(t).Memloc = 340 Or power < 1 Then GoTo getout 'protection from delgene attacks
+  
   If Shots(t).FromSpecie = rob(n).FName Then    'Robot is immune to poison from his own species
     rob(n).poison = rob(n).poison + power 'Robot absorbs poison fired by conspecs
     If rob(n).poison > 32000 Then rob(n).poison = 32000
@@ -813,6 +822,7 @@ Private Sub takepoison(n As Integer, t As Long)
     Else
       rob(n).Ploc = Random(1, 1000)
     End If
+    rob(n).Pval = Shots(t).Memval
   End If
 '  Shots(t).Exist = False
 getout:
