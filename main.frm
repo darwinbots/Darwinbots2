@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "MSINET.OCX"
+Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "msinet.ocx"
 Begin VB.Form Form1 
    Appearance      =   0  'Flat
    AutoRedraw      =   -1  'True
@@ -1464,7 +1464,7 @@ End Function
 
 ' stuff for clicking, dragging, etc
 ' move+click: drags robot if one selected, else drags screen
-Private Sub Form_MouseMove(button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim st As Long
   Dim sl As Long
   Dim vsv As Long
@@ -1473,12 +1473,12 @@ Private Sub Form_MouseMove(button As Integer, Shift As Integer, X As Single, Y A
   Dim vel As vector
   
   visibleh = Int(Form1.ScaleHeight)
-  If button = 0 Then
+  If Button = 0 Then
     MouseClickX = X
     MouseClickY = Y
   End If
   
-  If button = 1 And Not MDIForm1.insrob And obstaclefocus = 0 And teleporterFocus = 0 Then
+  If Button = 1 And Not MDIForm1.insrob And obstaclefocus = 0 And teleporterFocus = 0 Then
     If MouseClicked Then
       st = ScaleTop + MouseClickY - Y
       sl = ScaleLeft + MouseClickX - X
@@ -1504,20 +1504,20 @@ Private Sub Form_MouseMove(button As Integer, Shift As Integer, X As Single, Y A
     End If
   End If
   
-  If button = 1 And robfocus > 0 And DraggingBot Then
+  If Button = 1 And robfocus > 0 And DraggingBot Then
     vel = VectorSub(rob(robfocus).pos, VectorSet(X, Y))
     rob(robfocus).pos = VectorSet(X, Y)
     rob(robfocus).vel = VectorSet(0, 0)
     If Not Active Then Redraw
   End If
   
-  If button = 1 And obstaclefocus > 0 Then
+  If Button = 1 And obstaclefocus > 0 Then
   ' Obstacles.Obstacles(obstaclefocus).pos = VectorSet(x - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.x), y - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.y))
    Obstacles.Obstacles(obstaclefocus).pos = VectorSet(X - (Obstacles.Obstacles(obstaclefocus).Width / 2), Y - (Obstacles.Obstacles(obstaclefocus).Height / 2))
     If Not Active Then Redraw
   End If
   
-  If button = 1 And teleporterFocus > 0 Then
+  If Button = 1 And teleporterFocus > 0 Then
   ' Obstacles.Obstacles(obstaclefocus).pos = VectorSet(x - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.x), y - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.y))
    Teleport.Teleporters(teleporterFocus).pos = VectorSet(X - (Teleport.Teleporters(teleporterFocus).Width / 2), Y - (Teleport.Teleporters(teleporterFocus).Height / 2))
     If Not Active Then Redraw
@@ -1529,7 +1529,7 @@ End Sub
 ' it seems that there's no simple way to know the mouse status
 ' outside of a Form event. So I've used the event to switch
 ' on and off some global vars
-Private Sub Form_MouseUp(button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   MouseClicked = False
   MousePointer = 0
   ZoomFlag = False ' EricL - stop zooming in!
@@ -1583,7 +1583,7 @@ Private Sub Form_Click()
     Form1.BackPic = ""
     Form1.Picture = Nothing
     Form1.PiccyMode = False
-    SetWindowPos MDIForm1.hwnd, HWND_TOPMOST, 0, 0, 1000, 1000, 0
+    SetWindowPos MDIForm1.hWnd, HWND_TOPMOST, 0, 0, 1000, 1000, 0
     MDIForm1.WindowState = 2
   End If
   
@@ -1618,13 +1618,13 @@ End Sub
 ' clicking (well, half-clicking) on a robot selects it
 ' clicking outside can add a robot if we're in robot insertion
 ' mode.
-Private Sub Form_MouseDown(button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim n As Integer
   Dim k As Integer
   Dim m As Integer
   
   'EricL - Zooms in on the position of the mouse when the scroll button is held.
-  If button = 4 Then
+  If Button = 4 Then
     ZoomFlag = True
     While ZoomFlag = True
       If Form1.visiblew > 100 And Form1.visibleh > 100 Then
@@ -1668,7 +1668,7 @@ Private Sub Form_MouseDown(button As Integer, Shift As Integer, X As Single, Y A
     End If
   End If
   
-  If button = 2 Then
+  If Button = 2 Then
     robfocus = n
     If n > 0 Then
       MDIForm1.PopupMenu MDIForm1.popup
@@ -1682,7 +1682,7 @@ Private Sub Form_MouseDown(button As Integer, Shift As Integer, X As Single, Y A
     If Not rob(n).highlight Then deletemark
   End If
   
-  If n = 0 And button = 1 And MDIForm1.insrob Then
+  If n = 0 And Button = 1 And MDIForm1.insrob Then
     k = 0
     While SimOpts.Specie(k).Name <> "" And SimOpts.Specie(k).Name <> MDIForm1.Combo1.text
       k = k + 1
@@ -1697,7 +1697,7 @@ Private Sub Form_MouseDown(button As Integer, Shift As Integer, X As Single, Y A
     End If
   End If
   
-  If button = 1 And Not MDIForm1.insrob And n = 0 Then
+  If Button = 1 And Not MDIForm1.insrob And n = 0 Then
     MouseClicked = True
   End If
   
@@ -2594,11 +2594,13 @@ End Function
 '
 
 ''''''''''''''''''''''''''''''''''''''''''
-Public Sub t_MouseDown(ByVal button As Integer)
-  If MDIForm1.stealthmode Then
+Public Sub t_MouseDown(ByVal Button As Integer)
+  If MDIForm1.stealthmode And Button = 1 Then
     MDIForm1.Show
     t.Remove
     MDIForm1.stealthmode = False
+    ElseIf MDIForm1.stealthmode And Button = 2 Then
+    Call MDIForm1.PopupMenu(MDIForm1.TrayIconPopup)
   End If
 End Sub
 
