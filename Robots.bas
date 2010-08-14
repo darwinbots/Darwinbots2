@@ -60,7 +60,7 @@ Public Const GenesSys As Integer = 339
 Public Const DelgeneSys As Integer = 340
 Public Const thisgene As Integer = 341
 Public Const LandM As Integer = 400
-Public Const TOTALBOTS As Integer = 401
+Public Const TotalBots As Integer = 401
 Public Const TOTALMYSPECIES As Integer = 402
 
 
@@ -230,6 +230,7 @@ Private Type robot
   Kills As Long             ' How many other robots has it killed? Might not work properly
   Dead As Boolean           ' Allows program to define a robot as dead after a certain operation
   Ploc As Integer           ' Location for custom poison to strike
+  Pval As Integer           ' Value to insert into venom location
   Vloc As Integer           ' Location for custom venom to strike
   Vval As Integer           ' Value to insert into venom location
   Vtimer As Long            ' Count down timer to produce a virus
@@ -643,6 +644,12 @@ Private Sub Upkeep(n As Integer)
     .Slime = .Slime * 0.98
     If .Slime < 0.5 Then .Slime = 0 ' To keep things sane for integer rounding, etc.
     .mem(821) = CInt(.Slime)
+    
+    'degrade poison
+    .poison = .poison * 0.98
+    If .poison < 0.5 Then .Slime = 0
+    .mem(827) = CInt(.poison)
+    
   End With
 End Sub
 
@@ -721,11 +728,11 @@ Private Sub Poisons(n As Integer)
   
   .mem(837) = .Paracount
   
-  If .Poisoned Then .mem(.Ploc) = 0
+  If .Poisoned Then .mem(.Ploc) = .Pval
 
   If .Poisoned Then
     .Poisoncount = .Poisoncount - 1
-    If .Poisoncount < 1 Then .Poisoned = False: .Ploc = 0: .Poisoncount = 0
+    If .Poisoncount < 1 Then .Poisoned = False: .Ploc = 0: .Pval = 0
   End If
   
   .mem(838) = .Poisoncount
