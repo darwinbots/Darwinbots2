@@ -876,6 +876,37 @@ Begin VB.MDIForm MDIForm1
          Shortcut        =   ^D
       End
    End
+   Begin VB.Menu TrayIconPopup 
+      Caption         =   "TrayIconPopup"
+      Visible         =   0   'False
+      Begin VB.Menu ShowInfo 
+         Caption         =   "Show Information"
+         Begin VB.Menu CyclesPS 
+            Caption         =   "CyclesPS"
+         End
+         Begin VB.Menu CyclesNumber 
+            Caption         =   "CyclesNumber"
+         End
+         Begin VB.Menu MutationValue 
+            Caption         =   "MutationValue"
+         End
+         Begin VB.Menu TotalBots 
+            Caption         =   "TotalBots"
+         End
+         Begin VB.Menu NumberBots 
+            Caption         =   "NumberBots"
+         End
+         Begin VB.Menu NumberVeg 
+            Caption         =   "NumberVeg"
+         End
+         Begin VB.Menu BotsBorn 
+            Caption         =   "BotsBorn"
+         End
+      End
+      Begin VB.Menu ShowDB 
+         Caption         =   "Show DarwinBots"
+      End
+   End
 End
 Attribute VB_Name = "MDIForm1"
 Attribute VB_GlobalNameSpace = False
@@ -1411,6 +1442,10 @@ Private Sub shapes_Click()
   ObstacleForm.Show
 End Sub
 
+Private Sub ShowDB_Click()
+Form1.t_MouseDown (1)
+End Sub
+
 Private Sub ShowVisionGrid_Click()
   ShowVisionGrid.Checked = Not ShowVisionGrid.Checked
   showVisionGridToggle = ShowVisionGrid.Checked
@@ -1430,14 +1465,15 @@ Private Sub Species_Click()
   End If
 End Sub
 
+
 Private Sub SunButton_Click()
   SimOpts.Daytime = Not (SunButton.value * True)
 End Sub
 
-Private Sub Toolbar1_ButtonClick(ByVal button As MSComctlLib.button)
+Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
   Dim a As String
  
-  Select Case button.key
+  Select Case Button.key
     Case "newsim"
       NetEvent.Timer1.Enabled = False
       NetEvent.Hide
@@ -1464,9 +1500,9 @@ Private Sub Toolbar1_ButtonClick(ByVal button As MSComctlLib.button)
     Case "limit"
       limitgraphics = Not limitgraphics
       If limitgraphics Then
-        button.value = tbrUnpressed
+        Button.value = tbrUnpressed
       Else
-        button.value = tbrPressed
+        Button.value = tbrPressed
       End If
     Case "fast"
       oneonten = Not oneonten
@@ -1494,17 +1530,17 @@ Private Sub Toolbar1_ButtonClick(ByVal button As MSComctlLib.button)
     Case "Flickermode"
       Form1.Flickermode = Not Form1.Flickermode
       If Form1.Flickermode Then
-        button.value = tbrPressed
+        Button.value = tbrPressed
       Else
-        button.value = tbrUnpressed
+        Button.value = tbrUnpressed
       End If
     Case "Novideo"
       visualize = Not visualize
       If visualize Then
-        button.value = tbrUnpressed
+        Button.value = tbrUnpressed
         Form1.Label1.Visible = False
       Else
-        button.value = tbrPressed
+        Button.value = tbrPressed
         Form1.Label1.Visible = True
       End If
     Case "insert"
@@ -1525,9 +1561,9 @@ Private Sub Toolbar1_ButtonClick(ByVal button As MSComctlLib.button)
       'ignores errors when it encounters them with the hope that they'll fix themselves
       ignoreerror = Not ignoreerror
       If ignoreerror Then
-        button.value = tbrUnpressed
+        Button.value = tbrUnpressed
       Else
-        button.value = tbrPressed
+        Button.value = tbrPressed
       End If
     
       
@@ -1601,12 +1637,12 @@ Private Sub costi_Click()
   optionsform.Show vbModal
 End Sub
 
-Private Sub czin_MouseDown(button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czin_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = True
   ZoomInPremuto
 End Sub
 
-Private Sub czin_MouseUp(button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czin_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = False
 End Sub
 
@@ -1643,7 +1679,7 @@ Private Sub ZoomOutPremuto()
   Wend
 End Sub
 
-Private Sub czo_MouseDown(button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czo_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = True
   ZoomOutPremuto
 End Sub
@@ -1693,7 +1729,7 @@ Public Sub ZoomOut()
   Form1.Redraw
 End Sub
 
-Private Sub czo_MouseUp(button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czo_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
  AspettaFlag = False
 End Sub
 
@@ -2078,11 +2114,17 @@ Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Integer, br
   
   If tot = 0 Then Exit Sub
   StatusBar1.Panels(1).text = SBcycsec + Str$(Round(cyc, 3)) + " "
+  Me.CyclesPS.Caption = SBcycsec + Str$(Round(cyc, 3))
   StatusBar1.Panels(2).text = "Tot " + Str$(tot) + " "
+  Me.TotalBots.Caption = "Tot " + Str$(tot)
   StatusBar1.Panels(3).text = "Bots " + Str$(tnv) + " "
+  Me.NumberBots.Caption = "Bots " + Str$(tnv)
   StatusBar1.Panels(4).text = "Vegs " + Str$(tv) + " "
+  Me.NumberVeg.Caption = "Vegs " + Str$(tv)
   StatusBar1.Panels(5).text = SBborn + Str$(brn) + " "
+  Me.BotsBorn.Caption = SBborn + Str$(brn)
   StatusBar1.Panels(6).text = "Cycles" + Str$(totcyc) + " "
+  Me.CyclesNumber.Caption = "Cycles" + Str$(totcyc)
   sec = tottim
   Min = Fix(sec / 60)
   sec = sec Mod 60
@@ -2090,6 +2132,7 @@ Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Integer, br
   Min = Min Mod 60
   StatusBar1.Panels(7).text = Str$(h) + "h" + Str$(Min) + "m" + Str$(sec) + "s  "
   StatusBar1.Panels(8).text = "Mut " + Str$(SimOpts.MutCurrMult) + "x "
+  Me.MutationValue.Caption = "Mut " + Str$(SimOpts.MutCurrMult)
   StatusBar1.Panels(9).text = "Restarts " + Str$(ReStarts) + " "
   StatusBar1.Panels(10).text = "Shots " + Str$(Shots_Module.ShotsThisCycle) + " "
   
