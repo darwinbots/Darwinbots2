@@ -947,6 +947,7 @@ Public nopoff As Boolean      ' don't anim deaths with particles
 Public Gridmode As Integer    ' Which display to use on the egrid
 Public stealthmode As Boolean
 
+Public imModeHandle As Double
 
 Public limitgraphics As Boolean
 Public ignoreerror As Boolean
@@ -1904,7 +1905,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
 Dim revision As String
 
   globstrings

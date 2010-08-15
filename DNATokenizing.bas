@@ -46,6 +46,8 @@ inizio:
       hold = hold + a + vbCrLf
     End If
     
+    'Replace any tabs with spaces
+    a = Replace(a, vbTab, " ")
     a = Trim(a)
        
     If (Left(a, 1) <> "'" And Left(a, 1) <> "/") And a <> "" Then

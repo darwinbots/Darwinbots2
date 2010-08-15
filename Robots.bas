@@ -1241,7 +1241,7 @@ Private Sub robshoot(n As Integer)
   Dim shtype As Integer
   Dim value As Single
   Dim multiplier As Single
-  Dim Cost As Long
+  Dim Cost As Single
   Dim rngmultiplier As Single
   Dim valmode As Boolean
   Dim EnergyLost As Single
