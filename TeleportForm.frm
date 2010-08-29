@@ -3,17 +3,55 @@ Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form TeleportForm 
    BorderStyle     =   4  'Fixed ToolWindow
    Caption         =   "New Teleporter"
-   ClientHeight    =   6345
+   ClientHeight    =   6420
    ClientLeft      =   45
    ClientTop       =   315
-   ClientWidth     =   8730
+   ClientWidth     =   8790
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6345
-   ScaleWidth      =   8730
+   ScaleHeight     =   6420
+   ScaleWidth      =   8790
    ShowInTaskbar   =   0   'False
    StartUpPosition =   3  'Windows Default
+   Begin VB.Frame Frame5 
+      Caption         =   "Internet Options"
+      Height          =   1935
+      Left            =   4800
+      TabIndex        =   32
+      Top             =   2880
+      Width           =   3855
+      Begin VB.TextBox intOutText 
+         Height          =   285
+         Left            =   240
+         TabIndex        =   34
+         Top             =   1440
+         Width           =   3375
+      End
+      Begin VB.TextBox intInText 
+         Height          =   285
+         Left            =   240
+         TabIndex        =   33
+         Top             =   720
+         Width           =   3375
+      End
+      Begin VB.Label inboundLabel 
+         Caption         =   "Inbound Path"
+         Height          =   255
+         Left            =   240
+         TabIndex        =   36
+         Top             =   480
+         Width           =   1095
+      End
+      Begin VB.Label outboundLabel 
+         Caption         =   "Outbound Path"
+         Height          =   255
+         Left            =   240
+         TabIndex        =   35
+         Top             =   1200
+         Width           =   1335
+      End
+   End
    Begin VB.Frame Frame4 
       Caption         =   "Statistics"
       Height          =   2415
@@ -248,17 +286,17 @@ Begin VB.Form TeleportForm
    Begin VB.CommandButton CancelButton 
       Caption         =   "Cancel"
       Height          =   375
-      Left            =   6120
+      Left            =   5280
       TabIndex        =   3
-      Top             =   2880
+      Top             =   5760
       Width           =   1215
    End
    Begin VB.CommandButton OKButton 
       Caption         =   "OK"
       Height          =   375
-      Left            =   6120
+      Left            =   7080
       TabIndex        =   2
-      Top             =   3360
+      Top             =   5760
       Width           =   1215
    End
    Begin VB.TextBox NetworkPath 
@@ -326,7 +364,6 @@ Dim aspectRatio As Single
  aspectRatio = SimOpts.FieldHeight / SimOpts.FieldWidth
  
  If teleporterFormMode = 0 Then
-  Me.Height = 4230
   teleporterDefaultWidth = 300
   TeleporterSizeSlider.value = teleporterDefaultWidth
   FixedCheck.value = False
@@ -338,8 +375,9 @@ Dim aspectRatio As Single
   RespectShapesCheck.value = 0
   InboundCycleCheck.text = "10"
   BotsPerPoll = "10"
+  intInText.text = IntOpts.InboundPath
+  intOutText.text = IntOpts.OutboundPath
 Else
-  Me.Height = 6705
   Me.Caption = "Teleporter Properties"
   With (Teleporters(teleporterFocus))
     NetworkPath.text = .path
@@ -357,6 +395,8 @@ Else
     NumTeleported.Caption = Str$(.NumTeleported)
     InboundCycleCheck.text = .InboundPollCycles
     BotsPerPoll.text = .BotsPerPoll
+    intOutText.text = .intOutPath
+    intInText.text = .intInPath
   End With
 End If
 End Sub
@@ -368,6 +408,15 @@ Dim randomy As Single
 Dim v As vector
 Dim aspectRatio As Single
 Dim realWidth As Single
+Dim fso As FileSystemObject
+
+  'Check to make sure interent paths are good
+  If TeleportOption(3).value Then
+    If Not (fso.FolderExists(intInText.text) And fso.FolderExists(intOutText.text)) Then
+      MsgBox ("Internet paths must be set to a vaild directory.")
+      Exit Sub
+    End If
+  End If
 
   aspectRatio = SimOpts.FieldHeight / SimOpts.FieldWidth
   realWidth = teleporterDefaultWidth * aspectRatio
@@ -398,6 +447,8 @@ Dim realWidth As Single
     Teleporters(i).InboundPollCycles = CInt(val(InboundCycleCheck.text) Mod 32000)
     Teleporters(i).BotsPerPoll = CInt(val(BotsPerPoll.text) Mod 32000)
     Teleporters(i).PollCountDown = Teleporters(i).BotsPerPoll
+    Teleporters(i).intInPath = intInText.text
+    Teleporters(i).intOutPath = intOutText.text
         
   End If
   Me.Hide
@@ -440,6 +491,27 @@ Private Sub TeleportOption_Click(Index As Integer)
     InboundLabel4.Enabled = False
     InboundCycleCheck.Enabled = False
     BotsPerPoll.Enabled = False
+  End If
+  
+  If Index = 3 Then 'Enable / Disable Internet controls
+    TeleportOption(0).Enabled = False
+    TeleportOption(1).Enabled = False
+    TeleportOption(2).Enabled = False
+    intInText.Enabled = True
+    intOutText.Enabled = True
+    inboundLabel.Enabled = True
+    outboundLabel.Enabled = True
+    TeleportCorpsesCheck.value = 0
+    TeleportCorpsesCheck.Enabled = False
+  Else
+    TeleportOption(0).Enabled = True
+    TeleportOption(1).Enabled = True
+    TeleportOption(2).Enabled = True
+    TeleportOption(3).Enabled = False
+    intInText.Enabled = False
+    intOutText.Enabled = False
+    inboundLabel.Enabled = False
+    outboundLabel.Enabled = False
   End If
 End Sub
 

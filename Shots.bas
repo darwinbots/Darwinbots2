@@ -1143,8 +1143,7 @@ Public Function addgene(n As Integer, ByVal P As Long) As Integer
   Dim power As Single
   
   'Dead bodies and virus immune bots can't catch a virus
-  'In Internet mode, all non-veggy bots can catch a virus.  All vegs are virus immune in intenet mode.
-  If rob(n).Corpse Or (rob(n).VirusImmune And Not InternetMode) Or (InternetMode And rob(n).Veg) Then GoTo getout
+  If rob(n).Corpse Or (rob(n).VirusImmune) Then GoTo getout
   
   power = Shots(P).nrg / (Shots(P).Range * RobSize / 3) * Shots(P).value
   

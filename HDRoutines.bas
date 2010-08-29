@@ -323,49 +323,6 @@ bypass:
 
 End Sub
 
-Public Sub LoadSimPopulationFile(path As String)
-Dim X As Integer
-Dim k As Long
-Dim Fe As Byte
-Dim internetName As String
-Dim numSpeciesThisFile As Integer
-
-  
-  Form1.MousePointer = vbHourglass
-  Open path For Binary As 10
-   
-  Get #10, , k: internetName = Space(k)
-  Get #10, , internetName
-  Get #10, , numSpeciesThisFile
-      
-  'numInternetSims is set to the current sim number before this routine is called.  So sloppy...
-  
-  
-  
-  InternetSims(numInternetSims).population = 0
-  If (numInternetSpecies + numSpeciesThisFile - 1) < MAXINTERNETSPECIES Then
-  For X = numInternetSpecies To (numInternetSpecies + numSpeciesThisFile - 1)
-    Get #10, , k: InternetSpecies(X).Name = Space(k)
-    Get #10, , InternetSpecies(X).Name
-    Get #10, , InternetSpecies(X).population
-    InternetSims(numInternetSims).population = InternetSims(numInternetSims).population + InternetSpecies(X).population
-    Get #10, , InternetSpecies(X).Veg
-    Get #10, , InternetSpecies(X).color
-    If InternetSpecies(X).Name = "Corpse" Then InternetSpecies(X).color = vbBlack
-      
-    'grab the three FE codes
-    Get #10, , Fe
-    Get #10, , Fe
-    Get #10, , Fe
-            
-  Next X
-  numInternetSpecies = numInternetSpecies + numSpeciesThisFile
-  End If
-  Close 10
-  Form1.MousePointer = vbArrow
-
-End Sub
-
 Public Function GetFilePath(FileName As String) As String
     Dim i As Long
     For i = Len(FileName) To 1 Step -1

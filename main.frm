@@ -1,6 +1,5 @@
 VERSION 5.00
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "msinet.ocx"
 Begin VB.Form Form1 
    Appearance      =   0  'Flat
    AutoRedraw      =   -1  'True
@@ -23,18 +22,6 @@ Begin VB.Form Form1
       Interval        =   1000
       Left            =   2040
       Top             =   120
-   End
-   Begin InetCtlsObjects.Inet Inet1 
-      Left            =   720
-      Top             =   120
-      _ExtentX        =   1005
-      _ExtentY        =   1005
-      _Version        =   393216
-      Protocol        =   2
-      RemoteHost      =   "ftp.darwinbots.com"
-      RemotePort      =   21
-      URL             =   "ftp://dbimuser@ftp.darwinbots.com"
-      UserName        =   "dbimuser"
    End
    Begin MSComDlg.CommonDialog CommonDialog1 
       Left            =   120
@@ -338,13 +325,6 @@ Private Sub Form_Load()
   FlashColor(-7 + 10) = vbCyan    ' Hit with virus shot
   InitObstacles
     
-  IntOpts.RUpload = RobSize * 4
-  IntOpts.XUpload = 0
-  IntOpts.YUpload = Me.ScaleHeight / 2 - IntOpts.RUpload / 2
-  IntOpts.XSpawn = Me.ScaleWidth - IntOpts.RUpload
-  IntOpts.YSpawn = IntOpts.YUpload
-  IntOpts.WaitForUpload = 1000 ' EricL was 10000
-  IntOpts.LastUploadCycle = 1
  ' SimOpts.DayNight = False ' EricL March 15, 2006
  ' SimOpts.Daytime = True ' EricL March 15, 2006
  ' MDIForm1.daypic.Visible = True
@@ -851,18 +831,6 @@ Public Sub DrawShots()
   FillColor = BackColor
 End Sub
 
-' internet gates...
-Private Sub DrawInternetBoxes()
-  FillStyle = 1
-  If IntOpts.LastUploadCycle = 0 Then
-    PaintPicture Vortice.Picture, IntOpts.XUpload, IntOpts.YUpload, IntOpts.RUpload, IntOpts.RUpload
-  Else
-    PaintPicture Grata.Picture, IntOpts.XUpload, IntOpts.YUpload, IntOpts.RUpload, IntOpts.RUpload
-  End If
-  PaintPicture Arrows.Picture, IntOpts.XSpawn, IntOpts.YSpawn, IntOpts.RUpload, IntOpts.RUpload
-  FillStyle = 0
-End Sub
-
 ' main drawing procedure
 Public Sub DrawAllRobs()
   Dim w As Integer
@@ -909,7 +877,6 @@ Public Sub DrawAllRobs()
   DrawMode = 13
   DrawStyle = 0
   DrawWidth = w
- ' If IntOpts.Active Then DrawInternetBoxes
   
   If robfocus > 0 And MDIForm1.showVisionGridToggle Then
     
@@ -1225,13 +1192,6 @@ Sub StartSimul()
     OpenDB SimOpts.DBName
   End If
   
-  IntOpts.RUpload = RobSize * 4
-  IntOpts.XUpload = 0
-  IntOpts.YUpload = 0
-  IntOpts.XSpawn = Me.ScaleWidth - IntOpts.XUpload - IntOpts.RUpload
-  IntOpts.YSpawn = Me.ScaleHeight - IntOpts.YUpload - IntOpts.RUpload
-  IntOpts.ErrorNumber = 0
-  
   If ContestMode Then
      FindSpecies
      F1count = 0
@@ -1335,13 +1295,7 @@ Sub startloaded()
   If MDIForm1.visualize Then DrawAllRobs
   MDIForm1.enablesim
   Me.Visible = True
-  IntOpts.RUpload = RobSize * 4
-  IntOpts.XUpload = 0
-  IntOpts.YUpload = 0
-  IntOpts.XSpawn = SimOpts.FieldWidth - IntOpts.RUpload
-  IntOpts.YSpawn = SimOpts.FieldHeight - IntOpts.RUpload
-  IntOpts.WaitForUpload = 10000
-  IntOpts.LastUploadCycle = 1
+  
   NoDeaths = True
   
   'Egrid Stuff
@@ -1552,7 +1506,6 @@ Private Sub Form_DblClick()
   n = whichrob(CSng(MouseClickX), CSng(MouseClickY))
   If n = 0 Then
     m = whichTeleporter(CSng(MouseClickX), CSng(MouseClickY))
-    If Teleporters(m).Internet Then m = 0
   End If
   If n > 0 Then
     robfocus = n
@@ -1583,7 +1536,7 @@ Private Sub Form_Click()
     Form1.BackPic = ""
     Form1.Picture = Nothing
     Form1.PiccyMode = False
-    SetWindowPos MDIForm1.hWnd, HWND_TOPMOST, 0, 0, 1000, 1000, 0
+    SetWindowPos MDIForm1.hwnd, HWND_TOPMOST, 0, 0, 1000, 1000, 0
     MDIForm1.WindowState = 2
   End If
   
@@ -1748,12 +1701,8 @@ Private Sub SecTimer_Timer()
     For i = 0 To 9
       TenSecondsAgo(i) = SimOpts.TotRunCycle
     Next i
-    ' let's have immediately the first download
-    LastDownload = -(IntOpts.Cycles + 1)
     ' reset the counter for horiz/vertical shuffle
     LastShuffle = 0
-    ' let's start conting for the next upload
-    IntOpts.LastUploadCycle = 1
   End If
   
   ' same as above, but checking totruncycle<lastcycle instead
@@ -1761,10 +1710,7 @@ Private Sub SecTimer_Timer()
     For i = 0 To 9
       TenSecondsAgo(i) = SimOpts.TotRunCycle
     Next i
-    ' facciamo avvenire subito il primo download
-    LastDownload = -(IntOpts.Cycles + 1)
     LastShuffle = 0
-    IntOpts.LastUploadCycle = 0
   End If
   
   ' if we've had 5000 cycles in a second, probably we've
@@ -1773,20 +1719,9 @@ Private Sub SecTimer_Timer()
     For i = 0 To 9
       TenSecondsAgo(i) = SimOpts.TotRunCycle
     Next i
-    ' facciamo avvenire subito il primo download
-    LastDownload = -(IntOpts.Cycles + 1)
     ' facciamo avvenire uno shuffle fra 50000 cicli
     LastShuffle = SimOpts.TotRunCycle - 50000
-    ' facciamo avvenire l'upload quando gli spetta
-    IntOpts.LastUploadCycle = SimOpts.TotRunCycle
   End If
-  
-  ' switch on the internet upload if at least WaitForUpload cycles
-  ' have passed from last upload. LastUploadCycle=0 is used as a flag
-  ' to indicate upload enabled
-'  If SimOpts.TotRunCycle - IntOpts.LastUploadCycle > IntOpts.WaitForUpload Then
-'    IntOpts.LastUploadCycle = 0
-'  End If
   
   ' update status bar in MDI formMod
   
@@ -1794,39 +1729,7 @@ Private Sub SecTimer_Timer()
   SimOpts.CycSec = CSng(CSng(CSng(SimOpts.TotRunCycle) - CSng(TenSecondsAgo((SimOpts.TotRunTime + 1) Mod 10))) * 0.1)
      
   cyccaption SimOpts.CycSec
-  
-  ' show cycles to next u/l d/l in title of internet log win (bugged!)
-'  If LogForm.Visible Then
-'    TitLog = "Log window  ---  "
-'    TitLog = TitLog + "Cycles to: next d/l: " + CStr(IntOpts.Cycles - SimOpts.TotRunCycle + LastDownload)
-'    TitLog = TitLog + "  next u/l: " + CStr(50000 - SimOpts.TotRunCycle + LastDownload)
-'    LogForm.Caption = TitLog
-'  End If
-  
-' ' when all robots are dead, stop everything or, if possible,
-' ' download one frome internet
-' ' Modified to allow for auto restart of Simulations
-' ' EricL 4/15/2006 Commented out casue we were going in here at sim start...
-' ' If totnvegs = 0 Then
-' '  If Not IntOpts.Active Then
-'      'Form1.Active = False
-'      'MsgBox (MBrobotsdead)
-'      'SecTimer.Enabled = False
-'   Else
-'     If LoadRandomOrg(CSng(IntOpts.XSpawn + IntOpts.RUpload / 4), CSng(IntOpts.YSpawn + IntOpts.RUpload / 4)) Then
-'       LastDownload = SimOpts.TotRunCycle
-'     Else
-'       LastDownload = SimOpts.TotRunCycle - IntOpts.Cycles + 5000
-'     End If
-'   End If
-' End If
 
-  ' download organism from server every IntOpts.Cycles
-  'If IntOpts.Active And (SimOpts.TotRunCycle - LastDownload) > IntOpts.Cycles Then
-  '  LoadRandomOrgs 1, CSng(IntOpts.XSpawn + IntOpts.RUpload / 4), CSng(IntOpts.YSpawn + IntOpts.RUpload / 4)
-  '  LastDownload = SimOpts.TotRunCycle
-  'End If
-  
   ' provides the mutation rates oscillation
   If SimOpts.MutOscill Then
     If MutPhase = 0 And MutCyc > SimOpts.MutCycMax Then
@@ -1840,14 +1743,7 @@ Private Sub SecTimer_Timer()
       SimOpts.MutCurrMult = 16
     End If
   End If
-  
-  'Decrement the internet operation time out counter
-  If IntOpts.InternetMode Then
-    If IntOpts.InternetSaftyNet > 0 Then IntOpts.InternetSaftyNet = IntOpts.InternetSaftyNet - 1
-  End If
-  
 End Sub
-
 
 ' main procedure. Oh yes!
 Private Sub main()
@@ -2021,22 +1917,9 @@ Public Sub FeedGraph(GraphNumber As Integer)
    
   For k = startingChart To endingChart
     If k = 10 Then t = 1
-    If k = 12 Then
-      SaveSimPopulation (MDIForm1.MainDir + "\Transfers\F1\" + IntOpts.IName + ".pop")
-      UpdateInternetPopulations
-      t = Flex.last(namesOfInternetBots)
-    End If
-    If k = 13 Then ' Internet sims graph
-      For i = 1 To numInternetSims
-        If Not (Charts(k).graf Is Nothing) Then Charts(k).graf.SetValues InternetSims(i).Name, dati(i, k)
-      Next i
-      t = 0 ' Don't do the loop below
-    End If
     For P = 1 To t
       If Not (Charts(k).graf Is Nothing) Then
-        If k = 12 Then
-          Charts(k).graf.SetValues namesOfInternetBots(P), dati(P, k)
-        ElseIf k = 10 Then
+        If k = 10 Then
           Charts(k).graf.SetValues "Cost Multiplier", dati(1, k)
           Charts(k).graf.SetValues "Population / Target", dati(2, k)
           Charts(k).graf.SetValues "Upper Range", dati(3, k)
@@ -2052,9 +1935,6 @@ Public Sub FeedGraph(GraphNumber As Integer)
   For k = startingChart To endingChart
     If Not (Charts(k).graf Is Nothing) Then
       Charts(k).graf.NewPoints
-    '  If Charts(k).graf.Visible Then
-    '    Charts(k).graf.RedrawGraph
-      'End If
     End If
   Next k
 End Sub
@@ -2171,18 +2051,6 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer)
       dati(5, 10) = SimOpts.Costs(BOTNOCOSTLEVEL) / SimOpts.Costs(DYNAMICCOSTTARGET)
       dati(6, 10) = SimOpts.Costs(COSTXREINSTATEMENTLEVEL) / SimOpts.Costs(DYNAMICCOSTTARGET)
     End If
-    
-    For t = 0 To numInternetSpecies - 1
-      If t > MAXINTERNETSPECIES Then GoTo getout
-      P = Flex.Position(InternetSpecies(t).Name, namesOfInternetBots)
-      If P > MAXSPECIES Then GoTo getout
-      dati(P, 12) = dati(P, 12) + InternetSpecies(t).population
-    Next t
-getout:
-    For t = 1 To numInternetSims
-      If t > MAXSPECIES Then GoTo getout2
-      dati(t, 13) = InternetSims(t).population
-    Next t
 getout2:
     
   Case 1
@@ -2373,19 +2241,7 @@ getout2:
       End With
     Next t
     
-   Case 12
-    For t = 0 To numInternetSpecies - 1
-      If t > MAXINTERNETSPECIES Then GoTo getout3
-      P = Flex.Position(InternetSpecies(t).Name, namesOfInternetBots)
-      If P > MAXSPECIES Then GoTo getout3
-      dati(P, 12) = dati(P, 12) + InternetSpecies(t).population
-    Next t
 getout3:
-              
-   Case 13
-    For t = 1 To numInternetSims
-      dati(t, 13) = InternetSims(t).population
-    Next t
     
    Case 14
     t = Flex.last(nomi)
