@@ -103,6 +103,8 @@ Public Sub EraseSenses(n As Integer)
     .mem(hitdx) = 0
     .mem(hitsx) = 0
     .mem(hit) = 0
+    .mem(shflav) = 0
+    .mem(209) = 0 '.shang
     .mem(shup) = 0
     .mem(shdn) = 0
     .mem(shdx) = 0

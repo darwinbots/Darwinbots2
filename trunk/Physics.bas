@@ -34,7 +34,6 @@ Public Function NetForces(n As Integer)
     BrownianForces n
     BouyancyForces n
     GravityForces n
-    If IntOpts.Active Then GateForces n
     VoluntaryForces n
  
 End Function
@@ -398,38 +397,6 @@ Public Sub BouyancyForces(n As Integer)
   
 getout:
 
-End Sub
-
-' a little repulsion field around the download gate, just to
-' avoid blocking the way to incoming robots
-Public Sub GateForces(n As Integer)
-If IntOpts.Active = False Then GoTo getout
-  Dim xr As Single
-  Dim XCenter As Single
-  Dim YCenter As Single
-  Dim radius As Single
-  Dim dist As Single
-  Dim spx As Single
-  Dim spy As Single
-  Dim k As node
-  
-  radius = IntOpts.RUpload / 2
-  
-  xr = IntOpts.XSpawn + IntOpts.RUpload
-  
-  XCenter = IntOpts.XSpawn + radius
-  YCenter = IntOpts.YSpawn + radius
-  
-  radius = radius * radius * 2.8 '* 2.8 for the edges of the square
-  dist = (rob(n).pos.X - XCenter) ^ 2 + (rob(n).pos.Y - YCenter) ^ 2
-  
-  If dist < radius Then
-    spx = -((radius - dist) / radius ^ 2) * 200
-    spy = (YCenter - rob(n).pos.Y) * spx
-    spx = (XCenter - rob(n).pos.X) * spx
-    rob(n).ImpulseInd = VectorSet(spx, spy)
-  End If
-getout:
 End Sub
 
 Public Sub GravityForces(n As Integer)

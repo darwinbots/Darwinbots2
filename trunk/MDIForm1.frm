@@ -248,7 +248,7 @@ Begin VB.MDIForm MDIForm1
             ImageIndex      =   14
             Style           =   5
             BeginProperty ButtonMenus {66833FEC-8583-11D1-B16A-00C0F0283628} 
-               NumButtonMenus  =   18
+               NumButtonMenus  =   16
                BeginProperty ButtonMenu1 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "pop"
                   Text            =   "Population graph"
@@ -294,30 +294,22 @@ Begin VB.MDIForm MDIForm1
                   Text            =   "Species Diversity"
                EndProperty
                BeginProperty ButtonMenu12 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Enabled         =   0   'False
+                  Text            =   "-"
+               EndProperty
+               BeginProperty ButtonMenu13 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "maxgeneticdistance"
                   Text            =   "Genetic Distance (Maximum)"
                EndProperty
-               BeginProperty ButtonMenu13 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu14 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "maxgenerationaldistance"
                   Text            =   "Generational Distance (Maximum)"
                EndProperty
-               BeginProperty ButtonMenu14 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu15 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Enabled         =   0   'False
                   Text            =   "-"
-               EndProperty
-               BeginProperty ButtonMenu15 {66833FEE-8583-11D1-B16A-00C0F0283628} 
-                  Key             =   "internetpopulation"
-                  Text            =   "Internet Species Populations"
                EndProperty
                BeginProperty ButtonMenu16 {66833FEE-8583-11D1-B16A-00C0F0283628} 
-                  Key             =   "internetsimpopulations"
-                  Text            =   "Internet Sim Populations"
-               EndProperty
-               BeginProperty ButtonMenu17 {66833FEE-8583-11D1-B16A-00C0F0283628} 
-                  Enabled         =   0   'False
-                  Text            =   "-"
-               EndProperty
-               BeginProperty ButtonMenu18 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "resgraph"
                   Text            =   "Reset all graphs"
                EndProperty
@@ -597,7 +589,7 @@ Begin VB.MDIForm MDIForm1
          Shortcut        =   ^Q
       End
    End
-   Begin VB.Menu edit 
+   Begin VB.Menu Edit 
       Caption         =   "Edit"
       Begin VB.Menu inssp 
          Caption         =   "Insert Organism..."
@@ -625,6 +617,9 @@ Begin VB.MDIForm MDIForm1
       Begin VB.Menu Leagues 
          Caption         =   "Restart and Leagues..."
          Shortcut        =   ^F
+      End
+      Begin VB.Menu intOptionsOpen 
+         Caption         =   "Internet Options..."
       End
       Begin VB.Menu Recording 
          Caption         =   "Recording Options..."
@@ -840,27 +835,14 @@ Begin VB.MDIForm MDIForm1
          End
       End
    End
-   Begin VB.Menu icqtrans 
+   Begin VB.Menu interent 
       Caption         =   "Internet"
       Begin VB.Menu F1Internet 
-         Caption         =   "F1 Internet Mode"
-         Checked         =   -1  'True
+         Caption         =   "Enabled"
       End
-      Begin VB.Menu AdHocInternet 
-         Caption         =   "Ad Hoc Mode"
-         Checked         =   -1  'True
+      Begin VB.Menu EditIntTeleporter 
+         Caption         =   "Internet Teleporter..."
          Enabled         =   0   'False
-      End
-      Begin VB.Menu sep12312 
-         Caption         =   "-"
-      End
-      Begin VB.Menu listcont 
-         Caption         =   "Show Internet options"
-         Shortcut        =   ^O
-      End
-      Begin VB.Menu showlogs 
-         Caption         =   "Show Internet logs"
-         Shortcut        =   ^L
       End
    End
    Begin VB.Menu help 
@@ -1091,24 +1073,31 @@ End Sub
 
 
 
+Private Sub EditIntTeleporter_Click()
+Dim i As Integer
+    For i = 1 To numTeleporters
+     If Teleporters(i).exist And Teleporters(i).Internet Then
+       Teleport.teleporterFocus = i
+       Exit For
+     End If
+    Next i
+    TeleportForm.teleporterFormMode = 1
+    TeleportForm.Show
+End Sub
+
 Public Sub F1Internet_Click()
   Dim i As Integer
   Dim b As Integer
-  Dim path As String
-  Dim fso As New FileSystemObject
-  Dim NewbieStart As Boolean
+  Dim l As Long
   
   HandlingMenuItem = True
   
-  NewbieStart = False
- 
-    
+Top:
   F1Internet.Checked = Not F1Internet.Checked
   If F1Internet.Checked Then
   
     If IntOpts.IName = "" Then
       IntOpts.IName = "Newbie" + Str(Random(1, 10000))
-      NewbieStart = True
     End If
   
     If IntOpts.IName = "" Then
@@ -1119,67 +1108,44 @@ Public Sub F1Internet_Click()
       optionsform.Show vbModal
       Exit Sub
     End If
-    
-    On Error GoTo problem
-
 tryagain:
-    path = "\Transfers\F1"
-    Open MDIForm1.MainDir + path + "\foo" For Binary As 1
-    Close 1
-    Kill (MDIForm1.MainDir + path + "\foo")
-    DeleteLocalFiles (MDIForm1.MainDir + path + "\out")
-          
+    'This section create our new Internet Mode Teleporter
     i = NewTeleporter(False, False, SimOpts.FieldHeight / 200, True)
     
-    Teleporters(i).driftHorizontal = True
-    Teleporters(i).driftVertical = True
     Teleporters(i).vel = VectorSet(0, 0)
-    Teleporters(i).local = False
-    Teleporters(i).In = False
-    Teleporters(i).Out = False
-    Teleporters(i).Internet = True
     Teleporters(i).teleportVeggies = True
     Teleporters(i).teleportCorpses = False
     Teleporters(i).teleportHeterotrophs = True
     Teleporters(i).RespectShapes = False
-    Teleporters(i).InboundPollCycles = 200
+    Teleporters(i).InboundPollCycles = 10
     Teleporters(i).BotsPerPoll = 10
-    Teleporters(i).PollCountDown = 200
-    Teleporters(i).ServerAvailable = True
-  '  MDIForm1.InternetStatusGreen.Visible = True
-   ' MDIForm1.InternetStatus(0).FillColor = vbGreen
-   ' MDIForm1.InternetStatusRed.Visible = False
+    Teleporters(i).PollCountDown = 10
+    
     MDIForm1.F1InternetButton.DownPicture = Form1.ServerGood
     MDIForm1.F1InternetButton.value = 1 ' checked
     MDIForm1.F1InternetButton.Refresh
-    
-    
-    If Not NewbieStart Then LogForm.Show
-    
-   ' SaveSimPopulation (MDIForm1.MainDir + "\Transfers\F1\" + IntOpts.IName + ".pop")
-   ' UpdateInternetPopulations ' Initialize the Internet populations graph by counting the local bots
-    
-    If Not NewbieStart Then Form1.NewGraph 12, "Internet Populations"
+    MDIForm1.EditIntTeleporter.Enabled = True
         
     Form1.InternetMode.Visible = True
     InternetMode = True
     
     MDIForm1.Caption = MDIForm1.Caption + "    Internet Mode"
-    MDIForm1.Toolbar1.Buttons.Item(19).ButtonMenus(13).Enabled = True
-    MDIForm1.Toolbar1.Buttons.Item(19).ButtonMenus(14).Enabled = True
+    'Start up DarwinbotsIM
+    'Aparently VB6 doest allow you to add numbers to strings, thus the Str(Num)
+     IntOpts.pid = shell("DarwinbotsIM.exe -in " + Teleporters(i).intInPath + " -out " + Teleporters(i).intOutPath + " -name " + IntOpts.IName + " -pid " + Str(GetCurrentProcessId()), vbNormalFocus)
+     If pid = 0 Then
+        MsgBox ("Could not open DarwinbotsIM.exe")
+        GoTo Top
+     End If
      
   Else
+    'Exit DarwinbotsIM
+    l = CloseWindow(IntOpts.pid)
+    
     InternetMode = False
     MDIForm1.F1InternetButton.value = 0 ' checked
+    MDIForm1.EditIntTeleporter.Enabled = False
     
-    MDIForm1.Toolbar1.Buttons.Item(19).ButtonMenus(13).Enabled = False
-    MDIForm1.Toolbar1.Buttons.Item(19).ButtonMenus(14).Enabled = False
-    
-    Form1.CloseGraph (12)
-    Form1.CloseGraph (13)
-    
-    If Not (LogForm Is Nothing) Then Unload LogForm
-          
     For i = 1 To MAXTELEPORTERS
       If Teleporters(i).Internet And Teleporters(i).exist Then
         DeleteTeleporter (i)
@@ -1187,30 +1153,16 @@ tryagain:
       End If
     Next i
     Form1.InternetMode.Visible = False
-   ' MDIForm1.InternetStatusGreen.Visible = False
-   ' MDIForm1.InternetStatusRed.Visible = False
    
    If Right(MDIForm1.Caption, 17) = "    Internet Mode" Then
      MDIForm1.Caption = Left(MDIForm1.Caption, Len(MDIForm1.Caption) - 17)
    End If
     
-    On Error GoTo bypass
-    IntOpts.DeleteRemotePopFile (IntOpts.IName + ".pop")                           ' Delete the remote file
-    'Do While Form1.Inet1.StillExecuting = True And InternetMode
-    '  DoEvents
-    'Loop
 bypass:
-  '  IntOpts.Disconnect
-    
+   
   End If
   HandlingMenuItem = False
   Exit Sub
-problem:
-  If Err.Number = 76 Then
-    b = MsgBox("Cannot find the Directory: " + path + " so will attempt to create.", vbOKOnly)
-    RecursiveMkDir (MDIForm1.MainDir + path + "\out")
-    RecursiveMkDir (MDIForm1.MainDir + path + "\in")
-  End If
 End Sub
 
 Private Sub F1InternetButton_Click()
@@ -1245,8 +1197,11 @@ Private Sub HorizontalMaze_Click()
   Obstacles.DrawHorizontalMaze
 End Sub
 
-Private Sub InternetStatusRed_Click()
-
+Private Sub intOptionsOpen_Click()
+  optionsform.SSTab1.Tab = 5
+  NetEvent.Timer1.Enabled = False
+  NetEvent.Hide
+  optionsform.Show vbModal
 End Sub
 
 Private Sub InvokeLens_Click()
@@ -1595,10 +1550,6 @@ Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
       Form1.NewGraph 10, "Dynamic Costs"
     Case "speciesdiversity"
       Form1.NewGraph 11, "Species Diversity"
-    Case "internetpopulation"
-      Form1.NewGraph 12, "Internet Species Populations"
-    Case "internetsimpopulations"
-      Form1.NewGraph 13, "Internet Sim Populations"
     Case "maxgeneticdistance"
       Form1.NewGraph 14, "Genetic Distance (Maximum)"
     Case "maxgenerationaldistance"
@@ -1756,10 +1707,6 @@ Private Sub listcont_Click()
   NetEvent.Timer1.Enabled = False
   NetEvent.Hide
   optionsform.Show vbModal
-End Sub
-
-Private Sub showlogs_Click()
-  LogForm.Show
 End Sub
 
 Private Sub loadsim_Click(Index As Integer)
@@ -1943,9 +1890,6 @@ Dim revision As String
   'These are all defaults that might get overridden by the settings loaded below
   InternetMode = False
   F1Internet.Checked = False
-  MDIForm1.Toolbar1.Buttons.Item(19).ButtonMenus(13).Enabled = False
-  MDIForm1.Toolbar1.Buttons.Item(19).ButtonMenus(14).Enabled = False
-  AdHocInternet = False
   
   ShowVisionGrid.Checked = True
   showVisionGridToggle = True
@@ -2175,12 +2119,7 @@ Private Sub quit_Click()
     If InternetMode Then
       InternetMode = False
       On Error GoTo bypass
-      IntOpts.DeleteRemotePopFile (IntOpts.IName + ".pop")                           ' Delete the remote file
-     ' Do While Form1.Inet1.StillExecuting = True And (InternetMode <> 0)
-     '   DoEvents
-     ' Loop
-
-      IntOpts.Disconnect
+      'TODO quit DarwinbotsIM
 bypass:
     End If
     
@@ -2223,7 +2162,7 @@ End Sub
 
 
 Public Sub enablesim()
-  edit.Enabled = True
+  Edit.Enabled = True
   popup.Enabled = True
   czin.Enabled = True
   czo.Enabled = True

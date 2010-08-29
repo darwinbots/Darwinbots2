@@ -33,9 +33,41 @@ Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongA" _
             
 Private Declare Function RegisterWindowMessage Lib "user32" _
    Alias "RegisterWindowMessageA" (ByVal lpString As String) As Long
-            
+   
+'Windows API calls for GetWinHandle
+'Stolen from MSDN somewhere
+Private Const GW_HWNDNEXT = 2
+Private Declare Function GetParent Lib "user32" (ByVal hwnd As Long) As Long
+Private Declare Function GetWindow Lib "user32" (ByVal hwnd As Long, _
+  ByVal wCmd As Long) As Long
+Private Declare Function FindWindow Lib "user32" Alias "FindWindowA" _
+  (ByVal lpClassName As String, ByVal lpWindowName As String) As Long
 Public Const GWL_WNDPROC = -4
-
+Public Declare Function GetWindowThreadProcessId Lib "user32" _
+  (ByVal hwnd As Long, lpdwprocessid As Long) As Long
+'Stuff for close window
+Private Declare Function WaitForSingleObject Lib "kernel32" _
+   (ByVal hHandle As Long, _
+   ByVal dwMilliseconds As Long) As Long
+Private Declare Function PostMessage Lib "user32" _
+   Alias "PostMessageA" _
+   (ByVal hwnd As Long, _
+   ByVal wMsg As Long, _
+   ByVal wParam As Long, _
+   ByVal lParam As Long) As Long
+Private Declare Function IsWindow Lib "user32" _
+   (ByVal hwnd As Long) As Long
+Private Declare Function OpenProcess Lib "kernel32" _
+   (ByVal dwDesiredAccess As Long, _
+   ByVal bInheritHandle As Long, _
+   ByVal dwProcessId As Long) As Long
+'For args to the IM client
+Public Declare Function GetCurrentProcessId Lib "kernel32" () As Long
+   
+Const WM_CLOSE = &H10
+Const INFINITE = &HFFFFFFFF
+Const SYNCHRONIZE = &H100000
+   
 Global lpPrevWndProc As Long
 Global gHW As Long
 
@@ -68,6 +100,56 @@ Function WindowProc(ByVal hw As Long, _
   End Select
 End Function
 
+Private Function ProcIDFromWnd(ByVal hwnd As Long) As Long
+   Dim idProc As Long
+   
+   ' Get PID for this HWnd
+   GetWindowThreadProcessId hwnd, idProc
+   
+   ' Return PID
+   ProcIDFromWnd = idProc
+End Function
+
+Public Function GetWinHandle(pid As Long) As Long
+   Dim tempHwnd As Long
+   
+   ' Grab the first window handle that Windows finds:
+   tempHwnd = FindWindow(vbNullString, vbNullString)
+   
+   ' Loop until you find a match or there are no more window handles:
+   Do Until tempHwnd = 0
+      ' Check if no parent for this window
+      If GetParent(tempHwnd) = 0 Then
+         ' Check for PID match
+         If pid = ProcIDFromWnd(tempHwnd) Then
+            ' Return found handle
+            GetWinHandle = tempHwnd
+            ' Exit search loop
+            Exit Do
+         End If
+      End If
+   
+      ' Get the next window handle
+      tempHwnd = GetWindow(tempHwnd, GW_HWNDNEXT)
+   Loop
+End Function
+      
+Public Function CloseWindow(pid As Long)
+Dim lngReturnValue As Long
+Dim lngResult As Long
+Dim hThread As Long
+Dim hProcess As Long
+Dim hWindow As Long
+
+    hWindow = GetWinHandle(pid)
+    hThread = GetWindowThreadProcessId(hWindow, pid)
+    hProcess = OpenProcess(SYNCHRONIZE, 0&, pid)
+    lngReturnValue = PostMessage(hWindow, WM_CLOSE, 0&, 0&)
+    lngResult = WaitForSingleObject(hProcess, INFINITE)
+        
+End Function
+
+
 
 ' Not sure where to put this function, so it's going here
 ' makes poff. that is, creates that explosion effect with
@@ -77,22 +159,22 @@ Public Sub makepoff(n As Integer)
   Dim vs As Integer
   Dim vx As Integer
   Dim vy As Integer
-  Dim x As Long
+  Dim X As Long
   Dim Y As Long
   Dim t As Byte
   For t = 1 To 20
     an = (640 / 20) * t
     vs = Random(RobSize / 40, RobSize / 30)
-    vx = rob(n).vel.x + absx(an / 100, vs, 0, 0, 0)
+    vx = rob(n).vel.X + absx(an / 100, vs, 0, 0, 0)
     vy = rob(n).vel.Y + absy(an / 100, vs, 0, 0, 0)
     With rob(n)
-    x = Random(.pos.x - .radius, .pos.x + .radius)
+    X = Random(.pos.X - .radius, .pos.X + .radius)
     Y = Random(.pos.Y - .radius, .pos.Y + .radius)
     End With
     If Random(1, 2) = 1 Then
-      createshot x, Y, vx, vy, -100, 0, 0, RobSize * 2, rob(n).color
+      createshot X, Y, vx, vy, -100, 0, 0, RobSize * 2, rob(n).color
     Else
-      createshot x, Y, vx, vy, -100, 0, 0, RobSize * 2, DBrite(rob(n).color)
+      createshot X, Y, vx, vy, -100, 0, 0, RobSize * 2, DBrite(rob(n).color)
     End If
   Next t
 End Sub
@@ -100,7 +182,7 @@ End Sub
 ' not sure where to put this function, so it's going here
 ' adds robots on the fly loading the script of specie(r)
 ' if r=-1 loads a vegetable (used for repopulation)
-Public Sub aggiungirob(r As Integer, x As Single, Y As Single)
+Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
   Dim k As Integer
   Dim a As Integer
   Dim i As Integer
@@ -124,7 +206,7 @@ Public Sub aggiungirob(r As Integer, x As Single, Y As Single)
       GoTo getout
     End If
     
-    x = fRnd(SimOpts.Specie(r).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(r).Posrg * (SimOpts.FieldWidth - 60))
+    X = fRnd(SimOpts.Specie(r).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(r).Posrg * (SimOpts.FieldWidth - 60))
     Y = fRnd(SimOpts.Specie(r).Postp * (SimOpts.FieldHeight - 60), SimOpts.Specie(r).Posdn * (SimOpts.FieldHeight - 60))
   End If
   
@@ -175,7 +257,7 @@ Public Sub aggiungirob(r As Integer, x As Single, Y As Single)
       rob(a).Shape = Random(3, 5)
     End If
     If rob(a).Fixed Then rob(a).mem(216) = 1
-    rob(a).pos.x = x
+    rob(a).pos.X = X
     rob(a).pos.Y = Y
     'Bot is already in a bucket due to the prepare routine
    ' rob(a).BucketPos.x = -2

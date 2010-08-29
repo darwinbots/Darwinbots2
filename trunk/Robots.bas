@@ -272,6 +272,7 @@ Private Type robot
   BirthCycle As Long        ' birth cycle
   genenum As Integer        ' genes number
   generation As Integer     ' generation
+  ''TODO Look at this
   LastOwner As String       ' last internet owner's name
   FName As String           ' species name
   DnaLen As Integer         ' dna length
@@ -995,21 +996,6 @@ Dim i, j As Integer
       i = i + 1
     End If
   Wend
-  
-  'i = 0
-  'While i < numInternetSpecies
-  '  If InternetSpecies(numInternetSpecies).population = 0 Then
-  '    j = i
-  '    While j + 1 < numInternetSpecies
-  '      InternetSpecies(j) = InternetSpecies(j + 1)
-  '      j = j + 1
-  '    Wend
-  '    numInternetSpecies = numInternetSpecies - 1
-  '  Else
-  '    i = i + 1
-  '  End If
-  'Wend
-
 End Sub
 
 'The heart of the robots to simulation interfacing
