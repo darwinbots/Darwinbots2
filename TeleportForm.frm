@@ -409,6 +409,7 @@ Dim v As vector
 Dim aspectRatio As Single
 Dim realWidth As Single
 Dim fso As FileSystemObject
+Set fso = New FileSystemObject
 
   'Check to make sure interent paths are good
   If TeleportOption(3).value Then

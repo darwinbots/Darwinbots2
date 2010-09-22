@@ -1089,6 +1089,9 @@ Public Sub F1Internet_Click()
   Dim i As Integer
   Dim b As Integer
   Dim l As Long
+  Dim s As String
+  Dim iq As String
+  Dim oq As String
   
   HandlingMenuItem = True
   
@@ -1132,8 +1135,16 @@ tryagain:
     MDIForm1.Caption = MDIForm1.Caption + "    Internet Mode"
     'Start up DarwinbotsIM
     'Aparently VB6 doest allow you to add numbers to strings, thus the Str(Num)
-     IntOpts.pid = shell("DarwinbotsIM.exe -in " + Teleporters(i).intInPath + " -out " + Teleporters(i).intOutPath + " -name " + IntOpts.IName + " -pid " + Str(GetCurrentProcessId()), vbNormalFocus)
-     If pid = 0 Then
+    'Chr(34) = "
+    iq = Chr(34) & Teleporters(i).intInPath & Chr(34)
+    oq = Chr(34) & Teleporters(i).intOutPath & Chr(34)
+     s = "DarwinbotsIM.exe" _
+     & " -in " & iq _
+     & " -out " & oq _
+     & " -name " & IntOpts.IName _
+     & " -pid " & Str(GetCurrentProcessId())
+     IntOpts.pid = shell(s, vbNormalFocus)
+     If IntOpts.pid = 0 Then
         MsgBox ("Could not open DarwinbotsIM.exe")
         GoTo Top
      End If
@@ -1852,7 +1863,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As file
+Dim lastSim As File
 Dim revision As String
 
   globstrings
