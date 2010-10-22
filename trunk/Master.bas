@@ -21,11 +21,6 @@ Public Sub UpdateSim()
   CurrentEnergyCycle = SimOpts.TotRunCycle Mod 100
   TotalSimEnergy(CurrentEnergyCycle) = 0
   
-  CurrentPopulation = totnvegsDisplayed
-  If SimOpts.Costs(DYNAMICCOSTINCLUDEPLANTS) <> 0 Then
-    CurrentPopulation = CurrentPopulation + totvegsDisplayed      'Include Plants in target population
-  End If
-  
   If SimOpts.TotRunCycle Mod 10 = 0 Then
     For i = 10 To 2 Step -1
       PopulationLast10Cycles(i) = PopulationLast10Cycles(i - 1)
@@ -83,7 +78,7 @@ Public Sub UpdateSim()
   ExecRobs
   If datirob.Visible And datirob.ShowMemoryEarlyCycle Then
     With rob(robfocus)
-      datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime
+      datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime, .Chlr
     End With
   End If
   
@@ -94,10 +89,7 @@ Public Sub UpdateSim()
   If numTeleporters > 0 Then UpdateTeleporters
    
   'If SimOpts.TotRunCycle Mod 200 = 0 And SimOpts.KillDistVegs Then KillDistVegs RobSize * 30
-  If totvegsDisplayed < SimOpts.MinVegs Then
-    If totvegsDisplayed <> -1 Then VegsRepopulate  'Will be -1 first cycle after loading a sim.  Prevents spikes.
-  End If
-  feedvegs SimOpts.MaxEnergy, totvegsDisplayed
+  feedvegs SimOpts.MaxEnergy
   
   If SimOpts.EnableAutoSpeciation Then
     'If SimOpts.TotRunCycle Mod SimOpts.SpeciationForkInterval = 0 Then ForkSpecies SimOpts.SpeciationGeneticDistance, SimOpts.SpeciationGenerationalDistance, SimOpts.SpeciationMinimumPopulation

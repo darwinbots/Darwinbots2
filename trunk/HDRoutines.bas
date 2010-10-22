@@ -76,7 +76,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As File
+  Dim robotFile As file
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -278,7 +278,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As File
+  Dim fileToDelete As file
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -1049,7 +1049,6 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
   
   MessedUpMutations = False
   With rob(r)
-    Get #n, , .Veg
     Get #n, , .wall
     Get #n, , .Fixed
     
@@ -1129,7 +1128,8 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     Get #n, , .color
     
     'new stuff using FileContinue conditions for backward and forward compatability
-    If FileContinue(1) Then Get #n, , .body: .radius = FindRadius(.body)
+    If FileContinue(1) Then Get #n, , .Chlr
+    If FileContinue(1) Then Get #n, , .body: .radius = FindRadius(.body, .Chlr)
     If FileContinue(1) Then Get #n, , .Bouyancy
     If FileContinue(1) Then Get #n, , .Corpse
     If FileContinue(1) Then Get #n, , .Pwaste
@@ -1337,7 +1337,6 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
   
   With rob(r)
     
-    Put #n, , .Veg
     Put #n, , .wall
     Put #n, , .Fixed
     
@@ -1409,6 +1408,7 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     Put #n, , .color
     
     ' new features
+    Put #n, , .Chlr
     Put #n, , .body
     Put #n, , .Bouyancy
     Put #n, , .Corpse
@@ -1963,7 +1963,6 @@ Private Sub SaveShot(n As Integer, t As Long)
     Put #n, , .value       ' power of shot for negative shots (or amt of shot, etc.), value to write for > 0
     Put #n, , .color       ' colour
     Put #n, , .shottype    ' carried location/value couple
-    Put #n, , .fromveg     ' does shot come from veg?
     Put #n, , CInt(Len(.FromSpecie))
     Put #n, , .FromSpecie  ' Which species fired the shot
     Put #n, , .Memloc      ' Memory location for custom poison and venom
@@ -2013,7 +2012,6 @@ Private Sub LoadShot(n As Integer, t As Long)
     Get #n, , .value       ' power of shot for negative shots (or amt of shot, etc.), value to write for > 0
     Get #n, , .color       ' colour
     Get #n, , .shottype    ' carried location/value couple
-    Get #n, , .fromveg     ' does shot come from veg?
     
     Get #n, , k: .FromSpecie = Space(k)
     Get #n, , .FromSpecie  ' Which species fired the shot

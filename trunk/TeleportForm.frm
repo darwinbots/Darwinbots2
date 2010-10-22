@@ -18,20 +18,20 @@ Begin VB.Form TeleportForm
       Caption         =   "Internet Options"
       Height          =   1935
       Left            =   4800
-      TabIndex        =   32
+      TabIndex        =   31
       Top             =   2880
       Width           =   3855
       Begin VB.TextBox intOutText 
          Height          =   285
          Left            =   240
-         TabIndex        =   34
+         TabIndex        =   33
          Top             =   1440
          Width           =   3375
       End
       Begin VB.TextBox intInText 
          Height          =   285
          Left            =   240
-         TabIndex        =   33
+         TabIndex        =   32
          Top             =   720
          Width           =   3375
       End
@@ -39,7 +39,7 @@ Begin VB.Form TeleportForm
          Caption         =   "Inbound Path"
          Height          =   255
          Left            =   240
-         TabIndex        =   36
+         TabIndex        =   35
          Top             =   480
          Width           =   1095
       End
@@ -47,7 +47,7 @@ Begin VB.Form TeleportForm
          Caption         =   "Outbound Path"
          Height          =   255
          Left            =   240
-         TabIndex        =   35
+         TabIndex        =   34
          Top             =   1200
          Width           =   1335
       End
@@ -89,32 +89,24 @@ Begin VB.Form TeleportForm
          Height          =   255
          Index           =   3
          Left            =   600
-         TabIndex        =   31
+         TabIndex        =   30
          Top             =   960
          Width           =   975
       End
       Begin VB.TextBox BackFlowText 
          Height          =   285
          Left            =   2160
-         TabIndex        =   30
+         TabIndex        =   29
          Text            =   "10"
          Top             =   2280
          Width           =   735
-      End
-      Begin VB.CheckBox TeleportVeggiesCheck 
-         Caption         =   "Teleport Autotrophs"
-         Height          =   195
-         Left            =   2400
-         TabIndex        =   23
-         Top             =   600
-         Width           =   1695
       End
       Begin VB.CheckBox TeleportCorpsesCheck 
          Caption         =   "Teleport Corpses"
          Height          =   195
          Left            =   2400
          TabIndex        =   22
-         Top             =   840
+         Top             =   600
          Width           =   1575
       End
       Begin VB.CheckBox TeleportHeterotrophsCheck 
@@ -172,7 +164,7 @@ Begin VB.Form TeleportForm
          Caption         =   "Backflow Limit"
          Height          =   255
          Left            =   960
-         TabIndex        =   29
+         TabIndex        =   28
          Top             =   2280
          Width           =   1095
       End
@@ -180,7 +172,7 @@ Begin VB.Form TeleportForm
          Caption         =   "bots"
          Height          =   255
          Left            =   3000
-         TabIndex        =   28
+         TabIndex        =   27
          Top             =   2280
          Width           =   1335
       End
@@ -228,13 +220,13 @@ Begin VB.Form TeleportForm
          Caption         =   "Size"
          Height          =   855
          Left            =   240
-         TabIndex        =   24
+         TabIndex        =   23
          Top             =   960
          Width           =   3495
          Begin MSComctlLib.Slider TeleporterSizeSlider 
             Height          =   315
             Left            =   240
-            TabIndex        =   25
+            TabIndex        =   24
             Top             =   480
             Width           =   3135
             _ExtentX        =   5530
@@ -252,7 +244,7 @@ Begin VB.Form TeleportForm
             Caption         =   "Small"
             Height          =   255
             Left            =   240
-            TabIndex        =   27
+            TabIndex        =   26
             Top             =   240
             Width           =   735
          End
@@ -260,7 +252,7 @@ Begin VB.Form TeleportForm
             Caption         =   "Large"
             Height          =   255
             Left            =   2880
-            TabIndex        =   26
+            TabIndex        =   25
             Top             =   240
             Width           =   495
          End
@@ -369,7 +361,6 @@ Dim aspectRatio As Single
   FixedCheck.value = False
   TeleportOption(2).value = True
   NetworkPath.Enabled = False
-  TeleportVeggiesCheck.value = 1
   TeleportCorpsesCheck.value = 1
   TeleportHeterotrophsCheck.value = 1
   RespectShapesCheck.value = 0
@@ -388,7 +379,6 @@ Else
     TeleportOption(1).value = .Out
     TeleportOption(0).value = .In
     TeleportOption(3).value = .Internet
-    TeleportVeggiesCheck.value = .teleportVeggies * True
     TeleportCorpsesCheck.value = .teleportCorpses * True
     TeleportHeterotrophsCheck.value = .teleportHeterotrophs * True
     RespectShapesCheck.value = .RespectShapes * True
@@ -439,7 +429,6 @@ Set fso = New FileSystemObject
     Teleporters(i).In = TeleportOption(0).value
     Teleporters(i).Out = TeleportOption(1).value
     Teleporters(i).Internet = TeleportOption(3).value
-    Teleporters(i).teleportVeggies = CBool(TeleportVeggiesCheck.value)
     Teleporters(i).teleportCorpses = CBool(TeleportCorpsesCheck.value)
     Teleporters(i).teleportHeterotrophs = CBool(TeleportHeterotrophsCheck.value)
     Teleporters(i).RespectShapes = CBool(RespectShapesCheck.value)
@@ -470,11 +459,9 @@ Private Sub TeleportOption_Click(Index As Integer)
   
   If Index = 1 Or Index = 2 Or Index = 3 Then
     TeleportHeterotrophsCheck.Enabled = True
-    TeleportVeggiesCheck.Enabled = True
     TeleportCorpsesCheck.Enabled = True
   Else
     TeleportHeterotrophsCheck.Enabled = False
-    TeleportVeggiesCheck.Enabled = False
     TeleportCorpsesCheck.Enabled = False
   End If
   

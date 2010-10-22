@@ -40,7 +40,7 @@ End Function
 
 Public Sub CalcMass(n As Integer)
   With rob(n)
-  .mass = (.body / 1000) + (.shell / 200) 'set value for mass
+  .mass = (.body / 1000) + (.shell / 200) + .chlr 'set value for mass
   'If .mass < 0.1 Then .mass = 0.1 'stops the Euler integration from wigging out too badly.
   If .mass < 1 Then .mass = 1 'stops the Euler integration from wigging out too badly.
   If .mass > 32000 Then .mass = 32000

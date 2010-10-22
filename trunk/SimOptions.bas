@@ -115,6 +115,7 @@ Public Type SimOptions
   Pondmode As Boolean
   LightIntensity As Integer
   Gradient As Single
+  NrgPerChlr As Single
   DayNight As Boolean 'the toggle
   Daytime As Boolean 'the variable
   CycleLength As Integer

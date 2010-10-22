@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
+Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "richtx32.ocx"
 Begin VB.Form Consoleform 
    BorderStyle     =   4  'Fixed ToolWindow
    Caption         =   "Form1"
@@ -23,7 +23,6 @@ Begin VB.Form Consoleform
       _ExtentX        =   8281
       _ExtentY        =   3572
       _Version        =   393217
-      Enabled         =   -1  'True
       ReadOnly        =   -1  'True
       ScrollBars      =   2
       TextRTF         =   $"console.frx":058A
@@ -195,11 +194,11 @@ End Sub
 
 Private Sub Form_Resize()
   If WindowState <> 1 Then
-    Text1.width = width - 120
+    Text1.Width = Width - 120
     Text1.Height = Height - Text2.Height - 620
     Text2.Top = Height - Text2.Height - 400
-    Text2.width = Text1.width
-    Picture1.width = Text2.width
+    Text2.Width = Text1.Width
+    Picture1.Width = Text2.Width
   End If
 End Sub
 
@@ -357,7 +356,7 @@ Private Sub evnt_textentered(ind As Integer, text As String)
       datirob.Visible = True
       datirob.RefreshDna
       datirob.ZOrder
-      datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime
+      datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime, rob(n).Chlr
       datirob.ShowDna
     Case "help"
       rob(ind).console.textout ""
@@ -443,7 +442,7 @@ Public Sub cycle(num As Integer)
       
       If datirob.Visible And Not datirob.ShowMemoryEarlyCycle Then
         With rob(robfocus)
-        datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime
+        datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime, .Chlr
         End With
       End If
       

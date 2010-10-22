@@ -10,8 +10,6 @@ Public Type var
 End Type
 
 Public TotalEnergy As Long     ' total energy in the sim
-Public totnvegs As Integer          ' total non vegs in sim
-Public totnvegsDisplayed As Integer   ' Toggle for display purposes, so the display doesn't catch half calculated value
 Public totwalls As Integer          ' total walls count
 Public totcorpse As Integer         ' Total corpses
 
@@ -192,19 +190,6 @@ Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
     counter = 0
     r = Random(0, SimOpts.SpeciesNum - 1)  ' start randomly in the list of species
     
-    'Now walk all the species to find a veg.  Should repopulate randomly form all the vegs in the sim
-    While ((Not SimOpts.Specie(r).Veg) Or (Not SimOpts.Specie(r).Native)) And counter < SimOpts.SpeciesNum
-       r = r + 1
-       If r = SimOpts.SpeciesNum Then r = 0
-       counter = counter + 1
-    Wend
-    
-    If Not SimOpts.Specie(r).Veg Or Not SimOpts.Specie(r).Native Then
-    '  MsgBox "Cannot repopulate with vegetables: add autotroph species or disable repopulation", vbOKOnly + vbCritical, "Warning!"
-      'Active = False
-      'Form1.SecTimer.Enabled = False
-      GoTo getout
-    End If
     
     X = fRnd(SimOpts.Specie(r).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(r).Posrg * (SimOpts.FieldWidth - 60))
     Y = fRnd(SimOpts.Specie(r).Postp * (SimOpts.FieldHeight - 60), SimOpts.Specie(r).Posdn * (SimOpts.FieldHeight - 60))
@@ -225,7 +210,6 @@ Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
       GoTo getout
     End If
     
-    rob(a).Veg = SimOpts.Specie(r).Veg
     'NewMove loaded via robscriptload
     rob(a).Fixed = SimOpts.Specie(r).Fixed
     rob(a).CantSee = SimOpts.Specie(r).CantSee
@@ -237,7 +221,7 @@ Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
     rob(a).Dead = False
     rob(a).body = 1000
   '  EnergyAddedPerCycle = EnergyAddedPerCycle + 10000
-    rob(a).radius = FindRadius(rob(a).body)
+    rob(a).radius = FindRadius(rob(a).body, rob(a).chlr)
     rob(a).Mutations = 0
     rob(a).LastMut = 0
     rob(a).generation = 0

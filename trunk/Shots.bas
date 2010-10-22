@@ -19,7 +19,6 @@ Public Type shot
  color As Long          ' colour
  shottype As Integer    ' carried location/value couple
  
- fromveg As Boolean     ' does shot come from veg?
  FromSpecie As String   ' Which species fired the shot
  
  Memloc As Integer      ' Memory location for custom poison and venom
@@ -107,7 +106,6 @@ Public Function newshot(n As Integer, ByVal shottype As Integer, ByVal val As Si
   Shots(a).age = 0
   Shots(a).parent = n
   Shots(a).FromSpecie = rob(n).FName    'Which species fired the shot
-  Shots(a).fromveg = rob(n).Veg 'does shot come from a veg or not?
   Shots(a).color = rob(n).color
   Shots(a).value = Int(val)
   
@@ -205,7 +203,6 @@ Public Sub createshot(ByVal X As Long, ByVal Y As Long, ByVal vx As Integer, _
   End If
   Shots(a).parent = par
   Shots(a).FromSpecie = rob(par).FName
-  Shots(a).fromveg = rob(par).Veg
   
   Shots(a).pos.X = X '+ vx
   Shots(a).pos.Y = Y '+ vy
@@ -461,7 +458,7 @@ Public Sub Decay(n As Integer) 'corpse decaying as waste shot, energy shot or no
     
 
     rob(n).body = rob(n).body - SimOpts.Decay / 10
-    rob(n).radius = FindRadius(rob(n).body)
+    rob(n).radius = FindRadius(rob(n).body, rob(n).chlr)
   End If
 End Sub
 Public Sub defacate(n As Integer) 'only used to get rid of massive amounts of waste
@@ -564,7 +561,7 @@ Public Sub releasenrg(n As Integer, t As Long)
     Y = Shots(t).pos.Y
     
     createshot X, Y, vel.X, vel.Y, -2, n, power, Range * (RobSize / 3), vbWhite
-    rob(n).radius = FindRadius(rob(n).body)
+    rob(n).radius = FindRadius(rob(n).body, rob(n).chlr)
   End If
   
   If rob(n).body <= 0.5 Or rob(n).nrg <= 0.5 Then
@@ -635,7 +632,7 @@ Private Sub releasebod(n As Integer, t As Long) 'a robot is shot by a -6 shot an
     If power > rob(n).body * 10 Then power = rob(n).body * 10
     rob(n).body = rob(n).body - power / 10      'all energy comes from body
   '  EnergyLostPerCycle = EnergyLostPerCycle - power
-    rob(n).radius = FindRadius(rob(n).body)
+    rob(n).radius = FindRadius(rob(n).body, rob(n).chlr)
   Else
     Dim leftover As Single
     
@@ -682,7 +679,7 @@ Private Sub releasebod(n As Integer, t As Long) 'a robot is shot by a -6 shot an
       End If
     End If
     End With
-    rob(n).radius = FindRadius(rob(n).body)
+    rob(n).radius = FindRadius(rob(n).body, rob(n).chlr)
   End If
   
   If rob(n).body <= 0.5 Or rob(n).nrg <= 0.5 Then
@@ -729,7 +726,7 @@ Private Sub takenrg(n As Integer, t As Long)
   rob(n).Waste = rob(n).Waste + partial * 0.01  '1% goes to waste
  
   'Shots(t).Exist = False
-  rob(n).radius = FindRadius(rob(n).body)
+  rob(n).radius = FindRadius(rob(n).body, rob(n).chlr)
 getout:
 End Sub
 '  robot takes a venomous shot and becomes seriously messed up
