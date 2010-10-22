@@ -5,8 +5,6 @@ Option Explicit
 '  V E G E T A B L E S   M A N A G E M E N T
 '
 
-Public totvegs As Integer           ' total vegs in sim
-Public totvegsDisplayed As Integer  ' Value to display so as to not get a half-updated value
 Public cooldown As Long
 
 Public TotalSimEnergy(100) As Long ' Any array of the total amount of sim energy over the past 100 cycles.
@@ -14,30 +12,8 @@ Public CurrentEnergyCycle As Integer ' Index into he above array for calculating
 Public TotalSimEnergyDisplayed As Long
 Public PopulationLastCycle As Integer
 
-
-
-
-' adds vegetables in random positions
-Public Sub VegsRepopulate()
-  Dim n As node
-  Dim r As Integer
-  Dim Rx As Long
-  Dim Ry As Long
-  Dim t As Integer
-  cooldown = cooldown + 1
-  If cooldown >= SimOpts.RepopCooldown Then
-    For t = 1 To SimOpts.RepopAmount
-      If Form1.Active Then
-        aggiungirob -1, Random(60, SimOpts.FieldWidth - 60), Random(60, SimOpts.FieldHeight - 60)
-        totvegs = totvegs + 1
-      End If
-    Next t
-    cooldown = cooldown - SimOpts.RepopCooldown
-  End If
-End Sub
-
 ' gives vegs their energy meal
-Public Sub feedvegs(totnrg As Long, totv As Integer)
+Public Sub feedvegs(totnrg As Long)
   Dim n As node
   Dim t As Integer
   Dim tok As Single
@@ -133,31 +109,20 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
   If SimOpts.Daytime Then daymod = 1 Else daymod = 0
  
   For t = 1 To MaxRobs
-    If rob(t).Veg And rob(t).nrg > 0 And rob(t).exist Then
+    If rob(t).nrg > 0 And rob(t).exist Then
       If SimOpts.Pondmode Then
         depth = (rob(t).pos.Y / 2000) + 1
         If depth < 1 Then depth = 1
         tok = (SimOpts.LightIntensity / depth ^ SimOpts.Gradient) * daymod + 1
       Else
-        tok = totnrg
+        tok = 1
       End If
       
       If tok < 0 Then tok = 0
       
-      Select Case SimOpts.VegFeedingMethod
-      Case 0 'per veg
-        Energy = tok * (1 - SimOpts.VegFeedingToBody)
-        body = (tok * SimOpts.VegFeedingToBody) / 10
-      Case 1 'per kilobody
-        Energy = tok * (1 - SimOpts.VegFeedingToBody) * rob(t).body / 1000
-        body = (tok * (SimOpts.VegFeedingToBody) * rob(t).body / 1000) / 10
-      Case 2 'quadratically based on body.  Close to type 0 near 1000 body points, but quickly diverges at about 5K body points
-        tok = tok * ((rob(t).body ^ 2 * Constant) + (1 - Constant * 1000 * 1000))
-        Energy = tok * (1 - SimOpts.VegFeedingToBody)
-        body = (tok * SimOpts.VegFeedingToBody) / 10
-      End Select
+      tok = tok * (rob(t).chlr / 1000 * SimOpts.NrgPerChlr)
+      Energy = tok
       rob(t).nrg = rob(t).nrg + Energy
-      rob(t).body = rob(t).body + body
       
       If rob(t).nrg > 32000 Then
      '   Energy = Energy - (rob(t).nrg - 32000)
@@ -167,7 +132,7 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
     '    body = body - (rob(t).body - 32000)
         rob(t).body = 32000
       End If
-      rob(t).radius = FindRadius(rob(t).body)
+      rob(t).radius = FindRadius(rob(t).body, rob(t).chlr)
       
      ' EnergyAddedPerCycle = EnergyAddedPerCycle + energy + (body * 10)
     End If
@@ -175,15 +140,6 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
 getout:
 End Sub
 
-Public Sub feedveg2(t As Integer) 'gives veg an additional meal based on waste
-  With rob(t)
-  If .nrg + (.Waste / 2) < 32000 Then
-    .nrg = .nrg + (.Waste / 2)
-    '.Waste = .Waste - (.Waste / 2)
-    .Waste = 0
-  End If
-  End With
-End Sub
 
 ' kill vegetables which are too distant from any robot
 'currently broken, so it's commented out

@@ -169,8 +169,6 @@ Private Type robot
   radius As Single
   Shape As Integer        ' shape of the robot, how many sides
   
-  Veg As Boolean          ' is it a vegetable?
-  
   wall As Boolean         ' is it a wall?
   Corpse As Boolean
   Fixed As Boolean        ' is it blocked?
@@ -203,6 +201,7 @@ Private Type robot
   nrg As Single             ' energy
   onrg As Single            ' old energy
   
+  Chlr As Single            ' Number of chloropasts.
   body As Single            ' Body points. A corpse still has a body after all
   obody As Single           ' old body points, for use with pain pleas versions for body
   vbody As Single           ' Virtual Body used to calculate body functions of MBs
@@ -355,13 +354,14 @@ Const MinMatchLength = 3
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Public Function FindRadius(ByVal bodypoints As Single) As Single
+Public Function FindRadius(ByVal bodypoints As Single, chloroplasts As Single) As Single
   If bodypoints < 1 Then bodypoints = 1
+  If chloroplasts < 1 Then chloroplasts = 1
   If SimOpts.FixedBotRadii Then
     FindRadius = half
   Else
     ' EricL 10/20/2007 Added log(bodypoints) to increase the size variation in bots.
-    FindRadius = (Log(bodypoints) * bodypoints * CubicTwipPerBody * 3 * 0.25 / PI) ^ (1 / 3)
+    FindRadius = (Log(bodypoints) * bodypoints * CubicTwipPerBody * 3 * 0.25 / PI) ^ (1 / 3) + (Log(chloroplasts) * chloroplasts * CubicTwipPerBody * 3 * 0.25 / PI) ^ (1 / 3)
     If FindRadius < 1 Then FindRadius = 1
   End If
 
@@ -763,23 +763,21 @@ Dim i As Integer
     'Overflow protection.  Need to make sure teleported in species grow the species array correctly.
     If SimOpts.Specie(i).population > 32000 Then SimOpts.Specie(i).population = 32000
        
-    If rob(n).Veg Then
-      totvegs = totvegs + 1
-    ElseIf rob(n).Corpse Then
+   If rob(n).Corpse Then
       totcorpse = totcorpse + 1
       If rob(n).body > 0 Then
         Decay n
       Else
         KillRobot n
       End If
-    Else
-      totnvegs = totnvegs + 1
     End If
 
 End Sub
 
 Private Sub MakeStuff(n As Integer)
    
+  If rob(n).mem(316) > 0 Then storechlr n
+  If rob(n).mem(317) > 0 Then feedchlr n
   If rob(n).mem(824) <> 0 Then storevenom n
   If rob(n).mem(826) <> 0 Then storepoison n
   If rob(n).mem(822) <> 0 Then makeshell n
@@ -789,7 +787,6 @@ End Sub
 
 Private Sub HandleWaste(n As Integer)
 
-    If rob(n).Waste > 0 And rob(n).Veg Then feedveg2 n
     If SimOpts.BadWastelevel = 0 Then SimOpts.BadWastelevel = 400
     If SimOpts.BadWastelevel > 0 And rob(n).Pwaste + rob(n).Waste > SimOpts.BadWastelevel Then altzheimer n
     If rob(n).Waste > 32000 Then defacate n
@@ -839,14 +836,14 @@ Private Sub Shock(n As Integer)
 
   'shock code:
   'later make the shock threshold based on body and age
-  If Not rob(n).Veg And rob(n).nrg > 3000 Then
+  If rob(n).nrg > 3000 Then
     Dim temp As Double
     temp = rob(n).onrg - rob(n).nrg
     If temp > (rob(n).onrg / 2) Then
       rob(n).nrg = 0
       rob(n).body = rob(n).body + (rob(n).nrg / 10)
       If rob(n).body > 32000 Then rob(n).body = 32000
-      rob(n).radius = FindRadius(rob(n).body)
+      rob(n).radius = FindRadius(rob(n).body, rob(n).Chlr)
     End If
   End If
 
@@ -867,7 +864,6 @@ Private Sub ManageDeath(n As Integer)
       '  delallties n
         Erase .occurr
         .color = vbWhite
-        .Veg = False
         .Fixed = False
         .nrg = 0
         .DisableDNA = True
@@ -1017,13 +1013,8 @@ Public Sub UpdateBots()
   TotalEnergy = 0
   totwalls = 0
   totcorpse = 0
-  PopulationLastCycle = totnvegsDisplayed
   TotalRobotsDisplayed = TotalRobots
   TotalRobots = 0
-  totnvegsDisplayed = totnvegs
-  totnvegs = 0
-  totvegsDisplayed = totvegs
-  totvegs = 0
   
   If ContestMode Then
     F1count = F1count + 1
@@ -1155,13 +1146,11 @@ Public Sub UpdateBots()
   
   'Restart
   'Leaguemode handles restarts differently so only restart here if not in leaguemode
-  If totnvegs = 0 And RestartMode And Not LeagueMode Then
-  ' totnvegs = 1
   ' Contests = Contests + 1
-    ReStarts = ReStarts + 1
+  '  ReStarts = ReStarts + 1
   ' Form1.StartSimul
-    StartAnotherRound = True
-  End If
+  '  StartAnotherRound = True
+  'End If
 End Sub
 
 Private Sub ReproduceAndKill()
@@ -1208,7 +1197,7 @@ Private Sub storebody(t As Integer)
   rob(t).nrg = rob(t).nrg - rob(t).mem(313)
   rob(t).body = rob(t).body + rob(t).mem(313) / 10
   If rob(t).body > 32000 Then rob(t).body = 32000
-  rob(t).radius = FindRadius(rob(t).body)
+  rob(t).radius = FindRadius(rob(t).body, rob(t).Chlr)
   rob(t).mem(313) = 0
 End Sub
 
@@ -1217,8 +1206,26 @@ Private Sub feedbody(t As Integer)
   rob(t).nrg = rob(t).nrg + rob(t).mem(fdbody)
   rob(t).body = rob(t).body - CSng(rob(t).mem(fdbody)) / 10#
   If rob(t).nrg > 32000 Then rob(t).nrg = 32000
-  rob(t).radius = FindRadius(rob(t).body)
+  rob(t).radius = FindRadius(rob(t).body, rob(t).Chlr)
   rob(t).mem(fdbody) = 0
+End Sub
+
+Private Sub storechlr(t As Integer)
+  If rob(t).mem(316) > 100 Then rob(t).mem(316) = 100
+  rob(t).nrg = rob(t).nrg - rob(t).mem(316)
+  rob(t).Chlr = rob(t).Chlr + rob(t).mem(316) / 100
+  If rob(t).Chlr > 32000 Then rob(t).Chlr = 32000
+  rob(t).radius = FindRadius(rob(t).body, rob(t).Chlr)
+  rob(t).mem(316) = 0
+End Sub
+
+Private Sub feedchlr(t As Integer)
+  If rob(t).mem(317) > 100 Then rob(t).mem(317) = 100
+  rob(t).nrg = rob(t).nrg + rob(t).mem(317) / 20
+  rob(t).Chlr = rob(t).Chlr - CSng(rob(t).mem(317)) / 10#
+  If rob(t).nrg > 32000 Then rob(t).nrg = 32000
+  rob(t).radius = FindRadius(rob(t).body, rob(t).Chlr)
+  rob(t).mem(317) = 0
 End Sub
 
 ' here we catch the attempt of a robot to shoot,
@@ -1573,6 +1580,7 @@ Public Sub Reproduce(n As Integer, per As Integer)
   Dim nuovo As Integer
   Dim nnrg As Single, nwaste As Single, npwaste As Single
   Dim nbody As Integer
+  Dim nchlr As Single
   Dim nx As Long
   Dim ny As Long
   Dim t As Integer
@@ -1586,22 +1594,14 @@ Public Sub Reproduce(n As Integer, per As Integer)
   
   If rob(n).body <= 2 Or rob(n).CantReproduce Then GoTo getout 'bot is too small to reproduce
   
-  'attempt to stop veg overpopulation but will it work?
-  If rob(n).Veg = True And (totvegsDisplayed > SimOpts.MaxPopulation Or totvegsDisplayed < 0) Then GoTo getout
- 
-  ' If we got here and it's a veg, then we are below the reproduction threshold.  Let a random 10% of the veggis reproduce
-  ' so as to avoid all the veggies reproducing on the same cycle.  This adds some randomness
-  ' so as to avoid giving preference to veggies with lower bot array numbers.  If the veggy population is below 90% of the threshold
-  ' then let them all reproduce.
-  If rob(n).Veg = True And (Random(0, 10) <> 5) And (totvegsDisplayed > (SimOpts.MaxPopulation * 0.9)) Then GoTo getout
-  If totvegsDisplayed = -1 Then GoTo getout ' no veggies can reproduce on the first cycle after the sim is restarted.
 
   per = per Mod 100 ' per should never be <=0 as this is checked in ManageReproduction()
   If per <= 0 Then GoTo getout
-  sondist = FindRadius(rob(n).body * (per / 100)) + FindRadius(rob(n).body * ((100 - per) / 100))
+  sondist = FindRadius(rob(n).body * (per / 100), rob(n).Chlr * (per / 100)) + FindRadius(rob(n).body * ((100 - per) / 100), rob(n).Chlr * ((100 - per) / 100))
   
   nnrg = (rob(n).nrg / 100#) * CSng(per)
   nbody = (rob(n).body / 100#) * CSng(per)
+  nchlr = (rob(n).Chlr / 100#) * CSng(per)
   'rob(n).nrg = rob(n).nrg - DNALength(n) * 3
   
   tempnrg = rob(n).nrg
@@ -1615,7 +1615,6 @@ Public Sub Reproduce(n As Integer, per As Integer)
       nuovo = posto()
       
       SimOpts.TotBorn = SimOpts.TotBorn + 1
-      If rob(n).Veg Then totvegs = totvegs + 1
       ReDim rob(nuovo).DNA(UBound(rob(n).DNA))
       For t = 1 To UBound(rob(nuovo).DNA)
         rob(nuovo).DNA(t) = rob(n).DNA(t)
@@ -1671,9 +1670,11 @@ Public Sub Reproduce(n As Integer, per As Integer)
       rob(n).Waste = rob(n).Waste - nwaste
       rob(n).Pwaste = rob(n).Pwaste - npwaste
       rob(n).body = rob(n).body - nbody
-      rob(n).radius = FindRadius(rob(n).body)
+      rob(n).Chlr = rob(n).Chlr - nchlr
+      rob(n).radius = FindRadius(rob(n).body, rob(n).Chlr)
       rob(nuovo).body = nbody
-      rob(nuovo).radius = FindRadius(nbody)
+      rob(nuovo).Chlr = nchlr
+      rob(nuovo).radius = FindRadius(nbody, nchlr)
       rob(nuovo).Waste = nwaste
       rob(nuovo).Pwaste = npwaste
       rob(n).mem(Energy) = CInt(rob(n).nrg)
@@ -1687,7 +1688,6 @@ Public Sub Reproduce(n As Integer, per As Integer)
       rob(nuovo).parent = rob(n).AbsNum
       rob(nuovo).FName = rob(n).FName
       rob(nuovo).LastOwner = rob(n).LastOwner
-      rob(nuovo).Veg = rob(n).Veg
       rob(nuovo).Fixed = rob(n).Fixed
       rob(nuovo).CantSee = rob(n).CantSee
       rob(nuovo).DisableDNA = rob(n).DisableDNA
@@ -1765,6 +1765,7 @@ Public Function SexReproduce(female As Integer)
   Dim nuovo As Integer
   Dim nnrg As Single, nwaste As Single, npwaste As Single
   Dim nbody As Integer
+  Dim nchlr As Integer
   Dim nx As Long
   Dim ny As Long
   Dim t As Integer
@@ -1789,21 +1790,17 @@ Public Function SexReproduce(female As Integer)
   'we let male veggies fertilize nonveggie females all they want since the offspring's "species" and thus vegginess
   'will be determined by their mother.  Perhaps a strategy will emerge where plants compete to reproduce
   'with nonveggies so as to bypass the popualtion limtis?  Who knows.
-  If rob(female).Veg = True And (totvegsDisplayed > SimOpts.MaxPopulation Or totvegsDisplayed < 0) Then Exit Function
- 
   ' If we got here and the female is a veg, then we are below the reproduction threshold.  Let a random 10% of the veggis reproduce
   ' so as to avoid all the veggies reproducing on the same cycle.  This adds some randomness
   ' so as to avoid giving preference to veggies with lower bot array numbers.  If the veggy population is below 90% of the threshold
   ' then let them all reproduce.
-  If rob(female).Veg = True And (Random(0, 9) <> 5) And (totvegsDisplayed > (SimOpts.MaxPopulation * 0.9)) Then Exit Function
-  If totvegsDisplayed = -1 Then Exit Function ' no veggies can reproduce on the first cycle after the sim is restarted.
-
   per = per Mod 100 ' per should never be <=0 as this is checked in ManageReproduction()
   If per <= 0 Then Exit Function ' Can't give 100% or 0% of resources to offspring
-  sondist = FindRadius(rob(female).body * (per / 100)) + FindRadius(rob(female).body * ((100 - per) / 100))
+  sondist = FindRadius(rob(female).body * (per / 100), rob(female).Chlr * (per / 100)) + FindRadius(rob(female).body * ((100 - per) / 100)) + FindRadius(rob(female).Chlr * ((100 - per) / 100))
   
   nnrg = (rob(female).nrg / 100#) * CSng(per)
   nbody = (rob(female).body / 100#) * CSng(per)
+  nchlr = (rob(female).Chlr / 100#) * CSng(per)
   
   tempnrg = rob(female).nrg
   If tempnrg > 0 Then
@@ -1814,7 +1811,6 @@ Public Function SexReproduce(female As Integer)
     If Not tests Then
       nuovo = posto()
       SimOpts.TotBorn = SimOpts.TotBorn + 1
-      If rob(female).Veg Then totvegs = totvegs + 1
            
       ' Do the crossover.  The sperm DNA is on the mom's bot structure
       Crossover female, nuovo
@@ -1873,9 +1869,11 @@ Public Function SexReproduce(female As Integer)
       rob(female).Waste = rob(female).Waste - nwaste
       rob(female).Pwaste = rob(female).Pwaste - npwaste
       rob(female).body = rob(female).body - nbody
-      rob(female).radius = FindRadius(rob(female).body)
+      rob(female).Chlr = rob(female).Chlr - nchlr
+      rob(female).radius = FindRadius(rob(female).body, rob(female).Chlr)
       rob(nuovo).body = nbody
-      rob(nuovo).radius = FindRadius(nbody)
+      rob(nuovo).Chlr = nchlr
+      rob(nuovo).radius = FindRadius(nbody, nchlr)
       rob(nuovo).Waste = nwaste
       rob(nuovo).Pwaste = npwaste
       rob(female).mem(Energy) = CInt(rob(female).nrg)
@@ -1896,7 +1894,6 @@ Public Function SexReproduce(female As Integer)
       rob(nuovo).parent = rob(female).AbsNum
       rob(nuovo).FName = rob(female).FName
       rob(nuovo).LastOwner = rob(female).LastOwner
-      rob(nuovo).Veg = rob(female).Veg
       rob(nuovo).Fixed = rob(female).Fixed
       rob(nuovo).CantSee = rob(female).CantSee
       rob(nuovo).DisableDNA = rob(female).DisableDNA
@@ -2537,14 +2534,10 @@ Public Sub KillRobot(n As Integer)
   If n = -1 Then n = robfocus
   
   If SimOpts.DBEnable Then
-    If rob(n).Veg And SimOpts.DBExcludeVegs Then
-    Else
       AddRecord n
-    End If
   End If
    
   rob(n).Fixed = False
-  rob(n).Veg = False
   rob(n).View = False
   rob(n).NewMove = False
   rob(n).LastOwner = ""

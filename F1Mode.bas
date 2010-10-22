@@ -69,7 +69,7 @@ Public Sub FindSpecies()
   For t = 1 To MaxRobs
   
       'If Not .Veg And Not .Corpse And Not .wall And .exist Then
-      If Not rob(t).Veg And Not rob(t).Corpse And rob(t).exist Then
+      If Not rob(t).Corpse And rob(t).exist Then
         For SpeciePointer = 1 To 20
           
           realname = Left(rob(t).FName, Len(rob(t).FName) - 4)
@@ -184,7 +184,7 @@ Public Sub Countpop()
   For t = 1 To MaxRobs
   
       'If Not .Veg And Not .Corpse And Not .wall And .exist Then
-      If Not rob(t).Veg And Not rob(t).Corpse And rob(t).exist Then
+      If Not rob(t).Corpse And rob(t).exist Then
         For SpeciePointer = 1 To TotSpecies
           realname = Left(rob(t).FName, Len(rob(t).FName) - 4)
           If realname = PopArray(SpeciePointer).SpName Then
@@ -454,9 +454,6 @@ Public Sub LeagueInputChallengers()
   Dim blank As datispecie
     
   For Index = 0 To SimOpts.SpeciesNum - 1
-    If SimOpts.Specie(Index).Veg = True Then
-      offset = offset + 1
-    Else
       LeagueChallengers(Index - offset) = SimOpts.Specie(Index)
       If Index > 2 Then SimOpts.Specie(Index) = blank
       

@@ -1053,7 +1053,7 @@ Private Sub Timer2_Timer()
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As File
+          Dim fileToDelete As file
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1071,7 +1071,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As File
+          Dim fileToDelete2 As file
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -1141,7 +1141,7 @@ Sub StartSimul()
   'the end of this cycle will be the hypotinose (sp?) of a right triangle C where side A is the miximum possible bot radius, and
   'side B is the sum of the maximum bot velocity and the maximum shot velocity, the latter of which can be robsize/3 + the bot
   'max velocity since bot velocity is added to shot velocity.
-  MaxBotShotSeperation = Sqr((FindRadius(32000) ^ 2) + ((SimOpts.MaxVelocity * 2 + RobSize / 3) ^ 2))
+  MaxBotShotSeperation = Sqr((FindRadius(32000, 32000) ^ 2) + ((SimOpts.MaxVelocity * 2 + RobSize / 3) ^ 2))
   
   Dim t As Integer
   
@@ -1260,7 +1260,7 @@ Sub startloaded()
   'the end of this cycle will be the hypotinoose (sp?) of a right triangle ABC where side A is the maximum possible bot radius, and
   'side B is the sum of the maximum bot velocity and the maximum shot velocity, the latter of which can be robsize/3 + the bot
   'max velocity since bot velocity is added to shot velocity.
-  MaxBotShotSeperation = Sqr((FindRadius(32000) ^ 2) + ((SimOpts.MaxVelocity * 2 + RobSize / 3) ^ 2))
+  MaxBotShotSeperation = Sqr((FindRadius(32000, 32000) ^ 2) + ((SimOpts.MaxVelocity * 2 + RobSize / 3) ^ 2))
   
   'maxshotarray = 50
   'ReDim Shots(maxshotarray)
@@ -1302,11 +1302,7 @@ Sub startloaded()
   'InitEGrid
   
   'Vegs.cooldown = 0
-  Vegs.cooldown = -SimOpts.RepopCooldown
-  totnvegsDisplayed = -1 ' Just set this to -1 for the first cycle so the cost low water mark doesn't trigger.
-  totvegs = -1 ' Set to -1 to avoid veggy reproduction on first cycle
-  totnvegs = SimOpts.Costs(DYNAMICCOSTTARGET) ' Just set this high for the first cycle so the cost low water mark doesn't trigger.
-'  MDIForm1.ZoomOut
+  '  MDIForm1.ZoomOut
   main
 End Sub
 
@@ -1327,7 +1323,6 @@ Private Sub loadrobs()
       Else
         SimOpts.Specie(k).Native = True
       End If
-      rob(a).Veg = SimOpts.Specie(k).Veg
       rob(a).Fixed = SimOpts.Specie(k).Fixed
       If rob(a).Fixed Then rob(a).mem(216) = 1
       rob(a).pos.X = Random(SimOpts.Specie(k).Poslf * CSng(SimOpts.FieldWidth - 60#), SimOpts.Specie(k).Posrg * CSng(SimOpts.FieldWidth - 60#))
@@ -1337,7 +1332,7 @@ Private Sub loadrobs()
       'UpdateBotBucket a
       rob(a).nrg = SimOpts.Specie(k).Stnrg
       rob(a).body = 1000
-      rob(a).radius = FindRadius(rob(a).body)
+      rob(a).radius = FindRadius(rob(a).body, rob(a).Chlr)
       rob(a).mem(468) = 32000
       rob(a).mem(SetAim) = rob(a).aim * 200
       rob(a).mem(480) = 32000
@@ -1376,7 +1371,7 @@ End Sub
 
 ' calls main form status bar update
 Public Sub cyccaption(ByVal num As Single)
-  MDIForm1.infos num, TotalRobotsDisplayed, totnvegsDisplayed, totvegsDisplayed, SimOpts.TotBorn, SimOpts.TotRunCycle, SimOpts.TotRunTime
+  MDIForm1.infos num, TotalRobotsDisplayed, SimOpts.TotBorn, SimOpts.TotRunCycle, SimOpts.TotRunTime
 End Sub
 
 ' calculates the total number of robots
@@ -1514,7 +1509,7 @@ Private Sub Form_DblClick()
     datirob.Visible = True
     datirob.RefreshDna
     datirob.ZOrder
-    datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime
+    datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime, rob(n).Chlr
   ElseIf m > 0 Then
     TeleportForm.teleporterFormMode = 1
     TeleportForm.Show
@@ -1779,7 +1774,7 @@ Private Sub main()
     
       If datirob.Visible And Not datirob.ShowMemoryEarlyCycle Then
         With rob(robfocus)
-          datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime
+          datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime, .Chlr
         End With
       End If
       

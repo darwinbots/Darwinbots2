@@ -164,21 +164,14 @@ Dim randomV As vector
     If Teleporters(i).Out Or Teleporters(i).local Or (Teleporters(i).Internet And Teleporters(i).PollCountDown <= 0) Then
       If TeleportCollision(n, i) And rob(n).exist Then
         If Teleporters(i).Out Or Teleporters(i).Internet Then
-          If (rob(n).Veg And Not Teleporters(i).teleportVeggies) Or _
-             (rob(n).Corpse And Not Teleporters(i).teleportCorpses) Or _
-             ((Not rob(n).Veg) And (Not Teleporters(i).teleportHeterotrophs)) Then
-            'Don't Teleport
-          Else
             Teleporters(i).NumTeleported = Teleporters(i).NumTeleported + 1
             Name = "\" + (Format(Date, "yymmdd")) + Format(Time, "hhmmss") + rob(n).FName + CStr(i) + CStr(Teleporters(i).NumTeleported) + ".dbo"
             If Teleporters(i).Out Then SaveOrganism Teleporters(i).path + Name, n
             If Teleporters(i).Internet Then SaveOrganism Teleporters(i).intOutPath + Name, n
             KillOrganism n
-          End If
         ElseIf Teleporters(i).local Then
-          If (rob(n).Veg And Not Teleporters(i).teleportVeggies) Or _
-             (rob(n).Corpse And Not Teleporters(i).teleportCorpses) Or _
-             ((Not rob(n).Veg) And (Not Teleporters(i).teleportHeterotrophs)) Then
+          If (rob(n).Corpse And Not Teleporters(i).teleportCorpses) Or _
+             ((Not Teleporters(i).teleportHeterotrophs)) Then
             'Don't Teleport
           Else
             If Teleporters(i).local Then Teleporters(i).NumTeleported = Teleporters(i).NumTeleported + 1 ' Don't update the counter for Internet Mode teleporters
