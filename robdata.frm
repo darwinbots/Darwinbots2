@@ -692,6 +692,10 @@ Private Function GiveMutationDetails(robfocus) As String
 End Function
 
 
+Private Sub robchlr_Click()
+
+End Sub
+
 Private Sub ShrinkWin_Click()
   Me.Width = 3255
   MutDetails.Caption = "Mutation details->"

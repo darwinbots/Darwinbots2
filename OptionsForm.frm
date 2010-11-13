@@ -87,30 +87,38 @@ Begin VB.Form optionsform
       _Version        =   393216
       Style           =   1
       Tabs            =   7
-      Tab             =   1
       TabsPerRow      =   10
       TabHeight       =   520
       ShowFocusRect   =   0   'False
       BackColor       =   12632256
       TabCaption(0)   =   "Species"
       TabPicture(0)   =   "OptionsForm.frx":0000
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "NativeSpeciesButton"
-      Tab(0).Control(1)=   "DuplicaButt"
-      Tab(0).Control(2)=   "SpecList"
-      Tab(0).Control(3)=   "AddSpec"
-      Tab(0).Control(4)=   "DelSpec"
-      Tab(0).Control(5)=   "RenameButton"
-      Tab(0).Control(6)=   "CommentBox"
-      Tab(0).Control(7)=   "Frame1"
-      Tab(0).Control(8)=   "Label36"
-      Tab(0).Control(9)=   "SpeciesLabel"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "SpeciesLabel"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).Control(1)=   "Label36"
+      Tab(0).Control(1).Enabled=   0   'False
+      Tab(0).Control(2)=   "Frame1"
+      Tab(0).Control(2).Enabled=   0   'False
+      Tab(0).Control(3)=   "CommentBox"
+      Tab(0).Control(3).Enabled=   0   'False
+      Tab(0).Control(4)=   "RenameButton"
+      Tab(0).Control(4).Enabled=   0   'False
+      Tab(0).Control(5)=   "DelSpec"
+      Tab(0).Control(5).Enabled=   0   'False
+      Tab(0).Control(6)=   "AddSpec"
+      Tab(0).Control(6).Enabled=   0   'False
+      Tab(0).Control(7)=   "SpecList"
+      Tab(0).Control(7).Enabled=   0   'False
+      Tab(0).Control(8)=   "DuplicaButt"
+      Tab(0).Control(8).Enabled=   0   'False
+      Tab(0).Control(9)=   "NativeSpeciesButton"
+      Tab(0).Control(9).Enabled=   0   'False
       Tab(0).ControlCount=   10
       TabCaption(1)   =   "General"
       TabPicture(1)   =   "OptionsForm.frx":001C
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "GenPropFrame"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
@@ -148,7 +156,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "Show Non-Native Species"
          Height          =   375
-         Left            =   -73560
+         Left            =   1440
          TabIndex        =   229
          Tag             =   "0"
          ToolTipText     =   "Add a new robot type to the simulation"
@@ -374,7 +382,7 @@ Begin VB.Form optionsform
       Begin VB.Frame GenPropFrame 
          Caption         =   "General Properties"
          Height          =   5295
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   132
          Tag             =   "2020"
          Top             =   360
@@ -975,7 +983,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "DecayText"
-                  BuddyDispid     =   196682
+                  BuddyDispid     =   196674
                   OrigLeft        =   5040
                   OrigTop         =   2280
                   OrigRight       =   5280
@@ -997,7 +1005,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "FrequencyText"
-                  BuddyDispid     =   196681
+                  BuddyDispid     =   196673
                   OrigLeft        =   5040
                   OrigTop         =   2280
                   OrigRight       =   5280
@@ -1108,7 +1116,7 @@ Begin VB.Form optionsform
                _Version        =   327681
                Value           =   100
                BuddyControl    =   "ChartInterval"
-               BuddyDispid     =   196688
+               BuddyDispid     =   196680
                OrigLeft        =   4320
                OrigTop         =   3240
                OrigRight       =   4560
@@ -1143,7 +1151,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton DuplicaButt 
          Caption         =   "Duplicate"
          Height          =   375
-         Left            =   -73560
+         Left            =   1440
          TabIndex        =   130
          Tag             =   "0"
          ToolTipText     =   "Add a new robot type to the simulation"
@@ -1153,7 +1161,7 @@ Begin VB.Form optionsform
       Begin VB.ListBox SpecList 
          Height          =   2400
          ItemData        =   "OptionsForm.frx":035A
-         Left            =   -74760
+         Left            =   240
          List            =   "OptionsForm.frx":035C
          TabIndex        =   129
          Top             =   720
@@ -1162,7 +1170,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton AddSpec 
          Caption         =   "Add"
          Height          =   375
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   128
          Tag             =   "0"
          ToolTipText     =   "Add a new robot type to the simulation"
@@ -1172,7 +1180,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton DelSpec 
          Caption         =   "Delete"
          Height          =   375
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   127
          Tag             =   "0"
          Top             =   3720
@@ -1181,7 +1189,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton RenameButton 
          Caption         =   "Rename"
          Height          =   375
-         Left            =   -72360
+         Left            =   2640
          TabIndex        =   126
          Tag             =   "0"
          Top             =   3720
@@ -1231,7 +1239,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   100000
             BuddyControl    =   "CyclesHi"
-            BuddyDispid     =   196697
+            BuddyDispid     =   196689
             OrigLeft        =   3570
             OrigTop         =   3465
             OrigRight       =   3810
@@ -1254,7 +1262,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   10000
             BuddyControl    =   "CyclesLo"
-            BuddyDispid     =   196698
+            BuddyDispid     =   196690
             OrigLeft        =   3570
             OrigTop         =   2940
             OrigRight       =   3810
@@ -1586,7 +1594,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "MaxRoundsToDrawText"
-            BuddyDispid     =   196728
+            BuddyDispid     =   196719
             OrigLeft        =   3480
             OrigTop         =   1140
             OrigRight       =   3735
@@ -1606,7 +1614,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   5
             BuddyControl    =   "ContestsText"
-            BuddyDispid     =   196727
+            BuddyDispid     =   196718
             OrigLeft        =   3240
             OrigTop         =   960
             OrigRight       =   3480
@@ -1897,7 +1905,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Prop"
-            BuddyDispid     =   196762
+            BuddyDispid     =   196753
             OrigLeft        =   4260
             OrigTop         =   2760
             OrigRight       =   4500
@@ -1948,7 +1956,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Fixed"
-            BuddyDispid     =   196761
+            BuddyDispid     =   196752
             OrigLeft        =   4245
             OrigTop         =   2340
             OrigRight       =   4485
@@ -2031,7 +2039,7 @@ Begin VB.Form optionsform
       End
       Begin RichTextLib.RichTextBox CommentBox 
          Height          =   975
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   131
          Top             =   4680
          Width           =   3495
@@ -2044,12 +2052,19 @@ Begin VB.Form optionsform
       End
       Begin VB.Frame Frame1 
          Caption         =   "Species Properties"
-         Height          =   5085
-         Left            =   -71160
+         Height          =   5175
+         Left            =   3840
          TabIndex        =   100
          Tag             =   "2010"
          Top             =   600
-         Width           =   6075
+         Width           =   6135
+         Begin VB.TextBox RepopThresh 
+            Height          =   285
+            Left            =   5160
+            TabIndex        =   237
+            Top             =   2400
+            Width           =   615
+         End
          Begin VB.CheckBox MutEnabledCheck 
             Alignment       =   1  'Right Justify
             Caption         =   "Disable Mutations"
@@ -2241,7 +2256,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "SpecQty"
-            BuddyDispid     =   196780
+            BuddyDispid     =   196771
             OrigLeft        =   2310
             OrigTop         =   525
             OrigRight       =   2550
@@ -2263,7 +2278,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   1000
             BuddyControl    =   "SpecNrg"
-            BuddyDispid     =   196782
+            BuddyDispid     =   196773
             OrigLeft        =   1560
             OrigTop         =   240
             OrigRight       =   1800
@@ -2397,6 +2412,14 @@ Begin VB.Form optionsform
                Width           =   255
             End
          End
+         Begin VB.Label Repop 
+            Caption         =   "Repopulation Threshold"
+            Height          =   255
+            Left            =   3360
+            TabIndex        =   238
+            Top             =   2400
+            Width           =   1695
+         End
          Begin VB.Line Line4 
             BorderColor     =   &H8000000C&
             X1              =   3120
@@ -2525,7 +2548,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoSimTxt"
-            BuddyDispid     =   196809
+            BuddyDispid     =   196800
             OrigLeft        =   3360
             OrigTop         =   360
             OrigRight       =   3600
@@ -2545,7 +2568,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoRobTxt"
-            BuddyDispid     =   196806
+            BuddyDispid     =   196797
             OrigLeft        =   3120
             OrigTop         =   240
             OrigRight       =   3375
@@ -2661,7 +2684,7 @@ Begin VB.Form optionsform
       Begin VB.Label Label36 
          Caption         =   "Commenti sulla specie:"
          Height          =   255
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   202
          Tag             =   "2100"
          Top             =   4440
@@ -2670,7 +2693,7 @@ Begin VB.Form optionsform
       Begin VB.Label SpeciesLabel 
          Caption         =   "Native Species:"
          Height          =   255
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   201
          Tag             =   "0"
          Top             =   480
@@ -2915,6 +2938,12 @@ Dim ind As Integer
   PopulateSpeciesList
 End Sub
 
+Private Sub RepopThresh_Change()
+  If CurrSpec > -1 And IsNumeric(RepopThresh.text) = True Then
+    TmpOpts.Specie(CurrSpec).RespawnThreshold = RepopThresh.text
+  End If
+End Sub
+
 Private Sub StripMutationsCheck_Click()
   TmpOpts.AutoSaveStripMutations = StripMutationsCheck.value * True
 End Sub
@@ -3025,6 +3054,7 @@ Private Sub SpecList_Click()
   Line7.BorderColor = TmpOpts.Specie(k).color
   Line8.BorderColor = TmpOpts.Specie(k).color
   Line9.BorderColor = TmpOpts.Specie(k).color
+  RepopThresh.text = TmpOpts.Specie(k).RespawnThreshold
   
   If TmpOpts.Specie(k).CantSee Then
     DisableVisionCheck.value = 1
@@ -3964,6 +3994,13 @@ Private Sub CustomWaste_Change()
 End Sub
 
 
+
+Private Sub VeggieCheck_Click()
+ If CurrSpec > -1 Then
+    TmpOpts.Specie(CurrSpec).Veg = False
+    If VeggieCheck.value = 1 Then TmpOpts.Specie(CurrSpex).Veg = True
+ End If
+End Sub
 
 Private Sub VirusImmuneCheck_Click()
  If CurrSpec > -1 Then
@@ -5048,6 +5085,7 @@ On Error GoTo fine
     Write #1, TmpOpts.Specie(t).color
     Write #1, TmpOpts.Specie(t).Colind
     Write #1, TmpOpts.Specie(t).Stnrg
+    Write #1, TmpOpts.Specie(t).RespawnThreshold
     For k = 0 To 13
       Write #1, TmpOpts.Specie(t).Mutables.mutarray(k)
     Next k
@@ -5305,6 +5343,7 @@ Public Sub ReadSettFromFile()
     Input #1, TmpOpts.Specie(t).color
     Input #1, TmpOpts.Specie(t).Colind
     Input #1, TmpOpts.Specie(t).Stnrg
+    Input #1, TmpOpts.Specie(t).RespawnThreshold
     For k = 0 To 13
       Input #1, TmpOpts.Specie(t).Mutables.mutarray(k)
     Next k

@@ -221,7 +221,7 @@ Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
     rob(a).Dead = False
     rob(a).body = 1000
   '  EnergyAddedPerCycle = EnergyAddedPerCycle + 10000
-    rob(a).radius = FindRadius(rob(a).body, rob(a).chlr)
+    rob(a).radius = FindRadius(rob(a).body, rob(a).Chlr)
     rob(a).Mutations = 0
     rob(a).LastMut = 0
     rob(a).generation = 0
@@ -250,7 +250,7 @@ Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
     rob(a).nrg = SimOpts.Specie(r).Stnrg
    ' EnergyAddedPerCycle = EnergyAddedPerCycle + rob(a).nrg
     rob(a).Mutables = SimOpts.Specie(r).Mutables
-    
+    rob(a).Chlr = 0
     rob(a).Vtimer = 0
     rob(a).virusshot = 0
     rob(a).genenum = CountGenes(rob(a).DNA)
@@ -268,3 +268,21 @@ Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
 getout:
 End Sub
 
+Public Sub Repopulate()
+  Dim n As node
+  Dim a As Integer
+  Dim r As Integer
+  Dim Rx As Long
+  Dim Ry As Long
+  Dim t As Integer
+  Dim i As Integer
+  For a = 0 To SimOpts.SpeciesNum - 1
+    If SimOpts.Specie(a).RespawnThreshold > 1 And SimOpts.Specie(a).RespawnThreshold > SimOpts.Specie(a).population Then
+      For i = SimOpts.Specie(a).population To SimOpts.Specie(a).RespawnThreshold - 1
+        If Form1.Active Then
+          aggiungirob a, Random(60, SimOpts.FieldWidth - 60), Random(60, SimOpts.FieldHeight - 60)
+        End If
+      Next i
+    End If
+  Next a
+End Sub

@@ -1217,8 +1217,10 @@ Public Sub LoadSysVars()
   sysvar(249).value = 316
   sysvar(250).Name = "rmchlr"
   sysvar(250).value = 317
-  sysvar(251).Name = "chl"
+  sysvar(251).Name = "chlr"
   sysvar(251).value = 318
+  sysvar(252).Name = "sharechlr"
+  sysvar(252).value = 840
  
 End Sub
 

@@ -113,14 +113,14 @@ Public Sub feedvegs(totnrg As Long)
       If SimOpts.Pondmode Then
         depth = (rob(t).pos.Y / 2000) + 1
         If depth < 1 Then depth = 1
-        tok = (SimOpts.LightIntensity / depth ^ SimOpts.Gradient) * daymod + 1
+        tok = (SimOpts.LightIntensity / depth ^ SimOpts.Gradient) * daymod
       Else
-        tok = 1
+        tok = 1 * daymod
       End If
       
       If tok < 0 Then tok = 0
       
-      tok = tok * (rob(t).chlr / 1000 * SimOpts.NrgPerChlr)
+      tok = (tok * (rob(t).Chlr / 1000 * SimOpts.NrgPerChlr)) - ((SimOpts.NrgPerChlr * (rob(t).Chlr / 1000)) / 100)
       Energy = tok
       rob(t).nrg = rob(t).nrg + Energy
       
@@ -132,7 +132,7 @@ Public Sub feedvegs(totnrg As Long)
     '    body = body - (rob(t).body - 32000)
         rob(t).body = 32000
       End If
-      rob(t).radius = FindRadius(rob(t).body, rob(t).chlr)
+      rob(t).radius = FindRadius(rob(t).body, rob(t).Chlr)
       
      ' EnergyAddedPerCycle = EnergyAddedPerCycle + energy + (body * 10)
     End If
