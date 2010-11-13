@@ -141,19 +141,23 @@ Public Sub Update_Ties(t As Integer)
         If Not .Ties(k).back Then
           If .mem(830) > 0 Then
             sharenrg t, k
-            .Ties(k).sharing = True   'yellow ties
+            .Ties(k).sharing = True    'yellow ties
           End If
           If .mem(831) > 0 Then
             sharewaste t, k
-            .Ties(k).sharing = True   'yellow ties
+            .Ties(k).sharing = True    'yellow ties
           End If
           If .mem(832) > 0 Then
             shareshell t, k
-            .Ties(k).sharing = True   'yellow ties
+            .Ties(k).sharing = True    'yellow ties
           End If
           If .mem(833) > 0 Then
             shareslime t, k
             .Ties(k).sharing = True    'yellow ties
+          End If
+          If .mem(840) > 0 Then
+             sharechlr t, k
+             .Ties(k).sharing = True    'yellow ties
           End If
         End If
         .vbody = .vbody + rob(.Ties(k).pnt).body
@@ -307,7 +311,7 @@ Public Sub Update_Ties(t As Integer)
                 rob(.Ties(k).pnt).body = rob(.Ties(k).pnt).body + l * 0.029           'tied robot stores some fat
                 If rob(.Ties(k).pnt).body > 32000 Then rob(.Ties(k).pnt).body = 32000
                 rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l * 0.01          'tied robot receives waste
-                rob(.Ties(k).pnt).radius = FindRadius(rob(.Ties(k).pnt).body, rob(.Ties(k).pnt).chlr)
+                rob(.Ties(k).pnt).radius = FindRadius(rob(.Ties(k).pnt).body, rob(.Ties(k).pnt).Chlr)
                 .nrg = .nrg - l                                                       'tying robot gives up energy
               End If
               
@@ -356,7 +360,7 @@ Public Sub Update_Ties(t As Integer)
                 If .nrg > 32000 Then .nrg = 32000
                 .body = .body - l * 0.029            'tying robot stores some fat
                 If .body > 32000 Then .body = 32000
-                .radius = FindRadius(.body, .chlr)
+                .radius = FindRadius(.body, .Chlr)
                 .Waste = .Waste + Abs(l / 100#)      'tying robot adds waste
               End If ' Taking nrg
               
@@ -464,7 +468,7 @@ Public Sub Update_Ties(t As Integer)
                 rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l * 0.001 'tied robot receives 1 % waste
                 If rob(.Ties(k).pnt).body > 32000 Then rob(.Ties(k).pnt).body = 32000
                 If rob(.Ties(k).pnt).nrg > 32000 Then rob(.Ties(k).pnt).nrg = 32000
-                rob(.Ties(k).pnt).radius = FindRadius(rob(.Ties(k).pnt).body, rob(.Ties(k).pnt).chlr)
+                rob(.Ties(k).pnt).radius = FindRadius(rob(.Ties(k).pnt).body, rob(.Ties(k).pnt).Chlr)
                 .body = .body - l   'tying robot gives up body
               End If
               If l < 0 Then
@@ -510,7 +514,7 @@ Public Sub Update_Ties(t As Integer)
                 .Waste = .Waste - l * 0.001
                 If .body > 32000 Then .body = 32000
                 If .nrg > 32000 Then .nrg = 32000
-                .radius = FindRadius(.body, .chlr)
+                .radius = FindRadius(.body, .Chlr)
               End If
               
               If Not .Ties(k).back Then   'forward ties

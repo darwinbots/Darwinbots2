@@ -95,5 +95,7 @@ Public Sub UpdateSim()
     'If SimOpts.TotRunCycle Mod SimOpts.SpeciationForkInterval = 0 Then ForkSpecies SimOpts.SpeciationGeneticDistance, SimOpts.SpeciationGenerationalDistance, SimOpts.SpeciationMinimumPopulation
     
   End If
-     
+
+  Repopulate
+  
 End Sub

@@ -776,8 +776,8 @@ End Sub
 
 Private Sub MakeStuff(n As Integer)
    
-  If rob(n).mem(316) > 0 Then storechlr n
-  If rob(n).mem(317) > 0 Then feedchlr n
+  If rob(n).mem(316) <> 0 Then storechlr n
+  If rob(n).mem(317) <> 0 Then feedchlr n
   If rob(n).mem(824) <> 0 Then storevenom n
   If rob(n).mem(826) <> 0 Then storepoison n
   If rob(n).mem(822) <> 0 Then makeshell n
@@ -1217,6 +1217,7 @@ Private Sub storechlr(t As Integer)
   If rob(t).Chlr > 32000 Then rob(t).Chlr = 32000
   rob(t).radius = FindRadius(rob(t).body, rob(t).Chlr)
   rob(t).mem(316) = 0
+  rob(t).mem(318) = CInt(rob(t).Chlr)
 End Sub
 
 Private Sub feedchlr(t As Integer)
@@ -1226,6 +1227,7 @@ Private Sub feedchlr(t As Integer)
   If rob(t).nrg > 32000 Then rob(t).nrg = 32000
   rob(t).radius = FindRadius(rob(t).body, rob(t).Chlr)
   rob(t).mem(317) = 0
+  rob(t).mem(318) = CInt(rob(t).Chlr)
 End Sub
 
 ' here we catch the attempt of a robot to shoot,
@@ -1489,7 +1491,61 @@ Public Sub sharenrg(t As Integer, k As Integer)
 getout:
   End With
 End Sub
+Public Sub sharechlr(t As Integer, k As Integer)
 
+  Dim totchlr As Single
+  Dim portionThatsMine As Single
+  Dim myChangeInChlr As Single
+  
+  With rob(t)
+  
+    'This is an order of operation thing.  A bot earlier in the rob array might have taken all your nrg, taking your
+    'nrg to 0.  You should still be able to take some back.
+    'If rob(t).Chlr < 0 Or rob(.Ties(k).pnt).Chlr < 0 Then GoTo getout ' Can't transfer nrg if nrg is negative
+  
+    '.mem(830) is the percentage of the total nrg this bot wants to receive
+    'has to be positive to come here, so no worries about changing the .mem location here
+    If rob(t).mem(840) <= 0 Then
+      rob(t).mem(840) = 0
+    Else
+      rob(t).mem(840) = rob(t).mem(840) Mod 100
+      If rob(t).mem(840) = 0 Then rob(t).mem(840) = 100
+    End If
+
+    
+    'Total nrg of both bots combined
+    totchlr = rob(t).Chlr + rob(.Ties(k).pnt).Chlr
+    
+    portionThatsMine = totchlr * (CSng(rob(t).mem(840)) / 100#)      ' This is what the bot wants to have out of the total
+    If portionThatsMine > 32000 Then portionThatsMine = 32000 ' Can't want more than the max a bot can have
+    myChangeInChlr = portionThatsMine - rob(t).Chlr                 ' This is what the bot's change in nrg would be
+    
+    
+    If .Chlr + myChangeInChlr > 32000 Then myChangeInChlr = 32000 - .Chlr    'Limit change if it would put bot over the limit
+    If .Chlr + myChangeInChlr < 0 Then myChangeInChlr = -.Chlr               'Limit change if it would take the bot below 0
+    
+    'Now we have to check the limits on the other bot
+    'sign is negative since the negative of myChangeinNrg is what the other bot is going to get/recevie
+    If rob(.Ties(k).pnt).Chlr - myChangeInChlr > 32000 Then myChangeInChlr = -(32000 - rob(.Ties(k).pnt).Chlr)  'Limit change if it would put bot over the limit
+    If rob(.Ties(k).pnt).Chlr - myChangeInChlr < 0 Then myChangeInChlr = rob(.Ties(k).pnt).Chlr       ' limit change if it would take the bot below 0
+        
+    'Do the actual chlr exchange
+    .Chlr = .Chlr + myChangeInChlr
+    rob(.Ties(k).pnt).Chlr = rob(.Ties(k).pnt).Chlr - myChangeInChlr
+        
+    'Transferring chlr costs nrg.  1% of the transfer gets deducted from the bot iniating the transfer
+    .nrg = .nrg - (Abs(myChangeInChlr) * 0.01)
+    
+ '   'Bots with 32000 chlr can still take or receive nrg, but everything over chlr disappears
+    If .Chlr > 32000 Then .Chlr = 32000
+    If rob(.Ties(k).pnt).Chlr > 32000 Then rob(.Ties(k).pnt).Chlr = 32000
+    
+    rob(t).mem(318) = CInt(rob(t).Chlr)
+    rob(k).mem(318) = CInt(rob(k).Chlr)
+ 
+getout:
+  End With
+End Sub
 'Robot n converts some of his energy to venom
 Public Sub storevenom(n As Integer)
   Dim Cost As Single
