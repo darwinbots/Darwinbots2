@@ -30,7 +30,7 @@ namespace IM
                         System.Diagnostics.Process.Start(startInfo);
                         startInfo = null;
                     }
-                    catch (Exception exc2)
+                    catch (Exception)
                     {
                         // still nothing we can do so just show the error to the user here.
                     }

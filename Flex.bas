@@ -1,4 +1,5 @@
 Attribute VB_Name = "Flex"
+
 Public Function Exists(ByRef key As String, ByRef Keys) As Boolean
   Dim k As Integer
   Dim u As Integer

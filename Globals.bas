@@ -9,6 +9,23 @@ Public Type var
   value As Integer
 End Type
 
+'Constants for the graphs, which are used all over the place unfortunately
+Public Const POPULATION_GRAPH As Integer = 1
+Public Const MUTATIONS_GRAPH As Integer = 2
+Public Const AVGAGE_GRAPH As Integer = 3
+Public Const OFFSPRING_GRAPH As Integer = 4
+Public Const ENERGY_GRAPH As Integer = 5
+Public Const DNALENGTH_GRAPH As Integer = 6
+Public Const DNACOND_GRAPH As Integer = 7
+Public Const MUT_DNALENGTH_GRAPH As Integer = 8
+Public Const ENERGY_SPECIES_GRAPH As Integer = 9
+Public Const DYNAMICCOSTS_GRAPH As Integer = 10
+Public Const SPECIESDIVERSITY_GRAPH As Integer = 11
+Public Const INTERNET_SPECIES_GRAPH As Integer = 12
+Public Const INTERNET_SIMS_GRAPH As Integer = 13
+Public Const GENETIC_DIST_GRAPH As Integer = 14
+Public Const GENERATION_DIST_GRAPH As Integer = 15
+
 Public TotalEnergy As Long     ' total energy in the sim
 Public totwalls As Integer          ' total walls count
 Public totcorpse As Integer         ' Total corpses
@@ -277,8 +294,8 @@ Public Sub Repopulate()
   Dim t As Integer
   Dim i As Integer
   For a = 0 To SimOpts.SpeciesNum - 1
-    If SimOpts.Specie(a).RespawnThreshold > 1 And SimOpts.Specie(a).RespawnThreshold > SimOpts.Specie(a).population Then
-      For i = SimOpts.Specie(a).population To SimOpts.Specie(a).RespawnThreshold - 1
+    If SimOpts.Specie(a).RespawnThreshold > 1 And SimOpts.Specie(a).RespawnThreshold > SimOpts.Specie(a).Population Then
+      For i = SimOpts.Specie(a).Population To SimOpts.Specie(a).RespawnThreshold - 1
         If Form1.Active Then
           aggiungirob a, Random(60, SimOpts.FieldWidth - 60), Random(60, SimOpts.FieldHeight - 60)
         End If

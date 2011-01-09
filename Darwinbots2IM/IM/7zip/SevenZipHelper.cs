@@ -74,7 +74,7 @@ namespace SevenZip.Compression.LZMA
 
             byte[] properties2 = new byte[5];
             if (newInStream.Read(properties2, 0, 5) != 5)
-                throw (new Exception("input .lzma is too short"));
+                throw (new Exception("Input .lzma is too short"));
             long outSize = 0;
             for (int i = 0; i < 8; i++)
             {

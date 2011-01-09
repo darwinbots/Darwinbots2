@@ -3598,6 +3598,10 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
+'In effort to get rid of hard to change magic numbers a bunch
+'of consts have been added to Globals.bas
+'Please use these as the index value for the graphs
+' 1 -> POPULATION_GRAPH, etc.
 
 Const MaxData As Integer = 1000
 Const MaxItems As Integer = 65
@@ -3692,7 +3696,7 @@ Public Sub SetValues(n As String, v As Single)
      
     GraphNumber = WhichGraphAmI
     
-    If GraphNumber = 10 Then ' Autocosts graph
+    If GraphNumber = DYNAMICCOSTS_GRAPH Then
       If n = "Cost Multiplier" Then
          AddSeries n, RGB(Random(100, 255), Random(100, 255), Random(100, 255))
       ElseIf n = "Population / Target" Then
@@ -3708,6 +3712,11 @@ Public Sub SetValues(n As String, v As Single)
       ElseIf n = "Reinstatement Level" Then
         AddSeries n, RGB(Random(100, 255), Random(100, 255), Random(100, 255))
       End If
+    ElseIf GraphNumber = INTERNET_SIMS_GRAPH Then 'Internet Sims - Uses sim name for series label
+        While InternetSims(i).Name <> n And i < numInternetSpecies
+            i = i + 1
+        Wend
+        AddSeries n, RGB(Random(100, 255), Random(100, 255), Random(100, 255))
     Else ' all other graphs uses species as series labels
       'Check if the name matches a species.  Might be a new species from the internet
       While SimOpts.Specie(i).Name <> n And i < SimOpts.SpeciesNum And i <= MAXNATIVESPECIES
@@ -3877,7 +3886,7 @@ Dim t As Integer
   If FHeight = 0 Then FHeight = 4000
  ' If FWidth = 0 Then FWidth = 5900
  If FWidth = 0 Then FWidth = 6500
-  Me.top = FTop
+  Me.Top = FTop
   Me.Left = FLeft
   Me.Height = FHeight
   Me.Width = FWidth
@@ -3890,23 +3899,23 @@ Private Sub Form_Resize()
   If Me.Height > 900 And Me.Width > 3000 Then
     Riquadro.Height = Me.Height - 850
     Riquadro.Width = Me.Width - 3400
-    Riquadro.top = 20
+    Riquadro.Top = 20
     For t = 0 To MaxItems - 1
       Shape3(t).Left = Riquadro.Left + Riquadro.Width + 50
       popnum(t).Width = 600 ' should be enough for five digits left and one right of the decimal
       popnum(t).Left = Shape3(t).Left + Shape3(t).Width + 30
       Label1(t).Left = popnum(t).Left + popnum(t).Width + 30
-      Shape3(t).top = 45 + (t * 200)
-      popnum(t).top = Shape3(t).top
-      Label1(t).top = Shape3(t).top
+      Shape3(t).Top = 45 + (t * 200)
+      popnum(t).Top = Shape3(t).Top
+      Label1(t).Top = Shape3(t).Top
     Next t
     UpdateNow.Left = Riquadro.Left + Riquadro.Width - 2000
-    UpdateNow.top = Riquadro.Height + 30
+    UpdateNow.Top = Riquadro.Height + 30
     ResetButton.Left = UpdateNow.Left + UpdateNow.Width + 30
-    ResetButton.top = Riquadro.Height + 30
-    XLabel.top = Me.Height - XLabel.Height - 550
+    ResetButton.Top = Riquadro.Height + 30
+    XLabel.Top = Me.Height - XLabel.Height - 550
     RedrawGraph
-    FTop = Me.top
+    FTop = Me.Top
     FLeft = Me.Left
     FHeight = Me.Height
     FWidth = Me.Width
@@ -3935,7 +3944,7 @@ Public Sub NewPoints()
   Next t
   
   RedrawGraph
-  FTop = Me.top
+  FTop = Me.Top
   FLeft = Me.Left
   FHeight = Me.Height
   FWidth = Me.Width
@@ -3961,7 +3970,7 @@ Public Sub RedrawGraph()
   xunit = (Riquadro.Width - 200) / (MaxData + 1)
   yunit = (Riquadro.Height - 200) / maxy ' EricL - Multithread divide by zero bug here...
   xo = Riquadro.Left
-  yo = Riquadro.top + Riquadro.Height - 50
+  yo = Riquadro.Top + Riquadro.Height - 50
   Me.Cls
   DrawAxes maxy
   k = Pivot + 1
@@ -4024,18 +4033,18 @@ Private Sub DrawAxes(Max As Single)
   Dim xo As Long
   Dim yo As Long
   xo = Riquadro.Left
-  yo = Riquadro.top + Riquadro.Height
+  yo = Riquadro.Top + Riquadro.Height
   yunit = Riquadro.Height / Max
   'Midline
   Line (xo, yo - yunit * Max / 2)-(Riquadro.Left + Riquadro.Width, yo - yunit * Max / 2), vbBlack
   YLab(0).Caption = CStr(Max / 2)
   YLab(0).Left = xo
-  YLab(0).top = (yo - yunit * Max / 2)
+  YLab(0).Top = (yo - yunit * Max / 2)
   'Top
-  Line (xo, Riquadro.top)-(xo + Riquadro.Width, Riquadro.top), vbBlack
+  Line (xo, Riquadro.Top)-(xo + Riquadro.Width, Riquadro.Top), vbBlack
   YLab(1).Caption = CStr(Max)
   YLab(1).Left = xo
-  YLab(1).top = Riquadro.top
+  YLab(1).Top = Riquadro.Top
 End Sub
 
 
@@ -4055,32 +4064,37 @@ Private Function WhichGraphAmI() As Integer
   'EricL Figuring out which graph I am this way is a total hack, but it works
   Select Case Me.Caption
     Case "Populations"
-      chartNumber = 1
+      chartNumber = POPULATION_GRAPH
     Case "Mutations (Species Average)"
-      chartNumber = 2
+      chartNumber = MUTATIONS_GRAPH
     Case "Average Age (hundreds of cycles)"
-      chartNumber = 3
+      chartNumber = AVGAGE_GRAPH
     Case "Offspring (Species Average)"
-      chartNumber = 4
+      chartNumber = OFFSPRING_GRAPH
     Case "Energy (Species Average)"
-      chartNumber = 5
+      chartNumber = ENERGY_GRAPH
     Case "DNA length (Species Average)"
-      chartNumber = 6
+      chartNumber = DNALENGTH_GRAPH
     Case "DNA Cond statements (Species Average)"
-      chartNumber = 7
+      chartNumber = DNACOND_GRAPH
     Case "Mutations/DNA len (Species Average)"
-      chartNumber = 8
+      chartNumber = MUT_DNALENGTH_GRAPH
     Case "Total Energy/Species (x1000)"
-      chartNumber = 9
+      chartNumber = ENERGY_SPECIES_GRAPH
     Case "Dynamic Costs"
-      chartNumber = 10
+      chartNumber = DYNAMICCOSTS_GRAPH
     Case "Species Diversity"
-      chartNumber = 11
+      chartNumber = SPECIESDIVERSITY_GRAPH
+    Case "Internet Species Populations"
+      chartNumber = INTERNET_SPECIES_GRAPH
+    Case "Internet Sim Populations"
+      chartNumber = INTERNET_SIMS_GRAPH
     Case "Genetic Distance (Maximum)"
-      chartNumber = 13
+      chartNumber = GENETIC_DIST_GRAPH
     Case "Generational Distance (Maximum)"
-      chartNumber = 14
+      chartNumber = GENERATION_DIST_GRAPH
   End Select
   
   WhichGraphAmI = chartNumber
 End Function
+

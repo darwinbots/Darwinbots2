@@ -26,16 +26,8 @@ Begin VB.Form CostsForm
          Caption         =   "Allow Multiplier to go Negative"
          Height          =   255
          Left            =   3000
-         TabIndex        =   137
-         Top             =   360
-         Width           =   2535
-      End
-      Begin VB.CheckBox DynamicCostsIncludePlantsCheck 
-         Caption         =   "Include Autotrophs in Targets"
-         Height          =   255
-         Left            =   3000
          TabIndex        =   136
-         Top             =   1800
+         Top             =   360
          Width           =   2535
       End
       Begin VB.TextBox CostX 
@@ -136,7 +128,7 @@ Begin VB.Form CostsForm
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "DynamicCostTargetPopulation"
-            BuddyDispid     =   196616
+            BuddyDispid     =   196617
             OrigLeft        =   3600
             OrigTop         =   360
             OrigRight       =   3855
@@ -159,7 +151,7 @@ Begin VB.Form CostsForm
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "DynamicCostsRangeU"
-            BuddyDispid     =   196615
+            BuddyDispid     =   196616
             OrigLeft        =   4800
             OrigTop         =   720
             OrigRight       =   5055
@@ -182,7 +174,7 @@ Begin VB.Form CostsForm
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "DynamicCostsRangeL"
-            BuddyDispid     =   196614
+            BuddyDispid     =   196615
             OrigLeft        =   4800
             OrigTop         =   1080
             OrigRight       =   5055
@@ -285,7 +277,7 @@ Begin VB.Form CostsForm
          Value           =   100
          AutoBuddy       =   -1  'True
          BuddyControl    =   "BotNoCostThreshold"
-         BuddyDispid     =   196626
+         BuddyDispid     =   196627
          OrigLeft        =   3600
          OrigTop         =   360
          OrigRight       =   3855
@@ -309,7 +301,7 @@ Begin VB.Form CostsForm
          Value           =   100
          AutoBuddy       =   -1  'True
          BuddyControl    =   "CostReinstate"
-         BuddyDispid     =   196612
+         BuddyDispid     =   196613
          OrigLeft        =   3600
          OrigTop         =   360
          OrigRight       =   3855
@@ -1430,10 +1422,6 @@ Private Sub DynamicCostSensitivitySlider_Change()
   TmpOpts.Costs(DYNAMICCOSTSENSITIVITY) = DynamicCostSensitivitySlider.value
 End Sub
 
-Private Sub DynamicCostsIncludePlantsCheck_Click()
-  TmpOpts.Costs(DYNAMICCOSTINCLUDEPLANTS) = DynamicCostsIncludePlantsCheck.value
-End Sub
-
 Private Sub DynamicCostsRangeL_Change()
   TmpOpts.Costs(DYNAMICCOSTTARGETLOWERRANGE) = val(DynamicCostsRangeL.text)
 End Sub
@@ -1506,8 +1494,6 @@ Private Sub Form_Load()
   DynamicCostsRangeU.Enabled = DynamicCosts.value * True
   DynamicCostsRangeL.text = TmpOpts.Costs(DYNAMICCOSTTARGETLOWERRANGE)
   DynamicCostsRangeL.Enabled = DynamicCosts.value * True
-  DynamicCostsIncludePlantsCheck.value = IIf(TmpOpts.Costs(DYNAMICCOSTINCLUDEPLANTS) = 0, 0, 1)
-     
 End Sub
 
 
