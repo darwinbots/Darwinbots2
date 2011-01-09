@@ -12,7 +12,7 @@
     <AssemblyName>DarwinbotsIM</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>Darwinbots.ico</ApplicationIcon>
+    <ApplicationIcon>internet.ico</ApplicationIcon>
     <StartupObject>DarwinbotsCLIM.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -52,7 +52,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Darwinbots.ico" />
+    <Content Include="internet.ico" />
+    <Content Include="internet_bad.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

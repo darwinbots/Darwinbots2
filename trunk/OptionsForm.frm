@@ -2,8 +2,8 @@ VERSION 5.00
 Object = "{FE0065C0-1B7B-11CF-9D53-00AA003C9CB6}#1.1#0"; "COMCT232.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "richtx32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
 Begin VB.Form optionsform 
    AutoRedraw      =   -1  'True
    BorderStyle     =   4  'Fixed ToolWindow
@@ -87,33 +87,24 @@ Begin VB.Form optionsform
       _Version        =   393216
       Style           =   1
       Tabs            =   7
+      Tab             =   5
       TabsPerRow      =   10
       TabHeight       =   520
       ShowFocusRect   =   0   'False
       BackColor       =   12632256
       TabCaption(0)   =   "Species"
       TabPicture(0)   =   "OptionsForm.frx":0000
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "SpeciesLabel"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "Label36"
-      Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).Control(2)=   "Frame1"
-      Tab(0).Control(2).Enabled=   0   'False
-      Tab(0).Control(3)=   "CommentBox"
-      Tab(0).Control(3).Enabled=   0   'False
-      Tab(0).Control(4)=   "RenameButton"
-      Tab(0).Control(4).Enabled=   0   'False
-      Tab(0).Control(5)=   "DelSpec"
-      Tab(0).Control(5).Enabled=   0   'False
-      Tab(0).Control(6)=   "AddSpec"
-      Tab(0).Control(6).Enabled=   0   'False
-      Tab(0).Control(7)=   "SpecList"
-      Tab(0).Control(7).Enabled=   0   'False
-      Tab(0).Control(8)=   "DuplicaButt"
-      Tab(0).Control(8).Enabled=   0   'False
-      Tab(0).Control(9)=   "NativeSpeciesButton"
-      Tab(0).Control(9).Enabled=   0   'False
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "NativeSpeciesButton"
+      Tab(0).Control(1)=   "DuplicaButt"
+      Tab(0).Control(2)=   "SpecList"
+      Tab(0).Control(3)=   "AddSpec"
+      Tab(0).Control(4)=   "DelSpec"
+      Tab(0).Control(5)=   "RenameButton"
+      Tab(0).Control(6)=   "CommentBox"
+      Tab(0).Control(7)=   "Frame1"
+      Tab(0).Control(8)=   "Label36"
+      Tab(0).Control(9)=   "SpeciesLabel"
       Tab(0).ControlCount=   10
       TabCaption(1)   =   "General"
       TabPicture(1)   =   "OptionsForm.frx":001C
@@ -143,9 +134,11 @@ Begin VB.Form optionsform
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
-      Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Simulazione"
-      Tab(5).Control(1)=   "Label41"
+      Tab(5).ControlEnabled=   -1  'True
+      Tab(5).Control(0)=   "Label41"
+      Tab(5).Control(0).Enabled=   0   'False
+      Tab(5).Control(1)=   "Simulazione"
+      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).ControlCount=   2
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
@@ -156,7 +149,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "Show Non-Native Species"
          Height          =   375
-         Left            =   1440
+         Left            =   -73560
          TabIndex        =   229
          Tag             =   "0"
          ToolTipText     =   "Add a new robot type to the simulation"
@@ -897,7 +890,7 @@ Begin VB.Form optionsform
             End
             Begin VB.Frame Frame30 
                Caption         =   "Veggy Energy"
-               Height          =   1575
+               Height          =   1515
                Left            =   3480
                TabIndex        =   152
                Top             =   240
@@ -905,7 +898,7 @@ Begin VB.Form optionsform
                Begin VB.CommandButton Energy 
                   Caption         =   "Energy Management"
                   Height          =   330
-                  Left            =   120
+                  Left            =   180
                   TabIndex        =   217
                   Top             =   1080
                   Width           =   1695
@@ -1151,7 +1144,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton DuplicaButt 
          Caption         =   "Duplicate"
          Height          =   375
-         Left            =   1440
+         Left            =   -73560
          TabIndex        =   130
          Tag             =   "0"
          ToolTipText     =   "Add a new robot type to the simulation"
@@ -1161,7 +1154,7 @@ Begin VB.Form optionsform
       Begin VB.ListBox SpecList 
          Height          =   2400
          ItemData        =   "OptionsForm.frx":035A
-         Left            =   240
+         Left            =   -74760
          List            =   "OptionsForm.frx":035C
          TabIndex        =   129
          Top             =   720
@@ -1170,7 +1163,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton AddSpec 
          Caption         =   "Add"
          Height          =   375
-         Left            =   240
+         Left            =   -74760
          TabIndex        =   128
          Tag             =   "0"
          ToolTipText     =   "Add a new robot type to the simulation"
@@ -1180,7 +1173,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton DelSpec 
          Caption         =   "Delete"
          Height          =   375
-         Left            =   240
+         Left            =   -74760
          TabIndex        =   127
          Tag             =   "0"
          Top             =   3720
@@ -1189,7 +1182,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton RenameButton 
          Caption         =   "Rename"
          Height          =   375
-         Left            =   2640
+         Left            =   -72360
          TabIndex        =   126
          Tag             =   "0"
          Top             =   3720
@@ -1836,7 +1829,7 @@ Begin VB.Form optionsform
       Begin VB.Frame Simulazione 
          Caption         =   "Internet Mode Settings"
          Height          =   4995
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   20
          Tag             =   "31100"
          Top             =   480
@@ -2039,13 +2032,14 @@ Begin VB.Form optionsform
       End
       Begin RichTextLib.RichTextBox CommentBox 
          Height          =   975
-         Left            =   240
+         Left            =   -74760
          TabIndex        =   131
          Top             =   4680
          Width           =   3495
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":04E6
@@ -2053,17 +2047,38 @@ Begin VB.Form optionsform
       Begin VB.Frame Frame1 
          Caption         =   "Species Properties"
          Height          =   5175
-         Left            =   3840
+         Left            =   -71160
          TabIndex        =   100
          Tag             =   "2010"
          Top             =   600
          Width           =   6135
-         Begin VB.TextBox RepopThresh 
+         Begin ComCtl2.UpDown UpDown5 
             Height          =   285
-            Left            =   5160
+            Left            =   5640
+            TabIndex        =   239
+            Top             =   2280
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   503
+            _Version        =   327681
+            BuddyControl    =   "RepopThresh"
+            BuddyDispid     =   196761
+            OrigLeft        =   4680
+            OrigTop         =   2640
+            OrigRight       =   4935
+            OrigBottom      =   2925
+            SyncBuddy       =   -1  'True
+            BuddyProperty   =   0
+            Enabled         =   -1  'True
+         End
+         Begin VB.TextBox RepopThresh 
+            Alignment       =   1  'Right Justify
+            Height          =   285
+            Left            =   5040
             TabIndex        =   237
-            Top             =   2400
-            Width           =   615
+            Text            =   "0"
+            Top             =   2280
+            Width           =   600
          End
          Begin VB.CheckBox MutEnabledCheck 
             Alignment       =   1  'Right Justify
@@ -2413,12 +2428,12 @@ Begin VB.Form optionsform
             End
          End
          Begin VB.Label Repop 
-            Caption         =   "Repopulation Threshold"
+            Caption         =   "Repop. Threshold"
             Height          =   255
             Left            =   3360
             TabIndex        =   238
-            Top             =   2400
-            Width           =   1695
+            Top             =   2280
+            Width           =   1455
          End
          Begin VB.Line Line4 
             BorderColor     =   &H8000000C&
@@ -2548,7 +2563,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoSimTxt"
-            BuddyDispid     =   196800
+            BuddyDispid     =   196801
             OrigLeft        =   3360
             OrigTop         =   360
             OrigRight       =   3600
@@ -2568,7 +2583,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoRobTxt"
-            BuddyDispid     =   196797
+            BuddyDispid     =   196798
             OrigLeft        =   3120
             OrigTop         =   240
             OrigRight       =   3375
@@ -2676,7 +2691,7 @@ Begin VB.Form optionsform
       Begin VB.Label Label41 
          Caption         =   $"OptionsForm.frx":0675
          Height          =   2655
-         Left            =   -70560
+         Left            =   4440
          TabIndex        =   236
          Top             =   600
          Width           =   5775
@@ -2684,7 +2699,7 @@ Begin VB.Form optionsform
       Begin VB.Label Label36 
          Caption         =   "Commenti sulla specie:"
          Height          =   255
-         Left            =   240
+         Left            =   -74760
          TabIndex        =   202
          Tag             =   "2100"
          Top             =   4440
@@ -2693,7 +2708,7 @@ Begin VB.Form optionsform
       Begin VB.Label SpeciesLabel 
          Caption         =   "Native Species:"
          Height          =   255
-         Left            =   240
+         Left            =   -74760
          TabIndex        =   201
          Tag             =   "0"
          Top             =   480
@@ -3728,43 +3743,45 @@ End Sub
 'To handle all mouse message anywhere on the form, we set the mouse
 'capture to the form. Mouse up is processed here
 Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    If Button = vbLeftButton Then
-        If m_DragState = StateDragging Or m_DragState = StateSizing Then
-            'Hide drag rectangle
-            DrawDragRect
-            'Move control to new location
-            m_DragRect.ScreenToTwips m_CurrCtl
-            m_DragRect.SetCtrlToRect m_CurrCtl, IPB, Frame1, SSTab1
-            'Restore sizing handles
-            ShowHandles True
-            'Free mouse movement
-            ClipCursor ByVal 0&
-            'Release mouse capture
-            ReleaseCapture
-            'Reset drag state
-            m_DragState = StateNothing
-            
-            Dim w As Long, h As Long
-    
-            w = IPB.Width
-            h = IPB.Height
-    
-            TmpOpts.Specie(CurrSpec).Posrg = (Initial_Position.Left + Initial_Position.Width) / w
-            TmpOpts.Specie(CurrSpec).Posdn = (Initial_Position.Top + Initial_Position.Height) / h
-            TmpOpts.Specie(CurrSpec).Poslf = (Initial_Position.Left) / w
-            TmpOpts.Specie(CurrSpec).Postp = (Initial_Position.Top) / h
-            
-            If (TmpOpts.Specie(CurrSpec).Posrg > 1) Then TmpOpts.Specie(CurrSpec).Posrg = 1
-            If (TmpOpts.Specie(CurrSpec).Posrg < 0) Then TmpOpts.Specie(CurrSpec).Posrg = 0
-            
-            If (TmpOpts.Specie(CurrSpec).Posdn > 1) Then TmpOpts.Specie(CurrSpec).Posdn = 1
-            If (TmpOpts.Specie(CurrSpec).Posdn < 0) Then TmpOpts.Specie(CurrSpec).Posdn = 0
-            
-            If (TmpOpts.Specie(CurrSpec).Poslf > 1) Then TmpOpts.Specie(CurrSpec).Poslf = 1
-            If (TmpOpts.Specie(CurrSpec).Poslf < 0) Then TmpOpts.Specie(CurrSpec).Poslf = 0
-            
-            If (TmpOpts.Specie(CurrSpec).Postp > 1) Then TmpOpts.Specie(CurrSpec).Postp = 1
-            If (TmpOpts.Specie(CurrSpec).Postp < 0) Then TmpOpts.Specie(CurrSpec).Postp = 0
+    If CurrSpec >= 0 Then 'Stops crash when nothing is selected
+        If Button = vbLeftButton Then
+            If m_DragState = StateDragging Or m_DragState = StateSizing Then
+                'Hide drag rectangle
+                DrawDragRect
+                'Move control to new location
+                m_DragRect.ScreenToTwips m_CurrCtl
+                m_DragRect.SetCtrlToRect m_CurrCtl, IPB, Frame1, SSTab1
+                'Restore sizing handles
+                ShowHandles True
+                'Free mouse movement
+                ClipCursor ByVal 0&
+                'Release mouse capture
+                ReleaseCapture
+                'Reset drag state
+                m_DragState = StateNothing
+                
+                Dim w As Long, h As Long
+        
+                w = IPB.Width
+                h = IPB.Height
+        
+                TmpOpts.Specie(CurrSpec).Posrg = (Initial_Position.Left + Initial_Position.Width) / w
+                TmpOpts.Specie(CurrSpec).Posdn = (Initial_Position.Top + Initial_Position.Height) / h
+                TmpOpts.Specie(CurrSpec).Poslf = (Initial_Position.Left) / w
+                TmpOpts.Specie(CurrSpec).Postp = (Initial_Position.Top) / h
+                
+                If (TmpOpts.Specie(CurrSpec).Posrg > 1) Then TmpOpts.Specie(CurrSpec).Posrg = 1
+                If (TmpOpts.Specie(CurrSpec).Posrg < 0) Then TmpOpts.Specie(CurrSpec).Posrg = 0
+                
+                If (TmpOpts.Specie(CurrSpec).Posdn > 1) Then TmpOpts.Specie(CurrSpec).Posdn = 1
+                If (TmpOpts.Specie(CurrSpec).Posdn < 0) Then TmpOpts.Specie(CurrSpec).Posdn = 0
+                
+                If (TmpOpts.Specie(CurrSpec).Poslf > 1) Then TmpOpts.Specie(CurrSpec).Poslf = 1
+                If (TmpOpts.Specie(CurrSpec).Poslf < 0) Then TmpOpts.Specie(CurrSpec).Poslf = 0
+                
+                If (TmpOpts.Specie(CurrSpec).Postp > 1) Then TmpOpts.Specie(CurrSpec).Postp = 1
+                If (TmpOpts.Specie(CurrSpec).Postp < 0) Then TmpOpts.Specie(CurrSpec).Postp = 0
+            End If
         End If
     End If
 End Sub
@@ -3948,6 +3965,10 @@ Private Sub FieldSizeSlide_Scroll()
   FHeightLab.Caption = TmpOpts.FieldHeight
 End Sub
 
+
+Private Sub UpDown5_Change()
+'
+End Sub
 
 '''''End Dimensions Control
 

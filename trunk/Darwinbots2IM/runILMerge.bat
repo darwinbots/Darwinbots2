@@ -8,7 +8,7 @@ ilmerge /out:DarwinbotsIM.exe temp.exe IM.dll
 DEL temp.exe
 DEL IM.dll
 DEL IM.pdb
-COPY DarwinbotsIM.exe %BASE%
+XCOPY DarwinbotsIM.exe %BASE%
 
 CD %GUIM%
 REN DarwinbotsGUIM.exe temp.exe
@@ -16,4 +16,4 @@ ilmerge /out:DarwinbotsGUIM.exe temp.exe IM.dll
 DEL temp.exe
 DEL IM.dll
 DEL IM.pdb
-COPY DarwinbotsGUIM.exe %BASE%
+XCOPY DarwinbotsGUIM.exe %BASE%

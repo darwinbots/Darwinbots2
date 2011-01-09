@@ -45,7 +45,7 @@ namespace DarwinbotsCLIM
             return false;
         }
 
-        private static void Run(string inbound, string outbound, string name, int pid, DarwinbotsVersion dbv)
+        private static void Run(string inbound, string outbound, string name, int pid, string imDirectory)
         {
             int numUploaded = 0;
             int numDownloaded = 0;
@@ -70,30 +70,37 @@ namespace DarwinbotsCLIM
                     }
                     else
                     {
-                        FileInfo fileToUpload = fiArray.OrderByDescending(fi => fi.CreationTime).First();
-                        fileToCleanup = fileToUpload.FullName;
-                        Console.WriteLine("Uploading: {0}", fileToUpload.Name);
-                        Console.WriteLine("Size: {0}", fileToUpload.ReadableSize());
-                        byte[] filetoUploadData = File.ReadAllBytes(fileToUpload.FullName);
-                        //Compress using LZMA
-                        byte[] compressedToUpload = SevenZip.Compression.LZMA.SevenZipHelper.Compress(filetoUploadData);
-                        //Write the file back out and send it
-                        File.WriteAllBytes(fileToUpload.FullName, compressedToUpload);
-                        fileToUpload.Refresh();
-                        Console.WriteLine("Compressed: {0}", fileToUpload.ReadableSize());
                         try
                         {
-                            string[] files = { fileToUpload.FullName };
-                            NameValueCollection nvc = new NameValueCollection();
-                            nvc.Add("user", name);
-                            Console.WriteLine(HttpUploadHelper.Upload(@"http://www.darwinbots.com/FTP/upload.php", new UploadFile[] { new UploadFile(fileToUpload.FullName, "uploaded", "application/octet-stream") }, nvc));
-                            fileToUpload.Delete();
-                            fileToCleanup = String.Empty;
-                            numUploaded++;
+                            FileInfo fileToUpload = fiArray.OrderByDescending(fi => fi.CreationTime).First();
+                            fileToCleanup = fileToUpload.FullName;
+                            Console.WriteLine("Uploading: {0}", fileToUpload.Name);
+                            Console.WriteLine("Size: {0}", fileToUpload.ReadableSize());
+                            byte[] filetoUploadData = File.ReadAllBytes(fileToUpload.FullName);
+                            //Compress using LZMA
+                            byte[] compressedToUpload = SevenZip.Compression.LZMA.SevenZipHelper.Compress(filetoUploadData);
+                            //Write the file back out and send it
+                            File.WriteAllBytes(fileToUpload.FullName, compressedToUpload);
+                            fileToUpload.Refresh();
+                            Console.WriteLine("Compressed: {0}", fileToUpload.ReadableSize());
+                            try
+                            {
+                                string[] files = { fileToUpload.FullName };
+                                NameValueCollection nvc = new NameValueCollection();
+                                nvc.Add("user", name);
+                                Console.WriteLine(HttpUploadHelper.Upload(@"http://www.darwinbots.com/FTP/upload.php", new UploadFile[] { new UploadFile(fileToUpload.FullName, "uploaded", "application/octet-stream") }, nvc));
+                                fileToUpload.Delete();
+                                fileToCleanup = String.Empty;
+                                numUploaded++;
+                            }
+                            catch (WebException ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
                         }
-                        catch (WebException ex)
+                        catch (IOException)
                         {
-                            Console.WriteLine(ex.Message);
+                            Console.WriteLine("Upload failed on disk operation, continuing.");
                         }
                     }
                     #endregion
@@ -103,15 +110,8 @@ namespace DarwinbotsCLIM
                     upload = true;
                     #region Download
                     Console.WriteLine("Downloading...");
-                    var scanResults = MemoryScanner.ScanDarwinbots(dbv, pid);
-                    string request = String.Format("http://www.darwinbots.com/FTP/getbot.php?ping={0}&pop={1}&cps={2}&mutrate={3}&vegpop={4}&size={5}&totcycles={6}",
-                                                    name, //ping
-                                                    scanResults["SimPop"],  //pop
-                                                    scanResults["CPS"], //cps
-                                                    scanResults["MutRate"], //mutrate
-                                                    scanResults["VegePop"], //vegpop
-                                                    scanResults["Size"], //size
-                                                    scanResults["TotalCycles"]); //totcycles
+                    var siminfo = SimInfo.ParseDbPop(imDirectory + "\\" + name + ".dbpop");
+                    string request = String.Format("http://www.darwinbots.com/FTP/getbot.php?ping={0}");
                     try
                     {
                         WebRequest getBot = WebRequest.Create(request);
@@ -132,12 +132,15 @@ namespace DarwinbotsCLIM
                             Console.WriteLine("From: {0}", fromUser);
                             Stream botStream = bot.GetResponseStream();
                             byte[] botCompressed = botStream.ReadFully(1024);
-                            byte[] botData = SevenZip.Compression.LZMA.SevenZipHelper.Decompress(botCompressed);
-                            fileToCleanup = inbound + "\\" + filename;
-                            File.WriteAllBytes(inbound + "\\" + filename, botData);
+                            if (botCompressed.Length > 4)
+                            {
+                                byte[] botData = SevenZip.Compression.LZMA.SevenZipHelper.Decompress(botCompressed);
+                                fileToCleanup = inbound + "\\" + filename;
+                                File.WriteAllBytes(inbound + "\\" + filename, botData);
+                                Console.WriteLine("Saved");
+                                numDownloaded++;
+                            }
                             fileToCleanup = String.Empty;
-                            Console.WriteLine("Saved");
-                            numDownloaded++;
                         }
                     }
                     catch (WebException ex)

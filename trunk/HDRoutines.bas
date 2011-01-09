@@ -76,7 +76,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As file
+  Dim robotFile As File
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -278,7 +278,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As file
+  Dim fileToDelete As File
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -288,8 +288,23 @@ Public Sub SaveSimPopulation(path As String)
 bypass:
   Open path For Binary As 10
   
-  Put #10, , Len(IntOpts.IName)
-  Put #10, , IntOpts.IName
+  'Put #10, , Len(IntOpts.IName)
+  'Put #10, , IntOpts.IName
+  'DBIM gets the name as a command line arg
+  Put #10, , SimOpts.FieldWidth
+  Put #10, , SimOpts.FieldHeight
+  Put #10, , SimOpts.MutCurrMult
+  Put #10, , SimOpts.CycSec
+  Put #10, , SimOpts.TotRunCycle
+  Put #10, , Robots.TotalRobots
+  Put #10, , Vegs.TotalSimEnergyDisplayed
+  'More can be added, make sure to change the C# source as well
+  'New sim info goes under here (add at the end)
+  
+  'New sim info goes above here
+  Put #10, , Fe
+  Put #10, , Fe
+  Put #10, , Fe
   
   numSpecies = 0
   For X = 0 To SimOpts.SpeciesNum - 1
@@ -297,14 +312,12 @@ bypass:
   Next X
   
   Put #10, , numSpecies  ' Only save non-zero populations
-  
       
   For X = 0 To SimOpts.SpeciesNum - 1
     If SimOpts.Specie(X).population > 0 Then
       Put #10, , Len(SimOpts.Specie(X).Name)
       Put #10, , SimOpts.Specie(X).Name
       Put #10, , SimOpts.Specie(X).population
-      Put #10, , SimOpts.Specie(X).Veg
       Put #10, , SimOpts.Specie(X).color
       
       'write any future data here
@@ -320,6 +333,64 @@ bypass:
   
   Close 10
   Form1.MousePointer = vbArrow
+
+End Sub
+
+Public Sub LoadSimPopulationFile(path As String)
+Dim X As Integer
+Dim Y As Integer
+Dim k As Long
+Dim Fe As Byte
+Dim i As Integer
+Dim numSims As Integer
+Dim numSpeciesThisSim As Integer
+
+'The sim file we get from the internet is NOT in the same format as we save from DB
+'See population-file-format.txt to see how both are structured
+'Make sure you know what you are doing if you change these
+'  there are checks to make it backwards compatible
+
+    Form1.MousePointer = vbHourglass
+    
+    IntOpts.numInternetSpecies = 0
+    IntOpts.numInternetSims = 0
+    
+    Open path For Binary As 10
+    
+    Get #10, , numSims
+    If (numSims - 1) < IntOpts.MAXINTERNETSIMS Then 'Array bounds check
+        IntOpts.numInternetSims = numSims
+        For X = 0 To (numSims - 1)
+            Get #10, , k: InternetSims(X).Name = Space(k)
+            Get #10, , InternetSims(X).Name
+            InternetSims(X).population = 0
+            Get #10, , numSpeciesThisSim
+            If (IntOpts.numInternetSpecies + numSpeciesThisSim - 1) < IntOpts.MAXINTERNETSPECIES Then 'Array bounds check
+                For Y = 0 To (numSpeciesThisSim - 1)
+                    i = IntOpts.numInternetSpecies
+                    Get #10, , k: InternetSpecies(i).Name = Space(k)
+                    Get #10, , InternetSpecies(i).Name
+                    Get #10, , InternetSpecies(i).population
+                    InternetSims(X).population = InternetSims(X).population + InternetSpecies(i).population
+                    Get #10, , InternetSpecies(i).color
+                    If InternetSpecies(i).Name = "Corpse" Then InternetSpecies(i).color = vbBlack
+                    
+                    'burn through any new data from a different version
+                    While FileContinue(10)
+                      Get #10, , Fe
+                    Wend
+                    Get #10, , Fe
+                    Get #10, , Fe
+                    Get #10, , Fe
+                    IntOpts.numInternetSpecies = IntOpts.numInternetSpecies + 1
+                Next Y
+            End If
+        Next X
+    End If
+    
+    Close 10
+    
+    Form1.MousePointer = vbArrow
 
 End Sub
 
@@ -1044,11 +1115,13 @@ End Sub
 Private Sub LoadRobotBody(n As Integer, r As Integer)
 'robot r
 'file #n,
-  Dim t As Integer, k As Integer, ind As Integer, Fe As Byte, L1 As Long
+  Dim t As Integer, k As Integer, ind As Integer, Fe As Byte, L1 As Long, b As Boolean
+  
   Dim MessedUpMutations As Boolean
   
   MessedUpMutations = False
   With rob(r)
+    Get #n, , b 'used to be .veg
     Get #n, , .wall
     Get #n, , .Fixed
     
@@ -1128,8 +1201,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     Get #n, , .color
     
     'new stuff using FileContinue conditions for backward and forward compatability
-    If FileContinue(1) Then Get #n, , .Chlr
-    If FileContinue(1) Then Get #n, , .body: .radius = FindRadius(.body, .Chlr)
+    If FileContinue(1) Then Get #n, , .body
     If FileContinue(1) Then Get #n, , .Bouyancy
     If FileContinue(1) Then Get #n, , .Corpse
     If FileContinue(1) Then Get #n, , .Pwaste
@@ -1274,6 +1346,8 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     If FileContinue(1) Then Get #1, , .sim
     If FileContinue(1) Then Get #1, , .AbsNum
     
+    If FileContinue(1) Then Get #n, , .Chlr: .radius = FindRadius(.body, .Chlr)
+    
     'read in any future data here
     
 OldFile:
@@ -1336,7 +1410,7 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
   s = "Mutation Details removed in last save."
   
   With rob(r)
-    
+    Put #n, , False 'Used to be .veg
     Put #n, , .wall
     Put #n, , .Fixed
     
@@ -1408,7 +1482,6 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     Put #n, , .color
     
     ' new features
-    Put #n, , .Chlr
     Put #n, , .body
     Put #n, , .Bouyancy
     Put #n, , .Corpse
@@ -1491,6 +1564,7 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     Put #n, , .sim
     Put #n, , .AbsNum
     
+    Put #n, , .Chlr
     
     'write any future data here
     
@@ -1963,6 +2037,7 @@ Private Sub SaveShot(n As Integer, t As Long)
     Put #n, , .value       ' power of shot for negative shots (or amt of shot, etc.), value to write for > 0
     Put #n, , .color       ' colour
     Put #n, , .shottype    ' carried location/value couple
+    Put #n, , False        ' used to be .fromveg
     Put #n, , CInt(Len(.FromSpecie))
     Put #n, , .FromSpecie  ' Which species fired the shot
     Put #n, , .Memloc      ' Memory location for custom poison and venom
@@ -1999,6 +2074,7 @@ Private Sub LoadShot(n As Integer, t As Long)
   Dim k As Integer
   Dim X As Integer
   Dim Fe As Byte
+  Dim b As Boolean
 
   With Shots(t)
     Get #n, , .exist       ' exists?
@@ -2012,6 +2088,7 @@ Private Sub LoadShot(n As Integer, t As Long)
     Get #n, , .value       ' power of shot for negative shots (or amt of shot, etc.), value to write for > 0
     Get #n, , .color       ' colour
     Get #n, , .shottype    ' carried location/value couple
+    Get #n, , b            ' used to be .fromveg
     
     Get #n, , k: .FromSpecie = Space(k)
     Get #n, , .FromSpecie  ' Which species fired the shot

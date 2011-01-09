@@ -248,7 +248,7 @@ Begin VB.MDIForm MDIForm1
             ImageIndex      =   14
             Style           =   5
             BeginProperty ButtonMenus {66833FEC-8583-11D1-B16A-00C0F0283628} 
-               NumButtonMenus  =   16
+               NumButtonMenus  =   19
                BeginProperty ButtonMenu1 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "pop"
                   Text            =   "Population graph"
@@ -298,18 +298,30 @@ Begin VB.MDIForm MDIForm1
                   Text            =   "-"
                EndProperty
                BeginProperty ButtonMenu13 {66833FEE-8583-11D1-B16A-00C0F0283628} 
-                  Key             =   "maxgeneticdistance"
-                  Text            =   "Genetic Distance (Maximum)"
+                  Key             =   "intspecies"
+                  Text            =   "Internet Species Populations"
                EndProperty
                BeginProperty ButtonMenu14 {66833FEE-8583-11D1-B16A-00C0F0283628} 
-                  Key             =   "maxgenerationaldistance"
-                  Text            =   "Generational Distance (Maximum)"
+                  Key             =   "intsims"
+                  Text            =   "Internet Sim Populations"
                EndProperty
                BeginProperty ButtonMenu15 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Enabled         =   0   'False
                   Text            =   "-"
                EndProperty
                BeginProperty ButtonMenu16 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "maxgeneticdistance"
+                  Text            =   "Genetic Distance (Maximum)"
+               EndProperty
+               BeginProperty ButtonMenu17 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "maxgenerationaldistance"
+                  Text            =   "Generational Distance (Maximum)"
+               EndProperty
+               BeginProperty ButtonMenu18 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Enabled         =   0   'False
+                  Text            =   "-"
+               EndProperty
+               BeginProperty ButtonMenu19 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "resgraph"
                   Text            =   "Reset all graphs"
                EndProperty
@@ -1076,7 +1088,7 @@ End Sub
 Private Sub EditIntTeleporter_Click()
 Dim i As Integer
     For i = 1 To numTeleporters
-     If Teleporters(i).exist And Teleporters(i).Internet Then
+     If Teleporters(i).exist And Teleporters(i).INTERNET Then
        Teleport.teleporterFocus = i
        Exit For
      End If
@@ -1158,7 +1170,7 @@ tryagain:
     MDIForm1.EditIntTeleporter.Enabled = False
     
     For i = 1 To MAXTELEPORTERS
-      If Teleporters(i).Internet And Teleporters(i).exist Then
+      If Teleporters(i).INTERNET And Teleporters(i).exist Then
         DeleteTeleporter (i)
         i = i - 1
       End If
@@ -1540,31 +1552,35 @@ End Sub
 Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
   Select Case ButtonMenu.key
     Case "pop"
-      Form1.NewGraph 1, "Populations"
+      Form1.NewGraph POPULATION_GRAPH, "Populations"
     Case "avgmut"
-      Form1.NewGraph 2, "Mutations (Species Average)"
+      Form1.NewGraph MUTATIONS_GRAPH, "Mutations (Species Average)"
     Case "avgage"
-      Form1.NewGraph 3, "Average Age (hundreds of cycles)"
+      Form1.NewGraph AVGAGE_GRAPH, "Average Age (hundreds of cycles)"
     Case "avgsons"
-      Form1.NewGraph 4, "Offspring (Species Average)"
+      Form1.NewGraph OFFSPRING_GRAPH, "Offspring (Species Average)"
     Case "avgnrg"
-      Form1.NewGraph 5, "Energy (Species Average)"
+      Form1.NewGraph ENERGY_GRAPH, "Energy (Species Average)"
     Case "avglen"
-      Form1.NewGraph 6, "DNA length (Species Average)"
+      Form1.NewGraph DNALENGTH_GRAPH, "DNA length (Species Average)"
     Case "avgcond"
-      Form1.NewGraph 7, "DNA Cond statements (Species Average)"
+      Form1.NewGraph DNACOND_GRAPH, "DNA Cond statements (Species Average)"
     Case "avgmutlen"
-      Form1.NewGraph 8, "Mutations/DNA len (Species Average)"
+      Form1.NewGraph MUT_DNALENGTH_GRAPH, "Mutations/DNA len (Species Average)"
     Case "simnrg"
-      Form1.NewGraph 9, "Total Energy/Species (x1000)"
+      Form1.NewGraph ENERGY_SPECIES_GRAPH, "Total Energy/Species (x1000)"
     Case "autocost"
-      Form1.NewGraph 10, "Dynamic Costs"
+      Form1.NewGraph DYNAMICCOSTS_GRAPH, "Dynamic Costs"
     Case "speciesdiversity"
-      Form1.NewGraph 11, "Species Diversity"
+      Form1.NewGraph SPECIESDIVERSITY_GRAPH, "Species Diversity"
+    Case "intspecies"
+        Form1.NewGraph 13, "Internet Species Populations"
+    Case "intsims"
+        Form1.NewGraph 14, "Internet Sim Populations"
     Case "maxgeneticdistance"
-      Form1.NewGraph 14, "Genetic Distance (Maximum)"
+      Form1.NewGraph GENETIC_DIST_GRAPH, "Genetic Distance (Maximum)"
     Case "maxgenerationaldistance"
-      Form1.NewGraph 15, "Generational Distance (Maximum)"
+      Form1.NewGraph GENERATION_DIST_GRAPH, "Generational Distance (Maximum)"
     
     Case "resgraph"
       If MsgBox("Are you sure you want to reset all graphs?", vbOKCancel) = vbOK Then
@@ -1863,7 +1879,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As file
+Dim lastSim As File
 Dim revision As String
 
   globstrings
@@ -2126,7 +2142,6 @@ Private Sub quit_Click()
     If InternetMode Then
       InternetMode = False
       On Error GoTo bypass
-      'TODO quit DarwinbotsIM
 bypass:
     End If
     

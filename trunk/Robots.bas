@@ -271,7 +271,6 @@ Private Type robot
   BirthCycle As Long        ' birth cycle
   genenum As Integer        ' genes number
   generation As Integer     ' generation
-  ''TODO Look at this
   LastOwner As String       ' last internet owner's name
   FName As String           ' species name
   DnaLen As Integer         ' dna length
@@ -354,7 +353,7 @@ Const MinMatchLength = 3
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Public Function FindRadius(ByVal bodypoints As Single, chloroplasts As Single) As Single
+Public Function FindRadius(ByVal bodypoints As Single, ByVal chloroplasts As Single) As Single
   If bodypoints < 1 Then bodypoints = 1
   If chloroplasts < 1 Then chloroplasts = 1
   If SimOpts.FixedBotRadii Then

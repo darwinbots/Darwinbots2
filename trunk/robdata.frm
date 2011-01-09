@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "richtx32.ocx"
+Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
 Begin VB.Form datirob 
    BorderStyle     =   4  'Fixed ToolWindow
    Caption         =   "Dati del robot"
@@ -47,7 +47,6 @@ Begin VB.Form datirob
          _ExtentX        =   11562
          _ExtentY        =   12462
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"robdata.frx":0E42
@@ -691,10 +690,6 @@ Private Function GiveMutationDetails(robfocus) As String
   If GiveMutationDetails = "" Then GiveMutationDetails = "No mutations"
 End Function
 
-
-Private Sub robchlr_Click()
-
-End Sub
 
 Private Sub ShrinkWin_Click()
   Me.Width = 3255
