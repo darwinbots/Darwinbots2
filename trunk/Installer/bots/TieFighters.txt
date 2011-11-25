@@ -1,0 +1,1357 @@
+def birthx 971
+def birthy 972
+def birthtask 973
+def birthtaskoffset 974
+def birthsyncoffset 975
+def state 755
+def task 756
+def timestamp 757
+def tied 758
+def tiekey 759
+def key 760
+def gotatask 761
+def refkey 762
+def trefkey 763
+def tracknrg 764
+def check1 765
+def check2 766
+def check3 767
+def check4 768
+def check5 769
+def check6 770
+def check7 771
+def check8 772
+def check9 773
+def sucking 774
+def offset 775
+def vkey 776
+def taskoffset 777
+
+
+cond
+*.robage 0 =
+start
+124 .eye1width store
+490 .eye1dir store
+124 .eye2width store
+210 .eye2dir store
+124 .eye3width store
+402 .eye3dir store
+124 .eye4width store
+125 .eye4dir store
+124 .eye6width store
+979 .eye6dir store
+124 .eye7width store
+1170 .eye7dir store
+124 .eye8width store
+893 .eye8dir store
+124 .eye5width store
+1220 .eye9width store
+45 .vkey store
+.key .tmemloc store
+.key .memloc store
+*.tiepres .deltie store
+stop
+
+cond
+*.robage 0 =
+*.nrg 500 >
+start
+50 .strvenom store
+stop
+
+cond
+*.robage 40 add 40 mod 0 =
+start
+*.robage 1000 add .key store
+stop
+
+cond
+*.memval *.refage 950 add >
+*.memval *.refage 1001 add <
+start
+*.memval .refkey store
+stop
+
+cond
+*.tmemval *.trefage 955 add >
+*.tmemval *.trefage 1005 add <
+start
+*.tmemval .trefkey store
+stop
+
+cond
+*.birthtask 0 !=
+*.task 0 =
+start
+*.birthtask .task store
+*.birthtaskoffset .taskoffset store
+*.robage .gotatask store
+stop
+
+cond
+*.birthtask 0 !=
+start
+0 .birthtask store
+stop
+
+cond
+*.robage 3 <
+*.nrg 3000 %=
+*.body 1000 %=
+*.task 0 =
+start
+'F1 spread
+100 .task store
+stop
+
+cond
+*.task 102 =
+*.state 1 =
+start
+100 .up store
+stop
+
+cond
+*.task 102 =
+*.state 0 =
+start
+682 .aimsx store
+100 .up store
+1 .state store
+stop
+
+cond
+*.task 101 =
+*.state 2 =
+start
+100 .up store
+stop
+
+cond
+*.task 101 =
+*.state 1 =
+start
+170 .aimsx store
+100 .up store
+2 .state store
+stop
+
+cond
+*.task 101 =
+*.state 0 =
+start
+682 .aimsx store
+102 .birthtask store
+1 .state store
+50 .repro store
+stop
+
+cond
+*.task 100 =
+*.state 5 =
+*.robage 8 <
+start
+*.tiepres .deltie store
+*.offset 170 add .offset store
+341 *.offset add .setaim store
+0 .state store
+stop
+
+cond
+*.task 100 =
+*.state 5 =
+*.robage 8 >=
+start
+*.tiepres .deltie store
+1200 rnd .setaim store
+0 .state store
+102 .task store
+stop
+
+cond
+*.task 100 =
+*.state 4 =
+start
+*.tiepres .deltie store
+0 *.offset add .setaim store
+101 .birthtask store
+5 .state store
+stop
+
+cond
+*.task 100 =
+*.state 3 =
+start
+*.tiepres .deltie store
+0 *.offset add .setaim store
+50 .repro store
+101 .birthtask store
+4 .state store
+stop
+
+cond
+*.task 100 =
+*.state 2 =
+start
+*.tiepres .deltie store
+1023 *.offset add .setaim store
+50 .repro store
+101 .birthtask store
+3 .state store
+stop
+
+cond
+*.task 100 =
+*.state 1 =
+start
+*.tiepres .deltie store
+682 *.offset add .setaim store
+33 .repro store
+101 .birthtask store
+2 .state store
+stop
+
+cond
+*.task 100 =
+*.state 0 =
+start
+341 *.offset add .setaim store
+25 .repro store
+101 .birthtask store
+1 .state store
+stop
+
+cond
+*.trefnrg *.tracknrg 50 sub <
+*.trefnrg 0 !=
+start
+1 .sucking store
+stop
+
+cond
+*.trefnrg *.tracknrg 50 sub >
+*.trefnrg 0 =
+or
+start
+0 .sucking store
+stop
+
+cond
+*.eyef 0 =
+*.memval *.refkey =
+or
+*.task 0 =
+*.robage 20 >
+start
+*.robage 9 mod 4 sub .focuseye store
+stop
+
+
+
+cond
+*.shflav 0 !=
+*.task 0 =
+*.nrg 10 >
+start
+'30 rnd .aimsx store
+5 20 rnd .dx store
+10 30 rnd .up store
+0 .shflav store
+stop
+
+cond
+*.fixpos 0 !=
+start
+0 .fixpos store
+stop
+
+cond
+*.shell 200 <
+*.nrg 200 >
+start
+100 .mkshell store
+stop
+
+
+cond
+*.venom 50 <
+*.task 0 =
+*.robage 5 >
+*.nrg 1000 >
+start
+10 .strvenom store
+stop
+
+cond
+*.totalmyspecies 200 <
+*.nrg 1000 <
+or
+*.task 1 !=
+*.task 2 !=
+*.task 3 !=
+*.task 4 !=
+*.task 5 !=
+*.task 20 !=
+*.task 21 !=
+*.task 100 !=
+*.task 101 !=
+*.eyef 0 >
+*.memval *.refkey !=
+*.refeye 0 =
+*.refshoot 0 =
+*.refshell 0 =
+*.refpoison 0 =
+*.refvenom 0 =
+start
+4 .task store
+*.robage .gotatask store
+stop
+
+cond
+*.eyef 0 =
+*.memval *.refkey =
+or
+*.task 4 =
+*.numties 0 =
+start
+0 .task store
+stop
+
+cond
+*.numties 0 =
+*.task 4 =
+start
+*.refxpos *.refypos angle .setaim store
+0 .focuseye store
+1 .tie store
+*.veldx .sx store
+*.xpos *.refxpos sub abs *.ypos *.refypos sub abs pyth 10 div .up store
+stop
+
+cond
+*.numties 0 >
+*.task 5 =
+start
+*.trefxpos *.trefypos angle .setaim store
+0 .focuseye store
+*.tiepres .tienum store
+40 .stifftie store
+.tieval .tieloc store
+1000 .tieval store
+*.veldx .sx store
+*.tielen 10 div 0 floor .up store
+*.robage .timestamp store
+*.robage .gotatask store
+stop
+
+cond
+*.numties 0 >
+*.task 5 =
+*.venom 10 >=
+*.tielen 100 <
+start
+.tieloc .vloc store
+-1 .venval store
+-3 .shoot store
+100 .shootval store
+stop
+
+cond
+*.venom 10 <
+*.numties 0 >
+*.task 5 =
+*.tielen 100 <
+start
+.tieloc .shoot store
+-1 .shootval store
+stop
+
+cond
+*.numties 0 >
+*.task 4 =
+start
+*.trefxpos *.trefypos angle .setaim store
+0 .focuseye store
+*.tiepres .tienum store
+.fixpos .tieloc store
+1 .tieval store
+*.veldx .sx store
+5 .task store
+*.robage .timestamp store
+*.robage .gotatask store
+stop
+
+cond
+*.task 4 =
+*.task 5 =
+or
+*.veldn 0 >
+start
+1 .fixpos store
+stop
+
+cond
+*.task 4 =
+*.task 5 =
+or
+*.vel 2 >
+*.xpos *.refxpos sub abs *.ypos *.refypos sub abs pyth 50 <
+start
+1 .fixpos store
+stop
+
+
+cond
+*.nrg 150 <
+*.task 0 =
+*.robage 10 >
+start
+10 .task store
+*.robage .gotatask store
+stop
+
+cond
+*.nrg 150 >
+*.task 10 =
+start
+0 .task store
+stop
+
+cond
+*.task 10 =
+*.eyef 0 >
+*.memval *.refkey !=
+*.numties 0 =
+start
+*.refxpos *.refypos angle .setaim store
+0 .focuseye store
+1 .tie store
+*.robage .gotatask store
+1 .fixpos store
+stop
+
+cond
+*.task 10 =
+*.tmemval *.trefkey !=
+*.trefbody 5 >
+*.numties 0 >
+start
+*.trefxpos *.trefypos angle .setaim store
+0 .focuseye store
+1 .fixpos store
+*.tiepres .tienum store
+40 .stifftie store
+*.tielen 10 add .fixlen store
+.mkshell .tieloc store
+1000 .tieval store
+*.robage .gotatask store
+stop
+
+cond
+*.task 10 =
+*.tmemval *.trefkey !=
+*.trefbody 7 <
+*.numties 0 >
+start
+*.trefxpos *.trefypos angle .setaim store
+0 .focuseye store
+1 .fixpos store
+*.tiepres .tienum store
+40 .stifftie store
+*.tielen 10 add .fixlen store
+'.mkshell .tieloc store
+.fdbody .tieloc store
+1000 .tieval store
+*.robage .gotatask store
+stop
+
+cond
+*.task 10 =
+*.tmemval *.trefkey =
+*.numties 0 >
+start
+0 .focuseye store
+*.tiepres .deltie store
+stop
+
+cond
+*.task 10 =
+*.focuseye 0 =
+*.eyef 40 >
+*.memval *.refkey !=
+*.venom 10 >=
+start
+.shoot .vloc store
+-2 .venval store
+-3 .shoot store
+stop
+
+
+cond
+*.totalmyspecies 200 >
+*.nrg 1000 >
+*.task 1 !=
+*.task 2 !=
+*.task 3 !=
+*.task 4 !=
+*.task 5 !=
+*.task 100 !=
+*.task 101 !=
+*.eyef 0 >
+*.memval *.refkey !=
+*.refeye 0 =
+*.refshoot 0 =
+*.refshell 0 =
+*.refpoison 0 =
+*.refvenom 0 =
+start
+'21 .task store
+'*.robage .gotatask store
+'0 .state store
+stop
+
+cond
+*.totalmyspecies 200 >
+*.nrg 1000 >
+*.task 1 !=
+*.task 2 !=
+*.task 3 !=
+*.task 4 !=
+*.task 5 !=
+*.task 100 !=
+*.task 101 !=
+*.eyef 0 >
+*.memval *.refkey =
+*.refbody 200 >
+*.refeye 0 =
+*.refshoot 0 =
+*.refshell 0 =
+*.refpoison 0 =
+*.refvenom 0 =
+start
+'21 .task store
+'*.robage .gotatask store
+'0 .state store
+stop
+
+cond
+*.eyef 0 =
+'*.memval *.refkey =
+'or
+*.task 21 =
+*.state 0 =
+*.numties 0 =
+start
+0 .task store
+stop
+
+cond
+*.eyef 0 =
+*.memval *.refkey =
+or
+*.task 21 =
+*.numties 0 =
+start
+*.birthx *.birthy angle .setaim store
+1 .tie store
+stop
+
+cond
+*.eyef 0 >
+*.memval *.refkey !=
+*.task 21 =
+*.numties 0 =
+start
+*.refxpos *.refypos angle .setaim store
+1 .tie store
+stop
+
+cond
+*.task 22 =
+*.task 21 =
+or
+start
+1 .readtie store
+stop
+
+cond
+*.task 22 =
+*.numties 0 =
+start
+*.robage .gotatask store
+*.birthx *.birthy angle .setaim store
+1 .fixpos store
+1 .tie store
+stop
+
+cond
+*.trefxpos *.birthx !=
+*.trefypos *.birthy !=
+or
+*.task 22 =
+*.numties 0 >
+*.trefbody 200 >
+*.robage 10 >
+*.trefage 5 >
+start
+*.trefxpos .birthx store
+*.trefypos .birthy store
+stop
+
+
+cond
+*.task 22 =
+*.nrg 300 >
+*.body 100 <
+start
+20 .strbody store
+stop
+
+cond
+*.nrg 150 <
+*.body 150 >
+or
+*.body 5 >
+*.task 22 =
+start
+20 .fdbody store
+stop
+
+cond
+'*.taskoffset *.robage 3 mod add 1 =
+'*.taskoffset *.robage 3 mod add 4 =
+'or
+'*.tmemval *.trefage 970 add >
+*.robage 2 mod 0 =
+*.trefnrg 2000 >
+*.task 22 =
+*.numties 0 >
+start
+'*.tiepres .tienum store
+1 .tienum store
+40 .stifftie store
+0 .fixang store
+.tieloc .tieloc store
+-1 .tieval store
+*.robage .timestamp store
+*.robage .gotatask store
+stop
+
+cond
+'*.taskoffset *.robage 3 mod add 1 =
+'*.taskoffset *.robage 3 mod add 4 =
+'or
+'*.tmemval *.trefage 970 add >
+*.robage 2 mod 0 =
+*.trefnrg 2000 <=
+*.trefbody 200 >
+*.task 22 =
+*.numties 0 >
+start
+'*.tiepres .tienum store
+1 .tienum store
+40 .stifftie store
+0 .fixang store
+'.tieloc .tieloc store
+'-6 .tieval store
+.fdbody .tieloc store
+1000 .tieval store
+*.robage .timestamp store
+*.robage .gotatask store
+stop
+
+cond
+'*.taskoffset *.robage 3 mod add 0 =
+'*.taskoffset *.robage 3 mod add 3 =
+'or
+'*.tmemval *.trefage 970 add >
+*.robage 2 mod 1 =
+*.trefnrg 2000 >
+*.task 22 =
+*.numties 0 >
+start
+'*.tiepres .tienum store
+1 .tienum store
+40 .stifftie store
+0 .fixang store
+.tieval .tieloc store
+1000 .tieval store
+*.robage .timestamp store
+*.robage .gotatask store
+stop
+
+cond
+'*.taskoffset *.robage 3 mod add 0 =
+'*.taskoffset *.robage 3 mod add 3 =
+'or
+*.tmemval *.trefage 970 add >
+*.robage 2 mod 1 =
+*.trefnrg 2000 <=
+*.task 22 =
+*.numties 0 >
+start
+'*.tiepres .tienum store
+'1 .tienum store
+'40 .stifftie store
+'0 .fixang store
+'.key .tieloc store
+'*.trefage 1000 add .tieval store
+'*.robage .timestamp store
+'*.robage .gotatask store
+stop
+
+cond
+'*.tmemval *.trefage 960 add =<
+*.trefnrg 2000 <=
+*.task 22 =
+*.robage 2 mod 1 =
+*.numties 0 >
+start
+'*.tiepres .tienum store
+1 .tienum store
+40 .stifftie store
+0 .fixang store
+.key .tieloc store
+*.trefage 1000 add .tieval store
+*.robage .timestamp store
+*.robage .gotatask store
+stop
+
+cond
+*.task 22 =
+*.numties 0 >
+start
+'*.tiepres .tienum store
+1 .tienum store
+40 .stifftie store
+0 .fixang store
+400 .fixlen store
+stop
+
+cond
+*.task 22 =
+*.numties 0 >
+'*.tielen 400 >
+'*.tielen 200 <
+*.robage 50 >
+start
+1 .fixpos store
+stop
+
+'=================TEST==========
+'--- Some tests
+cond
+*.task 22 =
+*.numties 0 >
+'*.taskoffset *.robage 3 mod add 2 =
+*.robage 20 mod 0 =
+*.robage 10 >
+*.nrg 200 <
+start
+*.trefxpos *.tefypos angle .setaim store
+1 .tie store
+'*.tiepres .deltie store
+'*.tiepres .tienum store
+'.tienum .tieloc store
+'*.robage 9 mod .tieval store
+stop
+
+cond
+*.task 22 =
+*.nrg 1000 >
+*.body 20 >
+*.robage 20 >
+*.robage 30 mod 0 =
+start
+*.trefxpos *.trefypos angle 241 add .setaim store
+0 .focuseye store
+*.tiepres .tienum store
+40 .stifftie store
+511 .fixang store
+*.trexfpos .birthx store
+*.trefypos .birthy store
+22 .birthtask store
+.birthtaskoffset inc
+'20 .strbody store
+1 .fixpos store
+50 .repro store
+*.robage .timestamp store
+*.robage .gotatask store
+stop
+
+
+cond
+*.numties 0 >
+*.task 21 =
+*.state 3 =
+start
+*.trefxpos *.trefypos angle 341 add .setaim store
+0 .focuseye store
+*.tiepres .tienum store
+40 .stifftie store
+'*.trexfpos .birthx store
+'*.trefypos .birthy store
+22 .birthtask store
+.birthtaskoffset inc
+10 .strbody store
+1 .fixpos store
+50 .repro store
+*.robage .timestamp store
+*.robage .gotatask store
+'1000 .state store
+0 .state store
+22 .task store
+stop
+
+cond
+*.numties 0 >
+*.task 21 =
+*.state 2 =
+start
+*.trefxpos *.trefypos angle 341 sub .setaim store
+0 .focuseye store
+*.tiepres .tienum store
+40 .stifftie store
+'*.trexfpos .birthx store
+'*.trefypos .birthy store
+22 .birthtask store
+.birthtaskoffset inc
+10 .strbody store
+33 .repro store
+*.robage .timestamp store
+*.robage .gotatask store
+3 .state store
+stop
+
+cond
+*.birthtaskoffset 2 >
+start
+0 .birthtaskoffset store
+stop
+
+cond 'Remember to add one when using it....
+*.birthsyncoffset 4 >
+start
+0 .birthsyncoffset store
+stop
+
+cond
+*.numties 0 >
+*.task 21 =
+*.state 0 =
+*.tielen 200 <
+*.tielen 150 >
+start
+1 .state store
+stop
+
+cond
+*.numties 0 >
+*.task 21 =
+*.state 1 =
+*.tielen 200 <
+*.tielen 150 >
+start
+2 .state store
+.key .tieloc store
+*.trefage 1000 add .tieval store
+*.tiepres .tienum store
+40 .stifftie store
+0 .fixang store
+1 .fixpos store
+*.robage .timestamp store
+*.robage .gotatask store
+stop
+
+cond
+*.tielen 200 >=
+*.tielen 150 <=
+or
+*.numties 0 >
+*.task 21 =
+*.state 1 =
+start
+0 .state store
+.key .tieloc store
+*.trefage 952 add .tieval store
+1 .fixpos store
+stop
+
+
+cond
+*.numties 0 =
+*.task 21 =
+*.state 0 =
+start
+*.refxpos *.refypos angle .setaim store
+0 .focuseye store
+1 .tie store
+*.veldx .sx store
+*.xpos *.refxpos sub abs *.ypos *.refypos sub abs pyth 10 div .up store
+stop
+
+cond
+*.numties 0 >
+*.task 21 =
+*.state 0 =
+'*.tmemval *.trefkey !=
+*.treffixed 0 !=
+start
+*.trefxpos *.trefypos angle .setaim store
+*.trefxpos .birthx store
+*.trefypos .birthy store
+0 .focuseye store
+*.tiepres .tienum store
+40 .stifftie store
+0 .fixang store
+175 .fixlen store
+.key .tieloc store
+*.trefage 952 add .tieval store
+*.robage .timestamp store
+*.robage .gotatask store
+stop
+
+cond
+*.numties 0 >
+*.task 21 =
+*.state 0 =
+'*.tmemval *.trefkey =
+*.treffixed 0 =
+start
+*.trefxpos *.trefypos angle .setaim store
+0 .focuseye store
+*.tiepres .tienum store
+40 .stifftie store
+0 .fixang store
+.fixpos .tieloc store
+1 .tieval store
+*.veldx .sx store
+'1 .state store
+*.robage .timestamp store
+*.robage .gotatask store
+stop
+
+cond
+*.numties 0 >
+*.task 21 =
+*.state 0 =
+*.tielen 150 <
+start
+10 .dn store
+stop
+
+cond
+*.numties 0 >
+*.task 21 =
+*.state 0 =
+*.tielen 200 >
+start
+10 .up store
+stop
+
+cond
+*.numties 0 >
+*.task 21 =
+*.tielen 150 >
+*.tielen 200 <
+start
+1 .fixpos store
+stop
+
+cond
+'*.numties 0 >
+'*.task 21 =
+'*.numties 0 =
+'*.tmemval *.trefkey =
+start
+'0 .task store
+stop
+
+cond
+*.numties 0 =
+*.task 21 =
+*.veldn 0 >
+start
+1 .fixpos store
+stop
+
+cond
+*.numties 0 >
+*.tielen200 >
+*.task 21 =
+*.veldn 0 >
+start
+1 .fixpos store
+stop
+
+
+
+cond
+*.task 1 =
+*.task 2 =
+or
+*.task 3 =
+or
+*.robage 2 >
+*.numties 0 =
+*.eyef 0 !=
+*.memval *.refkey !=
+start
+'*.refxpos *.refypos angle .setaim store
+'1 .tie store
+stop
+
+cond
+*.task 2 =
+*.robage 0 =
+start
+*.birthx *.birthy angle .setaim store
+1 .tie store
+*.robage .timestamp store
+stop
+
+cond
+*.task 1 =
+*.robage 1 =
+start
+*.birthx *.birthy angle .setaim store
+1 .tie store
+*.robage .timestamp store
+stop
+
+cond
+*.task 3 =
+*.state 3 =
+start
+391 .aimsx store
+0 .state store
+1 .tie store
+*.robage .timestamp store
+stop
+
+cond
+*.task 0 >
+*.task 4 <
+*.numties 0 =
+*.timestamp 5 add *.robage >
+*.timestamp *.robage !=
+*.memval *.refkey !=
+start
+1 .tie store
+start
+
+cond
+*.task 0 >
+*.task 4 <
+*.numties 0 =
+*.timestamp 5 add *.robage >
+*.timestamp *.robage !=
+'*.memval *.refkey !%=
+*.memval *.refkey !=
+start
+20 rnd 10 sub .aimsx store
+start
+
+cond
+*.task 0 >
+*.task 3 <
+start
+1 .fixpos store
+stop
+
+cond
+*.task 3 =
+*.state 1 >
+start
+1 .fixpos store
+stop
+
+cond
+*.task 3 =
+*.state 2 =
+start
+2 .birthtask store
+782 .aimdx store
+50 .repro store
+3 .state store
+stop
+
+cond
+*.task 3 =
+*.eyef 10 >
+*.memval *.refkey !=
+*.state 1 =
+start
+1 .birthtask store
+1 .fixpos store
+*.refxpos .birthx store
+*.refypos .birthy store
+391 .aimsx store
+33 .repro store
+2 .state store
+stop
+
+cond
+*.task 3 =
+*.state 1 =
+*.eyef 0 >
+*.eyef 10 <=
+*.memval *.refkey !=
+start
+*.refxpos *.refypos angle .setaim store
+0 .focuseye store
+stop
+
+
+
+
+
+cond
+*.task 0 =
+*.task 100 >
+or
+*.nrg 150 >
+*.refvel 15 <
+*.eyef 0 >
+*.body 4 >
+*.refbody 4 >
+*.memval *.refkey !=
+start
+*.refxpos *.refypos angle .setaim store
+0 .focuseye store
+1 .state store
+3 .task store
+*.robage .gotatask store
+stop
+
+cond
+start
+1 .tienum store
+start
+
+cond
+*.numties 0 >
+*.robage 1 >
+start
+1 .tied store
+stop
+
+
+cond
+*.tied 1 =
+*.gotatask 5 add *.robage >
+'or
+*.numties 0 =
+*.task 0 !=
+start
+0 .tied store
+0 .state store
+0 .task store
+stop
+
+cond
+'*.tied 1 =
+*.gotatask 10 add *.robage <
+'or
+*.numties 0 =
+*.task 0 !=
+start
+682 rnd .setaim store
+20 .up store
+0 .tied store
+0 .state store
+0 .task store
+stop
+
+
+
+
+
+cond
+*.numties 1 =
+start
+40 .stifftie store
+1 .fixlen store
+stop
+
+cond
+*.task 1 =
+start
+.deltie .tieloc store
+0 .tieval store store
+stop
+
+cond
+*.task 2 =
+start
+.tieloc .tieloc store
+-1 .tieval store store
+stop
+
+cond
+*.task 3 =
+start
+.tieval .tieloc store
+1000 .tieval store store
+stop
+
+cond
+*.body 6 >
+*.task 22 !=
+start
+40 .fdbody store
+'*.body 10 mult 60 sub 0 floor .fdbody store
+stop
+
+cond
+*.body 21 >
+*.task 22 !=
+start
+200 .fdbody store
+stop
+
+cond
+*.body 101 >
+*.task 22 !=
+start
+1000 .fdbody store
+stop
+
+cond
+*.body 5 <
+*.task 0 =
+*.robage 2 >
+start
+10 .strbody store
+stop
+
+cond
+*.task 10 =
+*.body 1 >
+start
+*.body 10 mult 10 sub 0 floor .fdbody store
+*.robage .gotatask store
+stop
+
+cond
+*.task 10 =
+*.numties 0 >
+start
+1000 .strbody store
+-1000 .fdbody store
+stop
+
+cond
+*.timestamp 30 add *.robage =
+*.sucking 0 =
+start
+1 .deltie store
+stop
+
+cond
+*.numties 0 =
+*.robage 4 >
+*.robage 30 <
+*.task 0 =
+*.state 0 =
+start
+20 .up store
+stop
+
+cond
+*.numties 1 >
+*.sucking 0 =
+start
+*.tiepres .deltie store
+stop
+
+cond
+*.tmemval *.trefkey =
+*.sucking 0 =
+*.task 21 !=
+*.task 22 !=
+start
+1 .deltie store
+stop
+
+cond
+*.task 0 =
+*.task 10 =
+or
+*.nrg 10000 >
+*.numties 0 >
+start
+*.tiepres .deltie store
+40 .dn store
+stop
+
+cond
+*.task 0 =
+*.nrg 2000 >
+*.body 4 >
+*.robage 20 >
+*.state 0 =
+*.numties 0 =
+start
+50 .repro store
+stop
+
+'LOW cost key
+'cond
+'start
+'800
+'.totalmyspecies .tmemval store
+'.totalmyspecies .memval store
+'Shrink to size 1 and fix
+'stop
+
+cond
+*.numties 0 >
+*.task 0 =
+start
+*.tiepres .tienum store
+.tieval .tieloc store
+1000 .tieval store
+stop
+
+cond
+*.memval *.rekey =
+*.eyef 0 =
+or
+*.numties 0 >
+*.task 10 =
+start
+*.tiepres .tienum store
+.tieval .tieloc store
+1000 .tieval store
+stop
+
+cond
+*.numties 0 >
+*.tmemval *.trefkey !=
+*.task 1 !=
+*.task 2 !=
+*.task 3 !=
+*.task 4 !=
+*.task 5 !=
+*.trefbody 7 <
+start
+*.tiepres .tienum store
+.fdbody .tieloc store
+1000 .tieval store
+stop
+
+cond
+start
+*.trefnrg .tracknrg store
+stop
+
+cond
+*.state 0 !=
+*.task 0 =
+start
+0 .state store
+stop
+
+end

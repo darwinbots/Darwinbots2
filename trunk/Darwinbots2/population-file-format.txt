@@ -1,0 +1,65 @@
+----------------
+---- Output ----
+----------------
+FieldWidth			- Long
+FieldHeight			- Long
+MutCurrMut			- Single (Mutation Rate)
+CycSec				- Single (Cycles per second)
+TotRunCycle			- Long (Total Cycles)
+TotalRobots			- Integer (Total Population)
+TotalSimEnergy		- Long
+
+----Insert New Variables Here
+
+Fe					- Byte with value of 254
+Fe					- Byte with value of 254
+Fe					- Byte with value of 254
+
+NumSpecies			- Integer
+{
+    Len of Name		- Integer
+    Name			- ASCII bytes
+    Population		- Integer
+    //Color			- Long (0x00BBGGRR ;_;) - gone for now
+    
+    ----Insert New Variables Here
+    
+    Fe				- Byte with value of 254
+    Fe				- Byte with value of 254
+    Fe				- Byte with value of 254
+}
+
+----------------
+---- Input -----
+----------------
+NumSims				- Integer
+{
+    LenOfName		- Integer
+    Name			- ASCII bytes
+    NumSpecies		- Integer
+    {
+        LenOfName	- Integer
+        Name		- ASCII bytes
+        Population	- Integer
+        //Color		- Long (0x00BBGGRR ;_;) - gone for now
+        
+        Fe			- Byte with value of 254
+        Fe			- Byte with value of 254
+        Fe			- Byte with value of 254
+    }	
+}
+
+----------------
+VB6 Datatypes                   C# Datatype
+Byte	=  8 bits, unsigned =   Byte
+Integer = 16 bits, signed   =   Short
+Long	= 32 bits, signed   =   Integer
+Single  = 32 bits, IEEE-754 =   Float
+----------------
+Current Program Flow:
+         OUTPUT           OUTPUT
+    DB2----------> DB2IM----------> SERVER
+
+            INPUT           INPUT
+    SERVER---------> DB2IM---------> DB2
+At some point compression might be added betwen DB2IM and the Server
