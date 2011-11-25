@@ -1,0 +1,23 @@
+cond
+start
+ *.thisgene .mkvirus store
+ 100 .vshoot store
+ .tie inc
+ 25 *.nrg 200 sub sgn ++ mult .repro store
+ 12 .up store
+ 600 rnd .aimsx store
+ *.nrg 3 div *.body sub dup .strbody store - .fdbody store
+ -32000 .shootval store
+ .shootval .shoot store
+ .delgene store
+stop
+
+cond
+start
+ 99 .sharenrg store
+ .sharewaste *.sharewaste sgn abs -- abs mult inc
+ .shoot store
+ .fixpos *.fixpos sgn abs mult store
+ *.eye3 *.eye5 sub 0 floor *.eye7 *.eye5 sub 0 floor sub *.shang sgn abs -- abs mult .aimsx store
+ *.shang *.shang sgn abs .setaim mult store
+stop

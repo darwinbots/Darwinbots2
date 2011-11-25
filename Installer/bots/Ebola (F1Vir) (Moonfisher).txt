@@ -1,0 +1,1018 @@
+def move 990
+def bodya 989
+def nrga 987
+def nrgb 986
+def bodyb 985
+
+'(Excalibur)
+def count 950
+def spin 951
+def count1 952
+'------
+
+def fighter 550
+def fightertie 555
+def tiestate 560
+def tiecount 565
+def statebeat 570
+def distance 571
+
+'ID gene - Endy
+cond
+*.robage 0 =
+start
+300 .bodya store
+500 .nrga store
+.thisgene .memloc store
+100 .mkshell store
+745 770 store
+1 .fighter store
+123 .fightertie store
+.tie inc
+stop
+
+'memloc check
+cond
+*.memloc .thisgene !=
+start
+.thisgene .memloc store
+stop
+
+'Seed genes-------------
+
+cond
+*.statebeat 1 !=
+start
+1 .statebeat store
+stop
+
+cond
+*.statebeat 1 =
+*.numties 0 =
+*.tiestate 0 >
+*.fighter 1 != or
+start
+0 .tiestate store
+0 .tiecount store
+1 .fighter store
+.statebeat dec
+stop
+
+cond
+*.fighter 0 =
+'*.shflav 0 =
+start
+*.fightertie .readtie store
+*.trefxpos *.trefypos angle .setaim store
+*.trefxpos *.xpos sub abs *.trefypos *.ypos sub abs pyth .distance store
+stop
+
+cond
+*.shflav 0 !=
+*.shflav -2 !=
+*.fighter 0 =
+start
+0 .shflav store
+-6 .shoot store
+20 .shootval store
+20 .mkshell store
+*.shang .aimshoot store
+99 .sharenrg store
+.statebeat dec
+stop
+
+'I want to be a tie fighter
+cond
+*.fighter 1 =
+*.eye5 20 >
+*.refeye 0 =
+*.refshoot 0 =
+*.refpoison 0 =
+*.reftie 0 =
+*.refbody 200 <
+*.numties 0 =
+*.body 50 <  
+*.robage 0 >
+'*.pain 0 <=
+*.statebeat 1 =
+start
+1 .tiestate store
+*.fightertie .tie store
+*.fightertie .readtie store
+0 .fighter store
+'*.tiepres .fightertie store
+.statebeat dec
+0 .up store
+stop
+
+cond
+*.tiestate 1 =
+*.statebeat 1 =
+start
+770 .tieloc store
+745 .tieval store
+*.fightertie .tienum store
+.tiestate inc
+.statebeat dec
+40 .stifftie store
+stop
+
+cond
+*.numties 0 >
+*.tiestate 2 =
+*.tiepres *.fightertie =
+*.statebeat 1 =
+start
+.vshoot .tieloc store
+1 .tieval store
+*.fightertie .tienum store
+.tiestate inc
+.tiecount inc
+.statebeat dec
+stop
+
+cond
+*.fighter 0 =
+*.tiestate 3 =
+*.tiestate 5 <
+*.statebeat 1 =
+start
+.fixpos .tieloc store
+1 .tieval store
+*.fightertie .tienum store
+1 .fixpos store
+statebeat dec
+stop
+
+cond
+*.tiecount 20 =<
+*.tiestate 3 =
+start
+.tiecount inc
+stop
+
+cond
+*.tiestate 3 =
+*.tiecount 19 =
+start
+0 .fixpos store
+*.trefxpos *.trefypos angle .setaim store
+.memloc .tieloc store
+.shflav .tieval store
+*.fightertie .tienum store
+.statebeat dec
+stop
+
+cond
+*.fighter 0 =
+*.tiestate 3 =
+*.tiecount 20 >=
+*.statebeat 1 =
+start
+*.fightertie .tienum store
+.tiestate inc
+0 .tiecount store
+1 .fixlen store
+.statebeat dec
+0 .fixpos store
+stop
+
+cond
+*.fighter 0 =
+*.tiestate 4 =
+*.distance 100 <
+*.fixed 1 !=
+start
+*.trefxpos *.trefypos angle .setaim store
+1 .fixpos store
+0 .fixlen store
+*.fightertie .tienum store
+.statebeat dec
+stop
+
+cond
+*.fighter 0 =
+*.tiestate 4 =
+*.refbody 150 >
+*.statebeat 1 =
+*.body 100 <
+*.trefnrg *.refnrg =
+start
+.fdbody .tieloc store
+300 .tieval store
+*.fightertie .tienum store
+.statebeat dec
+stop
+
+cond
+*.statebeat 1 =
+*.fighter 0 =
+*.tiestate 4 =
+*.trefnrg 100 <
+*.body 100 <
+start
+.statebeat dec
+0 .sharenrg store
+stop
+
+cond
+*.fighter 0 =
+*.tiestate 4 =
+*.trefnrg 150 >
+*.trefnrg 350 <
+*.statebeat 1 =
+*.body 50 <
+start
+.statebeat dec
+65 .sharenrg store
+stop
+
+cond
+*.fighter 0 =
+*.tiestate 4 =
+*.trefnrg 400 >
+*.statebeat 1 =
+*.body 50 <
+start
+.statebeat dec
+99 .sharenrg store
+stop
+
+cond
+*.fighter 0 =
+*.body 50 >
+start
+100 .fdbody store
+stop
+
+cond
+*.fighter 0 =
+*.tiestate 3 >=
+*.pain 10 >   '--------------------------NEEDS CALIBRATION
+start
+770 .tieloc store
+0 .tieval store
+*.fightertie .tienum store
+10 .tiestate store
+.statebeat dec
+stop
+
+cond
+*.fighter 0 =
+*.trefnrg *.refnrg =
+*.tiestate 4 =
+*.memval -1 =
+start
+770 .tieloc store
+0 .tieval store
+*.fightertie .tienum store
+10 .tiestate store
+.statebeat dec
+stop
+
+cond
+*.fighter 0 =
+*.trefnrg *.refnrg =
+*.tiestate 4 =
+*.memval -6 =
+start
+770 .tieloc store
+0 .tieval store
+*.fightertie .tienum store
+10 .tiestate store
+.statebeat dec
+stop
+
+cond
+*.fighter 0 =
+*.trefnrg *.refnrg !=
+*.refeye 0 !=
+*.eye5 20 >
+*.memval *.genes !=
+*.myshoot *.refshoot !=
+start
+770 .tieloc store
+0 .tieval store
+*.fightertie .tienum store
+10 .tiestate store
+.statebeat dec
+stop
+
+cond
+*.fighter 0 =
+*.tiestate 10 =
+start
+*.fightertie .deltie store
+0 .tiestate store
+0 .tiecount store
+1 .fighter store
+341 .aimdx store  '------------- Maybe not
+40 .up store      '------------- Maybe not
+.statebeat dec
+stop
+
+cond
+*.tiepres *.fightertie !=
+'*.tiestate 0 >
+start
+*.tiepres .deltie store
+stop
+
+cond
+*.fighter 1 !=
+*.nrg 5000 >     '-------------------------------NEEDS CALIBRATION
+start
+770 .tieloc store
+0 .tieval store
+*.fightertie .tienum store
+10 .tiestate store
+.statebeat dec
+stop
+
+
+'------------------------------ Bubbles
+
+'eye4
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.eye5 0 =
+*.eye4 0 >
+*.eye4 *.eye3 >=
+*.eye4 *.eye2 >=
+*.eye4 *.eye1 >=
+*.eye4 *.eye6 >=
+*.eye4 *.eye7 >=
+*.eye4 *.eye8 >=
+*.eye4 *.eye9 >=
+start
+*.aim 35 add .setaim *.fighter mult store
+stop
+
+'eye6
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.eye5 0 =
+*.eye6 0 >
+*.eye6 *.eye4 >
+*.eye6 *.eye7 >=
+*.eye6 *.eye8 >=
+*.eye6 *.eye9 >=
+*.eye6 *.eye1 >=
+*.eye6 *.eye2 >=
+*.eye6 *.eye3 >=
+start
+*.aim -35 add .setaim *.fighter mult store
+stop
+
+'eye3
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.eye5 0 =
+*.eye3 0 >
+*.eye3 *.eye4 >
+*.eye3 *.eye6 >
+*.eye3 *.eye2 >=
+*.eye3 *.eye1 >=
+*.eye3 *.eye7 >=
+*.eye3 *.eye8 >=
+*.eye3 *.eye9 >=
+start
+*.aim 70 add .setaim *.fighter mult store
+stop
+
+'eye7
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.eye7 0 >
+*.eye5 0 =
+*.eye7 *.eye4 >
+*.eye7 *.eye6 >
+*.eye7 *.eye3 >
+*.eye7 *.eye2 >=
+*.eye7 *.eye1 >=
+*.eye7 *.eye8 >=
+*.eye7 *.eye9 >=
+start
+*.aim -70 add .setaim *.fighter mult store
+stop
+
+'eye2
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.eye2 0 >
+*.eye5 0 =
+*.eye2 *.eye4 >
+*.eye2 *.eye3 >
+*.eye2 *.eye7 >
+*.eye2 *.eye6 >
+*.eye2 *.eye1 >=
+*.eye2 *.eye9 >=
+*.eye2 *.eye8 >=
+start
+*.aim 105 add .setaim *.fighter mult store
+stop
+
+'eye8
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.eye8 0 >
+*.eye5 0 =
+*.eye8 *.eye2 >
+*.eye8 *.eye3 >
+*.eye8 *.eye4 >
+*.eye8 *.eye7 >
+*.eye8 *.eye6 >
+*.eye8 *.eye1 >=
+*.eye8 *.eye9 >=
+start
+*.aim -105 add .setaim *.fighter mult store
+stop
+
+'eye1
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.eye5 0 =
+*.eye1 0 >
+*.eye1 *.eye2 >
+*.eye1 *.eye3 >
+*.eye1 *.eye4 >
+*.eye1 *.eye6 >
+*.eye1 *.eye7 >
+*.eye1 *.eye8 >
+*.eye1 *.eye9 >=
+start
+*.aim 140 add .setaim *.fighter mult store
+stop
+
+'eye9
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.eye5 0 =
+*.eye9 0 >
+*.eye9 *.eye1 >
+*.eye9 *.eye2 >
+*.eye9 *.eye8 >
+*.eye9 *.eye7 >
+*.eye9 *.eye6 >
+*.eye9 *.eye4 >
+*.eye9 *.eye3 >
+start
+*.aim -140 add .setaim *.fighter mult store
+stop
+
+'rotate if all eyes empty and not being shot
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.eye5 0 =
+*.eye4 0 =
+*.eye3 0 =
+*.eye2 0 =
+*.eye1 0 =
+*.eye6 0 =
+*.eye7 0 =
+*.eye8 0 =
+*.eye9 0 =
+*.shflav 0 =
+*.shflav -2 = or
+start
+*.aim 280 add .setaim *.fighter mult store
+stop
+
+'follow friend if not being shot
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.in1 0 !=
+*.in2 0 != or
+*.fighter mult *.memval *.genes =
+*.refage 0 >
+*.eye5 0 >
+*.shflav 0 =
+*.shflav -2 = or
+start
+*.in1 *.in2 angle .setaim *.fighter mult  store
+*.in1 *.in2 dist 500 div *.maxvel mult *.refvel add 0 floor *.maxvel ceil .up *.fighter mult  store
+*.veldx .sx store
+stop
+
+'avoid friend when not getting shot
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.in1 0 =
+*.in2 0 = and
+*.memval *.genes =
+*.refage 0 >
+*.eye5 0 >
+*.shflav 0 =
+*.shflav -2 = or
+start
+*.refxpos *.refypos angle 280 add .setaim *.fighter mult store
+stop
+
+'if see friend but getting shot
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.in1 0 =
+*.in2 0 = and
+*.memval *.genes =
+*.refage 0 >
+*.eye5 0 >
+*.shflav 0 !=
+*.shflav -2 != and
+start
+40 .up store
+*.shang 682 add .setaim *.fighter mult store
+0 .shflav *.fighter mult store
+-1 .shoot store
+*.shang *.aim add .aimshoot *.fighter mult store
+stop
+
+'all eyes empty but being shot
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.eye5 0 =
+*.eye4 0 =
+*.eye3 0 =
+*.eye2 0 =
+*.eye1 0 =
+*.eye6 0 =
+*.eye7 0 =
+*.eye8 0 =
+*.eye9 0 =
+*.shflav 0 !=
+*.shflav -2 != and
+start
+40 .up *.fighter mult store
+*.shang .setaim *.fighter mult store
+0 .shflav *.fighter mult store
+-1 .shoot store
+*.shang *.aim add .aimshoot *.fighter mult store
+stop
+
+'follow friend if not being shot
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.in1 0 !=
+*.in2 0 != or
+*.memval *.genes =
+*.refage 0 >
+*.eye5 0 >
+*.shflav 0 =
+*.shflav -2 = or
+start
+*.in1 *.in2 angle .setaim *.fighter mult store
+*.in1 *.in2 dist 500 div *.maxvel mult *.refvel add 0 floor *.maxvel ceil .up *.fighter mult store
+*.veldx .sx *.fighter mult store
+stop
+
+'don't follow friend if getting shot
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.in1 0 !=
+*.in2 0 != or
+*.memval *.genes =
+*.refage 0 >
+*.eye5 0 >
+*.shflav 0 !=
+*.shflav -2 != and
+start
+*.shang .setaim *.fighter mult store
+0 .shflav *.fighter mult store
+-1 .shoot store
+*.shang *.aim add .aimshoot *.fighter mult store
+40 .up store
+stop
+
+'target and shoot
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.robage 1 >
+*.eye5 9 >
+*.memval *.genes !=
+*.refshoot *.myshoot !=
+*.refeye *.myeye != or
+'*.numties 0 =
+start
+*.refxpos *.refypos angle *.aim sub .aimshoot *.fighter mult store
+-6 .shoot *.fighter mult store
+*.nrg 32 div .shootval *.fighter mult store
+stop
+
+cond
+*.venom 100 <
+start
+100 *.venom sub 0 floor 100 ceil .strvenom store
+stop
+
+
+'-------------------Excalibur
+
+cond
+*.robage 0 =
+start
+'955 4 rnd add .memloc store
+'1904 955 store
+'1904 956 store
+'1904 957 store
+'1904 958 store
+'1904 959 store
+1 .tie store
+0 .out1 store
+0 .aimsx store
+.shoot .vloc store
+.shoot .ploc store
+100 .mkshell store
+100 .strpoison store
+stop
+
+cond
+*.robage 1 =
+*.fighter 1 =
+start
+1 .deltie store
+314 .aimsx store
+stop
+
+
+'-------------------------------------- Venom (Excalibur)
+
+cond
+*.count 0 >
+*.fighter 1 =
+start
+.count dec
+stop
+
+cond
+*.fighter 1 =
+'*.memval 1904 !=
+*.memval *.genes !=
+*.refshoot *.myshoot !=
+*.refeye *.myeye != or
+*.eye5 20 >
+' *.refpoison 0 =
+*.count 0 =
+*.refeye 0 >
+start
+.shoot .vloc *.fighter mult store
+-3 .shoot *.fighter mult store
+-2 .venval *.fighter mult store
+50 .shootval *.fighter mult store
+5 .count *.fighter mult store
+stop
+
+cond
+*.fighter 1 =
+'*.memval 1904 !=
+*.memval *.genes !=
+*.refshoot *.myshoot !=
+*.refeye *.myeye != or
+*.eye5 20 >
+*.count 0 =
+*.refeye 0 >
+*.refshell 5 >
+start
+.mkshell .vloc *.fighter mult store
+-3 .shoot *.fighter mult store
+-200 .venval *.fighter mult store
+50 .shootval *.fighter mult store
+0 .count *.fighter mult store
+stop
+'---------------------- end venom
+
+'****************
+'* Adaptive Armour *
+'****************
+'1 poison
+'2 shell
+'3 Poison + Shell
+
+cond
+*.in1 *.out1 !=
+*.in1 0 !=
+*.out1 3 <
+*.memval 1904 =
+start
+*.in1 .out1 store
+stop
+
+cond
+*.shflav -1 =
+*.shflav 0 > or
+*.out1 2 <
+start
+1 .out1 store
+stop
+
+cond
+*.shflav -1 =
+*.shflav 0 > or
+*.out1 2 =
+start
+3 .out1 store
+stop
+
+cond
+*.shflav -6 =
+*.shflav -3 = or
+*.out1 0 <
+start
+2 .out1 store
+stop
+
+cond
+*.shflav -6 =
+*.shflav -3 = or
+*.out1 1 =
+start
+3 .out1 store
+stop
+
+cond
+*.nrg 500 >
+*.poison 500 <
+*.out1 1 =
+*.out1 3 = or
+start
+100 .strpoison store
+stop
+
+cond
+*.nrg 500 >
+*.shell 450 <
+*.out1 1 >
+start
+500 *.shell sub .mkshell store
+stop
+
+cond
+*.numties 0 >
+*.robage 10 >
+*.fighter 1 =
+start
+*.tiepres .tienum store
+.tieval .tieloc store
+3000 .tieval store
+*.tiepres .deltie store
+*.tieval 3000 div .tieloc store
+.sharewaste inc
+stop
+
+
+'---------------------------------------
+
+'move and communicate
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.robage 1 >
+*.eye5 0 >
+*.memval *.genes !=
+*.numties 0 =
+*.refshoot *.myshoot !=
+*.refeye *.myeye != or
+start
+*.refxpos *.refypos angle .setaim *.fighter mult store
+*.refxpos *.refypos dist 500 div *.maxvel mult *.refvel add 0 floor *.maxvel ceil .up *.fighter mult store
+*.veldx .sx *.fighter mult store
+*.refxpos .out1 store
+*.refypos .out2 store
+stop
+
+'refresh communication or hide veg location
+cond
+*.paralyzed 0 =
+*.poisoned 0 =
+*.refeye 0 =
+*.eye5 0 = or
+*.memval *.genes =
+*.eye5 0 > and
+*.in1 0 = and
+*.in2 0 = and or
+*.out1 0 !=
+*.out2 0 != or
+start
+0 .out1 store
+0 .out2 store
+stop
+
+'turn back after repro
+cond
+*.paralyzed 0 =
+*.poisoned 0 =
+*.move 0 !=
+*.fighter 1 =
+start
+*.aim 628 add .setaim store
+.move dec
+1 .deltie store
+0 .shoot store
+stop
+
+'baby avoids mum
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.robage 1 =
+*.numties 0 >
+*.memval *.genes = or
+start
+*.aim 280 add .setaim store
+0 .shoot store
+stop
+
+'repro
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.eye5 0 =
+*.move 0 =
+*.body *.bodya >
+*.nrg *.nrga >
+start
+25 .repro store
+*.aim 628 add .setaim store
+1 .move store
+*.bodya 10 div *.bodya add 30000 ceil .bodya store
+*.nrga 10 div *.nrga add 30000 ceil .nrga store
+stop
+
+'make body
+cond
+*.paralyzed 0 =
+*.poisoned 0 =
+*.nrg *.nrga >
+*.body 3190 <
+start
+100 .strbody *.fighter mult store
+stop
+
+'use body
+cond
+*.paralyzed 0 =
+*.poisoned 0 =
+*.nrg *.nrgb <
+*.body 11 >
+start
+100 .fdbody *.fighter mult store
+stop
+
+'make more shell
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.shell 100 <
+*.nrg 500 > and
+*.shflav -6 = or
+*.shflav -3 = or
+start
+50 .mkshell store
+0 .shflav *.fighter mult store
+stop
+
+'poop
+cond
+*.fighter 1 =
+*.paralyzed 0 =
+*.poisoned 0 =
+*.waste 50 >
+*.memval *.genes !=
+start
+-4 .shoot store
+*.waste .shootval store
+stop
+
+'Death by Baby!
+cond
+*.fighter 1 =
+*.poisoned 0 !=
+*.paralyzed 0 != or
+start
+100 .repro store
+*.aim 280 add .setaim store
+999 .out3 store
+stop
+
+'delete tie
+cond
+*.numties 0 >
+'*.tiefighter 1 !=
+*.tiecount 0 = and
+*.fightertie *.tiepres != or
+*.fighter 1 =
+*.tiestate 0 =
+start
+*.tiepres .deltie store
+stop
+
+cond
+*770 745 !=
+start
+*.thisgene .mkvirus store
+9000 .vshoot store
+'*.nrg 400 sub sgn 50 mult .repro store
+'*.body 100 sub sgn 50 mult .repro store
+50 .repro store
+stop
+
+cond
+*.vtimer 0 =
+*.genes 50 <
+start
+' Make viruses
+*.thisgene 1 sub .mkvirus store
+stop
+
+cond
+*.vtimer 1 =
+*.nrg 800 >
+start
+100 .vshoot store
+stop
+
+cond
+*.sexrepro 0 !=
+*.mrepro 0 != or
+start
+0 .repro store
+0 .sexrepro store
+0 .mrepro store
+stop
+
+cond
+*.delgene 0 !=
+*.shoot -2 = or
+start
+0 .delgene store
+0 .shoot store
+stop
+
+cond
+*.fighter 1 =
+start
+.fixpos *.fixed mult dec 'anti fixpos by Elite
+stop
+
+cond
+*.repro 25 !=
+*.repro 0 !=
+*.repro 100 !=
+start
+0 .repro store
+stop
+
+cond
+*.vshoot 101 >
+*.vtimer 15 <
+start
+1 .vshoot store
+100 repro store
+stop
+
+'ID gene - Endy
+cond
+start
+*.nrga 2 div .nrgb store
+' little constant viral defense gene doubles as ID gene
+*.genes .delgene
+' .fixpos *.fixed mult dec 'anti fixpos by Elite
+*.thisgene *.genes sub dup div
+mult *.robage sgn mult store
+.genes inc
+stop
+end

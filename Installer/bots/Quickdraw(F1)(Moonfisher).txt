@@ -1,0 +1,378 @@
+'Quickdraw (F1) (Moonfisher) 29-10-08
+'For DB 2.43.1L
+'Just a mashup of Lovebot behavior and a slightly modified Fruiflies.
+'It's kind of half ass, and it's not realy a work in progress.
+'This is just something to play with while .sexrepro is overpowered.
+'It beats Saber, Fruitflies and EtchII. Haven't tested against any other bots, so tell me if you se it loose to something.
+'I think abyaly will be able to beat this one without much effort though, it doesn't realy kill Saber, it just outlasts it.
+'I did come up with one litle trick though, it's where the name comes from.
+
+def fruitfly 971
+def original 972
+def type 973
+def creep 974
+
+def seteyes 50
+def seteyespace 52
+def setoffset 53
+def rand 110
+
+def spineyespace 105
+def spinoffset 140
+def maxpop 1000
+def alge 13
+
+
+'********************************************************************
+'------------------------- Quickdraw --------------------------------
+start
+50 .repro store
+341 .aimsx store
+500 .dn store
+500 .dx store
+*.thisgene .delgene store
+stop
+
+start
+50 .repro store
+341 .aimsx store
+500 .dn store
+500 .dx store
+*.thisgene .delgene store
+stop
+
+start
+1 .creep store
+1 .original store
+50 .repro store
+341 .aimsx store
+500 .dn store
+500 .dx store
+*.thisgene .delgene store
+stop
+'********************************************************************
+
+
+
+'********************************************************************
+'------------------------- Robage 0 ---------------------------------
+start
+.fixpos dec
+stop
+
+cond
+*.robage 0 =
+start
+.deltie inc
+1 .seteyes store
+.spineyespace .seteyespace store
+.spinoffset .setoffset store
+.dnalen .memloc store
+.dnalen .tmemloc store
+stop
+'********************************************************************
+
+
+
+'********************************************************************
+'------------------------- Eyes -------------------------------------
+cond
+*.seteyes 1 =
+start
+*.setoffset .eye9dir store
+*.setoffset *.seteyespace add .eye8dir store
+*.setoffset *.seteyespace 2 mult add .eye7dir store
+*.setoffset *.seteyespace 3 mult add .eye6dir store
+*.setoffset *.seteyespace 4 mult add .eye5dir store
+*.setoffset *.seteyespace 5 mult add .eye4dir store
+*.setoffset *.seteyespace 6 mult add .eye3dir store
+*.setoffset *.seteyespace 7 mult add .eye2dir store
+*.setoffset *.seteyespace 8 mult add .eye1dir store
+4 .focuseye store
+0 .seteyes store
+stop
+
+cond
+*.eyef 0 =
+*.memval *.dnalen = or
+*.memval .alge !=
+*.fruitfly 1 != and or
+*.original 1 != or
+start
+*.aim *.eye1dir add .eyedist 4 mult add .setaim 500 1 add * abs sgn mult store
+*.aim *.eye2dir add .eyedist 3 mult add .setaim 500 2 add * abs sgn mult store
+*.aim *.eye3dir add .eyedist 2 mult add .setaim 500 3 add * abs sgn mult store
+*.aim *.eye4dir add .eyedist 1 mult add .setaim 500 4 add * abs sgn mult store
+*.aim *.eye5dir add .eyedist 0 mult sub .setaim 500 5 add * abs sgn mult store
+*.aim *.eye6dir add .eyedist 1 mult sub .setaim 500 6 add * abs sgn mult store
+*.aim *.eye7dir add .eyedist 2 mult sub .setaim 500 7 add * abs sgn mult store
+*.aim *.eye8dir add .eyedist 3 mult sub .setaim 500 8 add * abs sgn mult store
+stop
+'********************************************************************
+
+
+
+'********************************************************************
+'------------------------- Molester ---------------------------------
+cond
+*.creep 1 =
+*.original 1 =
+start
+*.memval .alge !=
+*.robage 15 < and
+*.velup *.velup 3 div add .up store
+*.veldx *.veldx 3 div add .dx store
+
+*.eyef 0 !=
+*.memval .alge = and
+*.refxpos *.refypos angle .setaim store
+*.refxpos *.xpos sub abs *.refypos *.ypos sub abs pyth 5 div 20 sub 0 floor 100 ceil *.refvelup add .up store
+*.refveldx .dx store
+-8 .shoot store
+0 .shootval store
+*.numties 0 = and
+.tie inc
+
+*.numties 0 >
+*.tmemval .alge = and
+*.tiepres .tienum store
+dupbool
+*.timer 2 mod 0 = and
+.aimsx .tieloc store
+300 .tieval store
+dropbool
+*.timer 2 mod 1 = and
+.sexrepro .tieloc store
+20 .tieval store
+
+*.numties 0 >
+*.robage 0 > and
+*.tmemval *.dnalen != and
+*.tmemval .alge != and
+*.numties .deltie store
+.strvenom .tieloc store
+100 .tieval store
+
+*.numties 0 =
+*.tmemval .alge != or
+0 .tieloc store
+0 .tieval store
+
+*.robage 30 >
+'*.pain 10 > or
+1 .fruitfly store
+0 .creep store
+stop
+'********************************************************************
+
+
+
+'********************************************************************
+'------------------------- Fruitflies -------------------------------
+'-------------------- (Slightly modified) ---------------------------
+cond
+*.nrg 15 >
+*.numties 0 != or
+*.fruitfly 1 = and
+start
+
+'-- Birth
+*.robage 0 =
+314 .aimright store
+.deltie inc
+'300 .eye5width store
+.dnalen .memloc store
+.dnalen .tmemloc store
+15 rnd .rand store
+
+*.rand 5 < and
+*.rand .type store
+
+*.type 0 =
+6 rnd .type store
+
+
+'-- Reproduction
+*.body 5 >
+*.nrg 150 > and
+*.totalmyspecies .maxpop 2 mult < and
+50 .repro store
+*.tin9 234 != and
+*.maxvel .dn store
+
+*.totalmyspecies .maxpop <
+*.nrg 300 > and
+50 *.body 10 mult sub 0 floor .strbody store
+
+'-- Shrinking
+not
+*.body 1 > and
+*.body 10 mult 10 sub 0 floor .fdbody store
+
+*.body 1 =
+100 .strbody store
+100 .fdbody store
+
+'-- Tie feeding
+*.numties 0 !=
+*.tiepres .tienum store
+
+*.tmemval *.dnalen =
+*.numties 1 > or and
+*.tin9 234 != and
+*.numties .deltie store
+
+*.numties 0 !=
+*.robage 1 > and
+*.trefxpos *.trefypos angle .setaim store
+99 .sharenrg store
+
+dupbool
+*.memval .alge = and
+*.trefxpos *.xpos sub abs *.trefypos *.ypos sub abs pyth 5 div 10 sub 0 floor *.maxvel ceil .up store
+*.velsx .dx store
+
+dropbool
+dupbool
+*.type 1 = and
+.tieval .tieloc store
+3200 .tieval store
+*.memval .alge = and
+.tieloc .shoot store
+-1 .shootval store
+
+dropbool
+dupbool
+*.type 2 = and
+.shootval .tieloc store
+-31999 .tieval store
+*.memval .alge != and
+*.timer 2 mod 0 = and
+.mkslime .tieloc store
+
+dropbool
+dupbool
+*.type 3 = and
+.strvenom .tieloc store
+100 .tieval store
+*.numties .deltie store
+*.memval .alge != and
+*.timer 2 mod 0 = and
+.fdbody .tieloc store
+
+dropbool
+dupbool
+*.type 4 = and
+.tieloc .tieloc store
+-6 .tieval store
+*.memval .alge = and
+.tieval .shoot store
+3200 .shootval store
+
+dropbool
+*.type 4 > and
+.tieloc .tieloc store
+-1 .tieval store
+*.memval .alge = and
+.tieval .shoot store
+3200 .shootval store
+
+*.tmemval *.dnalen =
+0 .tieloc store
+0 .tieval store
+
+'-- Hunting
+*.numties 0 =
+*.body 1 = and
+*.eyef 0 != and
+*.memval *.dnalen != and
+*.refbody 20 >
+*.totalmyspecies 600 > or and
+*.refxpos *.refypos angle .setaim store
+.tie inc
+*.memval .alge = and
+*.velsx .dx store
+*.refvelup 15 add *.maxvel ceil 0 floor .up store
+.fixpos .shoot store
+1 .shootval store
+stop
+'********************************************************************
+
+
+
+'********************************************************************
+'------------------------- Infected alge ----------------------------
+cond
+*.robage 0 >
+*.original 1 !=
+start
+50 .repro store
+.deltie inc
+234 .tout9 store
+234 .out9 store
+
+*.nrg 300 >
+dupbool
+*.slime 300 < and
+50 .mkslime store
+
+dropbool
+dupbool
+*.shell 500 < and
+500 *.shell sub 0 floor .mkshell store
+
+dropbool
+*.poison *.shell < and
+*.shell 50 add *.poison sub 0 floor .mkpoison store
+
+*.robage 1 =
+.up .ploc store
+
+*.robage 15 <
+500 .dn store
+70 .aimsx store
+
+*.body 90 >
+100 .fdbody store
+
+*.robage 15 >=
+*.nrg 2000 > and
+dupbool
+*.eyef 0 != and
+*.memval *.dnalen = and
+*.in9 234 != and
+*.refxpos *.refypos angle .setaim store
+.tie inc
+0 .deltie store
+
+dropbool
+*.numties 0 > and
+*.tmemval *.dnalen = and
+*.tiepres .tienum store
+-1 .tieloc store
+1000 .tieval store
+40 .stifftie store
+
+*.numties 0 >
+*.tmemval *.dnalen = and
+*.tin9 234 != and
+40 .stifftie store
+1 .fixlen store
+0 .deltie store
+*.tielen 400 > and
+*.trefxpos *.trefypos angle .setaim store
+*.maxvel .up store
+
+*.numties 0 >
+*.tmemval *.dnalen != and
+.strvenom .tieloc store
+100 .tieval store
+*.tin9 234 = or
+*.numties .deltie store
+
+*.shflav 0 !=
+*.maxvel .dn store
+*.velsx 2 mult .sx store
+0 .shflav store
+stop
+'********************************************************************
