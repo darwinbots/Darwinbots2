@@ -1,0 +1,1262 @@
+'Spinner v1.52 (F2) 02-10-08
+'by Moonfisher
+'Just added venom defences.
+
+
+'------------------- vars
+def seteyes 50
+def seteyewidth 51
+def seteyespace 52
+def setoffset 53
+
+def state 54
+def repspin 55
+
+def randm 56
+def keyloc 57
+
+def oponent 58
+def toponent 59
+def genekill 60
+
+def birthstate 971
+def birthx 972
+def birthy 973
+
+
+'-------------------- constants
+def spineyewidth 0
+def spineyespace 105
+def spinoffset 140
+
+def scaning 1
+def torpedo 2
+
+'0 is nothing
+def friend 13
+def enemy 14
+def alge 15
+
+def key1 543
+def key2 1613
+def key3 3306
+def key4 4039
+'(Key + 3200 must not exceed 8191)
+
+def startkey 110
+def startloc 120
+def locs 5 '--- Must correcpond to the amount of different tie actions
+'Set locs to 4 to disable instant kill using .shootval
+'Set locs to 3 to disable .strbody killing aswell
+
+
+'================================================
+'----- Birth
+
+cond
+*.robage 0 =
+start
+'--- conspec
+3 rnd .randm store
+.startkey *.randm add .keyloc store
+.memloc .memloc store
+.tmemloc .tmemloc store
+.key1 .startkey store
+.key2 .startkey 1 add store
+.key3 .startkey 2 add store
+.key4 .startkey 3 add store
+'-------Tie actions (5)
+.eye5dir .startloc store
+682 .startloc 1 add store
+.vloc .startloc 2 add store
+174 .startloc 3 add store
+'.memloc .startloc 4 add store '-- Funny, but no point in both stealing keys and breaking conspecs
+'173 .startloc 5 add store
+.mrepro .startloc 4 add store '-- Also funny, but can mess up the stolen eye and shoot conspecs
+65 .startloc 5 add store
+.shootval .startloc 6 add store
+32000 .startloc 7 add store
+.strbody .startloc 8 add store
+31999 .startloc 9 add store
+'--------
+.shoot .ploc store
+stop
+
+cond
+*.robage 0 =
+*.birthstate 0 =
+start
+.scaning .state store
+stop
+
+cond
+*.robage 0 =
+*.birthstate 0 !=
+*.state 0 =
+start
+*.birthstate .state store
+stop
+
+cond
+*.birthstate 0 !=
+start
+0 .birthstate store
+stop
+
+cond
+*.robage 0 =
+*.state .scaning =
+start
+1 .seteyes store
+.spineyewidth .seteyewidth store
+.spineyespace .seteyespace store
+.spinoffset .setoffset store
+.shoot .vloc store
+-2 .venval store
+.shoot .ploc store
+stop
+
+cond
+*.robage 0 =
+*.state .torpedo =
+start
+1 .seteyes store
+.spineyewidth .seteyewidth store
+.spineyespace .seteyespace store
+.spinoffset .setoffset store
+.shoot .vloc store
+-2 .venval store
+.shoot .ploc store
+stop
+
+cond
+*.seteyes 1 =
+start
+*.setoffset .eye9dir store
+*.setoffset *.seteyespace add .eye8dir store
+*.setoffset *.seteyespace 2 mult add .eye7dir store
+*.setoffset *.seteyespace 3 mult add .eye6dir store
+*.setoffset *.seteyespace 4 mult add .eye5dir store
+*.setoffset *.seteyespace 5 mult add .eye4dir store
+*.setoffset *.seteyespace 6 mult add .eye3dir store
+*.setoffset *.seteyespace 7 mult add .eye2dir store
+*.setoffset *.seteyespace 8 mult add .eye1dir store
+4 .focuseye store
+0 .seteyes store
+stop
+
+'================================================
+
+
+'================================================
+'----- Conspec
+
+start
+*.keyloc .startkey sub 8192 mult *.robage 10 div add *.keyloc * add .out9 store
+*.keyloc .startkey sub 8192 mult *.robage 10 div add *.keyloc * add .tout9 store
+stop
+
+cond
+*.eyef 0 >
+*.in9 24576 & 8192 div .startkey add * *.refage 10 div add *.in9 8191 & 1 sub >
+*.in9 24576 & 8192 div .startkey add * *.refage 10 div add *.in9 8191 & 1 add <
+start
+.friend .oponent store
+stop
+
+cond
+*.eyef 0 >
+*.in9 24576 & 8192 div .startkey add * *.refage 10 div add *.in9 8191 & 1 sub <
+*.in9 24576 & 8192 div .startkey add * *.refage 10 div add *.in9 8191 & 1 add > or
+start
+.enemy .oponent store
+stop
+
+cond
+*.memval 0 =
+*.refeye 0 =
+*.refshoot 0 =
+*.refshell 0 =
+*.refpoison 0 =
+*.refvenom 0 =
+*.eyef 0 >
+start
+.alge .oponent store
+stop
+
+cond
+*.eyef 0 =
+*.robage 0 = or
+start
+0 .oponent store
+stop
+
+cond
+*.numties 0 >
+*.tin9 24576 & 8192 div .startkey add * *.trefage 10 div add *.tin9 8191 & 2 sub >
+*.tin9 24576 & 8192 div .startkey add * *.trefage 10 div add *.tin9 8191 & 2 add < and
+*.trefage 0 = or
+start
+.friend .toponent store
+stop
+
+cond
+*.numties 0 >
+*.tin9 24576 & 8192 div .startkey add * *.trefage 10 div add *.tin9 8191 & 2 sub <
+*.tin9 24576 & 8192 div .startkey add * *.trefage 10 div add *.tin9 8191 & 2 add > or
+*.trefage 0 >
+start
+.enemy .toponent store
+stop
+
+cond
+*.tmemval 0 =
+*.trefeye 0 =
+*.trefshoot 0 =
+*.trefshell 0 =
+*.numties 0 >
+start
+'.alge .toponent store
+stop
+
+cond
+*.numties 0 =
+*.robage 0 = or
+start
+0 .toponent store
+stop
+
+
+'----- Poser conspecs
+cond
+*.memloc .memloc !=
+*.memval 0 !=
+start
+*.memval *.memloc store
+stop
+
+cond
+*.memloc .memloc !=
+start
+.memloc .memloc store
+stop
+
+cond
+*.eyef 0 >
+*.memloc .memloc =
+*.memval 0 >
+*.memval .memloc !=
+start
+*.memval .memloc store
+stop
+
+cond
+*.tmemloc .tmemloc !=
+*.tmemval 0 !=
+start
+*.tmemval *.tmemloc store
+stop
+
+cond
+*.tmemloc .tmemloc !=
+start
+.tmemloc .tmemloc store
+stop
+
+cond
+*.numties 0 >
+*.tmemloc .tmemloc =
+*.tmemval 0 >
+*.tmemval .tmemloc !=
+start
+*.tmemval .tmemloc store
+stop
+
+cond
+*.eyef 0 >
+start
+*.in1 .out1 store
+*.in2 .out2 store
+*.in3 .out3 store
+*.in4 .out4 store
+*.in5 .out5 store
+*.in6 .out6 store
+*.in7 .out7 store
+*.in8 .out8 store
+*.in10 .out10 store
+stop
+
+cond
+*.numties 0 >
+start
+*.tin1 .tout1 store
+*.tin2 .tout2 store
+*.tin3 .tout3 store
+*.tin4 .tout4 store
+*.tin5 .tout5 store
+*.tin6 .tout6 store
+*.tin7 .tout7 store
+*.tin8 .tout8 store
+*.tin10 .tout10 store
+stop
+
+cond
+*.genekill 0 !=
+start
+0 .genekill store
+stop
+
+'--- Steal shoot
+cond
+*.eyef 0 >
+*.refshoot *.myshoot <
+*.refshoot 0 >
+start
+*.thisgene 1 add .delgene store
+
+*.myshoot *.refshoot sub 1 >
+*.thisgene 3 add .delgene store
+
+*.myshoot *.refshoot sub 4 >
+*.thisgene 4 add .delgene store
+
+*.myshoot *.refshoot sub 9 >
+*.thisgene 5 add .delgene store
+
+*.myshoot *.refshoot sub 19 >
+*.thisgene 6 add .delgene store
+
+*.myshoot *.refshoot sub 39 >
+*.thisgene 7 add .delgene store
+
+clearbool
+*.delgene .genekill store
+stop
+
+cond
+0 1 =
+start
+0 .shoot store
+stop
+
+cond
+0 1 =
+start
+0 .shoot store
+stop
+
+cond
+0 1 =
+start
+0 .shoot store
+0 .shoot store
+stop
+
+cond
+0 1 =
+start
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+stop
+
+cond
+0 1 =
+start
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+stop
+
+cond
+0 1 =
+start
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+stop
+
+cond
+0 1 =
+start
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+0 .shoot store
+stop
+
+'--- Steal eyes
+cond
+*.eyef 0 >
+*.refeye *.myeye <
+*.refeye 0 >
+start
+*.thisgene 1 add .delgene store
+
+*.myeye *.refeye sub 1 >
+*.thisgene 3 add .delgene store
+
+*.myeye *.refeye sub 4 >
+*.thisgene 4 add .delgene store
+
+*.myeye *.refeye sub 9 >
+*.thisgene 5 add .delgene store
+
+*.myeye *.refeye sub 19 >
+*.thisgene 6 add .delgene store
+
+*.myeye *.refeye sub 39 >
+*.thisgene 7 add .delgene store
+
+clearbool
+*.delgene .genekill store
+stop
+
+cond
+0 1 =
+start
+*.eye9 0 >
+stop
+
+cond
+0 1 =
+start
+*.eye9 0 >
+stop
+
+cond
+0 1 =
+start
+*.eye9 0 >
+*.eye9 0 >
+stop
+
+cond
+0 1 =
+start
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+stop
+
+cond
+0 1 =
+start
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+stop
+
+cond
+0 1 =
+start
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+stop
+
+cond
+0 1 =
+start
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+*.eye9 0 >
+stop
+
+'================================================
+
+cond
+*.state .torpedo =
+*.oponent .alge =
+*.nrg 500 >
+start
+.scaning .state store
+stop
+
+'================================================
+'----- Shooting
+
+cond
+*.numties 0 =
+*.paralyzed 0 =
+*.state .scaning =
+*.eyef 0 >
+*.oponent .enemy =
+*.oponent .alge = or
+start
+*.refxpos *.refypos angle .setaim store
+*.refxpos *.xpos sub abs *.refypos *.ypos sub abs pyth 5 div 30 sub 0 floor 100 ceil *.refvelup add .up store
+*.refveldx .dx store
+-6 6 1 add store
+*.refxpos .out4 store
+*.refypos .out5 store
+stop
+
+cond
+*.numties 0 !=
+*.paralyzed 0 != or
+*.state .scaning =
+*.eyef 0 >
+*.oponent .enemy =
+start
+.shootval 6 1 add store
+-31999 .shootval store
+stop
+
+cond
+*.eyef 0 =
+*.oponent .friend = or
+*.out4 0 !=
+*.out5 0 != or
+start
+0 .out4 store
+0 .out5 store
+stop
+
+cond
+*.state .scaning =
+*.eyef 0 >
+*.oponent .enemy =
+*.robage 5 mod 0 =
+*.venom 1 >
+*.numties 0 =
+*.paralyzed 0 =
+start
+-3 6 1 add store
+0 .shootval store
+stop
+
+cond
+*.state .scaning =
+*.eyef 0 >
+*.robage 10 mod 0 =
+*.oponent .alge =
+*.venom 1 >
+*.numties 0 =
+*.paralyzed 0 =
+start
+-3 6 1 add store
+0 .shootval store
+stop
+
+cond
+*.state .scaning =
+*.eyef 0 >
+*.robage 10 mod 1 =
+*.oponent .alge =
+*.venom 1 >
+*.numties 0 =
+*.paralyzed 0 =
+start
+.setaim 6 1 add store
+*.refxpos *.refypos angle 682 add .shootval store
+stop
+
+cond
+'*.poisoned 0 =
+*.body 50 >
+*.state .scaning =
+*.eyef 55 >
+*.oponent .enemy =
+*.oponent .alge = or
+start
+*.nrg 30 div 20 ceil *.eyef 40 sub 0 floor sgn *.body 40 sub 0 floor sgn mult mult 1 floor .shootval store
+stop
+
+'================================================
+
+
+'================================================
+'----- Spread
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 =
+*.robage 20 mod 16 >=
+*.robage 200 >= or
+start
+*.aim 35 add .setaim store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 =
+*.robage 20 mod 16 <
+*.robage 200 <
+start
+20 .dx store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 !=
+*.oponent .friend =
+*.robage 20 mod 16 >=
+*.robage 200 >= or
+start
+*.aim 35 add .setaim store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 !=
+*.oponent .friend =
+*.robage 20 mod 16 <
+*.robage 200 <
+start
+20 .dx store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.robage 100 >=
+*.robage 1000 <
+*.eyef 0 =
+*.robage 20 mod 10 >
+start
+20 .dx store
+stop
+
+'================================================
+
+
+'================================================
+'----- Aim
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 =
+*.robage 20 >
+*.oponent .friend = and or
+'*.eye1 0 >
+start
+*.aim *.eye1dir add .setaim 500 1 add * abs sgn mult store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 =
+*.robage 20 >
+*.oponent .friend = and or
+'*.eye2 0 >
+start
+*.aim *.eye2dir add .setaim 500 2 add * abs sgn mult store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 =
+*.robage 20 >
+*.oponent .friend = and or
+'*.eye3 0 >
+start
+*.aim *.eye3dir add .setaim 500 3 add * abs sgn mult store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 =
+*.robage 20 >
+*.oponent .friend = and or
+'*.eye4 0 >
+start
+*.aim *.eye4dir add .setaim 500 4 add * abs sgn mult store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 =
+*.robage 20 >
+*.oponent .friend = and or
+'*.eye5 0 >
+start
+*.aim *.eye5dir add .setaim 500 5 add * abs sgn mult store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 =
+*.robage 20 >
+*.oponent .friend = and or
+'*.eye6 0 >
+start
+*.aim *.eye6dir add .setaim 500 6 add * abs sgn mult store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 =
+*.robage 20 >
+*.oponent .friend = and or
+'*.eye7 0 >
+start
+*.aim *.eye7dir add .setaim 500 7 add * abs sgn mult store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 =
+*.robage 20 >
+*.oponent .friend = and or
+'*.eye8 0 >
+start
+*.aim *.eye8dir add .setaim 500 8 add * abs sgn mult store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eyef 0 >
+*.oponent .friend =
+*.in4 0 !=
+*.in5 0 != or
+*.in4 *.in5 dist 1000 <
+start
+*.in4 *.in5 angle .setaim store
+20 .dx store
+stop
+
+'================================================
+
+
+'================================================
+'----- Reproduction
+
+cond
+*.state .scaning =
+*.eyef 0 =
+*.oponent .friend = or
+*.nrg 3100 > or
+*.nrg 300 >
+*.body 100 > and
+*.totalmyspecies 70 < and
+*.nrg 500 >
+*.body 100 > and
+*.totalmyspecies 70 >= and or
+*.repspin 0 =
+start
+*.robage 1 add .repspin store
+stop
+
+cond
+*.robage 1 =
+*.totalmyspecies 5 =
+*.nrg 3000 %=
+*.body 1000 =
+start
+*.robage 1 add .repspin store
+stop
+
+cond
+*.state .scaning =
+*.repspin 0 >
+*.repspin 1 add *.robage =
+start
+*.aim 511 add .setaim store
+0 .up store
+0 .dx store
+stop
+
+cond
+*.state .scaning =
+*.repspin 0 >
+*.repspin 2 add *.robage =
+start
+*.aim 341 add .setaim store
+0 .up store
+0 .dx store
+stop
+
+cond
+*.state .scaning =
+*.repspin 0 >
+*.repspin 3 add *.robage =
+start
+*.aim 511 add .setaim store
+0 .up store
+0 .dx store
+stop
+
+cond
+*.state .scaning =
+*.repspin 15 add *.robage <
+*.repspin 0 !=
+start
+0 .repspin store
+stop
+
+cond
+*.state .scaning =
+*.repspin 0 >
+*.nrg 300 >
+*.body 100 >
+*.repspin 1 add *.robage =
+*.repspin 2 add *.robage = or
+*.totalmyspecies 70 <
+*.eyef 0 =
+*.oponent .friend = or
+*.oponent .alge = or
+start
+32 .repro store
+0 6 1 add store
+stop
+
+cond
+*.state .scaning =
+*.repspin 0 >
+*.nrg 500 >
+*.body 100 >
+*.repspin 1 add *.robage =
+*.repspin 2 add *.robage = or
+*.totalmyspecies 70 >=
+*.eyef 0 =
+*.oponent .friend = or
+*.oponent .alge = or
+start
+32 .repro store
+0 6 1 add store
+stop
+
+cond
+*.state .scaning =
+*.repspin 0 >
+*.oponent .enemy =
+*.eyef 0 !=
+*.nrg 300 >
+*.body 100 >
+*.repspin 1 add *.robage =
+*.repspin 2 add *.robage = or
+start
+*.refxpos .birthx store
+*.refypos .birthy store
+.torpedo .birthstate store
+5 .repro store
+0 6 1 add store
+stop
+
+cond
+*.paralyzed 25 >
+*.body 50 >
+*.nrg 100 >
+start
+30 .aimsx store
+*.refxpos .birthx store
+*.refypos .birthy store
+.torpedo .birthstate store
+5 .repro store
+'0 6 1 add store
+stop
+
+cond
+*.paralyzed 0 !=
+*.shflav 0 !=
+*.shflav -2 !=
+start
+*.shang .aimshoot store
+.shootval 6 1 add store
+-31999 .shootval store
+stop
+
+'================================================
+
+
+'================================================
+'----- Body and such + some defence stuff
+
+cond
+*.state .scaning =
+*.nrg 200 >
+*.body 500 <
+*.totalmyspecies 70 > or
+start
+100 .strbody store
+stop
+
+cond
+*.state .scaning =
+*.nrg 100 <
+*.body 20 >
+start
+100 .fdbody store
+stop
+
+cond
+*.state .scaning =
+*.shell 50 <
+*.nrg 50 >
+start
+20 .mkshell store
+stop
+
+cond
+*.state .scaning =
+*.shell 200 <
+*.nrg 180 >
+*.body 120 >
+start
+200 *.shell sub .mkshell store
+stop
+
+cond
+*.state .scaning =
+*.venom 50 <
+*.nrg 20 >
+start
+50 *.venom sub .strvenom store
+stop
+
+cond
+*.state .scaning =
+*.shell 300 <
+*.nrg 200 >
+*.body 100 >
+*.eyef 0 >
+*.oponent .enemy =
+*.refvelscalar 20 > or
+start
+300 *.shell sub .mkshell store
+stop
+
+cond
+*.state .scaning =
+*.shflav 0 !=
+*.shflav -2 !=
+*.shflav -3 !=
+*.nrg 80 >
+*.venom 5 >
+start
+*.aim *.shang sub .setaim store
+-3 6 1 add store
+10 .shootval store
+stop
+
+cond
+*.state .scaning =
+*.shflav 0 !=
+*.shflav -2 !=
+*.shflav -3 !=
+*.nrg 80 >
+*.venom 5 <=
+start
+*.aim *.shang sub .setaim store
+.setaim 6 1 add store
+*.refaim 682 add .shootval store
+stop
+
+cond
+*.fixpos 0 !=
+start
+0 .fixpos store
+stop
+
+cond
+*.state .scaning =
+*.pain 60 >
+*.shflav 0 !=
+*.shflav -2 !=
+start
+*.maxvel .dx store
+stop
+
+cond
+*.shflav 0 !=
+start
+0 .shflav store
+stop
+
+start
+.deltie inc
+stop
+
+cond
+*.numties 0 >
+*.robage 1 >
+*.toponent .friend !=
+start
+*.tiepres .tienum store
+.locs 1 sub rnd 2 mult .startloc add dup * .tieloc store
+1 add * .tieval store
+*.numties .deltie store
+stop
+
+'================================================
+
+
+'================================================
+'----- Torpedoes
+
+cond
+*.state .scaning =
+*.oponent .enemy =
+*.eyef 0 !=
+*.eyef 10 <
+*.body 500 >
+*.totalmyspecies 50 <
+*.refshell 0 >
+*.refshell *.refbody add *.refnrg add *.shell *.body add *.nrg add > '-not great...
+start
+*.refxpos .birthx store
+*.refypos .birthy store
+.torpedo .birthstate store
+5 .repro store
+0 6 1 add store
+stop
+
+cond
+*.robage 1 >
+*.body *.nrg add 200 <
+*.oponent .alge !=
+*.eyef 0 = or
+start
+.torpedo .state store
+stop
+
+cond
+*.robage 0 =
+*.state .torpedo =
+start
+*.birthx *.birthy angle .setaim store
+stop
+
+cond
+*.state .torpedo =
+*.body 1 >
+start
+*.body 10 mult 10 sub 0 floor .fdbody store
+stop
+
+cond
+*.state .torpedo =
+*.oponent .enemy =
+*.numties 0 =
+*.eyef 0 !=
+start
+*.refxpos *.refypos angle .setaim store
+*.refxpos *.xpos sub abs *.refypos *.ypos sub abs pyth 10 div 30 sub 0 floor 100 ceil *.refvelup add .up store
+*.refveldx .dx store
+*.refvelsx .sx store
+1 .tie store
+.eye5dir .tieloc store
+.spinoffset .spineyespace 4 mult add .tieval store
+stop
+
+cond
+*.state .torpedo =
+*.oponent .alge =
+*.eyef 0 >
+start
+0 .up store
+0 .dx store
+0 .sx store
+0 .tie store
+*.aim *.eye8dir add .setaim store
+stop
+
+cond
+*.state .torpedo =
+*.toponent .enemy =
+*.numties 0 >
+*.robage 1 >
+start
+*.tiepres .tienum store
+.locs 1 sub rnd 2 mult .startloc add dup * .tieloc store
+1 add * .tieval store
+40 .stifftie store
+200 .fixlen store
+*.trefxpos *.trefypos angle .setaim store
+*.trefvelup .up store
+*.trefveldx .dx store
+0 .deltie store
+stop
+
+cond
+*.state .torpedo =
+*.toponent .friend =
+*.numties 0 >
+start
+*.tiepres .deltie store
+stop
+
+start
+.fixpos dec
+stop
+
+'================================================
+
+
+'================================================
+'----- Viral and mem defence.
+'Haven't realy gotten around to make a propper defence.
+
+cond
+*.keyloc .startkey *.randm add !=
+*.venval -2 != or
+*.vloc .shoot != or
+start
+.startkey *.randm add .keyloc store
+-2 .venval store
+.shoot .vloc store
+stop
+
+cond
+*.vtimer 0 !=
+start
+0 .vshoot store
+stop
+
+cond
+*.repro 0 !=
+*.repro 32 !=
+*.repro 5 !=
+start
+0 .repro store
+stop
+
+cond
+*.delgene 0 !=
+*.delgene *.genekill !=
+start
+0 .delgene store
+stop
+
+'================================================
+
+end
