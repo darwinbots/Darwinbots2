@@ -1,0 +1,96 @@
+cond
+*.robage 2 <
+start
+124 .eye1width store
+490 .eye1dir store
+124 .eye2width store
+210 .eye2dir store
+124 .eye3width store
+402 .eye3dir store
+124 .eye4width store
+125 .eye4dir store
+124 .eye6width store
+979 .eye6dir store
+124 .eye7width store
+1170 .eye7dir store
+124 .eye8width store
+893 .eye8dir store
+124 .eye5width store
+1220 .eye9width store
+680 rnd .setaim store
+20 .sx store
+7 .vloc store
+-2 .venval store
+40 824 *.nrg 100 sub sqr dup div mult store
+40 822 *.nrg 100 sub sqr dup div mult store
+*.tiepres .deltie store
+43 754 store
+stop
+
+cond
+*.nrg 100 >
+*.shflav 0 !=
+or
+*.numties 0 >
+or
+start
+*.robage 9 mod 4 sub *.eyef 0 sub dup div 1 sub abs *.refbody 7 sub -1 mult sqr dup div add sgn *.vtimer 25 sub sqr dup div mult mult *.refxpos *.refypos angle *.eyef 0 sub sqr dup div *.refbody 10 sub sqr dup div mult *.aim *.refxpos *.refypos angle sub abs 1 sub sqr dup div mult *.vtimer 25 sub sqr dup div mult mult add *.tieang - *.aim add *.numties 0 sub sqr dup div *.vtimer 25 sub -1 mult sqr dup div mult *.trefeye 0 sub dup div 1 sub abs mult mult add 511 *.eyef 0 sub dup div 1 sub abs *.refbody 10 sub -1 mult sqr dup div add sgn *.vtimer 25 sub sqr dup div mult mult 19 *.eyef 0 sub sqr dup div *.refbody 10 sub sqr dup div mult *.aim *.refxpos *.refypos angle sub abs 1 sub sqr dup div mult *.vtimer 25 sub sqr dup div mult mult add 19 *.numties 0 sub sqr dup div *.vtimer 25 sub -1 mult sqr dup div mult *.trefeye 0 sub dup div 1 sub abs mult mult add store
+7 *.vtimer 25 sub sqr dup div *.numties 0 sub dup div 1 sub abs add sgn *.venom 5 sub sqr dup div mult *.eye9 20 sub sqr dup div *.focuseye 4 sub dup div 1 sub abs *.focuseye 0 sub dup div 1 sub abs add sgn mult mult *.refbody 7 sub sqr dup div mult *.refeye 0 sub dup div mult mult dec
+7 *.vtimer 25 sub sqr dup div *.numties 0 sub dup div 1 sub abs add sgn *.venom 5 sub sqr dup div mult *.eye9 20 sub sqr dup div *.focuseye 4 sub dup div 1 sub abs *.focuseye 0 sub dup div 1 sub abs add sgn mult mult *.refbody 7 sub sqr dup div mult *.refeye 0 sub dup div mult mult dec
+7 *.vtimer 25 sub sqr dup div *.numties 0 sub dup div 1 sub abs add sgn *.venom 5 sub sqr dup div mult *.eye9 20 sub sqr dup div *.focuseye 4 sub dup div 1 sub abs *.focuseye 0 sub dup div 1 sub abs add sgn mult mult *.refbody 7 sub sqr dup div mult *.refeye 0 sub dup div mult mult dec
+*.tiepres *751 1 sub dup div 1 sub abs *.trefbody 5 sub -1 mult sqr dup div add sgn *.nrg 1500 sub sqr dup div add sgn *.body 5 sub sqr dup div add sgn mult 99 *751 0 sub dup div 1 sub abs *.trefbody 5 sub sqr dup div mult *.nrg 1500 sub -1 mult sqr dup div mult *.body 5 sub -1 mult sqr dup div mult mult add 467 *751 1 sub dup div 1 sub abs *.trefbody 5 sub -1 mult sqr dup div add sgn *.nrg 1500 sub sqr dup div add sgn *.body 5 sub sqr dup div add sgn mult 830 *751 0 sub dup div 1 sub abs *.trefbody 5 sub sqr dup div mult *.nrg 1500 sub -1 mult sqr dup div mult *.body 5 sub -1 mult sqr dup div mult mult add store
+751 *751 sgn mult dec
+50 *.nrg 500 sub sqr dup div *.robage 3100 sub -1 mult sqr dup div mult mult 99 *.robage 3100 sub sqr dup div mult add 300 *.nrg 500 sub sqr dup div *.robage 3100 sub sqr dup div add sgn mult 511 *.robage 3000 sub -1 mult sqr dup div *.nrg 400 sub -1 mult sqr dup div mult *.eyef 0 sub sqr dup div mult *.refbody 10 sub sqr dup div mult *.aim *.refxpos *.refypos angle sub abs 1 sub sqr dup div mult *.vtimer 25 sub sqr dup div mult mult add store
+1 *.body 4 sub -1 mult sqr dup div *.body 4 sub dup div 1 sub abs add sgn *.body 2 sub sqr dup div mult *.nrg 500 sub -1 mult sqr dup div mult mult 30 *.body 21 sub -1 mult sqr dup div *.body 21 sub dup div 1 sub abs add sgn *.body 4 sub sqr dup div mult mult add 200 *.body 21 sub sqr dup div mult add 10 *.nrg 600 sub sqr dup div *.body 4 sub -1 mult sqr dup div mult *.robage 3100 sub sqr dup div add sgn mult add 312 *.body 4 sub -1 mult sqr dup div *.body 4 sub dup div 1 sub abs add sgn *.body 2 sub sqr dup div mult *.nrg 500 sub -1 mult sqr dup div mult mult 312 *.body 21 sub -1 mult sqr dup div *.body 21 sub dup div 1 sub abs add sgn *.body 4 sub sqr dup div mult mult add 312 *.body 21 sub sqr dup div mult add 313 *.nrg 600 sub sqr dup div *.body 4 sub -1 mult sqr dup div mult *.robage 3100 sub sqr dup div add sgn mult add store
+751 *.nrg 500 sub sqr dup div mult inc
+*.nrg 50 div *.vtimer 1 sub dup div 1 sub abs *.numties 0 sub dup div 1 sub abs mult mult *.nrg 10 div 10 floor *.vtimer 1 sub dup div 1 sub abs *.numties 0 sub sqr dup div mult *.trefeye 0 sub dup div 1 sub abs mult mult add *.genes 1 sub *.vtimer 0 sub dup div 1 sub abs *.totalmyspecies 60 sub -1 mult sqr dup div mult mult add *.genes *.vtimer 0 sub dup div 1 sub abs *.totalmyspecies 59 sub sqr dup div mult mult add *.tiepres *.deltie *.tiepres sub dup div *.vtimer 1 sub sqr dup div mult mult add 338 *.vtimer 1 sub dup div 1 sub abs *.numties 0 sub dup div 1 sub abs mult mult 338 *.vtimer 1 sub dup div 1 sub abs *.numties 0 sub sqr dup div mult *.trefeye 0 sub dup div 1 sub abs mult mult add 335 *.vtimer 0 sub dup div 1 sub abs mult add 455 *.deltie *.tiepres sub dup div *.vtimer 1 sub sqr dup div mult mult add store
+42 *.eyef 0 sub sqr dup div *.refbody 7 sub sqr dup div mult *.aim *.refxpos *.refypos angle sub abs 100 sub -1 mult sqr dup div mult *.numties 0 sub dup div 1 sub abs mult *.robage 20 sub sqr dup div mult mult 40 *751 0 sub dup div 1 sub abs *.numties 0 sub dup div mult mult add 330 *.eyef 0 sub sqr dup div *.refbody 7 sub sqr dup div mult *.aim *.refxpos *.refypos angle sub abs 100 sub -1 mult sqr dup div mult *.numties 0 sub dup div 1 sub abs mult *.robage 20 sub sqr dup div mult mult 331 *751 0 sub dup div 1 sub abs *.numties 0 sub dup div mult mult add store
+1 *.trefeye 0 sub dup div 1 sub abs *.vtimer 25 sub -1 mult sqr dup div mult *.numties 0 sub sqr dup div mult mult 100 *.trefeye 0 sub dup div 1 sub abs *.vtimer 25 sub sqr dup div mult *.numties 0 sub sqr dup div mult mult add 500 *.trefeye 0 sub dup div *.numties 0 sub sqr dup div mult mult add 469 *.numties 0 sub sqr dup div mult store
+453 *.robage 3 mod 0 sub dup div 1 sub abs *.tiepres 42 sub dup div add sgn *.vtimer 25 sub sqr dup div mult mult 822 *.robage 3 mod 1 sub dup div 1 sub abs *.tiepres 42 sub dup div 1 sub abs mult *.vtimer 25 sub sqr dup div mult mult add 300 *.robage 3 mod 2 sub dup div 1 sub abs *.tiepres 42 sub dup div 1 sub abs mult *.vtimer 25 sub sqr dup div mult mult add 216 *.vtimer 25 sub -1 mult sqr dup div mult add .tieloc store
+1000 *.robage 3 mod 0 sub dup div 1 sub abs *.tiepres 42 sub dup div add sgn *.vtimer 25 sub sqr dup div mult mult 50 *.robage 3 mod 1 sub dup div 1 sub abs *.tiepres 42 sub dup div 1 sub abs mult *.vtimer 25 sub sqr dup div mult mult add 0 *.robage 3 mod 2 sub dup div 1 sub abs *.tiepres 42 sub dup div 1 sub abs mult *.vtimer 25 sub sqr dup div mult mult add 1 *.vtimer 25 sub -1 mult sqr dup div mult add .tieval store
+80 rnd 20 floor *.robage 7 sub sqr dup div *.vtimer 25 sub sqr dup div mult *.shflav 0 sub dup div 1 sub abs mult *.totalmyspecies 400 sub -1 mult sqr dup div mult *.robage 8 sub sqr dup div mult *.nrg 100 sub sqr dup div mult *.eyef 0 sub sqr dup div mult *.refbody 5 sub -1 mult sqr dup div mult *.refxpos *.xpos sub *.refypos *.ypos sub pyth 100 sub -1 mult sqr dup div mult *.refvelscalar 1 sub -1 mult sqr dup div mult *.velscalar 1 sub -1 mult sqr dup div mult mult 80 rnd 20 floor *.shflav -1 sub dup div 1 sub abs *.shflav -3 sub dup div 1 sub abs add sgn *.shflav -6 sub dup div 1 sub abs add sgn *.robage 7 sub sqr dup div mult *.vtimer 25 sub sqr dup div mult mult add *.tielen 30 div 5 floor *.robage 7 sub sqr dup div *.numties 0 sub sqr dup div mult *.robage 20 sub sqr dup div mult *.vtimer 25 sub -1 mult sqr dup div mult *.trefeye 0 sub dup div 1 sub abs mult mult add 50 *.robage 7 sub -1 mult sqr dup div *.numties 0 sub dup div 1 sub abs mult mult add 4 *.robage 7 sub sqr dup div *.vtimer 25 sub sqr dup div mult *.shflav 0 sub dup div 1 sub abs mult *.totalmyspecies 400 sub -1 mult sqr dup div mult *.robage 8 sub sqr dup div mult *.nrg 100 sub sqr dup div mult *.eyef 0 sub sqr dup div mult *.refbody 5 sub -1 mult sqr dup div mult *.refxpos *.xpos sub *.refypos *.ypos sub pyth 100 sub -1 mult sqr dup div mult *.refvelscalar 1 sub -1 mult sqr dup div mult *.velscalar 1 sub -1 mult sqr dup div mult mult 4 *.shflav -1 sub dup div 1 sub abs *.shflav -3 sub dup div 1 sub abs add sgn *.shflav -6 sub dup div 1 sub abs add sgn *.robage 7 sub sqr dup div mult *.vtimer 25 sub sqr dup div mult mult add 1 *.robage 7 sub sqr dup div *.numties 0 sub sqr dup div mult *.robage 20 sub sqr dup div mult *.vtimer 25 sub -1 mult sqr dup div mult *.trefeye 0 sub dup div 1 sub abs mult mult add 1 *.robage 7 sub -1 mult sqr dup div *.numties 0 sub dup div 1 sub abs mult mult add store
+80 rnd 20 floor *.robage 7 sub sqr dup div *.vtimer 25 sub sqr dup div mult *.shflav 0 sub dup div 1 sub abs mult *.totalmyspecies 400 sub -1 mult sqr dup div mult *.robage 8 sub sqr dup div mult *.nrg 100 sub sqr dup div mult *.eyef 0 sub sqr dup div mult *.refbody 5 sub -1 mult sqr dup div mult *.refxpos *.xpos sub *.refypos *.ypos sub pyth 100 sub -1 mult sqr dup div mult *.refvelscalar 1 sub -1 mult sqr dup div mult *.velscalar 1 sub -1 mult sqr dup div mult mult 80 rnd 20 floor *.shflav -1 sub dup div 1 sub abs *.shflav -3 sub dup div 1 sub abs add sgn *.shflav -6 sub dup div 1 sub abs add sgn *.robage 7 sub sqr dup div mult *.vtimer 25 sub sqr dup div mult mult add *.veldx *.robage 7 sub sqr dup div *.numties 0 sub sqr dup div mult *.robage 20 sub sqr dup div mult *.vtimer 25 sub -1 mult sqr dup div mult *.trefeye 0 sub dup div 1 sub abs mult mult add 2 *.robage 7 sub sqr dup div *.vtimer 25 sub sqr dup div mult *.shflav 0 sub dup div 1 sub abs mult *.totalmyspecies 400 sub -1 mult sqr dup div mult *.robage 8 sub sqr dup div mult *.nrg 100 sub sqr dup div mult *.eyef 0 sub sqr dup div mult *.refbody 5 sub -1 mult sqr dup div mult *.refxpos *.xpos sub *.refypos *.ypos sub pyth 100 sub -1 mult sqr dup div mult *.refvelscalar 1 sub -1 mult sqr dup div mult *.velscalar 1 sub -1 mult sqr dup div mult mult 2 *.shflav -1 sub dup div 1 sub abs *.shflav -3 sub dup div 1 sub abs add sgn *.shflav -6 sub dup div 1 sub abs add sgn *.robage 7 sub sqr dup div mult *.vtimer 25 sub sqr dup div mult mult add 3 *.robage 7 sub sqr dup div *.numties 0 sub sqr dup div mult *.robage 20 sub sqr dup div mult *.vtimer 25 sub -1 mult sqr dup div mult *.trefeye 0 sub dup div 1 sub abs mult mult add store
+202 *.shflav 0 sub sqr dup div mult dec
+202 *.shflav 0 sub -1 mult sqr dup div mult inc
+.fixpos dec
+stop
+
+cond
+*754 43 !=
+start
+.genes dec
+*.tiepres 467 *.trefbody 5 sub sqr dup div mult store
+50 .repro store
+35 .aimright store
+22 .tie store
+50 .sharenrg store
+*.mkvirus .delgene store
+1 .vshoot store
+7 .ploc store
+7 .mkpoison store
+stop
+
+cond
+*754 43 !=
+start
+.genes dec
+*.thisgene *.genes sgn add .mkvirus store
+*.genes 777 *777 1 sub -1 mult sqr dup div mult store
+*777 .genes store
+*.thisgene 1 sub *.thisgene 1 sub sgn mult *.thisgene 1 add *.thisgene 1 sub sgn 1 sub -1 mult mult add .delgene store
+*.nrg 30 div .vshoot store
+-6 7 *.eyef 1 sub sgn 0 floor mult *.refbody 7 sub sgn 0 floor mult store
+*.refxpos *.refypos angle - *.aim add .aimshoot store
+50 .repro store
+7 .dx store
+1220 .eye5width store
+7 .ploc store
+7 .mkpoison store
+20 .mkslime store
+3 .mkshell store
+*.tiepres 467 *.trefbody 5 sub sqr dup div mult store
+22 330 *.refbody 7 sub - sgn 0 floor 3000 *.refage sub sgn 0 floor mult *.refshoot 0 sub dup div 1 sub abs mult mult store
+50 .sharenrg store
+.fixpos dec
+.strbody inc
+stop
