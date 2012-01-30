@@ -12,6 +12,7 @@ Public Sub UpdateSim()
   Dim CorrectionAmount As Single
   Dim CurrentPopulation As Integer
   Dim i As Integer
+  Dim t As Integer
 
   
   SimOpts.TotRunCycle = SimOpts.TotRunCycle + 1
@@ -78,7 +79,7 @@ Public Sub UpdateSim()
   ExecRobs
   If datirob.Visible And datirob.ShowMemoryEarlyCycle Then
     With rob(robfocus)
-      datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime, .Chlr
+      datirob.infoupdate robfocus, .nrg, .Parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .Shell, .Slime, .Chlr
     End With
   End If
   
