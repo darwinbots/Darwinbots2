@@ -1,0 +1,355 @@
+'Martian Tank 3
+'By Martin Welgemoed, Martian in the DB Forum
+'
+'Please comment on this bot.
+'
+'Thanks PY for simplebot tutorial
+'Thanks to Elite for the counter attacking gene, the turning gene, the accuracy gene and the venom and poison tutorials
+'Thanks to Abyaly for helping with the venom
+'
+'Designed for 2.43
+'Designed for F2
+
+'Leaching
+cond
+*.tiepres 0 >
+start
+*.tiepres .tienum store
+.tieval .tieloc store
+1000 .tieval store
+stop
+
+'Delete birthtie
+cond
+*.robage 0 =
+start
+.tie inc
+.shoot .memloc store
+.shoot .vloc store
+-2 .venval store
+.shoot .ploc store
+stop
+
+cond
+*.robage 1 = 
+start 
+.deltie inc 
+stop
+
+'Get rid of waste
+
+cond
+*.waste 500 >
+start
+*.waste .shootval store
+-4 .shoot store
+0 .shflav store
+stop
+
+'Search for a target
+
+cond
+*.refeye *.myeye !=
+*.eye1 *.eye2 >=
+*.eye1 *.eye3 >=
+*.eye1 *.eye4 >=
+*.eye1 *.eye5 >=
+*.eye1 *.eye6 >=
+*.eye1 *.eye7 >=
+*.eye1 *.eye8 >=
+*.eye1 *.eye9 >=
+start
+mult -140
+stop
+
+cond
+*.refeye *.myeye !=
+*.eye9 *.eye2 >=
+*.eye9 *.eye3 >=
+*.eye9 *.eye4 >=
+*.eye9 *.eye5 >=
+*.eye9 *.eye6 >=
+*.eye9 *.eye7 >=
+*.eye9 *.eye8 >=
+*.eye9 *.eye1 >=
+start
+mult 140
+stop
+
+cond
+*.refeye *.myeye !=
+*.eye2 *.eye9 >=
+*.eye2 *.eye3 >=
+*.eye2 *.eye4 >=
+*.eye2 *.eye5 >=
+*.eye2 *.eye6 >=
+*.eye2 *.eye7 >=
+*.eye2 *.eye8 >=
+*.eye2 *.eye1 >=
+start
+mult -105
+stop
+
+cond
+*.refeye *.myeye !=
+*.eye8 *.eye9 >=
+*.eye8 *.eye3 >=
+*.eye8 *.eye4 >=
+*.eye8 *.eye5 >=
+*.eye8 *.eye6 >=
+*.eye8 *.eye7 >=
+*.eye8 *.eye2 >=
+*.eye8 *.eye1 >=
+start
+mult 105
+stop
+
+cond
+*.refeye *.myeye !=
+*.eye3 *.eye9 >=
+*.eye3 *.eye8 >=
+*.eye3 *.eye4 >=
+*.eye3 *.eye5 >=
+*.eye3 *.eye6 >=
+*.eye3 *.eye7 >=
+*.eye3 *.eye2 >=
+*.eye3 *.eye1 >=
+start
+mult -70
+stop
+
+cond
+*.refeye *.myeye !=
+*.eye7 *.eye9 >=
+*.eye7 *.eye8 >=
+*.eye7 *.eye4 >=
+*.eye7 *.eye5 >=
+*.eye7 *.eye6 >=
+*.eye7 *.eye3 >=
+*.eye7 *.eye2 >=
+*.eye7 *.eye1 >=
+start
+mult 70
+stop
+
+cond
+*.refeye *.myeye !=
+*.eye4 *.eye9 >=
+*.eye4 *.eye8 >=
+*.eye4 *.eye7 >=
+*.eye4 *.eye5 >=
+*.eye4 *.eye6 >=
+*.eye4 *.eye3 >=
+*.eye4 *.eye2 >=
+*.eye4 *.eye1 >=
+start
+mult -35
+stop
+
+cond
+*.refeye *.myeye !=
+*.eye6 *.eye9 >=
+*.eye6 *.eye8 >=
+*.eye6 *.eye7 >=
+*.eye6 *.eye5 >=
+*.eye6 *.eye4 >=
+*.eye6 *.eye3 >=
+*.eye6 *.eye2 >=
+*.eye6 *.eye1 >=
+start
+mult 35
+stop
+
+cond
+*.refeye *.myeye !=
+*.eye5 *.eye9 >=
+*.eye5 *.eye8 >=
+*.eye5 *.eye7 >=
+*.eye5 *.eye6 >=
+*.eye5 *.eye4 >=
+*.eye5 *.eye3 >=
+*.eye5 *.eye2 >=
+*.eye5 *.eye1 >=
+start
+mult
+stop
+
+cond
+*.eye5 0 >
+*.refeye *.myeye =
+start
+mult 900 rnd 100 add
+100 .up store
+stop
+
+cond
+*.eye1 = 0
+*.eye2 = 0
+*.eye3 = 0
+*.eye4 = 0
+*.eye5 = 0
+*.eye6 = 0
+*.eye7 = 0
+*.eye8 = 0
+*.eye9 = 0
+*.robage 50 mod = 0
+start
+mult 900 rnd 100 add
+stop
+
+'If I'm forced by poison to shoot out energy
+'make sure it doesn't hit an enemy
+
+cond
+-2 *.shoot =
+0 *.eye5 !=
+*.refeye *.myeye !=
+start
+mult
+500 .up store
+mult 900 rnd 100 add
+stop
+
+'reproduce
+
+cond
+*.nrg 5100 >
+start
+mult 628 50 inc
+50 .repro store
+100 .strbody store
+stop
+
+cond
+*50 0 > 
+start
+mult 628 50 dec 
+stop
+
+'This does the amount of rotation placed on the stack
+cond
+start
+.aimdx store
+stop
+
+cond
+*.eye1 = 0
+*.eye2 = 0
+*.eye3 = 0
+*.eye4 = 0
+*.eye5 = 0
+*.eye6 = 0
+*.eye7 = 0
+*.eye8 = 0
+*.eye9 = 0
+start
+100 .up store
+stop
+
+'Chase the target
+
+cond
+*.eye5 0 >
+*.refeye *.myeye !=
+start
+*.refxpos *.refypos angle .setaim store
+*.refveldx .dx store
+*.refvelup 30 add .up store
+stop
+
+'Shoot the target
+
+cond
+*.eye5 25 >
+*.refeye *.myeye !=
+*.memval -2 !=
+*.refeye 0 !=
+start
+50 .shootval store
+-3 .shoot store
+stop
+
+cond
+*.eye5 25 >
+*.refeye *.myeye !=
+*.memval -2 sub sgn abs 1 sub -1 mult *.refeye 0 sub sgn abs 1 sub -1 mult add sgn abs 1 =
+*.refpoison *.refshell =>
+start
+16 .shootval store
+-6 .shoot store
+stop
+
+cond
+*.eye5 25 >
+*.refeye *.myeye !=
+*.memval -2 sub sgn abs 1 sub -1 mult *.refeye 0 sub sgn abs 1 sub -1 mult add sgn abs 1 =
+*.refpoison *.refshell <
+start
+16 .shootval store
+-1 .shoot store
+stop
+
+'Return fire
+
+cond
+*.shflav 0 !=
+*.refpoison *.refshell <
+*.memval -2 =
+start
+*.shang .aimshoot store
+32 .shootval store
+-1 .shoot store
+0 .shflav store
+stop
+
+cond
+*.shflav 0 !=
+*.refpoison *.refshell >
+*.memval -2 =
+start
+*.shang .aimshoot store
+32 .shootval store
+-6 .shoot store
+0 .shflav store
+stop
+
+cond
+*.shflav 0 !=
+*.memval -2 !=
+start
+*.shang .aimshoot store
+25 .shootval store
+-3 .shoot store
+0 .shflav store
+stop
+
+'Defense
+
+cond
+*.venom 250 <
+*.nrg 1000 >
+start
+50 .strvenom store
+stop
+
+cond
+*.poison 500 <
+*.nrg 1000 >
+start
+50 .strpoison store
+stop
+
+cond
+*.shell 300 <
+*.nrg 1000 >
+start
+50 .mkshell store
+stop
+
+'Prevent fixing
+cond
+*.fixed 1 =
+start
+.fixpos dec
+stop
+end

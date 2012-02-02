@@ -1,0 +1,334 @@
+'Excalibur 1.12
+'designed for db 2.43
+'by Light
+'06/03/07
+
+def count 950
+def spin 951
+def count1 952
+
+cond
+*.memval 1904 !=
+*.eye1 *.eye9 !=
+*.eye1 *.eye5 >
+*.eye9 *.eye5 > or
+start
+*.eye1 *.eye9 sub sgn 139 mult .aimsx store
+stop
+
+cond
+*.memval 1904 !=
+*.eye2 *.eye8 !=
+*.eye2 *.eye5 >
+*.eye8 *.eye5 > or
+start
+*.eye2 *.eye8 sub sgn 104 mult .aimsx store
+stop
+
+cond
+*.memval 1904 !=
+*.eye7 *.eye3 !=
+*.eye3 *.eye5 >
+*.eye7 *.eye5 > or
+start
+*.eye3 *.eye7 sub sgn 70 mult .aimsx store
+stop
+
+cond
+*.memval 1904 !=
+*.eye6 *.eye4 !=
+*.eye4 *.eye5 >
+*.eye6 *.eye5 > or
+start
+*.eye4 *.eye6 sub sgn 35 mult .aimsx store
+stop
+
+cond
+*.memval 1904 !=
+*.eye5 0 >
+*.robage 1 >
+start
+*.refxpos *.refypos angle .setaim store
+stop
+
+cond
+*.spin 30 =
+start
+0 .spin store
+stop
+
+cond
+*.eye5 50 <
+*.eye5 0 > and
+*.memval 1904 != and
+*.spin 20 >= or
+start
+*.refvelup 20 add .up store
+*.refveldx .dx store
+.spin inc
+stop
+
+cond
+*.eye5 50 >
+*.memval 1904 !=
+start
+*.refvelup .up store
+*.refveldx .dx store
+stop
+
+cond
+*.eye9 0 =
+*.eye8 0 =
+*.eye7 0 =
+*.eye6 0 =
+*.eye5 0 =
+*.eye4 0 =
+*.eye3 0 =
+*.eye2 0 =
+*.eye1 0 =
+*.spin 20 <
+start
+300 .aimsx store
+.spin inc
+stop
+
+cond
+*.memval 1904 =
+*.robage 2 >
+*.spin 20 <
+start
+200 .aimsx store
+.spin inc
+stop
+
+'****************
+'* Reproduction *
+'****************
+
+cond
+*50 1 =
+start
+628 .aimsx store
+0 50 store
+stop
+
+cond
+*.nrg 1000 >
+*.body 500 >
+*.eye5 50 <
+start
+628 .aimsx store
+51 .repro store
+1 50 store
+stop
+
+cond
+*.robage 0 =
+start
+955 4 rnd add .memloc store
+1904 955 store
+1904 956 store
+1904 957 store
+1904 958 store
+1904 959 store
+1 .tie store
+0 .out1 store
+0 .aimsx store
+.shoot .vloc store
+.shoot .ploc store
+100 .mkshell store
+100 .strpoison store
+stop
+
+cond
+*.robage 1 =
+start
+1 .deltie store
+314 .aimsx store
+stop
+
+'********
+'* Body *
+'********
+
+cond
+*.body 20 >
+*.nrg 500 <
+start
+100 .fdbody store
+stop
+
+cond
+*.nrg 1000 >
+*.robage 2 >
+start
+100 .strbody store
+stop
+
+'****************
+'* Adaptive Armour *
+'****************
+'1 poison
+'2 shell
+'3 Poison + Shell
+
+cond
+*.in1 *.out1 !=
+*.in1 0 !=
+*.out1 3 <
+*.memval 1904 =
+start
+*.in1 .out1 store
+stop
+
+cond
+*.shflav -1 =
+*.shflav 0 > or
+*.out1 2 <
+start
+1 .out1 store
+stop
+
+cond
+*.shflav -1 =
+*.shflav 0 > or
+*.out1 2 =
+start
+3 .out1 store
+stop
+
+cond
+*.shflav -6 =
+*.shflav -3 = or
+*.out1 0 <
+start
+2 .out1 store
+stop
+
+cond
+*.shflav -6 =
+*.shflav -3 = or
+*.out1 1 =
+start
+3 .out1 store
+stop
+
+cond
+*.nrg 500 >
+*.poison 500 <
+*.out1 1 =
+*.out1 3 = or
+start
+100 .strpoison store
+stop
+
+cond
+*.nrg 500 >
+*.shell 450 <
+*.out1 1 >
+start
+500 *.shell sub .mkshell store
+stop
+
+cond
+*.numties 0 >
+*.robage 10 >
+start
+*.tiepres .tienum store
+.tieval .tieloc store
+3000 .tieval store
+*.tiepres .deltie store
+*.tieval 3000 div .tieloc store
+.sharewaste inc
+stop
+
+'************
+'* Shooting *
+'************
+
+cond
+*.waste 100 >
+start
+*.waste .shootval store
+-4 .shoot store
+stop
+
+cond
+*.memval 1904 !=
+*.eye5 5 >
+*.refnrg 1500 <
+*.refshell 50 > or
+*.refpoison 0 = or
+start
+*.refxpos *.refypos dist 100 div -1 mult .shootval store
+-1 .shoot store
+stop
+
+cond
+*.memval 1904 !=
+*.eye5 5 >
+*.robage 1 >
+start
+' *.refxpos *.refypos dist 100 div -1 mult *.refxpos *.refypos dist 500 div sub .shootval store
+*.refxpos *.refypos dist 100 div -1 mult .shootval store
+-6 .shoot store
+stop
+
+cond
+*.venom 100 <
+start
+100 *.venom sub 0 floor 100 ceil .strvenom store
+stop
+
+cond
+*.count 0 >
+start
+.count dec
+stop
+
+cond
+*.memval 1904 !=
+*.eye5 20 >
+' *.refpoison 0 =
+*.count 0 =
+*.refeye 0 >
+start
+.shoot .vloc store
+-3 .shoot store
+-2 .venval store
+50 .shootval store
+5 .count store
+stop
+
+cond
+*.memval 1904 !=
+*.eye5 20 >
+*.count 0 =
+*.refeye 0 >
+*.refshell 5 >
+start
+.mkshell .vloc store
+-3 .shoot store
+-200 .venval store
+50 .shootval store
+0 .count store
+stop
+
+cond
+*.genes 33 !=
+*.sexrepro 0 != or
+*.mrepro 0 != or
+start
+0 .repro store
+0 .sexrepro store
+0 .mrepro store
+stop
+
+cond
+*.delgene 0 !=
+*.shoot -2 = or
+start
+0 .delgene store
+0 .shoot store
+stop
+end

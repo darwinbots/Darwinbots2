@@ -1,0 +1,557 @@
+'League infiltrator
+'Changes body size to out grow enemy
+'Makes refeye, refaimsx, refaimdx or any combination of these refs
+'Useless as identification
+'Should be able to add most of the other refvals to the bot if needed
+
+
+def aged 987
+def bodya 986
+def nrga 985
+def spin 983
+def counter 984
+def shells 982
+def aimleft 981
+def aimright 980
+def eyec 979
+
+'ID gene - Endy
+cond
+*.robage 0 =
+start
+.tie inc
+100 .shell store
+600 .bodya store
+1000 .nrga store
+stop
+
+cond
+*.in1 0 !=
+*.in1 *.out1 !=
+start
+*.in1 .out1 store
+stop
+
+cond
+*.in2 0 !=
+*.in2 *.out2 !=
+start
+*.in2 .out2 store
+stop
+
+cond
+*.robage 5 >
+*.memval *.genes !=
+*.refbody *.bodya >
+start
+*.refbody 30000 ceil .bodya store
+*.refbody 30000 ceil .out1 store
+stop
+
+cond
+*.robage 5 >
+*.memval *.genes !=
+*.refnrg *.nrga >
+start
+*.refnrg 30000 ceil .nrga store
+*.refnrg 30000 ceil .out2 store
+stop
+
+cond
+*.robage 5 >
+*.memval *.genes =
+*.in3 *.bodya >
+start
+*.in3 .bodya store
+*.in3 .out3 store
+stop
+
+cond
+*.robage 5 >
+*.memval *.genes =
+*.in4 *.nrga >
+start
+*.in4 .nrga store
+*.in4 .out4 store
+stop
+
+'poison
+cond
+*.in5 0 >
+*.memval *.genes = and
+*.shflav -1 = or
+*.poison 50 <
+*.nrg 200 >
+start
+100 *.poison sub .strpoison store
+.out5 inc
+stop
+
+cond
+*.ploc .shoot !=
+start
+.shoot .ploc store
+stop
+
+
+'rotate if all eyes empty
+cond
+*.aged *.refage =
+*.robage 0 !=
+start
+*.aim 280 add .setaim store
+stop
+
+'avoid friend
+cond
+*.memval *.genes =
+*.refage 0 >
+*.eye5 0 >
+start
+*.refxpos *.refypos angle 280 add .setaim store
+stop
+
+'target
+cond
+*.aged *.refage !=
+*.robage 0 !=
+*.memval *.genes !=
+'*.numties 0 =
+start
+*.refxpos *.refypos angle .setaim store
+*.refxpos *.refypos angle *.aim sub .aimshoot store
+*.refxpos *.refypos dist 700 div *.maxvel mult *.refvel add 0 floor *.maxvel ceil .up store
+*.veldx .sx store
+-6 .shoot store
+*.nrg 50 div 20 floor 1000 ceil .shootval store
+stop
+
+def move 990
+
+'turn back after repro
+cond
+*.move 0 !=
+start
+*.aim 628 add .setaim store
+.move dec
+1 .deltie store
+0 .shoot store
+stop
+
+cond
+*.robage 1 =
+*.aged *.refage !=
+*.robage 0 !=
+*.memval *.genes =
+start
+*.aim 628 add .setaim store
+stop
+
+'repro
+cond
+*.aged *.refage =
+*.robage 0 !=
+*.nrg *.nrga >
+*.body *.bodya >
+*.move 0 =
+start
+25 .repro store
+*.aim 628 add .setaim store
+1 .move store
+stop
+
+'delete tie
+cond
+*.tiepres 0 >
+*.numties 0 > or
+start
+*.tiepres .deltie store
+stop
+
+cond
+*.shell 30 <
+*.shflav -6 = or
+*.shflav -3 = or
+*.shell 32000 <
+*.nrg 1000 >
+start
+100 *.shell sub .shell store
+stop
+
+'energy to body
+cond
+*.body 31901 <
+*.nrg 1000 >
+start
+100 .strbody store
+stop
+
+'body to energy
+cond
+*.nrg 300 <
+start
+100 .fdbody store
+stop
+
+cond
+*.robage 32000 =
+start
+stop
+
+cond
+*.waste 50 >
+*.memval *.genes !=
+start
+-4 .shoot store
+*.waste .shootval store
+stop
+
+cond 
+*.fixpos 0 >
+start
+.fixpos dec
+stop
+
+cond
+*.delgene 0 !=
+start
+0 .delgene store
+stop
+
+cond
+*.shoot -2 =
+start
+0 .shoot store
+0 .shootval store
+stop
+
+cond
+*.paralyzed 0 >
+start
+0 .mkshell store 
+0 .shootval store
+stop
+
+cond
+*.counter 0 !=
+start
+0 .counter store
+stop
+
+'aimleft
+cond
+*.aimleft 0 =
+*.memval *.genes !=
+*.refaimsx *.myaimsx <
+*.aged *.refage !=
+*.robage 0 !=
+*.refeye 0 !=
+start
+*.myaimsx *.refaimsx sub .aimleft store
+stop
+
+'aimright
+cond
+*.aimleft 0 =
+*.memval *.genes !=
+*.refaimdx *.myaimdx <
+*.aged *.refage !=
+*.robage 0 !=
+*.refeye 0 !=
+start
+*.myaimdx *.refaimdx sub .aimright store
+stop
+
+'eyec
+cond
+*.eyec 0 =
+*.memval *.genes !=
+*.refeye *.myeye <
+*.aged *.refage !=
+*.robage 0 !=
+*.refeye 0 !=
+start
+*.myeye *.refeye sub .eyec store
+stop
+
+cond
+*.eyec 159 >
+*.counter 0 =
+start
+.counter inc
+*.eyec 160 sub .eyec store
+*.thisgene .delgene store
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+stop
+
+cond
+*.eyec 79 >
+*.counter 0 =
+start
+.counter inc
+*.eyec 80 sub .eyec store
+*.thisgene .delgene store
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+stop
+
+cond
+*.eyec 39 >
+*.counter 0 =
+start
+.counter inc
+*.eyec 40 sub .eyec store
+*.thisgene .delgene store
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+stop
+
+cond
+*.eyec 19 >
+*.counter 0 =
+start
+.counter inc
+*.eyec 20 sub .eyec store
+*.thisgene .delgene store
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+stop
+
+cond
+*.eyec 9 >
+*.counter 0 =
+start
+.counter inc
+*.eyec 10 sub .eyec store
+*.thisgene .delgene store
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+stop
+
+cond
+*.eyec 4 >
+*.counter 0 =
+start
+.counter inc
+*.eyec 5 sub .eyec store
+*.thisgene .delgene store
+*.eye5 *.eye5 *.eye5 *.eye5 *.eye5
+stop
+
+cond
+*.eyec 1 >
+*.counter 0 =
+start
+.counter inc
+*.eyec 2 sub .eyec store
+*.thisgene .delgene store
+*.eye5 *.eye5
+stop
+
+cond
+*.eyec 1 >
+*.counter 0 =
+start
+.counter inc
+*.eyec 2 sub .eyec store
+*.thisgene .delgene store
+*.eye5 *.eye5
+stop
+
+cond
+*.eyec 0 >
+*.counter 0 =
+start
+.counter inc
+.eyec dec
+*.thisgene .delgene store
+*.eye5
+stop
+
+cond
+*.aimright 15 >
+*.counter 0 =
+start
+.counter inc
+*.aimright 16 sub .aimright store
+*.thisgene .delgene store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+stop
+
+cond
+*.aimright 7 >
+*.counter 0 =
+start
+.counter inc
+*.aimright 8 sub .aimright store
+*.thisgene .delgene store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+stop
+
+cond
+*.aimright 3 >
+*.counter 0 =
+start
+.counter inc
+*.aimright 4 sub .aimright store
+*.thisgene .delgene store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+stop
+
+cond
+*.aimright 1 >
+*.counter 0 =
+start
+.counter inc
+*.aimright 2 sub .aimright store
+*.thisgene .delgene store
+*.aimdx .aimdx store
+*.aimdx .aimdx store
+stop
+
+cond
+*.aimright 0 >
+*.counter 0 =
+start
+*.counter inc
+.aimright dec
+*.thisgene .delgene store
+*.aimdx .aimdx store
+stop
+
+cond
+*.aimleft 15 >
+*.counter 0 =
+start
+.counter inc
+*.aimleft 16 sub .aimleft store
+*.thisgene .delgene store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+stop
+
+cond
+*.aimleft 7 >
+*.counter 0 =
+start
+.counter inc
+*.aimleft 8 sub .aimleft store
+*.thisgene .delgene store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+stop
+
+cond
+*.aimleft 3 >
+*.counter 0 =
+start
+.counter inc
+*.aimleft 4 sub .aimleft store
+*.thisgene .delgene store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+stop
+
+cond
+*.aimleft 1 >
+*.counter 0 =
+start
+.counter inc
+*.aimleft 2 sub .aimleft store
+*.thisgene .delgene store
+*.aimsx .aimsx store
+*.aimsx .aimsx store
+stop
+
+cond
+*.aimleft 0 >
+*.counter 0 =
+start
+.counter inc
+.aimleft dec
+*.thisgene .delgene store
+*.aimsx .aimsx store
+stop
+
+'ID gene - Endy
+cond 
+start
+' little constant viral defense gene doubles as ID gene
+*.genes .delgene
+ .fixpos *.fixed mult dec 'anti fixpos by Elite
+*.thisgene *.genes sub dup div
+mult *.robage sgn mult store
+.genes inc
+.thisgene .memloc store
+*.refage .aged store
+stop
+end
