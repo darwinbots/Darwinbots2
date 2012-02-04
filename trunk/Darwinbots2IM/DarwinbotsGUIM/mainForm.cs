@@ -96,7 +96,7 @@ namespace DarwinbotsGUIM
         {
             //Check to see if DB is still running
             try { System.Diagnostics.Process.GetProcessById((int)pid); }
-            catch (ArgumentException) { processLoadError = true; return; }
+            catch (ArgumentException ae) { processLoadError = true; return; }
 
             OperationType ot = (OperationType)e.Argument;
             if (ot == OperationType.Download)

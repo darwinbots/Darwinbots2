@@ -14,7 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkSubset>
     </TargetFrameworkSubset>
-    <ApplicationIcon>internet.ico</ApplicationIcon>
+    <ApplicationIcon>Darwinbots.ico</ApplicationIcon>
     <StartupObject>
     </StartupObject>
   </PropertyGroup>
@@ -85,14 +85,13 @@
     <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Darwinbots.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\IM\IM.csproj">
       <Project>{C09ADEBC-1B14-4C58-B95E-E0E58BC9CC70}</Project>
       <Name>IM</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="internet.ico" />
-    <Content Include="internet_bad.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

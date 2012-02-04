@@ -59,7 +59,7 @@ namespace DarwinbotsCLIM
                                     Console.WriteLine(ex.Message);
                                 }
                             }
-                            catch (UnauthorizedAccessException)
+                            catch (UnauthorizedAccessException ex)
                             {
                                 //User doesnt have acces, they need to do it manually
                                 System.Media.SystemSounds.Exclamation.Play();
