@@ -1033,7 +1033,6 @@ Public Sub UpdateBots()
   'Need to do this first as NetForces can update bots later in the loop
   For t = 1 To MaxRobs
     If rob(t).exist Then
-      If (rob(t).DisableDNA = False) Then EraseSenses t
       If numTeleporters > 0 Then CheckTeleporters t
     End If
   Next t

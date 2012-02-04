@@ -88,6 +88,13 @@ Public Sub UpdateSim()
     End With
   End If
   
+  'updateshots can write to bot sense, so we need to clear bot senses before updating shots
+  For t = 1 To MaxRobs
+    If rob(t).exist Then
+      If (rob(t).DisableDNA = False) Then EraseSenses t
+    End If
+  Next t
+  
   updateshots
   UpdateBots
   
