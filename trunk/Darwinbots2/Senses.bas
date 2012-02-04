@@ -324,6 +324,12 @@ Public Sub EraseLookOccurr(ByVal n As Integer)
   rob(n).mem(in3) = 0
   rob(n).mem(in4) = 0
   rob(n).mem(in5) = 0
+  rob(n).mem(in6) = 0
+  rob(n).mem(in7) = 0
+  rob(n).mem(in8) = 0
+  rob(n).mem(in9) = 0
+  rob(n).mem(in10) = 0
+  
   rob(n).mem(711) = 0      'refaim
   rob(n).mem(712) = 0    'reftie
   rob(n).mem(refshell) = 0
@@ -367,6 +373,12 @@ Public Sub lookoccurrShape(ByVal n As Integer, ByVal o As Integer)
   rob(n).mem(in3) = 0
   rob(n).mem(in4) = 0
   rob(n).mem(in5) = 0
+  rob(n).mem(in6) = 0
+  rob(n).mem(in7) = 0
+  rob(n).mem(in8) = 0
+  rob(n).mem(in9) = 0
+  rob(n).mem(in10) = 0
+  
   rob(n).mem(711) = 0  'refaim
   rob(n).mem(712) = 0  'reftie
   rob(n).mem(refshell) = 0

@@ -12,6 +12,7 @@ Public Sub UpdateSim()
   Dim CorrectionAmount As Single
   Dim CurrentPopulation As Integer
   Dim i As Integer
+  Dim t As Integer
 
   
   SimOpts.TotRunCycle = SimOpts.TotRunCycle + 1
