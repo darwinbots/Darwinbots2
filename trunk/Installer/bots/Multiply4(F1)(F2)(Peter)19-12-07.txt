@@ -1,0 +1,268 @@
+cond
+*.venom 200 <
+*.nrg 1200 >
+start
+100 .strvenom store
+stop
+
+'poison reloading
+cond
+*.poison 400 <
+*.nrg 1100 >
+start
+100 .strpoison store
+stop
+
+'increasing shell
+cond
+*.shell 250 <
+*.nrg 1500 >
+start
+100 .mkshell store
+stop
+
+'restoring venval if wrong
+'restoring vloc if wrong
+cond
+*.venval -2 !=
+*.vloc .shoot !=
+start
+-2 .venval store
+.shoot .vloc store
+stop
+
+'countershooting venom
+cond
+*.shflav 0 !=
+*.shflav -2 !=
+start
+*.shang .aimshoot store
+100 .shootval store
+-3 .shoot store
+0 .shflav store
+stop
+
+'setting up venval vloc and ploc at birth
+cond
+*.robage 0 =
+start
+100 .strvenom store
+.tie inc
+-2 .venval store
+.shoot .vloc store
+.shoot .ploc store
+stop
+
+'deleting birthtie
+cond
+*.robage 1 =
+start
+.deltie inc
+stop
+
+'setting venval back if it is zero, yes I know it is double,
+'but if I change this I have to change the last gene too smile.gif.
+'that is so much work.
+cond
+*.venval 0 =
+start
+-2 .venval store
+stop
+
+'secret, well no, if someone if funny enough to set ploc to zero, this sets vloc to zero.
+cond
+*.ploc 0 =
+start
+.vloc .ploc store
+stop
+
+'shoots poison
+cond
+*.eye5 25 >
+*.refeye *.myeye !=
+*.memval -2 !=
+*.refeye 0 !=
+start
+50 .shootval store
+-3 .shoot store
+stop
+
+'setting outer eyes
+start
+460 .eye9width store
+520 .eye9dir store
+460 .eye1width store
+-520 .eye1dir store
+stop
+
+
+
+'if opponent go closer
+cond
+*.eye5 0 >
+*.refeye *.myeye !=
+*.refshoot *.myshoot !=
+or
+*.eye5 45 <
+start
+*.refxpos *.refypos angle .setaim store
+*.refveldx .dx store
+*.refvelup 50 add .up store
+stop
+
+'turn if shooting nrg or if another multuply in front.
+cond
+-2 *.shoot =
+*.refeye *.myeye =
+*.eye5 0 !=
+and
+or
+start
+0 .shoot store
+0 .shootval store
+100 .aimdx store
+stop
+
+'turning
+cond
+*.eye5 0 =
+start
+10 .up store
+*.eye9 *.eye1 sub 4 mult .aimdx store
+*.eye8 *.eye2 sub 3 mult .aimdx store
+*.eye7 *.eye3 sub 2 mult .aimdx store
+*.eye4 *.eye6 sub .aimsx store
+stop
+
+'selecting favor for -6
+cond
+*.refeye *.myeye !=
+*.refshoot *.myshoot !=
+or
+*.refpoison *.refshell =>
+*.eye5 0 >
+start
+16 .shootval store
+-6 .shoot store
+stop
+
+'selecting favor for -1
+cond
+*.refeye *.myeye !=
+*.refshoot *.myshoot !=
+or
+*.refpoison *.refshell <
+*.eye5 0 >
+start
+16 .shootval store
+-1 .shoot store
+stop
+
+'if nothing speed up
+cond
+*.eye3 0 =
+*.eye4 0 =
+*.eye6 0 =
+*.eye7 0 =
+start
+100 .up store
+stop
+
+
+'get rid of waste
+cond
+*.waste 100 >
+start
+*.waste .shootval store
+-4 .shoot store
+stop
+
+'reproduce
+cond
+*.nrg 4000 >
+*.eye5 0 =
+start
+50 .repro store
+628 .aimleft store
+100 .strbody store
+stop
+
+'if something wrong duplicate and give all nrg to offspring
+cond
+*.paralyzed 25 >
+*.poisoned 25 > or
+*.pwaste 25 > or
+start
+99 .repro store
+stop
+
+
+
+'more body become bigger
+cond
+*.nrg 1000 >
+*.body 500 <
+start
+100 .strbody store
+stop
+
+'leaching
+cond
+*.tiepres 0 >
+start
+*.tiepres .tienum store
+.tieval .tieloc store
+1000 .tieval store
+stop
+
+'if low on nrg pump body back.
+cond
+*.nrg 250 <
+start
+100 .fdbody store
+stop
+
+
+'if it has pain run
+cond
+*.nrg 250 <
+*.pain 50 >
+start
+250 .sx store
+stop
+
+
+'stop fixing
+cond
+*.fixed 0 !=
+start
+0 .fixpos store
+stop
+
+
+'this gene checks if anything that can be made is negative, if so unnegative it.
+cond
+*.mkshell 0 <
+*.mkshell 0 < or
+*.strvenom 0 < or
+*.strpoison 0 < or
+start
+0 .mkshell store
+0 .mkshell store
+0 .strvenom store
+0 .strpoison store
+stop
+
+'viruschecker
+cond
+*.genes 27 !=
+*.sexrepro 0 != or
+*.mrepro 0 != or
+start
+0 .repro store
+0 .sexrepro store
+0 .mrepro store
+0 .mkvirus store
+0 .vshoot store
+0 .delgene store
+stop
