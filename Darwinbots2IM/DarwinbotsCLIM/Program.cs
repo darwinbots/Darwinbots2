@@ -152,9 +152,14 @@ namespace DarwinbotsCLIM
             }
         }
 
+        // You must have STAThread set so exceptions can get copied to clipboard
+        [STAThread]
         static void Main(string[] args)
         {
-            //React to the close event
+            // This registers our handler to deal with (display)
+            // any exceptions that crash the program
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(HandleException);
+            // React to the close event
             _handler += new EventHandler(CloseHandler);
             SetConsoleCtrlHandler(_handler, true);
 
@@ -258,6 +263,18 @@ namespace DarwinbotsCLIM
                     Console.WriteLine("Darwinbots supplied an invalid processID.");
                 Console.ReadKey(true);
                 Environment.Exit(1);
+            }
+        }
+
+        static void HandleException(object sender, UnhandledExceptionEventArgs e)
+        {
+            try
+            {
+                ExceptionBox.ShowDialog((Exception)e.ExceptionObject);
+            }
+            finally
+            {
+                Environment.Exit(2);
             }
         }
     }
