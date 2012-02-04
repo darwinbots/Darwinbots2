@@ -35,8 +35,6 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -63,22 +61,13 @@
     <Compile Include="7zip\RangeCoderBit.cs" />
     <Compile Include="7zip\RangeCoderBitTree.cs" />
     <Compile Include="7zip\SevenZipHelper.cs" />
-    <Compile Include="ExceptionBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExceptionBox.Designer.cs">
-      <DependentUpon>ExceptionBox.cs</DependentUpon>
-    </Compile>
+    <Compile Include="DarwinbotsVersion.cs" />
+    <Compile Include="DarwinbotsVersionConverter.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FlashWindow.cs" />
+    <Compile Include="MemoryScanner.cs" />
     <Compile Include="OpenLink.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="SimInfo.cs" />
     <Compile Include="UploadHelper\HttpUploadHelper.cs" />
     <Compile Include="UploadHelper\MimePart.cs" />
     <Compile Include="UploadHelper\StreamMimePart.cs" />
@@ -87,15 +76,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ExceptionBox.resx">
-      <DependentUpon>ExceptionBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
