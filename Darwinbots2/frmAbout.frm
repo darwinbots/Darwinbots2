@@ -179,7 +179,7 @@ Begin VB.Form frmAbout
    End
    Begin VB.Label Label6 
       Alignment       =   2  'Center
-      Caption         =   "Version 2.44.1 - Dec 2008"
+      Caption         =   "Version 2.45.02 - Feb 2012"
       BeginProperty Font 
          Name            =   "Arial"
          Size            =   8.25

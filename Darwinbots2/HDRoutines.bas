@@ -288,8 +288,23 @@ Public Sub SaveSimPopulation(path As String)
 bypass:
   Open path For Binary As 10
   
-  Put #10, , Len(IntOpts.IName)
-  Put #10, , IntOpts.IName
+  'Put #10, , Len(IntOpts.IName)
+  'Put #10, , IntOpts.IName
+  'DBIM gets the name as a command line arg
+  Put #10, , SimOpts.FieldWidth
+  Put #10, , SimOpts.FieldHeight
+  Put #10, , SimOpts.MutCurrMult
+  Put #10, , SimOpts.CycSec
+  Put #10, , SimOpts.TotRunCycle
+  Put #10, , Robots.TotalRobots
+  Put #10, , Vegs.TotalSimEnergyDisplayed
+  'More can be added, make sure to change the C# source as well
+  'New sim info goes under here (add at the end)
+  
+  'New sim info goes above here
+  Put #10, , Fe
+  Put #10, , Fe
+  Put #10, , Fe
   
   numSpecies = 0
   For X = 0 To SimOpts.SpeciesNum - 1
@@ -320,6 +335,64 @@ bypass:
   
   Close 10
   Form1.MousePointer = vbArrow
+
+End Sub
+
+Public Sub LoadSimPopulationFile(path As String)
+Dim X As Integer
+Dim Y As Integer
+Dim k As Long
+Dim Fe As Byte
+Dim i As Integer
+Dim numSims As Integer
+Dim numSpeciesThisSim As Integer
+
+'The sim file we get from the internet is NOT in the same format as we save from DB
+'See population-file-format.txt to see how both are structured
+'Make sure you know what you are doing if you change these
+'  there are checks to make it backwards compatible
+
+    Form1.MousePointer = vbHourglass
+    
+    IntOpts.numInternetSpecies = 0
+    IntOpts.numInternetSims = 0
+    
+    Open path For Binary As 10
+    
+    Get #10, , numSims
+    If (numSims - 1) < IntOpts.MAXINTERNETSIMS Then 'Array bounds check
+        IntOpts.numInternetSims = numSims
+        For X = 0 To (numSims - 1)
+            Get #10, , k: InternetSims(X).Name = Space(k)
+            Get #10, , InternetSims(X).Name
+            InternetSims(X).population = 0
+            Get #10, , numSpeciesThisSim
+            If (IntOpts.numInternetSpecies + numSpeciesThisSim - 1) < IntOpts.MAXINTERNETSPECIES Then 'Array bounds check
+                For Y = 0 To (numSpeciesThisSim - 1)
+                    i = IntOpts.numInternetSpecies
+                    Get #10, , k: InternetSpecies(i).Name = Space(k)
+                    Get #10, , InternetSpecies(i).Name
+                    Get #10, , InternetSpecies(i).population
+                    InternetSims(X).population = InternetSims(X).population + InternetSpecies(i).population
+                    Get #10, , InternetSpecies(i).color
+                    If InternetSpecies(i).Name = "Corpse" Then InternetSpecies(i).color = vbBlack
+                    
+                    'burn through any new data from a different version
+                    While FileContinue(10)
+                      Get #10, , Fe
+                    Wend
+                    Get #10, , Fe
+                    Get #10, , Fe
+                    Get #10, , Fe
+                    IntOpts.numInternetSpecies = IntOpts.numInternetSpecies + 1
+                Next Y
+            End If
+        Next X
+    End If
+    
+    Close 10
+    
+    Form1.MousePointer = vbArrow
 
 End Sub
 
