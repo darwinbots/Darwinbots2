@@ -436,6 +436,7 @@ Dim temp As Boolean
       Else
         Teleporters(i).PollCountDown = Teleporters(i).PollCountDown - 1
       End If
+      UpdateInternetPopulations 'Loads in / saves new .dbpop files
     End If
 abandonthiscycle:
   Next i

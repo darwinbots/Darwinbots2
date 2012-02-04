@@ -136,7 +136,7 @@ Begin VB.Form CostsForm
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "DynamicCostTargetPopulation"
-            BuddyDispid     =   196616
+            BuddyDispid     =   196617
             OrigLeft        =   3600
             OrigTop         =   360
             OrigRight       =   3855
@@ -159,7 +159,7 @@ Begin VB.Form CostsForm
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "DynamicCostsRangeU"
-            BuddyDispid     =   196615
+            BuddyDispid     =   196616
             OrigLeft        =   4800
             OrigTop         =   720
             OrigRight       =   5055
@@ -182,7 +182,7 @@ Begin VB.Form CostsForm
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "DynamicCostsRangeL"
-            BuddyDispid     =   196614
+            BuddyDispid     =   196615
             OrigLeft        =   4800
             OrigTop         =   1080
             OrigRight       =   5055
@@ -285,7 +285,7 @@ Begin VB.Form CostsForm
          Value           =   100
          AutoBuddy       =   -1  'True
          BuddyControl    =   "BotNoCostThreshold"
-         BuddyDispid     =   196626
+         BuddyDispid     =   196627
          OrigLeft        =   3600
          OrigTop         =   360
          OrigRight       =   3855
@@ -309,7 +309,7 @@ Begin VB.Form CostsForm
          Value           =   100
          AutoBuddy       =   -1  'True
          BuddyControl    =   "CostReinstate"
-         BuddyDispid     =   196612
+         BuddyDispid     =   196613
          OrigLeft        =   3600
          OrigTop         =   360
          OrigRight       =   3855

@@ -195,11 +195,11 @@ End Sub
 
 Private Sub Form_Resize()
   If WindowState <> 1 Then
-    Text1.width = width - 120
+    Text1.Width = Width - 120
     Text1.Height = Height - Text2.Height - 620
     Text2.Top = Height - Text2.Height - 400
-    Text2.width = Text1.width
-    Picture1.width = Text2.width
+    Text2.Width = Text1.Width
+    Picture1.Width = Text2.Width
   End If
 End Sub
 
