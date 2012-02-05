@@ -87,14 +87,13 @@ Begin VB.Form optionsform
       _Version        =   393216
       Style           =   1
       Tabs            =   7
-      Tab             =   1
       TabsPerRow      =   10
       TabHeight       =   520
       ShowFocusRect   =   0   'False
       BackColor       =   12632256
       TabCaption(0)   =   "Species"
       TabPicture(0)   =   "OptionsForm.frx":0000
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "SpeciesLabel"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "Label36"
@@ -168,9 +167,8 @@ Begin VB.Form optionsform
       Tab(0).ControlCount=   35
       TabCaption(1)   =   "General"
       TabPicture(1)   =   "OptionsForm.frx":001C
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "GenPropFrame"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
@@ -197,9 +195,7 @@ Begin VB.Form optionsform
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
       Tab(5).Control(0)=   "Label41"
-      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "Simulazione"
-      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).ControlCount=   2
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
@@ -210,7 +206,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton MutRatesBut 
          Caption         =   "Mutation Rates"
          Height          =   360
-         Left            =   -70560
+         Left            =   4440
          TabIndex        =   261
          Tag             =   "2016"
          ToolTipText     =   "Sets the initial mutation rates for this type"
@@ -221,7 +217,7 @@ Begin VB.Form optionsform
          Alignment       =   1  'Right Justify
          Caption         =   "Disable Vision"
          Height          =   330
-         Left            =   -68160
+         Left            =   6840
          TabIndex        =   260
          ToolTipText     =   "Speeds up the simulation by turning off vision for this species"
          Top             =   4920
@@ -231,7 +227,7 @@ Begin VB.Form optionsform
          Alignment       =   1  'Right Justify
          Caption         =   "Disable DNA Execution"
          Height          =   330
-         Left            =   -68160
+         Left            =   6840
          TabIndex        =   259
          ToolTipText     =   "Speeds up the simulation by turning off DNA execution for this species"
          Top             =   5280
@@ -241,7 +237,7 @@ Begin VB.Form optionsform
          Alignment       =   1  'Right Justify
          Caption         =   "Vegetable (autotrof)"
          Height          =   210
-         Left            =   -68160
+         Left            =   6840
          TabIndex        =   258
          ToolTipText     =   "Feed automatically this type (only for vegetables)"
          Top             =   2880
@@ -251,7 +247,7 @@ Begin VB.Form optionsform
          Alignment       =   1  'Right Justify
          Caption         =   "Fixed in place"
          Height          =   330
-         Left            =   -68160
+         Left            =   6840
          TabIndex        =   257
          Top             =   3120
          Width           =   2430
@@ -260,7 +256,7 @@ Begin VB.Form optionsform
          Alignment       =   1  'Right Justify
          Caption         =   "Disable Voluntary Movement"
          Height          =   330
-         Left            =   -68160
+         Left            =   6840
          TabIndex        =   256
          ToolTipText     =   "Disables voluntary movement for this species"
          Top             =   3480
@@ -270,7 +266,7 @@ Begin VB.Form optionsform
          Alignment       =   1  'Right Justify
          Caption         =   "Disable Reproduction"
          Height          =   330
-         Left            =   -68160
+         Left            =   6840
          TabIndex        =   255
          ToolTipText     =   "Disables voluntary movement for this species"
          Top             =   3840
@@ -280,7 +276,7 @@ Begin VB.Form optionsform
          Alignment       =   1  'Right Justify
          Caption         =   "Virus Immune"
          Height          =   330
-         Left            =   -68160
+         Left            =   6840
          TabIndex        =   254
          ToolTipText     =   "Disables voluntary movement for this species"
          Top             =   4200
@@ -290,7 +286,7 @@ Begin VB.Form optionsform
          Alignment       =   1  'Right Justify
          Caption         =   "Disable Mutations"
          Height          =   330
-         Left            =   -68160
+         Left            =   6840
          TabIndex        =   253
          ToolTipText     =   "Disables voluntary movement for this species"
          Top             =   4560
@@ -300,7 +296,7 @@ Begin VB.Form optionsform
          Caption         =   "0"
          Height          =   255
          Index           =   4
-         Left            =   -70560
+         Left            =   4440
          TabIndex        =   247
          Top             =   3480
          Width           =   495
@@ -309,7 +305,7 @@ Begin VB.Form optionsform
          Alignment       =   1  'Right Justify
          Height          =   285
          IMEMode         =   3  'DISABLE
-         Left            =   -69480
+         Left            =   5520
          TabIndex        =   246
          Text            =   "0"
          Top             =   4080
@@ -318,7 +314,7 @@ Begin VB.Form optionsform
       Begin VB.TextBox SpecQty 
          Alignment       =   1  'Right Justify
          Height          =   285
-         Left            =   -69480
+         Left            =   5520
          TabIndex        =   245
          Text            =   "0"
          Top             =   3120
@@ -328,7 +324,7 @@ Begin VB.Form optionsform
          Caption         =   "5"
          Height          =   255
          Index           =   0
-         Left            =   -70080
+         Left            =   4920
          TabIndex        =   244
          Top             =   3480
          Width           =   495
@@ -337,7 +333,7 @@ Begin VB.Form optionsform
          Caption         =   "15"
          Height          =   255
          Index           =   2
-         Left            =   -69600
+         Left            =   5400
          TabIndex        =   243
          Top             =   3480
          Width           =   495
@@ -346,7 +342,7 @@ Begin VB.Form optionsform
          Caption         =   "30"
          Height          =   255
          Index           =   3
-         Left            =   -69120
+         Left            =   5880
          TabIndex        =   242
          Top             =   3480
          Width           =   495
@@ -355,7 +351,7 @@ Begin VB.Form optionsform
          Caption         =   "3000"
          Height          =   255
          Index           =   0
-         Left            =   -70440
+         Left            =   4560
          TabIndex        =   241
          Top             =   4440
          Width           =   615
@@ -364,7 +360,7 @@ Begin VB.Form optionsform
          Caption         =   "5000"
          Height          =   255
          Index           =   2
-         Left            =   -69840
+         Left            =   5160
          TabIndex        =   240
          Top             =   4440
          Width           =   615
@@ -373,7 +369,7 @@ Begin VB.Form optionsform
          Caption         =   "30000"
          Height          =   255
          Index           =   3
-         Left            =   -69240
+         Left            =   5760
          TabIndex        =   239
          Top             =   4440
          Width           =   615
@@ -381,7 +377,7 @@ Begin VB.Form optionsform
       Begin VB.TextBox RepopThresh 
          Alignment       =   1  'Right Justify
          Height          =   285
-         Left            =   -69480
+         Left            =   5520
          TabIndex        =   238
          Text            =   "0"
          Top             =   4920
@@ -390,7 +386,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "Show Non-Native Species"
          Height          =   375
-         Left            =   -73560
+         Left            =   1440
          TabIndex        =   205
          Tag             =   "0"
          ToolTipText     =   "Add a new robot type to the simulation"
@@ -616,7 +612,7 @@ Begin VB.Form optionsform
       Begin VB.Frame GenPropFrame 
          Caption         =   "General Properties"
          Height          =   5295
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   116
          Tag             =   "2020"
          Top             =   360
@@ -1473,7 +1469,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "DecayText"
-                  BuddyDispid     =   196674
+                  BuddyDispid     =   196684
                   OrigLeft        =   5040
                   OrigTop         =   2280
                   OrigRight       =   5280
@@ -1495,7 +1491,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "FrequencyText"
-                  BuddyDispid     =   196673
+                  BuddyDispid     =   196683
                   OrigLeft        =   5040
                   OrigTop         =   2280
                   OrigRight       =   5280
@@ -1606,7 +1602,7 @@ Begin VB.Form optionsform
                _Version        =   327681
                Value           =   100
                BuddyControl    =   "ChartInterval"
-               BuddyDispid     =   196680
+               BuddyDispid     =   196690
                OrigLeft        =   4320
                OrigTop         =   3240
                OrigRight       =   4560
@@ -1641,7 +1637,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton DuplicaButt 
          Caption         =   "Duplicate"
          Height          =   375
-         Left            =   -73560
+         Left            =   1440
          TabIndex        =   114
          Tag             =   "0"
          ToolTipText     =   "Add a new robot type to the simulation"
@@ -1651,7 +1647,7 @@ Begin VB.Form optionsform
       Begin VB.ListBox SpecList 
          Height          =   2400
          ItemData        =   "OptionsForm.frx":0413
-         Left            =   -74760
+         Left            =   240
          List            =   "OptionsForm.frx":0415
          TabIndex        =   113
          Top             =   720
@@ -1660,7 +1656,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton AddSpec 
          Caption         =   "Add"
          Height          =   375
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   112
          Tag             =   "0"
          ToolTipText     =   "Add a new robot type to the simulation"
@@ -1670,7 +1666,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton DelSpec 
          Caption         =   "Delete"
          Height          =   375
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   111
          Tag             =   "0"
          Top             =   3720
@@ -1679,7 +1675,7 @@ Begin VB.Form optionsform
       Begin VB.CommandButton RenameButton 
          Caption         =   "Rename"
          Height          =   375
-         Left            =   -72360
+         Left            =   2640
          TabIndex        =   110
          Tag             =   "0"
          Top             =   3720
@@ -1729,7 +1725,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   100000
             BuddyControl    =   "CyclesHi"
-            BuddyDispid     =   196689
+            BuddyDispid     =   196699
             OrigLeft        =   3570
             OrigTop         =   3465
             OrigRight       =   3810
@@ -1752,7 +1748,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   10000
             BuddyControl    =   "CyclesLo"
-            BuddyDispid     =   196690
+            BuddyDispid     =   196700
             OrigLeft        =   3570
             OrigTop         =   2940
             OrigRight       =   3810
@@ -2093,7 +2089,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "MaxRoundsToDrawText"
-            BuddyDispid     =   196719
+            BuddyDispid     =   196730
             OrigLeft        =   3480
             OrigTop         =   1140
             OrigRight       =   3735
@@ -2113,7 +2109,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   5
             BuddyControl    =   "ContestsText"
-            BuddyDispid     =   196718
+            BuddyDispid     =   196729
             OrigLeft        =   3240
             OrigTop         =   960
             OrigRight       =   3480
@@ -2404,7 +2400,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Prop"
-            BuddyDispid     =   196753
+            BuddyDispid     =   196764
             OrigLeft        =   4260
             OrigTop         =   2760
             OrigRight       =   4500
@@ -2455,7 +2451,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Fixed"
-            BuddyDispid     =   196752
+            BuddyDispid     =   196763
             OrigLeft        =   4245
             OrigTop         =   2340
             OrigRight       =   4485
@@ -2538,13 +2534,14 @@ Begin VB.Form optionsform
       End
       Begin RichTextLib.RichTextBox CommentBox 
          Height          =   975
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   115
          Top             =   4680
          Width           =   3495
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":059F
@@ -2552,7 +2549,7 @@ Begin VB.Form optionsform
       Begin VB.Frame Frame1 
          Caption         =   "Species Properties"
          Height          =   2205
-         Left            =   -71160
+         Left            =   3840
          TabIndex        =   100
          Tag             =   "2010"
          Top             =   600
@@ -2801,7 +2798,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoSimTxt"
-            BuddyDispid     =   196801
+            BuddyDispid     =   196813
             OrigLeft        =   3360
             OrigTop         =   360
             OrigRight       =   3600
@@ -2821,7 +2818,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoRobTxt"
-            BuddyDispid     =   196798
+            BuddyDispid     =   196810
             OrigLeft        =   3120
             OrigTop         =   240
             OrigRight       =   3375
@@ -2928,7 +2925,7 @@ Begin VB.Form optionsform
       End
       Begin ComCtl2.UpDown UpDown5 
          Height          =   285
-         Left            =   -68880
+         Left            =   6120
          TabIndex        =   237
          Top             =   4920
          Width           =   255
@@ -2947,7 +2944,7 @@ Begin VB.Form optionsform
       End
       Begin ComCtl2.UpDown UpDown1 
          Height          =   285
-         Left            =   -68880
+         Left            =   6120
          TabIndex        =   248
          ToolTipText     =   "Set the initial number of copies for this robot type"
          Top             =   3120
@@ -2968,7 +2965,7 @@ Begin VB.Form optionsform
       End
       Begin ComCtl2.UpDown UpDown3 
          Height          =   285
-         Left            =   -68880
+         Left            =   6120
          TabIndex        =   249
          ToolTipText     =   "Initial energy assigned to this type"
          Top             =   4080
@@ -2993,7 +2990,7 @@ Begin VB.Form optionsform
       Begin VB.Label Repop 
          Caption         =   "Repop. Threshold"
          Height          =   255
-         Left            =   -71160
+         Left            =   3840
          TabIndex        =   252
          Top             =   4920
          Width           =   1455
@@ -3001,7 +2998,7 @@ Begin VB.Form optionsform
       Begin VB.Label Label6 
          Caption         =   "Energia iniziale"
          Height          =   255
-         Left            =   -71160
+         Left            =   3840
          TabIndex        =   251
          Tag             =   "2012"
          Top             =   4080
@@ -3010,7 +3007,7 @@ Begin VB.Form optionsform
       Begin VB.Label Label2 
          Caption         =   "Individui"
          Height          =   255
-         Left            =   -71160
+         Left            =   3840
          TabIndex        =   250
          Tag             =   "2011"
          Top             =   3120
@@ -3027,7 +3024,7 @@ Begin VB.Form optionsform
       Begin VB.Label Label36 
          Caption         =   "Commenti sulla specie:"
          Height          =   255
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   186
          Tag             =   "2100"
          Top             =   4440
@@ -3036,7 +3033,7 @@ Begin VB.Form optionsform
       Begin VB.Label SpeciesLabel 
          Caption         =   "Native Species:"
          Height          =   255
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   185
          Tag             =   "0"
          Top             =   480
@@ -4331,15 +4328,6 @@ Private Sub CustomWaste_Change()
   End If
 End Sub
 
-
-
-Private Sub VeggieCheck_Click()
- If CurrSpec > -1 Then
-    TmpOpts.Specie(CurrSpec).Veg = False
-    If VeggieCheck.value = 1 Then TmpOpts.Specie(CurrSpex).Veg = True
- End If
-End Sub
-
 Private Sub VirusImmuneCheck_Click()
  If CurrSpec > -1 Then
     TmpOpts.Specie(CurrSpec).VirusImmune = False
@@ -5063,7 +5051,6 @@ Public Sub StartNew_Click() 'startnew
   TmpOpts.AutoSimPath = AutoSimPath.text
   TmpOpts.AutoRobPath = AutoRobPath.text
   TmpOpts.chartingInterval = val(ChartInterval.text)
-  TmpOpts.NrgPerChlr = val(MaxNRGText.text)
   
   TmpOpts.SpeciesNum = SpecList.ListCount
   Canc = False
