@@ -169,6 +169,7 @@ Begin VB.Form optionsform
       TabPicture(1)   =   "OptionsForm.frx":001C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "GenPropFrame"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
@@ -309,7 +310,7 @@ Begin VB.Form optionsform
          TabIndex        =   246
          Text            =   "0"
          Top             =   4080
-         Width           =   585
+         Width           =   570
       End
       Begin VB.TextBox SpecQty 
          Alignment       =   1  'Right Justify
@@ -381,7 +382,7 @@ Begin VB.Form optionsform
          TabIndex        =   238
          Text            =   "0"
          Top             =   4920
-         Width           =   600
+         Width           =   585
       End
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "Show Non-Native Species"
@@ -763,7 +764,7 @@ Begin VB.Form optionsform
                _ExtentY        =   503
                _Version        =   327681
                BuddyControl    =   "CustomWaste"
-               BuddyDispid     =   196648
+               BuddyDispid     =   196662
                OrigLeft        =   780
                OrigTop         =   480
                OrigRight       =   1020
@@ -859,7 +860,7 @@ Begin VB.Form optionsform
                      _Version        =   327681
                      Value           =   1
                      BuddyControl    =   "EnergyScalingFactor"
-                     BuddyDispid     =   196657
+                     BuddyDispid     =   196671
                      OrigLeft        =   796
                      OrigTop         =   840
                      OrigRight       =   1036
@@ -1072,7 +1073,7 @@ Begin VB.Form optionsform
                   _Version        =   327681
                   Value           =   1
                   BuddyControl    =   "Gradient"
-                  BuddyDispid     =   196661
+                  BuddyDispid     =   196675
                   OrigLeft        =   1800
                   OrigTop         =   1140
                   OrigRight       =   2055
@@ -1095,7 +1096,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "LightText"
-                  BuddyDispid     =   196662
+                  BuddyDispid     =   196676
                   OrigLeft        =   5040
                   OrigTop         =   1560
                   OrigRight       =   5280
@@ -1231,7 +1232,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "RepopAmountText"
-                  BuddyDispid     =   196670
+                  BuddyDispid     =   196684
                   OrigLeft        =   660
                   OrigTop         =   1020
                   OrigRight       =   900
@@ -1251,7 +1252,7 @@ Begin VB.Form optionsform
                   _Version        =   327681
                   Value           =   1
                   BuddyControl    =   "MaxPopText"
-                  BuddyDispid     =   196673
+                  BuddyDispid     =   196687
                   OrigLeft        =   660
                   OrigTop         =   300
                   OrigRight       =   900
@@ -1274,7 +1275,7 @@ Begin VB.Form optionsform
                   _Version        =   327681
                   Value           =   100
                   BuddyControl    =   "MinVegText"
-                  BuddyDispid     =   196672
+                  BuddyDispid     =   196686
                   OrigLeft        =   2730
                   OrigTop         =   2295
                   OrigRight       =   2970
@@ -1297,7 +1298,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "RepopCooldownText"
-                  BuddyDispid     =   196669
+                  BuddyDispid     =   196683
                   OrigLeft        =   660
                   OrigTop         =   1380
                   OrigRight       =   900
@@ -1469,7 +1470,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "DecayText"
-                  BuddyDispid     =   196684
+                  BuddyDispid     =   196698
                   OrigLeft        =   5040
                   OrigTop         =   2280
                   OrigRight       =   5280
@@ -1491,7 +1492,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "FrequencyText"
-                  BuddyDispid     =   196683
+                  BuddyDispid     =   196697
                   OrigLeft        =   5040
                   OrigTop         =   2280
                   OrigRight       =   5280
@@ -1602,7 +1603,7 @@ Begin VB.Form optionsform
                _Version        =   327681
                Value           =   100
                BuddyControl    =   "ChartInterval"
-               BuddyDispid     =   196690
+               BuddyDispid     =   196704
                OrigLeft        =   4320
                OrigTop         =   3240
                OrigRight       =   4560
@@ -1725,7 +1726,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   100000
             BuddyControl    =   "CyclesHi"
-            BuddyDispid     =   196699
+            BuddyDispid     =   196713
             OrigLeft        =   3570
             OrigTop         =   3465
             OrigRight       =   3810
@@ -1748,7 +1749,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   10000
             BuddyControl    =   "CyclesLo"
-            BuddyDispid     =   196700
+            BuddyDispid     =   196714
             OrigLeft        =   3570
             OrigTop         =   2940
             OrigRight       =   3810
@@ -2089,7 +2090,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "MaxRoundsToDrawText"
-            BuddyDispid     =   196730
+            BuddyDispid     =   196744
             OrigLeft        =   3480
             OrigTop         =   1140
             OrigRight       =   3735
@@ -2109,7 +2110,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   5
             BuddyControl    =   "ContestsText"
-            BuddyDispid     =   196729
+            BuddyDispid     =   196743
             OrigLeft        =   3240
             OrigTop         =   960
             OrigRight       =   3480
@@ -2400,7 +2401,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Prop"
-            BuddyDispid     =   196764
+            BuddyDispid     =   196778
             OrigLeft        =   4260
             OrigTop         =   2760
             OrigRight       =   4500
@@ -2451,7 +2452,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Fixed"
-            BuddyDispid     =   196763
+            BuddyDispid     =   196777
             OrigLeft        =   4245
             OrigTop         =   2340
             OrigRight       =   4485
@@ -2541,7 +2542,6 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":059F
@@ -2798,7 +2798,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoSimTxt"
-            BuddyDispid     =   196813
+            BuddyDispid     =   196809
             OrigLeft        =   3360
             OrigTop         =   360
             OrigRight       =   3600
@@ -2818,7 +2818,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoRobTxt"
-            BuddyDispid     =   196810
+            BuddyDispid     =   196806
             OrigLeft        =   3120
             OrigTop         =   240
             OrigRight       =   3375
@@ -2932,8 +2932,8 @@ Begin VB.Form optionsform
          _ExtentX        =   450
          _ExtentY        =   503
          _Version        =   327681
-         BuddyControl    =   "UpDown5"
-         BuddyDispid     =   196772
+         BuddyControl    =   "RepopThresh"
+         BuddyDispid     =   196629
          OrigLeft        =   4680
          OrigTop         =   2640
          OrigRight       =   4935
@@ -2948,12 +2948,12 @@ Begin VB.Form optionsform
          TabIndex        =   248
          ToolTipText     =   "Set the initial number of copies for this robot type"
          Top             =   3120
-         Width           =   240
+         Width           =   255
          _ExtentX        =   450
          _ExtentY        =   503
          _Version        =   327681
-         BuddyControl    =   "SpecVeg"
-         BuddyDispid     =   196783
+         BuddyControl    =   "SpecQty"
+         BuddyDispid     =   196619
          OrigLeft        =   2310
          OrigTop         =   525
          OrigRight       =   2550
@@ -2969,13 +2969,13 @@ Begin VB.Form optionsform
          TabIndex        =   249
          ToolTipText     =   "Initial energy assigned to this type"
          Top             =   4080
-         Width           =   240
+         Width           =   255
          _ExtentX        =   450
          _ExtentY        =   503
          _Version        =   327681
          Value           =   1000
-         BuddyControl    =   "SpecQty"
-         BuddyDispid     =   196785
+         BuddyControl    =   "SpecNrg"
+         BuddyDispid     =   196627
          OrigLeft        =   1560
          OrigTop         =   240
          OrigRight       =   1800
