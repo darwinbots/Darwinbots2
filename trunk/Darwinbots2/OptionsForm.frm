@@ -114,23 +114,23 @@ Begin VB.Form optionsform
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Frame21"
-      Tab(2).Control(1)=   "Frame20"
+      Tab(2).Control(0)=   "Frame20"
+      Tab(2).Control(1)=   "Frame21"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Mutations"
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "Frame15"
-      Tab(3).Control(1)=   "Frame13"
-      Tab(3).Control(2)=   "Frame14"
-      Tab(3).Control(3)=   "DisableMutationsCheck"
+      Tab(3).Control(0)=   "DisableMutationsCheck"
+      Tab(3).Control(1)=   "Frame14"
+      Tab(3).Control(2)=   "Frame13"
+      Tab(3).Control(3)=   "Frame15"
       Tab(3).ControlCount=   4
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame8"
+      Tab(4).Control(0)=   "Frame7"
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(2)=   "Frame7"
+      Tab(4).Control(2)=   "Frame8"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
@@ -143,8 +143,8 @@ Begin VB.Form optionsform
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "Frame4"
-      Tab(6).Control(1)=   "Frame10"
+      Tab(6).Control(0)=   "Frame10"
+      Tab(6).Control(1)=   "Frame4"
       Tab(6).ControlCount=   2
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "Show Non-Native Species"
@@ -1108,7 +1108,7 @@ Begin VB.Form optionsform
             End
             Begin VB.Frame Frame30 
                Caption         =   "Veggy Energy"
-               Height          =   3735
+               Height          =   1515
                Left            =   3480
                TabIndex        =   152
                Top             =   240
@@ -1127,7 +1127,7 @@ Begin VB.Form optionsform
                   TabIndex        =   153
                   Text            =   "40"
                   ToolTipText     =   "Amount of energy to give each veggy each cycle.  Is overrided by Pond Mode settings if that's on."
-                  Top             =   300
+                  Top             =   480
                   Width           =   735
                End
                Begin VB.OptionButton VEGNrgType 
@@ -1232,7 +1232,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "DecayText"
-                  BuddyDispid     =   196684
+                  BuddyDispid     =   196674
                   OrigLeft        =   5040
                   OrigTop         =   2280
                   OrigRight       =   5280
@@ -1254,7 +1254,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "FrequencyText"
-                  BuddyDispid     =   196683
+                  BuddyDispid     =   196673
                   OrigLeft        =   5040
                   OrigTop         =   2280
                   OrigRight       =   5280
@@ -1365,7 +1365,7 @@ Begin VB.Form optionsform
                _Version        =   327681
                Value           =   100
                BuddyControl    =   "ChartInterval"
-               BuddyDispid     =   196690
+               BuddyDispid     =   196680
                OrigLeft        =   4320
                OrigTop         =   3240
                OrigRight       =   4560
@@ -1488,7 +1488,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   100000
             BuddyControl    =   "CyclesHi"
-            BuddyDispid     =   196699
+            BuddyDispid     =   196689
             OrigLeft        =   3570
             OrigTop         =   3465
             OrigRight       =   3810
@@ -1511,7 +1511,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   10000
             BuddyControl    =   "CyclesLo"
-            BuddyDispid     =   196700
+            BuddyDispid     =   196690
             OrigLeft        =   3570
             OrigTop         =   2940
             OrigRight       =   3810
@@ -1852,7 +1852,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "MaxRoundsToDrawText"
-            BuddyDispid     =   196730
+            BuddyDispid     =   196719
             OrigLeft        =   3480
             OrigTop         =   1140
             OrigRight       =   3735
@@ -1872,7 +1872,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   5
             BuddyControl    =   "ContestsText"
-            BuddyDispid     =   196729
+            BuddyDispid     =   196718
             OrigLeft        =   3240
             OrigTop         =   960
             OrigRight       =   3480
@@ -2163,7 +2163,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Prop"
-            BuddyDispid     =   196764
+            BuddyDispid     =   196753
             OrigLeft        =   4260
             OrigTop         =   2760
             OrigRight       =   4500
@@ -2214,7 +2214,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Fixed"
-            BuddyDispid     =   196763
+            BuddyDispid     =   196752
             OrigLeft        =   4245
             OrigTop         =   2340
             OrigRight       =   4485
@@ -2304,6 +2304,7 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":059F
@@ -2315,7 +2316,35 @@ Begin VB.Form optionsform
          TabIndex        =   100
          Tag             =   "2010"
          Top             =   600
-         Width           =   6075
+         Width           =   6135
+         Begin ComCtl2.UpDown UpDown5 
+            Height          =   285
+            Left            =   5640
+            TabIndex        =   239
+            Top             =   2280
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   503
+            _Version        =   327681
+            BuddyControl    =   "RepopThresh"
+            BuddyDispid     =   196761
+            OrigLeft        =   4680
+            OrigTop         =   2640
+            OrigRight       =   4935
+            OrigBottom      =   2925
+            SyncBuddy       =   -1  'True
+            BuddyProperty   =   0
+            Enabled         =   -1  'True
+         End
+         Begin VB.TextBox RepopThresh 
+            Alignment       =   1  'Right Justify
+            Height          =   285
+            Left            =   5040
+            TabIndex        =   237
+            Text            =   "0"
+            Top             =   2280
+            Width           =   600
+         End
          Begin VB.CheckBox MutEnabledCheck 
             Alignment       =   1  'Right Justify
             Caption         =   "Disable Mutations"
@@ -2517,7 +2546,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "SpecQty"
-            BuddyDispid     =   196782
+            BuddyDispid     =   196771
             OrigLeft        =   2310
             OrigTop         =   525
             OrigRight       =   2550
@@ -2539,7 +2568,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   1000
             BuddyControl    =   "SpecNrg"
-            BuddyDispid     =   196784
+            BuddyDispid     =   196773
             OrigLeft        =   1560
             OrigTop         =   240
             OrigRight       =   1800
@@ -2673,6 +2702,14 @@ Begin VB.Form optionsform
                Width           =   255
             End
          End
+         Begin VB.Label Repop 
+            Caption         =   "Repop. Threshold"
+            Height          =   255
+            Left            =   3360
+            TabIndex        =   238
+            Top             =   2280
+            Width           =   1455
+         End
          Begin VB.Line Line4 
             BorderColor     =   &H8000000C&
             X1              =   3120
@@ -2801,7 +2838,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoSimTxt"
-            BuddyDispid     =   196811
+            BuddyDispid     =   196801
             OrigLeft        =   3360
             OrigTop         =   360
             OrigRight       =   3600
@@ -2821,7 +2858,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoRobTxt"
-            BuddyDispid     =   196808
+            BuddyDispid     =   196798
             OrigLeft        =   3120
             OrigTop         =   240
             OrigRight       =   3375
@@ -3191,6 +3228,12 @@ Dim ind As Integer
   PopulateSpeciesList
 End Sub
 
+Private Sub RepopThresh_Change()
+  If CurrSpec > -1 And IsNumeric(RepopThresh.text) = True Then
+    TmpOpts.Specie(CurrSpec).RespawnThreshold = RepopThresh.text
+  End If
+End Sub
+
 Private Sub StripMutationsCheck_Click()
   TmpOpts.AutoSaveStripMutations = StripMutationsCheck.value * True
 End Sub
@@ -3301,6 +3344,7 @@ Private Sub SpecList_Click()
   Line7.BorderColor = TmpOpts.Specie(k).color
   Line8.BorderColor = TmpOpts.Specie(k).color
   Line9.BorderColor = TmpOpts.Specie(k).color
+  RepopThresh.text = TmpOpts.Specie(k).RespawnThreshold
   If TmpOpts.Specie(k).Veg Then
     SpecVeg.value = 1
   Else
@@ -3979,43 +4023,45 @@ End Sub
 'To handle all mouse message anywhere on the form, we set the mouse
 'capture to the form. Mouse up is processed here
 Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    If Button = vbLeftButton Then
-        If m_DragState = StateDragging Or m_DragState = StateSizing Then
-            'Hide drag rectangle
-            DrawDragRect
-            'Move control to new location
-            m_DragRect.ScreenToTwips m_CurrCtl
-            m_DragRect.SetCtrlToRect m_CurrCtl, IPB, Frame1, SSTab1
-            'Restore sizing handles
-            ShowHandles True
-            'Free mouse movement
-            ClipCursor ByVal 0&
-            'Release mouse capture
-            ReleaseCapture
-            'Reset drag state
-            m_DragState = StateNothing
-            
-            Dim w As Long, h As Long
-    
-            w = IPB.Width
-            h = IPB.Height
-    
-            TmpOpts.Specie(CurrSpec).Posrg = (Initial_Position.Left + Initial_Position.Width) / w
-            TmpOpts.Specie(CurrSpec).Posdn = (Initial_Position.Top + Initial_Position.Height) / h
-            TmpOpts.Specie(CurrSpec).Poslf = (Initial_Position.Left) / w
-            TmpOpts.Specie(CurrSpec).Postp = (Initial_Position.Top) / h
-            
-            If (TmpOpts.Specie(CurrSpec).Posrg > 1) Then TmpOpts.Specie(CurrSpec).Posrg = 1
-            If (TmpOpts.Specie(CurrSpec).Posrg < 0) Then TmpOpts.Specie(CurrSpec).Posrg = 0
-            
-            If (TmpOpts.Specie(CurrSpec).Posdn > 1) Then TmpOpts.Specie(CurrSpec).Posdn = 1
-            If (TmpOpts.Specie(CurrSpec).Posdn < 0) Then TmpOpts.Specie(CurrSpec).Posdn = 0
-            
-            If (TmpOpts.Specie(CurrSpec).Poslf > 1) Then TmpOpts.Specie(CurrSpec).Poslf = 1
-            If (TmpOpts.Specie(CurrSpec).Poslf < 0) Then TmpOpts.Specie(CurrSpec).Poslf = 0
-            
-            If (TmpOpts.Specie(CurrSpec).Postp > 1) Then TmpOpts.Specie(CurrSpec).Postp = 1
-            If (TmpOpts.Specie(CurrSpec).Postp < 0) Then TmpOpts.Specie(CurrSpec).Postp = 0
+    If CurrSpec >= 0 Then 'Stops crash when nothing is selected
+        If Button = vbLeftButton Then
+            If m_DragState = StateDragging Or m_DragState = StateSizing Then
+                'Hide drag rectangle
+                DrawDragRect
+                'Move control to new location
+                m_DragRect.ScreenToTwips m_CurrCtl
+                m_DragRect.SetCtrlToRect m_CurrCtl, IPB, Frame1, SSTab1
+                'Restore sizing handles
+                ShowHandles True
+                'Free mouse movement
+                ClipCursor ByVal 0&
+                'Release mouse capture
+                ReleaseCapture
+                'Reset drag state
+                m_DragState = StateNothing
+                
+                Dim w As Long, h As Long
+        
+                w = IPB.Width
+                h = IPB.Height
+        
+                TmpOpts.Specie(CurrSpec).Posrg = (Initial_Position.Left + Initial_Position.Width) / w
+                TmpOpts.Specie(CurrSpec).Posdn = (Initial_Position.Top + Initial_Position.Height) / h
+                TmpOpts.Specie(CurrSpec).Poslf = (Initial_Position.Left) / w
+                TmpOpts.Specie(CurrSpec).Postp = (Initial_Position.Top) / h
+                
+                If (TmpOpts.Specie(CurrSpec).Posrg > 1) Then TmpOpts.Specie(CurrSpec).Posrg = 1
+                If (TmpOpts.Specie(CurrSpec).Posrg < 0) Then TmpOpts.Specie(CurrSpec).Posrg = 0
+                
+                If (TmpOpts.Specie(CurrSpec).Posdn > 1) Then TmpOpts.Specie(CurrSpec).Posdn = 1
+                If (TmpOpts.Specie(CurrSpec).Posdn < 0) Then TmpOpts.Specie(CurrSpec).Posdn = 0
+                
+                If (TmpOpts.Specie(CurrSpec).Poslf > 1) Then TmpOpts.Specie(CurrSpec).Poslf = 1
+                If (TmpOpts.Specie(CurrSpec).Poslf < 0) Then TmpOpts.Specie(CurrSpec).Poslf = 0
+                
+                If (TmpOpts.Specie(CurrSpec).Postp > 1) Then TmpOpts.Specie(CurrSpec).Postp = 1
+                If (TmpOpts.Specie(CurrSpec).Postp < 0) Then TmpOpts.Specie(CurrSpec).Postp = 0
+            End If
         End If
     End If
 End Sub
@@ -4200,6 +4246,10 @@ Private Sub FieldSizeSlide_Scroll()
 End Sub
 
 
+Private Sub UpDown5_Change()
+'
+End Sub
+
 '''''End Dimensions Control
 
 '''''Start Seeded Random Control
@@ -4242,6 +4292,15 @@ Private Sub CustomWaste_Change()
   Else
     TmpOpts.BadWastelevel = val(CustomWaste.text)
   End If
+End Sub
+
+
+
+Private Sub VeggieCheck_Click()
+ If CurrSpec > -1 Then
+    TmpOpts.Specie(CurrSpec).Veg = False
+    If VeggieCheck.value = 1 Then TmpOpts.Specie(CurrSpex).Veg = True
+ End If
 End Sub
 
 Private Sub VirusImmuneCheck_Click()
@@ -4967,6 +5026,7 @@ Public Sub StartNew_Click() 'startnew
   TmpOpts.AutoSimPath = AutoSimPath.text
   TmpOpts.AutoRobPath = AutoRobPath.text
   TmpOpts.chartingInterval = val(ChartInterval.text)
+  TmpOpts.NrgPerChlr = val(MaxNRGText.text)
   
   TmpOpts.SpeciesNum = SpecList.ListCount
   Canc = False
@@ -5335,6 +5395,7 @@ On Error GoTo fine
     Write #1, TmpOpts.Specie(t).color
     Write #1, TmpOpts.Specie(t).Colind
     Write #1, TmpOpts.Specie(t).Stnrg
+    Write #1, TmpOpts.Specie(t).RespawnThreshold
     For k = 0 To 13
       Write #1, TmpOpts.Specie(t).Mutables.mutarray(k)
     Next k
@@ -5592,6 +5653,7 @@ Public Sub ReadSettFromFile()
     Input #1, TmpOpts.Specie(t).color
     Input #1, TmpOpts.Specie(t).Colind
     Input #1, TmpOpts.Specie(t).Stnrg
+    Input #1, TmpOpts.Specie(t).RespawnThreshold
     For k = 0 To 13
       Input #1, TmpOpts.Specie(t).Mutables.mutarray(k)
     Next k
