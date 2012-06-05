@@ -1,12 +1,12 @@
 VERSION 5.00
 Begin VB.Form InfoForm 
-   BackColor       =   &H00800000&
+   BackColor       =   &H00C00000&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Darwinbots"
    ClientHeight    =   6000
    ClientLeft      =   2205
    ClientTop       =   2550
-   ClientWidth     =   9600
+   ClientWidth     =   9615
    Icon            =   "InfoForm.frx":0000
    LinkTopic       =   "Form10"
    MaxButton       =   0   'False
@@ -14,16 +14,29 @@ Begin VB.Form InfoForm
    Picture         =   "InfoForm.frx":08CA
    ScaleHeight     =   400
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   640
+   ScaleWidth      =   641
    StartUpPosition =   1  'CenterOwner
    Tag             =   "16000"
-   Begin VB.Label Label9 
-      BackStyle       =   0  'Transparent
-      Height          =   6015
-      Left            =   0
+   Begin VB.CommandButton Command1 
+      Appearance      =   0  'Flat
+      BackColor       =   &H00C00000&
+      Caption         =   "&OK"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   375
+      Left            =   7680
+      MaskColor       =   &H00800000&
+      Style           =   1  'Graphical
       TabIndex        =   8
-      Top             =   0
-      Width           =   9615
+      Top             =   5520
+      Width           =   1815
    End
    Begin VB.Label Label8 
       Appearance      =   0  'Flat
@@ -37,16 +50,9 @@ Begin VB.Form InfoForm
       Top             =   4785
       Width           =   2295
    End
-   Begin VB.Image Image1 
-      Height          =   345
-      Left            =   8025
-      Picture         =   "InfoForm.frx":91C5
-      Top             =   5520
-      Width           =   1125
-   End
    Begin VB.Label Label7 
       BackStyle       =   0  'Transparent
-      Caption         =   $"InfoForm.frx":A683
+      Caption         =   $"InfoForm.frx":91C5
       BeginProperty Font 
          Name            =   "Small Fonts"
          Size            =   6.75
@@ -58,7 +64,7 @@ Begin VB.Form InfoForm
       EndProperty
       ForeColor       =   &H00FFC0C0&
       Height          =   1320
-      Left            =   6945
+      Left            =   6840
       TabIndex        =   6
       Tag             =   "16002"
       Top             =   15
@@ -108,7 +114,7 @@ Begin VB.Form InfoForm
    End
    Begin VB.Label Label6 
       BackStyle       =   0  'Transparent
-      Caption         =   $"InfoForm.frx":A76F
+      Caption         =   $"InfoForm.frx":92B1
       BeginProperty Font 
          Name            =   "Small Fonts"
          Size            =   6.75
@@ -148,7 +154,7 @@ Begin VB.Form InfoForm
    End
    Begin VB.Label Label4 
       BackStyle       =   0  'Transparent
-      Caption         =   $"InfoForm.frx":A815
+      Caption         =   $"InfoForm.frx":9357
       BeginProperty Font 
          Name            =   "Small Fonts"
          Size            =   6.75
@@ -168,7 +174,7 @@ Begin VB.Form InfoForm
    End
    Begin VB.Label Label3 
       BackStyle       =   0  'Transparent
-      Caption         =   $"InfoForm.frx":A8BA
+      Caption         =   $"InfoForm.frx":93FC
       BeginProperty Font 
          Name            =   "Small Fonts"
          Size            =   6.75
@@ -188,7 +194,7 @@ Begin VB.Form InfoForm
    End
    Begin VB.Label Label2 
       BackStyle       =   0  'Transparent
-      Caption         =   $"InfoForm.frx":A9B9
+      Caption         =   $"InfoForm.frx":94FB
       BeginProperty Font 
          Name            =   "Small Fonts"
          Size            =   6.75
@@ -208,7 +214,7 @@ Begin VB.Form InfoForm
    End
    Begin VB.Label Label1 
       BackStyle       =   0  'Transparent
-      Caption         =   $"InfoForm.frx":AB57
+      Caption         =   $"InfoForm.frx":9699
       BeginProperty Font 
          Name            =   "Small Fonts"
          Size            =   6.75
@@ -233,35 +239,14 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-
-Dim this As Boolean
+'Botsareus 3/24/2012 simplified the info form
 
 Private Sub Command1_Click()
-  Me.Hide
+  Unload Me
 End Sub
 
 Private Sub Form_Load()
   strings Me
   SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
   InfoForm.Show
-End Sub
-
-Private Sub Form_lostfocus()
- ' InfoForm.Hide
-'  MDIForm1.Show
-End Sub
-
-Private Sub Image1_Click()
-'  InfoForm.Hide
- ' MDIForm1.Show
-End Sub
-
-Private Sub Form_Click()
-'  InfoForm.Hide
- ' MDIForm1.Show
-End Sub
-
-Private Sub Label9_Click()
-'  InfoForm.Hide
-'  MDIForm1.Show
 End Sub

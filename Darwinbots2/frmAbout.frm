@@ -5,19 +5,19 @@ Begin VB.Form frmAbout
    ClientHeight    =   4455
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   6120
+   ClientWidth     =   6825
    Icon            =   "frmAbout.frx":0000
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   4455
-   ScaleWidth      =   6120
+   ScaleWidth      =   6825
    StartUpPosition =   3  'Windows Default
    Tag             =   "12001"
    Begin VB.TextBox Text1 
       BackColor       =   &H80000000&
       Height          =   1455
-      Left            =   120
+      Left            =   600
       Locked          =   -1  'True
       MultiLine       =   -1  'True
       ScrollBars      =   2  'Vertical
@@ -40,11 +40,29 @@ Begin VB.Form frmAbout
          Strikethrough   =   0   'False
       EndProperty
       Height          =   345
-      Left            =   4320
+      Left            =   4800
       TabIndex        =   0
       Tag             =   "12008"
       Top             =   3960
       Width           =   1500
+   End
+   Begin VB.Label Label5 
+      Alignment       =   1  'Right Justify
+      Caption         =   "Post 2.45.1 revisions by Botsareus (hit me up on twitter CosmoTwitt007)"
+      BeginProperty Font 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   255
+      Left            =   -360
+      TabIndex        =   10
+      Top             =   1680
+      Width           =   6735
    End
    Begin VB.Label Label4 
       Alignment       =   1  'Right Justify
@@ -59,7 +77,7 @@ Begin VB.Form frmAbout
          Strikethrough   =   0   'False
       EndProperty
       Height          =   255
-      Left            =   1080
+      Left            =   1560
       TabIndex        =   9
       Top             =   1440
       Width           =   4815
@@ -77,7 +95,7 @@ Begin VB.Form frmAbout
          Strikethrough   =   0   'False
       EndProperty
       Height          =   255
-      Left            =   1320
+      Left            =   1800
       TabIndex        =   8
       Top             =   1200
       Width           =   4575
@@ -95,7 +113,7 @@ Begin VB.Form frmAbout
       EndProperty
       ForeColor       =   &H00000000&
       Height          =   660
-      Left            =   1560
+      Left            =   1920
       TabIndex        =   6
       Top             =   120
       Width           =   3015
@@ -113,7 +131,7 @@ Begin VB.Form frmAbout
       EndProperty
       ForeColor       =   &H00000000&
       Height          =   210
-      Left            =   3240
+      Left            =   3720
       TabIndex        =   5
       Top             =   960
       Width           =   2775
@@ -154,7 +172,7 @@ Begin VB.Form frmAbout
          Strikethrough   =   0   'False
       EndProperty
       Height          =   540
-      Left            =   120
+      Left            =   600
       TabIndex        =   3
       Tag             =   "12006"
       Top             =   3480
@@ -179,7 +197,7 @@ Begin VB.Form frmAbout
    End
    Begin VB.Label Label6 
       Alignment       =   2  'Center
-      Caption         =   "Version 2.45.02 - Feb 2012"
+      Caption         =   "Version 2.44.1 - Dec 2008"
       BeginProperty Font 
          Name            =   "Arial"
          Size            =   8.25
@@ -202,7 +220,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-
+'Botsareus 2/24/2012 post 2.45 revisions update
 Private Sub cmdOK_Click()
   Hide
 End Sub
@@ -225,6 +243,9 @@ Private Sub Form_Load()
   Text1.text = Text1.text + "2.42 and beyond Copyright (C) Eric Lockard" + vbCrLf
   Text1.text = Text1.text + "ericl@sulaadventures.com" + vbCrLf
   Text1.text = Text1.text + "" + vbCrLf
+  Text1.text = Text1.text + "2.45.2 and beyond Copyright (C) Botsareus" + vbCrLf 'Botsareus 3/24/2012 more info
+  Text1.text = Text1.text + "CosmoTwitt007" + vbCrLf 'Botsareus 3/24/2012 more info
+  Text1.text = Text1.text + "" + vbCrLf 'Botsareus 3/24/2012 more info
   Text1.text = Text1.text + "All rights reserved. " + vbCrLf
   Text1.text = Text1.text + "" + vbCrLf
   Text1.text = Text1.text + "Redistribution and use in source and binary forms, with or without "

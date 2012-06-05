@@ -3,7 +3,7 @@ Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
 Begin VB.Form datirob 
    BorderStyle     =   4  'Fixed ToolWindow
    Caption         =   "Dati del robot"
-   ClientHeight    =   7710
+   ClientHeight    =   7545
    ClientLeft      =   45
    ClientTop       =   285
    ClientWidth     =   10110
@@ -11,7 +11,7 @@ Begin VB.Form datirob
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   7710
+   ScaleHeight     =   7545
    ScaleWidth      =   10110
    ShowInTaskbar   =   0   'False
    Tag             =   "15000"
@@ -21,11 +21,11 @@ Begin VB.Form datirob
       Left            =   3480
       TabIndex        =   28
       Tag             =   "15017"
-      Top             =   7320
+      Top             =   7150
       Width           =   1770
    End
    Begin VB.Frame Frame2 
-      Height          =   7635
+      Height          =   7515
       Left            =   3240
       TabIndex        =   24
       Top             =   0
@@ -35,19 +35,18 @@ Begin VB.Form datirob
          Height          =   375
          Left            =   2280
          TabIndex        =   58
-         Top             =   7200
+         Top             =   7080
          Width           =   5775
       End
       Begin RichTextLib.RichTextBox dnatext 
-         Height          =   7065
+         Height          =   6945
          Left            =   0
          TabIndex        =   27
          Top             =   120
          Width           =   6555
          _ExtentX        =   11562
-         _ExtentY        =   12462
+         _ExtentY        =   12250
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"robdata.frx":0E42
@@ -63,7 +62,7 @@ Begin VB.Form datirob
       End
    End
    Begin VB.Frame Frame1 
-      Height          =   7635
+      Height          =   7515
       Left            =   120
       TabIndex        =   0
       Top             =   0
@@ -73,7 +72,7 @@ Begin VB.Form datirob
          Height          =   285
          Left            =   1605
          TabIndex        =   53
-         Top             =   6480
+         Top             =   6360
          Width           =   1365
       End
       Begin VB.CommandButton Command1 
@@ -82,7 +81,7 @@ Begin VB.Form datirob
          Left            =   90
          TabIndex        =   46
          Tag             =   "15011"
-         Top             =   6120
+         Top             =   6000
          Width           =   1410
       End
       Begin VB.CommandButton dnashow 
@@ -90,7 +89,7 @@ Begin VB.Form datirob
          Height          =   285
          Left            =   1605
          TabIndex        =   45
-         Top             =   6840
+         Top             =   6720
          Width           =   1365
       End
       Begin VB.CommandButton MutDetails 
@@ -99,7 +98,7 @@ Begin VB.Form datirob
          Left            =   1605
          TabIndex        =   44
          Tag             =   "15016"
-         Top             =   7200
+         Top             =   7080
          Width           =   1365
       End
       Begin VB.CommandButton Command2 
@@ -108,7 +107,7 @@ Begin VB.Form datirob
          Index           =   0
          Left            =   90
          TabIndex        =   43
-         Top             =   6840
+         Top             =   6720
          Width           =   1425
       End
       Begin VB.CommandButton Command3 
@@ -116,7 +115,7 @@ Begin VB.Form datirob
          Height          =   285
          Left            =   90
          TabIndex        =   42
-         Top             =   6480
+         Top             =   6360
          Width           =   1425
       End
       Begin VB.CommandButton Repro 
@@ -125,7 +124,7 @@ Begin VB.Form datirob
          Index           =   1
          Left            =   90
          TabIndex        =   41
-         Top             =   7200
+         Top             =   7080
          Width           =   1425
       End
       Begin VB.Label Label10 
@@ -133,7 +132,7 @@ Begin VB.Form datirob
          Height          =   255
          Left            =   120
          TabIndex        =   57
-         Top             =   3120
+         Top             =   2880
          Width           =   975
       End
       Begin VB.Label RadiusLabel 
@@ -142,7 +141,7 @@ Begin VB.Form datirob
          Height          =   255
          Left            =   2100
          TabIndex        =   56
-         Top             =   3120
+         Top             =   2880
          Width           =   795
       End
       Begin VB.Label Label9 
@@ -150,7 +149,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   120
          TabIndex        =   55
-         Top             =   3360
+         Top             =   3120
          Width           =   1215
       End
       Begin VB.Label VelocityLabel 
@@ -159,7 +158,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   54
-         Top             =   3360
+         Top             =   3120
          Width           =   795
       End
       Begin VB.Label VTimerLabel 
@@ -168,7 +167,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   52
-         Top             =   4800
+         Top             =   4560
          Width           =   795
       End
       Begin VB.Label PoisonLabel 
@@ -177,7 +176,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   51
-         Top             =   4560
+         Top             =   4320
          Width           =   795
       End
       Begin VB.Label Label7 
@@ -185,7 +184,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   120
          TabIndex        =   50
-         Top             =   4560
+         Top             =   4320
          Width           =   1215
       End
       Begin VB.Label Label6 
@@ -193,7 +192,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   120
          TabIndex        =   49
-         Top             =   4800
+         Top             =   4560
          Width           =   1215
       End
       Begin VB.Label UniqueBotID 
@@ -230,7 +229,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   40
-         Top             =   4320
+         Top             =   4080
          Width           =   795
       End
       Begin VB.Label Label5 
@@ -238,7 +237,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   120
          TabIndex        =   39
-         Top             =   4320
+         Top             =   4080
          Width           =   1215
       End
       Begin VB.Label robshell 
@@ -247,7 +246,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   38
-         Top             =   4080
+         Top             =   3840
          Width           =   795
       End
       Begin VB.Label Label4 
@@ -255,7 +254,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   120
          TabIndex        =   37
-         Top             =   4080
+         Top             =   3840
          Width           =   1215
       End
       Begin VB.Label robvenom 
@@ -264,7 +263,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   36
-         Top             =   3840
+         Top             =   3600
          Width           =   795
       End
       Begin VB.Label Label3 
@@ -272,7 +271,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   120
          TabIndex        =   35
-         Top             =   3840
+         Top             =   3600
          Width           =   1215
       End
       Begin VB.Label robmass 
@@ -281,7 +280,7 @@ Begin VB.Form datirob
          Height          =   255
          Left            =   2100
          TabIndex        =   34
-         Top             =   2880
+         Top             =   2640
          Width           =   795
       End
       Begin VB.Label MassLabel 
@@ -289,7 +288,7 @@ Begin VB.Form datirob
          Height          =   255
          Left            =   120
          TabIndex        =   33
-         Top             =   2880
+         Top             =   2640
          Width           =   975
       End
       Begin VB.Label robbody 
@@ -315,7 +314,7 @@ Begin VB.Form datirob
          Height          =   180
          Left            =   2100
          TabIndex        =   30
-         Top             =   3600
+         Top             =   3360
          Width           =   795
       End
       Begin VB.Label Waste 
@@ -323,7 +322,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   120
          TabIndex        =   29
-         Top             =   3600
+         Top             =   3360
          Width           =   1455
       End
       Begin VB.Label LastOwnLab 
@@ -349,7 +348,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   23
-         Top             =   5640
+         Top             =   5400
          Width           =   795
       End
       Begin VB.Label totlen 
@@ -358,7 +357,7 @@ Begin VB.Form datirob
          Left            =   120
          TabIndex        =   22
          Tag             =   "15012"
-         Top             =   5640
+         Top             =   5400
          Width           =   1485
       End
       Begin VB.Label robgener 
@@ -385,7 +384,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   19
-         Top             =   5880
+         Top             =   5640
          Width           =   795
       End
       Begin VB.Label robover 
@@ -394,7 +393,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   18
-         Top             =   5400
+         Top             =   5160
          Width           =   795
       End
       Begin VB.Label rgenes 
@@ -403,16 +402,16 @@ Begin VB.Form datirob
          Left            =   105
          TabIndex        =   17
          Tag             =   "15008"
-         Top             =   5880
+         Top             =   5640
          Width           =   1485
       End
       Begin VB.Label roverall 
          Caption         =   "Mutazioni totali"
          Height          =   195
-         Left            =   120
+         Left            =   105
          TabIndex        =   16
          Tag             =   "15007"
-         Top             =   5400
+         Top             =   5160
          Width           =   1590
       End
       Begin VB.Label robmutations 
@@ -421,7 +420,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   15
-         Top             =   5160
+         Top             =   4920
          Width           =   795
       End
       Begin VB.Label rmutation 
@@ -430,7 +429,7 @@ Begin VB.Form datirob
          Left            =   120
          TabIndex        =   14
          Tag             =   "15006"
-         Top             =   5160
+         Top             =   4920
          Width           =   2010
       End
       Begin VB.Label rfname 
@@ -552,17 +551,9 @@ Begin VB.Form datirob
          Height          =   240
          Left            =   2100
          TabIndex        =   1
-         Top             =   6120
+         Top             =   6000
          Width           =   795
       End
-   End
-   Begin VB.Label Label8 
-      Caption         =   "Body"
-      Height          =   255
-      Left            =   240
-      TabIndex        =   59
-      Top             =   2640
-      Width           =   735
    End
 End
 Attribute VB_Name = "datirob"
