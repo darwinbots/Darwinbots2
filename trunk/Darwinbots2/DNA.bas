@@ -80,7 +80,7 @@ Private Sub ExecuteDNA(n As Integer)
   With rob(n)
   a = 1
   rob(n).condnum = 0 ' EricL 4/6/2006 reset the COND statement counter to 0
-  While Not (.DNA(a).tipo = 10 And .DNA(a).value = 1) And a <= 32000
+  While Not (.DNA(a).tipo = 10 And .DNA(a).value = 1) And a <= 32000 And a <= UBound(.DNA) 'Botsareus 5/29/2012 Added upper bounds check (This seems like overkill but I had situations where 'end' command did not exisit)
     tipo = .DNA(a).tipo
     Select Case tipo
       Case 0 'number
@@ -122,7 +122,7 @@ Private Sub ExecuteDNA(n As Integer)
         If CurrentFlow = body Or CurrentFlow = ELSEBODY Then
           If CondStateIsTrue Then  ' Check the Bool stack.  If empty or True on top, do the stores.  Don't if False.
             ExecuteStores .DNA(a).value
-            If n = robfocus Or Not (rob(n).console Is Nothing) Then rob(n).ga(currgene) = True  'EricL  This gene fired this cycle!  Populate ga()
+            If n = robfocus Or Not (rob(n).console Is Nothing) Then rob(n).ga(currgene) = True   'EricL  This gene fired this cycle!  Populate ga()
           End If
         End If
       Case 8 'reserved for a future type
@@ -204,14 +204,20 @@ Private Sub DNAadd()
   PushIntStack c
 End Sub
 
-Private Sub DNASub()
-  Dim a As Long
-  Dim b As Long
-  Dim c As Single
+Private Sub DNASub() 'Botsareus 5/20/2012 new code to stop overflow
+  Dim a As Single
+  Dim b As Single
+  Dim c As Double
   b = PopIntStack
   a = PopIntStack
+  
+  
+  a = a Mod 2000000000
+  b = b Mod 2000000000
+  
   c = a - b
-'  c = c Mod 2000000000#
+  
+  If Abs(c) > 2000000000 Then c = c - Sgn(c) * 2000000000
   PushIntStack c
 End Sub
 
@@ -319,7 +325,7 @@ Private Sub findang()
   b = PopIntStack ' * Form1.yDivisor
   a = PopIntStack ' * Form1.xDivisor
   c = rob(currbot).pos.x / Form1.xDivisor
-  d = rob(currbot).pos.Y / Form1.yDivisor
+  d = rob(currbot).pos.y / Form1.yDivisor
   e = angnorm(angle(c, d, a, b)) * 200
   PushIntStack e
 End Sub
@@ -333,7 +339,7 @@ Private Sub finddist()
   b = PopIntStack * Form1.yDivisor
   a = PopIntStack * Form1.xDivisor
   c = rob(currbot).pos.x
-  d = rob(currbot).pos.Y
+  d = rob(currbot).pos.y
   e = Sqr(((c - a) ^ 2 + (d - b) ^ 2))
   If Abs(e) > 2000000000# Then
     e = Sgn(e) * 2000000000#
@@ -783,10 +789,9 @@ Private Function ExecuteFlowCommands(n As Integer, bot As Integer) As Boolean
       ExecuteFlowCommands = True
       If CurrentFlow = COND Then CurrentCondFlag = AddupCond
       If Not ingene Then CurrentCondFlag = NEXTBODY
-                     
-      If CurrentCondFlag And CurrentFlow <> CLEAR Then
+      If CurrentCondFlag And (CurrentFlow = ELSEBODY Or CurrentFlow = body) Then 'Botsareus 3/24/2012 Fixed a bug where: any else gene was showing activation
         ' Need to check this for the case where the gene body doesn't have any stores to trigger the activation dialog
-        If bot = robfocus Or Not (rob(bot).console Is Nothing) Then rob(bot).ga(currgene) = True  'EricL  This gene fired this cycle!  Populate ga()
+        If bot = robfocus Or Not (rob(bot).console Is Nothing) Then rob(bot).ga(currgene) = True   'EricL  This gene fired this cycle!  Populate ga()
       End If
       CurrentFlow = CLEAR
       Select Case n
@@ -861,12 +866,12 @@ Public Sub ExecRobs()
       ExecuteDNA t
       If Not (rob(t).console Is Nothing) And DisplayActivations Then
          rob(t).console.textout ""
-         rob(t).console.textout "robot genes execution: - =not executed"
+         rob(t).console.textout "***ROBOT GENES EXECUTION***" 'Botsareus 3/24/2012 looks a little better now
          For k = 1 To rob(t).genenum
           If rob(t).ga(k) Then
             rob(t).console.textout CStr(k) & " executed"
           Else
-            rob(t).console.textout CStr(k) & " -"
+            rob(t).console.textout CStr(k) & " not executed" 'Botsareus 3/24/2012 looks a little better now
           End If
         Next k
       End If

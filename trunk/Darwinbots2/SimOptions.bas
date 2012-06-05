@@ -55,7 +55,6 @@ Public Type SimOptions
   TotBorn As Long
   SpeciesNum As Integer
   Specie(MAXNATIVESPECIES) As datispecie
-  SpecieRespawn(MAXNATIVESPECIES) As Integer
   FieldSize As Integer
   FieldWidth As Long
   FieldHeight As Long

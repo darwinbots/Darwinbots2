@@ -29,13 +29,13 @@ End Function
 Private Sub preparerob(t As Integer, path As String)
     Dim col1 As Long, col2 As Long, col3 As Long
     Dim k As Integer
-    rob(t).pos.X = Random(50, Form1.ScaleWidth)
-    rob(t).pos.Y = Random(50, Form1.ScaleHeight)
+    rob(t).pos.x = Random(50, Form1.ScaleWidth)
+    rob(t).pos.y = Random(50, Form1.ScaleHeight)
     rob(t).aim = Random(0, 628) / 100
     rob(t).aimvector = VectorSet(Cos(rob(t).aim), Sin(rob(t).aim))
     rob(t).exist = True
-    rob(t).BucketPos.X = -2
-    rob(t).BucketPos.Y = -2
+    rob(t).BucketPos.x = -2
+    rob(t).BucketPos.y = -2
     UpdateBotBucket t
         
     col1 = Random(50, 255)
@@ -63,12 +63,13 @@ End Function
 
 Public Function DnaLen(DNA() As block) As Integer
   DnaLen = 1
-  While Not (DNA(DnaLen).tipo = 10 And DNA(DnaLen).value = 1) And DnaLen <= 32000
+  While Not (DNA(DnaLen).tipo = 10 And DNA(DnaLen).value = 1) And DnaLen <= 32000 And DnaLen <= UBound(DNA) 'Botsareus 5/29/2012 Added upper bounds check
     DnaLen = DnaLen + 1
   Wend
-  If DnaLen = 32000 Then
-    DnaLen = 32000
-  End If
+  
+  'If DnaLen = 32000 Then 'Botsareus 5/29/2012 removed pointless code
+    'DnaLen = 32000
+  'End If
 End Function
 
 ' compiles a list of used locations
@@ -300,7 +301,7 @@ Public Function CountGenes(ByRef DNA() As block) As Integer
    
   counter = 1
   
-   While counter <= 32000
+   While counter <= 32000 And counter <= UBound(DNA) 'Botsareus 5/29/2012 Added upper bounds check
    If DNA(counter).tipo = 10 And DNA(counter).value = 1 Then GoTo getout
     ' If a Start or Else
     If DNA(counter).tipo = 9 And (DNA(counter).value = 2 Or DNA(counter).value = 3) Then
@@ -346,6 +347,7 @@ Public Function GeneEnd(ByRef DNA() As block, ByVal Position As Integer) As Inte
     If (DNA(GeneEnd + 1).tipo = 9 And ((DNA(GeneEnd + 1).value = 2) Or DNA(GeneEnd + 1).value = 3)) And Not condgene Then GoTo getout ' start or else
     If (DNA(GeneEnd + 1).tipo = 9 And ((DNA(GeneEnd + 1).value = 2) Or DNA(GeneEnd + 1).value = 3)) And condgene Then condgene = False ' start or else
     GeneEnd = GeneEnd + 1
+    If (GeneEnd + 1) > UBound(DNA) Then GoTo getout 'Botsareus 5/29/2012 Added upper bounds check
   Wend
 getout:
 End Function

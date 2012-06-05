@@ -3,15 +3,15 @@ Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
 Begin VB.Form Consoleform 
    BorderStyle     =   4  'Fixed ToolWindow
    Caption         =   "Form1"
-   ClientHeight    =   2565
+   ClientHeight    =   2550
    ClientLeft      =   45
-   ClientTop       =   285
+   ClientTop       =   315
    ClientWidth     =   4710
    Icon            =   "console.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   2565
+   ScaleHeight     =   2550
    ScaleWidth      =   4710
    ShowInTaskbar   =   0   'False
    Begin RichTextLib.RichTextBox Text1 
@@ -23,7 +23,6 @@ Begin VB.Form Consoleform
       _ExtentX        =   8281
       _ExtentY        =   3572
       _Version        =   393217
-      Enabled         =   -1  'True
       ReadOnly        =   -1  'True
       ScrollBars      =   2
       TextRTF         =   $"console.frx":058A
@@ -36,6 +35,22 @@ Begin VB.Form Consoleform
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
+   End
+   Begin VB.TextBox Text2 
+      BeginProperty Font 
+         Name            =   "Small Fonts"
+         Size            =   6.75
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   285
+      Left            =   0
+      TabIndex        =   1
+      Top             =   2280
+      Width           =   4695
    End
    Begin VB.PictureBox Picture1 
       BackColor       =   &H8000000C&
@@ -58,28 +73,10 @@ Begin VB.Form Consoleform
          Top             =   45
          Width           =   375
       End
-      Begin VB.CommandButton Command3 
-         Height          =   300
-         Left            =   1935
-         Picture         =   "console.frx":0B98
-         Style           =   1  'Graphical
-         TabIndex        =   8
-         Top             =   30
-         Width           =   375
-      End
-      Begin VB.CommandButton Command2 
-         Height          =   300
-         Left            =   2295
-         Picture         =   "console.frx":1122
-         Style           =   1  'Graphical
-         TabIndex        =   7
-         Top             =   45
-         Width           =   375
-      End
       Begin VB.CommandButton Command1 
          Height          =   300
          Left            =   4245
-         Picture         =   "console.frx":16AC
+         Picture         =   "console.frx":0B98
          Style           =   1  'Graphical
          TabIndex        =   6
          Top             =   45
@@ -88,55 +85,66 @@ Begin VB.Form Consoleform
       Begin VB.CommandButton eyebut 
          Height          =   300
          Left            =   1575
-         Picture         =   "console.frx":1C36
+         Picture         =   "console.frx":1122
          Style           =   1  'Graphical
          TabIndex        =   5
          Top             =   45
          Width           =   375
       End
-      Begin VB.CommandButton cyclebut 
-         Height          =   300
-         Left            =   720
-         Picture         =   "console.frx":21C0
-         Style           =   1  'Graphical
-         TabIndex        =   4
-         Top             =   30
-         Width           =   375
-      End
-      Begin VB.CommandButton pausebut 
-         Height          =   300
-         Left            =   360
-         Picture         =   "console.frx":274A
-         Style           =   1  'Graphical
-         TabIndex        =   3
-         Top             =   30
-         Width           =   375
-      End
       Begin VB.CommandButton playbut 
          Height          =   300
          Left            =   0
-         Picture         =   "console.frx":2CD4
+         Picture         =   "console.frx":1698
          Style           =   1  'Graphical
          TabIndex        =   2
          Top             =   45
          Width           =   375
       End
-   End
-   Begin VB.TextBox Text2 
-      BeginProperty Font 
-         Name            =   "Small Fonts"
-         Size            =   6.75
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   285
-      Left            =   0
-      TabIndex        =   1
-      Top             =   2280
-      Width           =   4695
+      Begin VB.CommandButton Command3 
+         Height          =   300
+         Left            =   1935
+         Picture         =   "console.frx":1C22
+         Style           =   1  'Graphical
+         TabIndex        =   8
+         Top             =   30
+         Width           =   375
+      End
+      Begin VB.CommandButton Command2 
+         Height          =   300
+         Left            =   2280
+         Picture         =   "console.frx":21AC
+         Style           =   1  'Graphical
+         TabIndex        =   7
+         Top             =   45
+         Width           =   375
+      End
+      Begin VB.CommandButton debug 
+         Height          =   300
+         Left            =   2650
+         Picture         =   "console.frx":2722
+         Style           =   1  'Graphical
+         TabIndex        =   11
+         Top             =   44
+         Width           =   375
+      End
+      Begin VB.CommandButton pausebut 
+         Height          =   300
+         Left            =   360
+         Picture         =   "console.frx":2860
+         Style           =   1  'Graphical
+         TabIndex        =   3
+         Top             =   30
+         Width           =   375
+      End
+      Begin VB.CommandButton cyclebut 
+         Height          =   300
+         Left            =   720
+         Picture         =   "console.frx":299E
+         Style           =   1  'Graphical
+         TabIndex        =   4
+         Top             =   30
+         Width           =   375
+      End
    End
 End
 Attribute VB_Name = "Consoleform"
@@ -144,6 +152,8 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'Botsareus 5/8/2012 Added a 'debug' button to replace the RobDebug.frm that was never implemented
+'Botsareus 5/30/2012 Set transperancy for all icons
 Option Explicit
 
 Private cnum As Integer

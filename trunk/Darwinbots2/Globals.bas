@@ -9,23 +9,6 @@ Public Type var
   value As Integer
 End Type
 
-'Constants for the graphs, which are used all over the place unfortunately
-Public Const POPULATION_GRAPH As Integer = 1
-Public Const MUTATIONS_GRAPH As Integer = 2
-Public Const AVGAGE_GRAPH As Integer = 3
-Public Const OFFSPRING_GRAPH As Integer = 4
-Public Const ENERGY_GRAPH As Integer = 5
-Public Const DNALENGTH_GRAPH As Integer = 6
-Public Const DNACOND_GRAPH As Integer = 7
-Public Const MUT_DNALENGTH_GRAPH As Integer = 8
-Public Const ENERGY_SPECIES_GRAPH As Integer = 9
-Public Const DYNAMICCOSTS_GRAPH As Integer = 10
-Public Const SPECIESDIVERSITY_GRAPH As Integer = 11
-Public Const INTERNET_SPECIES_GRAPH As Integer = 12
-Public Const INTERNET_SIMS_GRAPH As Integer = 13
-Public Const GENETIC_DIST_GRAPH As Integer = 14
-Public Const GENERATION_DIST_GRAPH As Integer = 15
-
 Public TotalEnergy As Long     ' total energy in the sim
 Public totnvegs As Integer          ' total non vegs in sim
 Public totnvegsDisplayed As Integer   ' Toggle for display purposes, so the display doesn't catch half calculated value
@@ -176,22 +159,22 @@ Public Sub makepoff(n As Integer)
   Dim vs As Integer
   Dim vx As Integer
   Dim vy As Integer
-  Dim X As Long
-  Dim Y As Long
+  Dim x As Long
+  Dim y As Long
   Dim t As Byte
   For t = 1 To 20
     an = (640 / 20) * t
     vs = Random(RobSize / 40, RobSize / 30)
-    vx = rob(n).vel.X + absx(an / 100, vs, 0, 0, 0)
-    vy = rob(n).vel.Y + absy(an / 100, vs, 0, 0, 0)
+    vx = rob(n).vel.x + absx(an / 100, vs, 0, 0, 0)
+    vy = rob(n).vel.y + absy(an / 100, vs, 0, 0, 0)
     With rob(n)
-    X = Random(.pos.X - .radius, .pos.X + .radius)
-    Y = Random(.pos.Y - .radius, .pos.Y + .radius)
+    x = Random(.pos.x - .radius, .pos.x + .radius)
+    y = Random(.pos.y - .radius, .pos.y + .radius)
     End With
     If Random(1, 2) = 1 Then
-      createshot X, Y, vx, vy, -100, 0, 0, RobSize * 2, rob(n).color
+      createshot x, y, vx, vy, -100, 0, 0, RobSize * 2, rob(n).color
     Else
-      createshot X, Y, vx, vy, -100, 0, 0, RobSize * 2, DBrite(rob(n).color)
+      createshot x, y, vx, vy, -100, 0, 0, RobSize * 2, DBrite(rob(n).color)
     End If
   Next t
 End Sub
@@ -199,7 +182,7 @@ End Sub
 ' not sure where to put this function, so it's going here
 ' adds robots on the fly loading the script of specie(r)
 ' if r=-1 loads a vegetable (used for repopulation)
-Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
+Public Sub aggiungirob(r As Integer, x As Single, y As Single)
   Dim k As Integer
   Dim a As Integer
   Dim i As Integer
@@ -223,8 +206,8 @@ Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
       GoTo getout
     End If
     
-    X = fRnd(SimOpts.Specie(r).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(r).Posrg * (SimOpts.FieldWidth - 60))
-    Y = fRnd(SimOpts.Specie(r).Postp * (SimOpts.FieldHeight - 60), SimOpts.Specie(r).Posdn * (SimOpts.FieldHeight - 60))
+    x = fRnd(SimOpts.Specie(r).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(r).Posrg * (SimOpts.FieldWidth - 60))
+    y = fRnd(SimOpts.Specie(r).Postp * (SimOpts.FieldHeight - 60), SimOpts.Specie(r).Posdn * (SimOpts.FieldHeight - 60))
   End If
   
   If SimOpts.Specie(r).Name <> "" And SimOpts.Specie(r).path <> "Invalid Path" Then
@@ -274,8 +257,13 @@ Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
       rob(a).Shape = Random(3, 5)
     End If
     If rob(a).Fixed Then rob(a).mem(216) = 1
-    rob(a).pos.X = X
-    rob(a).pos.Y = Y
+    rob(a).pos.x = x
+    rob(a).pos.y = y
+    
+    
+    rob(a).aim = Rnd * PI * 2 'Botsareus 5/30/2012 Added code to rotate the robot on placment
+    rob(a).mem(SetAim) = rob(a).aim * 200
+    
     'Bot is already in a bucket due to the prepare routine
    ' rob(a).BucketPos.x = -2
    ' rob(a).BucketPos.Y = -2
@@ -292,30 +280,13 @@ Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
     rob(a).mem(GenesSys) = rob(a).genenum
     
     
-    For i = 1 To 13
+    For i = 0 To 7 'Botsareus 5/20/2012 fix for skin engine
       rob(a).Skin(i) = SimOpts.Specie(r).Skin(i)
     Next i
+    
     rob(a).color = SimOpts.Specie(r).color
     makeoccurrlist a
   End If
 getout:
 End Sub
 
-Public Sub Repopulate()
-  Dim n As node
-  Dim a As Integer
-  Dim r As Integer
-  Dim Rx As Long
-  Dim Ry As Long
-  Dim t As Integer
-  Dim i As Integer
-  For a = 0 To SimOpts.SpeciesNum - 1
-    If SimOpts.Specie(a).RespawnThreshold > 1 And SimOpts.Specie(a).RespawnThreshold > SimOpts.Specie(a).Population Then
-      For i = SimOpts.Specie(a).Population To SimOpts.Specie(a).RespawnThreshold - 1
-        If Form1.Active Then
-          aggiungirob a, Random(60, SimOpts.FieldWidth - 60), Random(60, SimOpts.FieldHeight - 60)
-        End If
-      Next i
-    End If
-  Next a
-End Sub

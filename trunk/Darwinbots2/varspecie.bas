@@ -37,7 +37,6 @@ Public Type datispecie
   population As Integer             ' Number of this species in the sim.  Updated each cycle.
   SubSpeciesCounter As Integer      ' Using to increment the per-bot subspecies.
   Native As Boolean                 ' Indicates this species was first added locally to this sim and not teleported in from another
-  DisplayImage As Image
-  RespawnThreshold As Integer
+  DisplayImage As image
 End Type
 

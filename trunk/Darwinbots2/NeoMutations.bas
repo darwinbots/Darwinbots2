@@ -139,6 +139,9 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False)
       If .Mutables.mutarray(MajorDeletionUP) > 0 Then MajorDeletion robn
       If .Mutables.mutarray(MinorDeletionUP) > 0 Then MinorDeletion robn
     End If
+    
+    If .Mutations > 32000 Then .Mutations = 32000 'Botsareus 5/31/2012 Prevents mutations overflow
+    If .LastMut > 32000 Then .LastMut = 32000
   
     delta = CLng(.LastMut) - delta
     If (delta > 0) Then  'The bot has mutated.
