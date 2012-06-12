@@ -6,6 +6,7 @@ Begin VB.Form ObstacleForm
    ClientLeft      =   60
    ClientTop       =   450
    ClientWidth     =   6945
+   Icon            =   "ObstacleForm.frx":0000
    LinkTopic       =   "Form2"
    ScaleHeight     =   6300
    ScaleWidth      =   6945

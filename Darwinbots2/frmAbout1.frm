@@ -7,6 +7,7 @@ Begin VB.Form DNA_Help
    ClientTop       =   1935
    ClientWidth     =   10455
    ClipControls    =   0   'False
+   Icon            =   "frmAbout1.frx":0000
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -28,7 +29,7 @@ Begin VB.Form DNA_Help
       ClipControls    =   0   'False
       Height          =   540
       Left            =   240
-      Picture         =   "frmAbout1.frx":0000
+      Picture         =   "frmAbout1.frx":08CA
       ScaleHeight     =   337.12
       ScaleMode       =   0  'User
       ScaleWidth      =   337.12

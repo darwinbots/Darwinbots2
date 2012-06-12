@@ -7,6 +7,7 @@ Begin VB.Form EnergyForm
    ClientLeft      =   2760
    ClientTop       =   3750
    ClientWidth     =   5610
+   Icon            =   "EnergyForm.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
