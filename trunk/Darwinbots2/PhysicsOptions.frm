@@ -7,6 +7,7 @@ Begin VB.Form PhysicsOptions
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   9330
+   Icon            =   "PhysicsOptions.frx":0000
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -304,7 +305,7 @@ Begin VB.Form PhysicsOptions
       MultiLine       =   -1  'True
       ScrollBars      =   2  'Vertical
       TabIndex        =   6
-      Text            =   "PhysicsOptions.frx":0000
+      Text            =   "PhysicsOptions.frx":08CA
       Top             =   3660
       Width           =   4215
    End

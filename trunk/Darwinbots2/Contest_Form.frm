@@ -6,6 +6,7 @@ Begin VB.Form Contest_Form
    ClientLeft      =   60
    ClientTop       =   345
    ClientWidth     =   4935
+   Icon            =   "Contest_Form.frx":0000
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    NegotiateMenus  =   0   'False
@@ -398,8 +399,8 @@ End Sub
 
 Private Sub Form_Resize()
   If Contest_Form.WindowState = 0 Then
-    Contest_Form.height = 2700
-    Contest_Form.width = 5000
+    Contest_Form.Height = 2700
+    Contest_Form.Width = 5000
   End If
 End Sub
 

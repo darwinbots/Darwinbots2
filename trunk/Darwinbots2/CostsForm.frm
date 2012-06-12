@@ -8,6 +8,7 @@ Begin VB.Form CostsForm
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   10035
+   Icon            =   "CostsForm.frx":0000
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False

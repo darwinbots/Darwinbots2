@@ -6,6 +6,7 @@ Begin VB.Form MutationsProbability
    ClientLeft      =   165
    ClientTop       =   450
    ClientWidth     =   9165
+   Icon            =   "NeoMutprob.frx":0000
    LinkTopic       =   "Form2"
    ScaleHeight     =   8490
    ScaleWidth      =   9165
@@ -47,7 +48,7 @@ Begin VB.Form MutationsProbability
       MultiLine       =   -1  'True
       ScrollBars      =   2  'Vertical
       TabIndex        =   57
-      Text            =   "NeoMutprob.frx":0000
+      Text            =   "NeoMutprob.frx":08CA
       Top             =   120
       Width           =   5595
    End
@@ -63,7 +64,7 @@ Begin VB.Form MutationsProbability
          Height          =   1155
          Index           =   1
          Left            =   180
-         Picture         =   "NeoMutprob.frx":0006
+         Picture         =   "NeoMutprob.frx":08D0
          ScaleHeight     =   1095
          ScaleWidth      =   2235
          TabIndex        =   44
@@ -238,7 +239,7 @@ Begin VB.Form MutationsProbability
          Height          =   1155
          Index           =   0
          Left            =   180
-         Picture         =   "NeoMutprob.frx":0DB2
+         Picture         =   "NeoMutprob.frx":167C
          ScaleHeight     =   1095
          ScaleWidth      =   2235
          TabIndex        =   24
