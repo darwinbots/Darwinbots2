@@ -529,7 +529,7 @@ Begin VB.Form optionsform
                TabIndex        =   196
                Top             =   240
                Width           =   255
-               _ExtentX        =   503
+               _ExtentX        =   450
                _ExtentY        =   503
                _Version        =   327681
                BuddyControl    =   "CustomWaste"
@@ -624,7 +624,7 @@ Begin VB.Form optionsform
                      TabIndex        =   184
                      Top             =   900
                      Width           =   255
-                     _ExtentX        =   503
+                     _ExtentX        =   450
                      _ExtentY        =   503
                      _Version        =   327681
                      Value           =   1
@@ -837,7 +837,7 @@ Begin VB.Form optionsform
                   ToolTipText     =   "Set the gradient for light transmission through the water. A value of zero means no light reduction at any depth."
                   Top             =   1140
                   Width           =   255
-                  _ExtentX        =   503
+                  _ExtentX        =   450
                   _ExtentY        =   503
                   _Version        =   327681
                   Value           =   1
@@ -861,7 +861,7 @@ Begin VB.Form optionsform
                   ToolTipText     =   "Set the light intensity to feed your veggies"
                   Top             =   720
                   Width           =   255
-                  _ExtentX        =   503
+                  _ExtentX        =   450
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "LightText"
@@ -997,7 +997,7 @@ Begin VB.Form optionsform
                   TabIndex        =   167
                   Top             =   1020
                   Width           =   255
-                  _ExtentX        =   503
+                  _ExtentX        =   450
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "RepopAmountText"
@@ -1016,7 +1016,7 @@ Begin VB.Form optionsform
                   TabIndex        =   168
                   Top             =   300
                   Width           =   255
-                  _ExtentX        =   503
+                  _ExtentX        =   450
                   _ExtentY        =   503
                   _Version        =   327681
                   Value           =   1
@@ -1039,7 +1039,7 @@ Begin VB.Form optionsform
                   TabIndex        =   169
                   Top             =   660
                   Width           =   255
-                  _ExtentX        =   503
+                  _ExtentX        =   450
                   _ExtentY        =   503
                   _Version        =   327681
                   Value           =   100
@@ -1063,7 +1063,7 @@ Begin VB.Form optionsform
                   TabIndex        =   170
                   Top             =   1380
                   Width           =   255
-                  _ExtentX        =   503
+                  _ExtentX        =   450
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "RepopCooldownText"
@@ -1235,7 +1235,7 @@ Begin VB.Form optionsform
                   ToolTipText     =   "Set how fast you want your corpses to decay away."
                   Top             =   240
                   Width           =   255
-                  _ExtentX        =   503
+                  _ExtentX        =   450
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "DecayText"
@@ -1257,7 +1257,7 @@ Begin VB.Form optionsform
                   ToolTipText     =   "Set how fast you want your corpses to decay away."
                   Top             =   600
                   Width           =   255
-                  _ExtentX        =   503
+                  _ExtentX        =   450
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "FrequencyText"
@@ -1347,7 +1347,7 @@ Begin VB.Form optionsform
                ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
                Top             =   3240
                Width           =   255
-               _ExtentX        =   503
+               _ExtentX        =   450
                _ExtentY        =   450
                _Version        =   327681
                Value           =   200
@@ -1367,7 +1367,7 @@ Begin VB.Form optionsform
                ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
                Top             =   480
                Width           =   255
-               _ExtentX        =   503
+               _ExtentX        =   450
                _ExtentY        =   503
                _Version        =   327681
                Value           =   100
@@ -1490,7 +1490,7 @@ Begin VB.Form optionsform
             TabIndex        =   97
             Top             =   1005
             Width           =   255
-            _ExtentX        =   503
+            _ExtentX        =   450
             _ExtentY        =   582
             _Version        =   327681
             Value           =   100000
@@ -1513,7 +1513,7 @@ Begin VB.Form optionsform
             TabIndex        =   98
             Top             =   1500
             Width           =   255
-            _ExtentX        =   503
+            _ExtentX        =   450
             _ExtentY        =   582
             _Version        =   327681
             Value           =   10000
@@ -1854,7 +1854,7 @@ Begin VB.Form optionsform
             TabIndex        =   44
             Top             =   1140
             Width           =   255
-            _ExtentX        =   503
+            _ExtentX        =   450
             _ExtentY        =   503
             _Version        =   327681
             Value           =   100
@@ -1874,7 +1874,7 @@ Begin VB.Form optionsform
             TabIndex        =   45
             Top             =   720
             Width           =   255
-            _ExtentX        =   503
+            _ExtentX        =   450
             _ExtentY        =   503
             _Version        =   327681
             Value           =   5
@@ -2166,7 +2166,7 @@ Begin VB.Form optionsform
             Top             =   3000
             Visible         =   0   'False
             Width           =   255
-            _ExtentX        =   503
+            _ExtentX        =   450
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Prop"
@@ -2217,7 +2217,7 @@ Begin VB.Form optionsform
             TabIndex        =   15
             Top             =   2520
             Width           =   255
-            _ExtentX        =   503
+            _ExtentX        =   450
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Fixed"
@@ -2521,7 +2521,7 @@ Begin VB.Form optionsform
             ToolTipText     =   "Set the initial number of copies for this robot type"
             Top             =   480
             Width           =   240
-            _ExtentX        =   503
+            _ExtentX        =   450
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "SpecQty"
@@ -2542,7 +2542,7 @@ Begin VB.Form optionsform
             ToolTipText     =   "Initial energy assigned to this type"
             Top             =   1440
             Width           =   240
-            _ExtentX        =   503
+            _ExtentX        =   450
             _ExtentY        =   503
             _Version        =   327681
             Value           =   1000
@@ -2805,7 +2805,7 @@ Begin VB.Form optionsform
             TabIndex        =   65
             Top             =   240
             Width           =   255
-            _ExtentX        =   503
+            _ExtentX        =   450
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoSimTxt"
@@ -2825,7 +2825,7 @@ Begin VB.Form optionsform
             TabIndex        =   66
             Top             =   2040
             Width           =   255
-            _ExtentX        =   503
+            _ExtentX        =   450
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoRobTxt"
@@ -5555,8 +5555,7 @@ aiuto:
        InfoForm.Show 'Botsareus 5/8/2012 Show the info form if no settings where found
     Else
       MsgBox ("Darwinbots cannot continue.  Program will exit.")
-      MDIForm1.exitDB = True
-      Exit Sub
+      End 'Botsareus 7/12/2012 force DB to exit
     End If
   ElseIf Err.Number = 53 And Right(path, 12) = "lastexit.set" Then
        MsgBox ("Cannot find the settings file from your last exit.  " + vbCrLf + _

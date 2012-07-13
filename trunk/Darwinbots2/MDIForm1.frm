@@ -1419,6 +1419,15 @@ Private Sub SunButton_Click()
   SimOpts.Daytime = Not (SunButton.value * True)
 End Sub
 
+Public Sub menuupdate() 'Botsareus 7/13/2012 The menu handler
+If limitgraphics Then Toolbar1.Buttons(9).value = tbrPressed Else Toolbar1.Buttons(9).value = tbrUnpressed
+If oneonten Then Toolbar1.Buttons(10).value = tbrPressed Else Toolbar1.Buttons(10).value = tbrUnpressed
+If Form1.Flickermode Then Toolbar1.Buttons(11).value = tbrPressed Else Toolbar1.Buttons(11).value = tbrUnpressed
+If Not Form1.dispskin Then Toolbar1.Buttons(12).value = tbrPressed Else Toolbar1.Buttons(12).value = tbrUnpressed
+If nopoff Then Toolbar1.Buttons(13).value = tbrPressed Else Toolbar1.Buttons(13).value = tbrUnpressed
+If Not visualize Then Toolbar1.Buttons(14).value = tbrPressed Else Toolbar1.Buttons(14).value = tbrUnpressed
+End Sub
+
 Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
   Dim a As String
  
@@ -1447,14 +1456,11 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
       DisplayActivations = False
       Consoleform.cycle 1
     Case "limit"
-      limitgraphics = Not limitgraphics
-      If limitgraphics Then
-        Button.value = tbrUnpressed
-      Else
-        Button.value = tbrPressed
-      End If
+      limitgraphics = Not limitgraphics 'Botsareus 7/13/2012 moved icon update to a seporate procedure
+      menuupdate
     Case "fast"
-      oneonten = Not oneonten
+      oneonten = Not oneonten 'Botsareus 7/13/2012 added icon update
+      menuupdate
     Case "best"
       robfocus = Form1.fittest
     Case "mutfreq"
@@ -1473,25 +1479,22 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
       NetEvent.Hide
       optionsform.Show vbModal
     Case "noskin"
-      Form1.dispskin = Not Form1.dispskin
+      Form1.dispskin = Not Form1.dispskin 'Botsareus 7/13/2012 added icon update
+      menuupdate
     Case "nopoff"
-      nopoff = Not nopoff
+      nopoff = Not nopoff 'Botsareus 7/13/2012 added icon update
+      menuupdate
     Case "Flickermode"
-      Form1.Flickermode = Not Form1.Flickermode
-      If Form1.Flickermode Then
-        Button.value = tbrPressed
-      Else
-        Button.value = tbrUnpressed
-      End If
+      Form1.Flickermode = Not Form1.Flickermode 'Botsareus 7/13/2012 moved icon update to a seporate procedure
+      menuupdate
     Case "Novideo"
-      visualize = Not visualize
+      visualize = Not visualize 'Botsareus 7/13/2012 moved icon update to a seporate procedure
       If visualize Then
-        Button.value = tbrUnpressed
         Form1.Label1.Visible = False
       Else
-        Button.value = tbrPressed
         Form1.Label1.Visible = True
       End If
+      menuupdate
     Case "insert"
       If Not insrob Then
         Form1.MousePointer = vbCrosshair
@@ -1845,7 +1848,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
 Dim revision As String
 
   globstrings

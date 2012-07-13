@@ -80,7 +80,7 @@ Private Sub ExecuteDNA(n As Integer)
   With rob(n)
   a = 1
   rob(n).condnum = 0 ' EricL 4/6/2006 reset the COND statement counter to 0
-  While Not (.DNA(a).tipo = 10 And .DNA(a).value = 1) And a <= 32000 And a <= UBound(.DNA) 'Botsareus 5/29/2012 Added upper bounds check (This seems like overkill but I had situations where 'end' command did not exisit)
+  While Not (.DNA(a).tipo = 10 And .DNA(a).value = 1) And a <= 32000 And a < UBound(.DNA) 'Botsareus 6/16/2012 Added upper bounds check (This seems like overkill but I had situations where 'end' command did not exisit)
     tipo = .DNA(a).tipo
     Select Case tipo
       Case 0 'number
@@ -324,8 +324,8 @@ Private Sub findang()
   Dim e As Single  'angle to target
   b = PopIntStack ' * Form1.yDivisor
   a = PopIntStack ' * Form1.xDivisor
-  c = rob(currbot).pos.x / Form1.xDivisor
-  d = rob(currbot).pos.y / Form1.yDivisor
+  c = rob(currbot).pos.X / Form1.xDivisor
+  d = rob(currbot).pos.Y / Form1.yDivisor
   e = angnorm(angle(c, d, a, b)) * 200
   PushIntStack e
 End Sub
@@ -338,8 +338,8 @@ Private Sub finddist()
   Dim e As Single  'distance to target
   b = PopIntStack * Form1.yDivisor
   a = PopIntStack * Form1.xDivisor
-  c = rob(currbot).pos.x
-  d = rob(currbot).pos.y
+  c = rob(currbot).pos.X
+  d = rob(currbot).pos.Y
   e = Sqr(((c - a) ^ 2 + (d - b) ^ 2))
   If Abs(e) > 2000000000# Then
     e = Sgn(e) * 2000000000#

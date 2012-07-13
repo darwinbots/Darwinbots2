@@ -424,6 +424,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+'Botsareus 6/12/2012 form's icon change
 
 Private Sub Command_Click(Index As Integer)
   Select Case Index

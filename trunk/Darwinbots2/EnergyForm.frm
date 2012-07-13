@@ -235,7 +235,7 @@ Attribute VB_Exposed = False
 'MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 Option Explicit
-
+'Botsareus 6/12/2012 form's icon change
 
 Private Sub DNCheck_Click()
   TmpOpts.DayNight = DNCheck.value * True

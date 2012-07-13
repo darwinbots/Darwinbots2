@@ -81,7 +81,9 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-'Botsareus 3/24/2012 Added an icon
+'Botsareus 3/24/2012 Added a version icon
+'Botsareus 6/12/2012 form's icon change
+
 ' Reg Key Security Options...
 Const READ_CONTROL = &H20000
 Const KEY_QUERY_VALUE = &H1

@@ -29,13 +29,13 @@ End Function
 Private Sub preparerob(t As Integer, path As String)
     Dim col1 As Long, col2 As Long, col3 As Long
     Dim k As Integer
-    rob(t).pos.x = Random(50, Form1.ScaleWidth)
-    rob(t).pos.y = Random(50, Form1.ScaleHeight)
+    rob(t).pos.X = Random(50, Form1.ScaleWidth)
+    rob(t).pos.Y = Random(50, Form1.ScaleHeight)
     rob(t).aim = Random(0, 628) / 100
     rob(t).aimvector = VectorSet(Cos(rob(t).aim), Sin(rob(t).aim))
     rob(t).exist = True
-    rob(t).BucketPos.x = -2
-    rob(t).BucketPos.y = -2
+    rob(t).BucketPos.X = -2
+    rob(t).BucketPos.Y = -2
     UpdateBotBucket t
         
     col1 = Random(50, 255)
@@ -63,7 +63,7 @@ End Function
 
 Public Function DnaLen(DNA() As block) As Integer
   DnaLen = 1
-  While Not (DNA(DnaLen).tipo = 10 And DNA(DnaLen).value = 1) And DnaLen <= 32000 And DnaLen <= UBound(DNA) 'Botsareus 5/29/2012 Added upper bounds check
+  While Not (DNA(DnaLen).tipo = 10 And DNA(DnaLen).value = 1) And DnaLen <= 32000 And DnaLen < UBound(DNA) 'Botsareus 6/16/2012 Added upper bounds check
     DnaLen = DnaLen + 1
   Wend
   
