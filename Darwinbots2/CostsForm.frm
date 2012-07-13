@@ -1345,6 +1345,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+'Botsareus 6/12/2012 form's icon change
 
 Private Sub AgeCostLog_Click()
   If AgeCostLog.value = 1 Then

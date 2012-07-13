@@ -373,6 +373,7 @@ Attribute VB_Exposed = False
 'MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 Option Explicit
+'Botsareus 6/12/2012 form's icon change
 
 Private Sub ShapesAbsorbShotsCheck_Click()
    SimOpts.shapesAbsorbShots = ShapesAbsorbShotsCheck.value
