@@ -1522,34 +1522,34 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
   End Select
 End Sub
 
-Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
+Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu) 'Botsareus 8/3/2012 graph id mod, looks a little better now
   Select Case ButtonMenu.key
     Case "pop"
-      Form1.NewGraph 1, "Populations"
+      Form1.NewGraph POPULATION_GRAPH, "Populations"
     Case "avgmut"
-      Form1.NewGraph 2, "Mutations (Species Average)"
+      Form1.NewGraph MUTATIONS_GRAPH, "Average_Mutations"
     Case "avgage"
-      Form1.NewGraph 3, "Average Age (hundreds of cycles)"
+      Form1.NewGraph AVGAGE_GRAPH, "Average_Age"
     Case "avgsons"
-      Form1.NewGraph 4, "Offspring (Species Average)"
+      Form1.NewGraph OFFSPRING_GRAPH, "Average_Offspring"
     Case "avgnrg"
-      Form1.NewGraph 5, "Energy (Species Average)"
+      Form1.NewGraph ENERGY_GRAPH, "Average_Energy"
     Case "avglen"
-      Form1.NewGraph 6, "DNA length (Species Average)"
+      Form1.NewGraph DNALENGTH_GRAPH, "Average_DNA_length"
     Case "avgcond"
-      Form1.NewGraph 7, "DNA Cond statements (Species Average)"
+      Form1.NewGraph DNACOND_GRAPH, "Average_DNA_Cond_statements"
     Case "avgmutlen"
-      Form1.NewGraph 8, "Mutations/DNA len (Species Average)"
+      Form1.NewGraph MUT_DNALENGTH_GRAPH, "Average_Mutations_per_DNA_length"
     Case "simnrg"
-      Form1.NewGraph 9, "Total Energy/Species (x1000)"
+      Form1.NewGraph ENERGY_SPECIES_GRAPH, "Total_Energy_per_Species_x1000-"
     Case "autocost"
-      Form1.NewGraph 10, "Dynamic Costs"
+      Form1.NewGraph DYNAMICCOSTS_GRAPH, "Dynamic_Costs"
     Case "speciesdiversity"
-      Form1.NewGraph 11, "Species Diversity"
+      Form1.NewGraph SPECIESDIVERSITY_GRAPH, "Species_Diversity"
     Case "maxgeneticdistance"
-      Form1.NewGraph 14, "Genetic Distance (Maximum)"
+      Form1.NewGraph GENETIC_DIST_GRAPH, "Max_Genetic_Distance"
     Case "maxgenerationaldistance"
-      Form1.NewGraph 15, "Generational Distance (Maximum)"
+      Form1.NewGraph GENERATION_DIST_GRAPH, "Max_Generational_Distance"
     
     Case "resgraph"
       If MsgBox("Are you sure you want to reset all graphs?", vbOKCancel) = vbOK Then
@@ -1848,7 +1848,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As file
+Dim lastSim As File
 Dim revision As String
 
   globstrings
