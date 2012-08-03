@@ -11,6 +11,16 @@ Begin VB.Form grafico
    LinkTopic       =   "Form2"
    ScaleHeight     =   10950
    ScaleWidth      =   7995
+   Begin VB.CheckBox chk_GDsave 
+      BackColor       =   &H00FFFFFF&
+      Caption         =   "Save on d.p. 999"
+      Height          =   255
+      Left            =   6600
+      TabIndex        =   139
+      ToolTipText     =   "Saves graph data to file(s) on every data point 999"
+      Top             =   5520
+      Width           =   1695
+   End
    Begin VB.CommandButton ResetButton 
       Caption         =   "Reset"
       Height          =   255
@@ -3836,6 +3846,11 @@ Dim t As Integer
   MaxSeries = MaxSeries - 1
 End Sub
 
+Private Sub chk_GDsave_Click() 'Botsareus 8/3/2012 temporary message
+MsgBox "Sorry, this feature is still under development"
+chk_GDsave.value = False
+End Sub
+
 Private Sub Form_Activate()
   Dim s As String
   Dim t As Integer
@@ -3877,7 +3892,7 @@ Dim t As Integer
   If FHeight = 0 Then FHeight = 4000
  ' If FWidth = 0 Then FWidth = 5900
  If FWidth = 0 Then FWidth = 6500
-  Me.top = FTop
+  Me.Top = FTop
   Me.Left = FLeft
   Me.Height = FHeight
   Me.Width = FWidth
@@ -3890,23 +3905,25 @@ Private Sub Form_Resize()
   If Me.Height > 900 And Me.Width > 3000 Then
     Riquadro.Height = Me.Height - 850
     Riquadro.Width = Me.Width - 3400
-    Riquadro.top = 20
+    Riquadro.Top = 20
     For t = 0 To MaxItems - 1
       Shape3(t).Left = Riquadro.Left + Riquadro.Width + 50
       popnum(t).Width = 600 ' should be enough for five digits left and one right of the decimal
       popnum(t).Left = Shape3(t).Left + Shape3(t).Width + 30
       Label1(t).Left = popnum(t).Left + popnum(t).Width + 30
-      Shape3(t).top = 45 + (t * 200)
-      popnum(t).top = Shape3(t).top
-      Label1(t).top = Shape3(t).top
+      Shape3(t).Top = 45 + (t * 200)
+      popnum(t).Top = Shape3(t).Top
+      Label1(t).Top = Shape3(t).Top
     Next t
     UpdateNow.Left = Riquadro.Left + Riquadro.Width - 2000
-    UpdateNow.top = Riquadro.Height + 30
+    UpdateNow.Top = Riquadro.Height + 30
     ResetButton.Left = UpdateNow.Left + UpdateNow.Width + 30
-    ResetButton.top = Riquadro.Height + 30
-    XLabel.top = Me.Height - XLabel.Height - 550
+    ResetButton.Top = Riquadro.Height + 30
+    chk_GDsave.Top = Riquadro.Height + 30 'Botsareus 8/3/2012 reposition the save graph data checkbox
+    chk_GDsave.Left = ResetButton.Left + ResetButton.Width + 30
+    XLabel.Top = Me.Height - XLabel.Height - 550
     RedrawGraph
-    FTop = Me.top
+    FTop = Me.Top
     FLeft = Me.Left
     FHeight = Me.Height
     FWidth = Me.Width
@@ -3935,7 +3952,7 @@ Public Sub NewPoints()
   Next t
   
   RedrawGraph
-  FTop = Me.top
+  FTop = Me.Top
   FLeft = Me.Left
   FHeight = Me.Height
   FWidth = Me.Width
@@ -3961,7 +3978,7 @@ Public Sub RedrawGraph()
   xunit = (Riquadro.Width - 200) / (MaxData + 1)
   yunit = (Riquadro.Height - 200) / maxy ' EricL - Multithread divide by zero bug here...
   xo = Riquadro.Left
-  yo = Riquadro.top + Riquadro.Height - 50
+  yo = Riquadro.Top + Riquadro.Height - 50
   Me.Cls
   DrawAxes maxy
   k = Pivot + 1
@@ -4024,18 +4041,18 @@ Private Sub DrawAxes(Max As Single)
   Dim xo As Long
   Dim yo As Long
   xo = Riquadro.Left
-  yo = Riquadro.top + Riquadro.Height
+  yo = Riquadro.Top + Riquadro.Height
   yunit = Riquadro.Height / Max
   'Midline
   Line (xo, yo - yunit * Max / 2)-(Riquadro.Left + Riquadro.Width, yo - yunit * Max / 2), vbBlack
   YLab(0).Caption = CStr(Max / 2)
   YLab(0).Left = xo
-  YLab(0).top = (yo - yunit * Max / 2)
+  YLab(0).Top = (yo - yunit * Max / 2)
   'Top
-  Line (xo, Riquadro.top)-(xo + Riquadro.Width, Riquadro.top), vbBlack
+  Line (xo, Riquadro.Top)-(xo + Riquadro.Width, Riquadro.Top), vbBlack
   YLab(1).Caption = CStr(Max)
   YLab(1).Left = xo
-  YLab(1).top = Riquadro.top
+  YLab(1).Top = Riquadro.Top
 End Sub
 
 
@@ -4047,7 +4064,7 @@ Private Sub UpdateNow_Click()
   Form1.FeedGraph (WhichGraphAmI)
 End Sub
 
-Private Function WhichGraphAmI() As Integer
+Private Function WhichGraphAmI() As Integer 'Botsareus 8/3/2012 use names for graph id mod
   Dim chartNumber As Integer
   
   chartNumber = 0
@@ -4055,31 +4072,31 @@ Private Function WhichGraphAmI() As Integer
   'EricL Figuring out which graph I am this way is a total hack, but it works
   Select Case Me.Caption
     Case "Populations"
-      chartNumber = 1
-    Case "Mutations (Species Average)"
-      chartNumber = 2
-    Case "Average Age (hundreds of cycles)"
-      chartNumber = 3
-    Case "Offspring (Species Average)"
-      chartNumber = 4
-    Case "Energy (Species Average)"
-      chartNumber = 5
-    Case "DNA length (Species Average)"
-      chartNumber = 6
-    Case "DNA Cond statements (Species Average)"
-      chartNumber = 7
-    Case "Mutations/DNA len (Species Average)"
-      chartNumber = 8
-    Case "Total Energy/Species (x1000)"
-      chartNumber = 9
-    Case "Dynamic Costs"
-      chartNumber = 10
-    Case "Species Diversity"
-      chartNumber = 11
-    Case "Genetic Distance (Maximum)"
-      chartNumber = 13
-    Case "Generational Distance (Maximum)"
-      chartNumber = 14
+      chartNumber = POPULATION_GRAPH
+    Case "Average_Mutations"
+      chartNumber = MUTATIONS_GRAPH
+    Case "Average_Age"
+      chartNumber = AVGAGE_GRAPH
+    Case "Average_Offspring"
+      chartNumber = OFFSPRING_GRAPH
+    Case "Average_Energy"
+      chartNumber = ENERGY_GRAPH
+    Case "Average_DNA_length"
+      chartNumber = DNALENGTH_GRAPH
+    Case "Average_DNA_Cond_statements"
+      chartNumber = DNACOND_GRAPH
+    Case "Average_Mutations_per_DNA_length"
+      chartNumber = MUT_DNALENGTH_GRAPH
+    Case "Total_Energy_per_Species_x1000-"
+      chartNumber = ENERGY_SPECIES_GRAPH
+    Case "Dynamic_Costs"
+      chartNumber = DYNAMICCOSTS_GRAPH
+    Case "Species_Diversity"
+      chartNumber = SPECIESDIVERSITY_GRAPH
+    Case "Max_Genetic_Distance"
+      chartNumber = GENETIC_DIST_GRAPH
+    Case "Max_Generational_Distance"
+      chartNumber = GENERATION_DIST_GRAPH
   End Select
   
   WhichGraphAmI = chartNumber
