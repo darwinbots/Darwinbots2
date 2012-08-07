@@ -1034,8 +1034,10 @@ Private Sub DisplayShotImpacts_Click()
   displayShotImpactsToggle = DisplayShotImpacts.Checked
 End Sub
 
-Private Sub DNAexp_Click()
+Private Sub DNAexp_Click() 'Botsareus 8/7/2012 help loads a while, added a hourglass
+MousePointer = vbHourglass
   DNA_Help.Show
+MousePointer = vbDefault
 End Sub
 
 Private Sub DontDecayNrgShots_Click()
