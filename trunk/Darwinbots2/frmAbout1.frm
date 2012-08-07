@@ -192,7 +192,7 @@ Help.text = ""
     Help.text = Help.text + "<" + vbTab + "-----" + vbTab + "Compares the top two values on the stack. Returns TRUE when #2 is less than #1." + vbCrLf
     
     Help.text = Help.text + "" + vbCrLf
-    Help.text = Help.text + "And finally the System Variables which can also be found in the file (sysvars2.21.txt)" + vbCrLf
+    Help.text = Help.text + "And finally the System Variables" + vbCrLf
     Help.text = Help.text + "Store a value in one of these locations or read a value from it to activate the command" + vbCrLf
     Help.text = Help.text + "Many of these are READ ONLY! eg. You can't store a meaningful value into .refeye!" + vbCrLf
     Help.text = Help.text + "There may be a few exceptions to this rule but hey! I have to keep some secrets." + vbCrLf
@@ -661,7 +661,7 @@ Private Sub Form_Load() ''Botsareus 8/7/2012 mod for new version
     Help.text = Help.text + "end" + vbTab + "-----" + vbTab + "End of DNA." + vbCrLf
     
     Help.text = Help.text + "" + vbCrLf
-    Help.text = Help.text + "And finally the System Variables which can also be found in the file (sysvars2.21.txt)" + vbCrLf
+    Help.text = Help.text + "And finally the System Variables" + vbCrLf
     Help.text = Help.text + "Store a value in one of these locations or read a value from it to activate the command" + vbCrLf
     Help.text = Help.text + "Many of these are READ ONLY! eg. You can't store a meaningful value into .refeye!" + vbCrLf
     Help.text = Help.text + "There may be a few exceptions to this rule but hey! I have to keep some secrets." + vbCrLf
