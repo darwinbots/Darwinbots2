@@ -130,8 +130,7 @@ Private Declare Function RegCloseKey Lib "advapi32" (ByVal hKey As Long) As Long
 Private Sub Basic_Click() 'Botsareus 8/7/2012 Old help for new developers is also available
 Help.Visible = False
 Help.text = ""
- Help.text = Help.text + "First here is a reminder of the mathematical operators" + vbCrLf
-    Help.text = Help.text + "These can only be used in the Action step of the DNA. (after START)" + vbCrLf
+ Help.text = Help.text + "A simple list of mathematical operators" + vbCrLf
     Help.text = Help.text + "" + vbCrLf
     Help.text = Help.text + "add" + vbTab + "-----" + vbTab + "Adds the top two values on the stack and leaves the result on the stack" + vbCrLf
     Help.text = Help.text + vbTab + vbTab + "The original two numbers are removed." + vbCrLf
