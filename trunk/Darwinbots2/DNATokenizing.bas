@@ -8,6 +8,7 @@ Option Explicit
 
 ' loads the dna and parses it
 Public Function LoadDNA(path As String, n As Integer) As Boolean
+
   On Error GoTo fine:
   Dim a As String
   Dim b As String

@@ -741,20 +741,21 @@ Public Sub LoadSimulation(path As String)
       If Not EOF(1) Then
         Get #1, , SimOpts.Specie(k).path
         
-        'New for 2.42.5.  Insure the path points to our main directory. It might be a sim that was saved before hand on a different machine.
-        'First, we strip off the working directory portion of the robot path
-        'We have to do it this way since the sim could have come from a different machine with a different install directory
-        temp = SimOpts.Specie(k).path
-        s2 = Left(temp, 7)
-        While s2 <> "\Robots" And Len(temp) > 7
-          temp = Right(temp, Len(temp) - 1)
-          s2 = Left(temp, 7)
-        Wend
-        SimOpts.Specie(k).path = temp
-                
-        'Now we add on the main directory to get the full path.  The sim may have come from a different machine, but at least
-        'now the path points to the right main directory...
-        SimOpts.Specie(k).path = MDIForm1.MainDir + SimOpts.Specie(k).path
+        'Botsareus 8/21/2012 Had to dump this, VERY BUGY!
+'        'New for 2.42.5.  Insure the path points to our main directory. It might be a sim that was saved before hand on a different machine.
+'        'First, we strip off the working directory portion of the robot path
+'        'We have to do it this way since the sim could have come from a different machine with a different install directory
+'        temp = SimOpts.Specie(k).path
+'        s2 = Left(temp, 7)
+'        While s2 <> "\Robots" And Len(temp) > 7
+'          temp = Right(temp, Len(temp) - 1)
+'          s2 = Left(temp, 7)
+'        Wend
+'        SimOpts.Specie(k).path = temp
+'
+'        'Now we add on the main directory to get the full path.  The sim may have come from a different machine, but at least
+'        'now the path points to the right main directory...
+'        SimOpts.Specie(k).path = MDIForm1.MainDir + SimOpts.Specie(k).path
       End If
       
       If Not EOF(1) Then Get #1, , s 'SimOpts.Specie(k).Posdn 'EricL 4/1/06 Changed these to use the variable s
