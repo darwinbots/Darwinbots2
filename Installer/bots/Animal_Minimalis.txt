@@ -1,0 +1,41 @@
+'Animal_Minimalis
+'By: Nums
+'Good for mutation sims and for
+'newbies to see how a basic bot works.
+'Contains everything necessary for it
+'to survive and reproduce.
+
+' Gene 1 Food Finder
+cond
+ *.eye5 0 >
+ *.refeye *.myeye !=
+start
+ *.refveldx .dx store
+ *.refvelup 30 add .up store
+stop
+
+' Gene 2 Eat Food
+cond
+ *.eye5 50 >
+ *.refeye *.myeye !=
+start
+-1 .shoot store
+ *.refvelup .up store
+stop
+
+' Gene 3 Avoiding Family
+cond
+ *.eye5 0 =
+ *.refeye *.myeye = or
+start
+ 314 rnd .aimdx store
+stop
+
+' Gene 4 Reproduce
+cond
+ *.nrg 20000 >
+start
+ 10 .repro store
+stop
+
+end

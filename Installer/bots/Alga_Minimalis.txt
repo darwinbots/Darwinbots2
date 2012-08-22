@@ -1,0 +1,22 @@
+' Alga minimalis
+'
+' Vegetable
+'
+' This robot has a single gene,
+' necessary for it to reproduce.
+' Energy is given to it by the program,
+' by checking the "autotroph" box.
+
+cond
+  *.nrg
+  6000
+  >
+start
+  50
+  .repro
+  store
+  15
+  .aimdx
+  store
+stop
+end
