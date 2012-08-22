@@ -1,0 +1,655 @@
+'Saber
+'F1/F2 bot by abyaly
+'Oct 5, 2008
+'DB 2.43.1L
+
+
+'Memory locations in use
+def vdir 59
+def pop 971
+def type 972
+def speed 10
+def reftype 53
+def treftype 54
+def timercorrect 973
+def enemysize 804
+
+'Identification contants
+def id1 9883
+def id2 9884
+def id3 9885
+def key1 73
+def key2 1621
+def genome 1777
+
+'Type and reftype states
+def baby 12
+def parry 23
+def thrust 34
+def riposte 45
+def veggie 56
+def empty 67
+def enemy 78
+
+
+
+'********************Species init****************************
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'Gene 0
+cond
+start
+*.thisgene .delgene store
+10 .pop store
+0 .timer store
+.parry .type store
+stop
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'Gene 1
+cond
+start
+*.pop 0 >
+*.robage 0 > and
+*.nrg *.body 10 mult add 800 <= and
+0 .pop store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'*********************Unfix myself***************************
+0 .fixpos *.fixed sgn mult store
+'************************************************************
+
+
+
+'**********************Delete ties***************************
+*.numties 0 >
+*.tiepres .deltie store
+clearbool
+'************************************************************
+
+
+
+'*********************misc***********************************
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.timer -- .out9 store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+.timercorrect 1 =
+1 .out8 store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.robage 0 >
+2 .delgene store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.totalmyspecies 10 <=
+*.type .thrust = and
+*.robage 5 > and
+.parry .type store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.totalmyspecies 10 <=
+*.type .parry = and
+*.robage 5 > and
+3 .pop store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.shootval 0 !=
+0 .shootval store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.sexrepro 0 !=
+0 .sexrepro store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.enemysize 5 >
+*.enemysize 5 sub .enemysize store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'*****************local init*********************************
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eye5dir 628 !=
+628 .eye5dir store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.type 0 =
+.riposte .type store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.robage 0 =
+*.type .parry = and
+*.genes 1 = and
+4 rnd 0 != and
+.thrust .type store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.type .riposte !=
+*.timercorrect 1 != and
+1 .timercorrect store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'*******************Identify myself**************************
+*.type .thrust =
+.id1 *.robage .key1 mod .key2 add mod dup
+.out1 store
+.tout1 store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.type .parry =
+.id2 *.robage .key1 mod .key2 add mod dup
+.out1 store
+.tout1 store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.type .riposte =
+.id3 *.robage .key1 mod .key2 add mod dup
+.out1 store
+.tout1 store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'*************************ATAN*******************************
+'This section calculates the direction the
+'bot is going by using
+'f = X / (1 + .28X^2) (abs x <= 1)
+'f = (sgn x) pi/2 - X / (X^2 + .28) (abs x > 1)
+'to approximate arctan (veldx / velup)
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'f = X / (1 + .28X^2) (abs x <= 1)
+'Combined with DB unit conversion, rearranging
+'for precision, and premultoplying some
+'constants, what I'm using becomes
+'f = 71170(*.veldx)(*.velup)/(356(*.velup^2) + 100(*.veldx^2))
+*.veldx abs *.velup abs <=
+7117 10 mult *.veldx *.velup mult mult
+356 *.velup dup mult mult
+100 *.veldx dup mult mult
+add div
+*.velup sgn - sqr 628 mult add
+- *.aim add .vdir store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'f = (sgn x) pi/2 - X / (X^2 + .28) (abs x > 1)
+'Combined with DB unit conversion, rearranging
+'for precision, and premultoplying some
+'constants, what I'm using becomes
+'f = (sgn *.veldx)(sgn *.velup)314
+' - 71170(*.veldx)(*.velup)/(100(*.velup^2) + 356(*.veldx^2))
+*.veldx abs *.velup abs >
+*.velup 0 != and
+7117 10 mult *.veldx *.velup mult mult
+356 *.veldx dup mult mult
+100 *.velup dup mult mult
+add div -
+314 *.veldx sgn mult *.velup sgn mult add
+*.velup sgn - sqr 628 mult add
+- *.aim add .vdir store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'Velup = 0 is a special case because it corresponds
+'to a not-so-finite value of x
+*.velup 0 =
+*.veldx 0 != and
+*.veldx sgn 314 mult - *.aim add .vdir store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'***********************Bodily fluids************************
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.pop 0 =
+*.type .riposte != and
+*.nrg *.body 10 mult > and
+*.nrg *.body 10 mult sub .strbody store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.pop 0 =
+*.nrg *.body 10 mult < and
+*.body 10 mult *.nrg sub .fdbody store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.pop 0 =
+*.type .thrust != and
+*.shell 100 < and
+*.nrg 800 > and
+100 .mkshell store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.pop 0 =
+*.type .parry = and
+*.body 10 div .mkslime store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.pop 0 =
+*.type .parry = and
+*.slime *.body 5 mult < and
+100 .mkslime store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.body 20 >
+*.type .riposte = and
+*.body 20 sub 10 mult .fdbody store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.body 20 <
+*.nrg 300 >= and
+*.type .riposte = and
+100 .strbody store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'************************Target ID***************************
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+.enemy .reftype store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.refage 0 = and
+.baby .reftype store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.in1 .id1 *.refage -- .key1 mod .key2 add mod =
+*.in1 .id1 *.refage .key1 mod .key2 add mod = or
+*.refage 0 > and
+*.eyef 0 > and
+.thrust .reftype store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.in1 .id2 *.refage -- .key1 mod .key2 add mod =
+*.in1 .id2 *.refage .key1 mod .key2 add mod = or
+*.refage 0 > and
+*.eyef 0 > and
+.parry .reftype store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.in1 .id3 *.refage -- .key1 mod .key2 add mod =
+*.in1 .id3 *.refage .key1 mod .key2 add mod = or
+*.refage 0 > and
+*.eyef 0 > and
+.riposte .reftype store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.in1 .id1 *.refage -- .key1 mod .key2 add mod != and
+*.in1 .id1 *.refage .key1 mod .key2 add mod != and
+*.in1 .id2 *.refage -- .key1 mod .key2 add mod != and
+*.in1 .id2 *.refage .key1 mod .key2 add mod != and
+*.in1 .id3 *.refage -- .key1 mod .key2 add mod != and
+*.in1 .id3 *.refage .key1 mod .key2 add mod != and
+*.refpoison 0 = and
+*.refshoot 0 = and
+*.refaimsx 0 = and
+*.refkills 0 = and
+*.refshell 0 = and
+*.refeye 0 = and
+*.refup 0 = and
+.veggie .reftype store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'************************Tie ID******************************
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.numties 0 >
+.enemy .treftype store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.tin1 .id1 *.trefage -- .key1 mod .key2 add mod =
+*.tin1 .id1 *.trefage .key1 mod .key2 add mod = or
+*.numties 0 > and
+.thrust .treftype store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.tin1 .id2 *.trefage -- .key1 mod .key2 add mod =
+*.tin1 .id2 *.trefage .key1 mod .key2 add mod = or
+*.numties 0 > and
+.parry .treftype store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.tin1 .id3 *.trefage -- .key1 mod .key2 add mod =
+*.tin1 .id3 *.trefage .key1 mod .key2 add mod = or
+*.numties 0 > and
+.riposte .treftype store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.numties 0 >
+*.tin1 .id1 *.trefage -- .key1 mod .key2 add mod != and
+*.tin1 .id1 *.trefage .key1 mod .key2 add mod != and
+*.tin1 .id2 *.trefage -- .key1 mod .key2 add mod != and
+*.tin1 .id2 *.trefage .key1 mod .key2 add mod != and
+*.tin1 .id3 *.trefage -- .key1 mod .key2 add mod != and
+*.tin1 .id3 *.trefage .key1 mod .key2 add mod != and
+*.trefpoison 0 = and
+*.trefshoot 0 = and
+*.trefaimsx 0 = and
+*.trefkills 0 = and
+*.trefshell 0 = and
+*.trefeye 0 = and
+*.trefup 0 = and
+.veggie .treftype store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'*****************React to allies****************************
+'root 2 = 14142 10000 div
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.type .riposte = and
+*.reftype .riposte <= and
+*.in8 1 = and
+
+*.in9 .timer store
+1 .timercorrect store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.reftype .riposte <= and
+*.in5 *.enemysize > and
+
+*.in5 .enemysize store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.type .parry != and
+*.reftype .riposte <= and
+
+*.type .riposte =
+*.reftype .parry = and not and
+
+*.refveldx sgn abs -- - *.refveldx add sgn .speed mult - 14142 mult 20000 div .dx store
+.speed 14142 mult 20000 div .dn store
+*.vdir 628 add .setaim store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.reftype .riposte <= and
+*.type .parry = and
+
+200 .aimdx store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.type .riposte = and
+*.reftype .parry = and
+*.nrg 500 >= and
+
+*.refxpos *.refypos angle 628 add .setaim store
+*.refveldx .dx store
+*.refveldn 100 add .dn store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 70 >
+*.type .riposte = and
+*.reftype .parry = and
+
+-2 .shoot store
+32000 .shootval store
+628 .aimshoot store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.reftype .parry = and
+*.type .parry != and
+
+*.refxpos .out2 store
+*.refypos .out3 store
+
+.timercorrect 1 = and
+*.timer .out4 store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.reftype .parry !=
+*.type .parry != and
+*.in4 .out4 >=
+
+*.in2 .out2 store
+*.in3 .out3 store
+*.in4 .out4 store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'************************Seeking*****************************
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 =
+*.type .parry != and
+*.timer 8 mod 157 mult .eye5dir store
+*.vdir 628 add .setaim store
+.speed .dn store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 =
+*.type .parry = and
+200 .aimdx store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.type .riposte =
+*.out2 *.out3 dist 500 < and
+*.out4 0 > and
+*.out2 *.out3 angle 628 add .setaim store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'******************RAPERAPERAPERAPE**************************
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.reftype .veggie >= and
+
+*.refxpos *.refypos angle 628 add .setaim store
+628 .aimshoot store
+
+*.refveldn 100 *.eyef sub add *.velup abs - floor .dn store
+*.refveldx .dx store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 50 >
+*.reftype .veggie = and
+*.type .parry = and
+
+-6 .shoot store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.reftype .veggie =
+*.robage 3 mod 0 = and
+*.type .parry != and
+
+-8 .shoot store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.reftype .veggie =
+*.robage 3 mod 1 = and
+*.type .parry != and
+
+.sexrepro .shoot store
+99 .shootval store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.reftype .veggie =
+*.robage 3 mod 2 = and
+*.type .parry != and
+
+.setaim .shoot store
+*.refxpos *.refypos angle .shootval store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 50 >
+*.reftype .veggie = and
+*.type .parry != and
+*.memval 25 >= and
+*.timer *.robage add 3 mod 0 = and
+
+.shoot .shoot store
+-2 .shootval store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 50 >
+*.reftype .veggie = and
+*.type .parry != and
+*.memval 25 >= and
+*.timer *.robage add 3 mod 1 = and
+
+.shootval .shoot store
+32000 .shootval store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 50 >
+*.reftype .veggie = and
+*.type .parry != and
+*.memval 25 >= and
+*.timer *.robage add 3 mod 2 = and
+
+.setaim .shoot store
+*.setaim .shootval store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'******************KILLKILLKILLKILL**************************
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.reftype .enemy = and
+*.type .riposte != and
+.dn .speed ceil .dn store
+.dx .speed ceil .speed - floor .dx store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.reftype .enemy = and
+*.refbody *.enemysize > and
+
+*.refbody .enemysize store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'Parry is a coward. He runs away from foes.
+*.eyef 0 >
+*.reftype .enemy = and
+*.type .parry = and
+
+-30 .dn *.refveldn add -10 ceil .dn store
+
+*.eyef 50 > and
+dupbool
+*.refbody 2 mult 3000 ceil *.body > and
+
+.fixpos .shoot store
+100 .shootval store
+dropbool
+
+*.refbody 2 mult 3000 ceil *.body > and
+-6 .shoot store
+0 .shootval store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.type .parry != and
+*.reftype .enemy = and
+*.poisoned 0 = and
+*.paralyzed 0 = and
+*.refbody 10 <= and
+
+.fdbody .shoot store
+100 .shootval store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 40 >
+*.reftype .enemy = and
+*.type .riposte = and
+*.refbody 10 <= and
+*.totalmyspecies 20 > and
+*.numties 0 = and
+
+.tie inc
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.reftype .enemy = and
+*.type .parry != and
+*.poisoned 0 = and
+*.paralyzed 0 = and
+*.refbody 20 >= and
+*.memloc .paralyzed !=
+*.memval 50 <= or and
+
+10 .strvenom store
+.repro .vloc store
+1000 *.refbody div 50 ceil 5 floor .venval store
+*.venom .shootval store
+-3 .shoot store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eyef 0 >
+*.reftype .enemy = and
+*.poisoned 0 >
+*.paralyzed 0 > or
+*.memval 50 >
+*.memloc .paralyzed = and
+*.refbody 10 > and
+*.type .parry != and or
+
+' -50 .dn *.refveldn add -10 ceil .dn store
+*.refveldx sgn abs -- - *.refveldx add sgn .speed mult - 14142 mult 20000 div .dx store
+.speed 14142 mult 20000 div .dn store
+*.vdir 628 add .setaim store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.poisoned 5 >
+*.paralyzed 5 > or
+
+99 .repro store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eye5 0 >
+*.reftype .enemy = and
+*.memloc .paralyzed != and
+.paralyzed .memloc store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.eye5 0 >
+*.reftype .veggie = and
+*.memloc .totalmyspecies != and
+.totalmyspecies .memloc store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'*****************Kill fruitfly and etch*********************
+'This section is dedicated to moonfisher, who will read it
+'and immediately know what he needs to do to counter it smile.gif
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.numties 0 >
+*.robage 1 != and
+*.tiepres .tienum store
+0 .shoot store
+0 .shootval store
+100 .tieval store
+100 .mkslime store
+dupbool *.timer *.robage add 2 mod 1 = and
+.fdbody .tieloc store
+dropbool
+*.timer *.robage add 2 mod 0 = and
+.strvenom .tieloc store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+
+
+'*************************Repro******************************
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.type .parry =
+*.nrg *.body 10 mult add 4000 > and
+*.body *.nrg 10 div add *.enemysize 33 mult 10 div >= and
+180 *.velscalar sub 0 floor .dn store
+20 .repro store
+*.vdir 628 add .setaim store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.pop 0 >
+*.type .thrust = or
+*.nrg *.body 10 mult add 800 > and
+
+180 *.velscalar sub .dn store
+50 .repro store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.pop 0 >
+*.robage 0 =
+*.nrg *.body 10 mult add 800 > or and
+80 .dn store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.pop 0 >
+*.robage 0 = and
+314 .aimdx store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+*.type .riposte =
+*.totalmyspecies 25 < and
+*.nrg *.body 10 mult add 300 > and
+
+80 *.velscalar sub 0 floor .dn store
+50 .repro store
+*.vdir 628 add .setaim store
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+clearbool
+'************************************************************
+
+stop
