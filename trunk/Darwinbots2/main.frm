@@ -1049,6 +1049,9 @@ End Sub
 
 ' initializes a simulation.
 Sub StartSimul()
+MDIForm1.visualize = True 'Botsareus 8/31/2012 reset vedio tuggle button
+MDIForm1.menuupdate
+
   Rnd -1 'sets up the randomizer to be seeded
   If SimOpts.UserSeedToggle = True Then
     Randomize SimOpts.UserSeedNumber
@@ -1724,7 +1727,7 @@ Private Sub main()
       If MDIForm1.ignoreerror = True Then
         On Error Resume Next
       Else
-        On Error GoTo SaveError  'EricL - Uncomment this line in compiled version! error.sim
+        'On Error GoTo SaveError  'EricL - Uncomment this line in compiled version! error.sim
       End If
       
       Form1.SecTimer.Enabled = True
