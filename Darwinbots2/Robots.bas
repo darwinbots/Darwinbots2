@@ -953,8 +953,19 @@ End Sub
 
 Private Sub FireTies(n As Integer)
   Dim length As Single, maxLength As Single
+  Dim resetlastopp As Boolean 'Botsareus 8/26/2012 only if lastopp is zero, this will reset it back to zero
   
   With rob(n)
+  
+  If .lastopp = 0 And (.age < 2) And .parent <= UBound(rob) Then 'Botsareus 8/31/2012 new way to calculate lastopp overwrite: blind ties to parent
+   If rob(.parent).exist Then
+    .lastopp = .parent
+    resetlastopp = True
+   End If
+  End If
+  
+  
+  
   If .mem(mtie) <> 0 Then
     If .lastopp > 0 And Not SimOpts.DisableTies And (.lastopptype = 0) Then
       
@@ -966,11 +977,12 @@ Private Sub FireTies(n As Integer)
         'maketie auto deletes existing ties for you
         maketie n, rob(n).lastopp, rob(n).radius + rob(rob(n).lastopp).radius + RobSize * 2, -20, rob(n).mem(mtie)
       End If
-    ElseIf .lastopp = 0 And Not SimOpts.DisableTies And (.age < 2) Then   'Botsareus 6/12/2012 Added code so blind robots can tie to parent
-        maketie n, rob(n).parent, rob(n).radius + rob(rob(n).lastopp).radius + RobSize * 2, -20, rob(n).mem(mtie)
+      
     End If
     .mem(mtie) = 0
   End If
+  
+  If resetlastopp Then .lastopp = 0 'Botsareus 8/26/2012 reset lastopp to zero
   End With
 End Sub
 
