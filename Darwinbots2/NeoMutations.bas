@@ -140,10 +140,11 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False)
       If .Mutables.mutarray(MinorDeletionUP) > 0 Then MinorDeletion robn
     End If
     
-    If .Mutations > 32000 Then .Mutations = 32000 'Botsareus 5/31/2012 Prevents mutations overflow
+    delta = CLng(.LastMut) - delta 'Botsareus 9/4/2012 Moved delta check before overflow reset to fix an error where robot info is not being updated
+    
+    If .Mutations > 32000 Then .Mutations = 32000  'Botsareus 5/31/2012 Prevents mutations overflow
     If .LastMut > 32000 Then .LastMut = 32000
   
-    delta = CLng(.LastMut) - delta
     If (delta > 0) Then  'The bot has mutated.
       mutatecolors robn, delta
       .SubSpecies = NewSubSpecies(robn)
