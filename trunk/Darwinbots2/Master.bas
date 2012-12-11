@@ -3,7 +3,7 @@ Option Explicit
 Public DynamicCountdown As Integer ' Used to countdown the cycles until we modify the dynamic costs
 Public CostsWereZeroed As Boolean ' Flag used to indicate to the reinstatement threshodl that the costs were zeroed
 Public PopulationLast10Cycles(10) As Integer
-
+Public Declare Function GetAsyncKeyState Lib "user32" (ByVal vKey As Long) As Integer 'Botsareus 12/11/2012 Pause Break Key to Pause code
 
 Public Sub UpdateSim()
   Dim AmountOff As Single
@@ -14,6 +14,13 @@ Public Sub UpdateSim()
   Dim i As Integer
   Dim t As Integer
 
+  'Botsareus 12/11/2012 Pause Break Key to Pause code
+  If GetAsyncKeyState(vbKeyPause) Then
+      DisplayActivations = False
+      Form1.Active = False
+      Form1.SecTimer.Enabled = False
+      MDIForm1.unpause.Enabled = True
+  End If
   
   SimOpts.TotRunCycle = SimOpts.TotRunCycle + 1
   Form1.MutCyc = Form1.MutCyc + 1
