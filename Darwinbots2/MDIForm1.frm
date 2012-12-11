@@ -529,8 +529,7 @@ Begin VB.MDIForm MDIForm1
          Shortcut        =   ^{F3}
       End
       Begin VB.Menu pause 
-         Caption         =   "Pause Simulation"
-         Shortcut        =   {F12}
+         Caption         =   "Use F12 key to pause simulation"
       End
       Begin VB.Menu sep10 
          Caption         =   "-"
@@ -1303,6 +1302,13 @@ Private Sub NewTeleportMenu_Click()
   TeleportForm.Show
 End Sub
 
+Private Sub pause_Click()
+      DisplayActivations = False
+      Form1.Active = False
+      Form1.SecTimer.Enabled = False
+      MDIForm1.unpause.Enabled = True
+End Sub
+
 Private Sub PolarIce_Click()
   Obstacles.DrawPolarIceMaze
 End Sub
@@ -1319,11 +1325,6 @@ Private Sub Recording_Click()
   optionsform.Show vbModal
 End Sub
 
-
-Private Sub pause_Click()
-  Form1.Active = Not Form1.Active
-  Form1.SecTimer.Enabled = Not Form1.SecTimer.Enabled
-End Sub
 
 Private Sub removepiccy_Click() 'Botsareus 3/24/2012 Added code that deletes the background picture
 Form1.PiccyMode = False
@@ -1850,7 +1851,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As file
+Dim lastSim As File
 Dim revision As String
 
   globstrings
@@ -2156,7 +2157,7 @@ Private Sub ucci_Click()
 End Sub
 
 Private Sub unpause_Timer()
-If GetAsyncKeyState(vbKeyPause) Then
+If GetAsyncKeyState(vbKeyF12) Then
       DisplayActivations = False
       Form1.Active = True
       Form1.SecTimer.Enabled = True

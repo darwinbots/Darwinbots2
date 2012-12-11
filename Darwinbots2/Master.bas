@@ -15,7 +15,7 @@ Public Sub UpdateSim()
   Dim t As Integer
 
   'Botsareus 12/11/2012 Pause Break Key to Pause code
-  If GetAsyncKeyState(vbKeyPause) Then
+  If GetAsyncKeyState(vbKeyF12) Then
       DisplayActivations = False
       Form1.Active = False
       Form1.SecTimer.Enabled = False
