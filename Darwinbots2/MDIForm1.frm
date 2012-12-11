@@ -14,7 +14,7 @@ Begin VB.MDIForm MDIForm1
    Picture         =   "MDIForm1.frx":08CA
    StartUpPosition =   2  'CenterScreen
    Tag             =   "1000"
-   Begin VB.Timer Timer1 
+   Begin VB.Timer unpause 
       Interval        =   200
       Left            =   4200
       Top             =   1560
@@ -1850,7 +1850,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
 Dim revision As String
 
   globstrings
@@ -2153,6 +2153,16 @@ End Sub
 
 Private Sub ucci_Click()
   KillRobot -1
+End Sub
+
+Private Sub unpause_Timer()
+If GetAsyncKeyState(vbKeyPause) Then
+      DisplayActivations = False
+      Form1.Active = True
+      Form1.SecTimer.Enabled = True
+      Form1.unfocus
+      unpause.Enabled = False
+End If
 End Sub
 
 Private Sub VerticaMaze_Click()
