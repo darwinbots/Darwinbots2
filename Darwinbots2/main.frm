@@ -1528,7 +1528,7 @@ Private Sub Form_Click()
   End If
   
   If n = 0 And m = 0 Then
-    datirob.Form_Unload 0
+    'datirob.Form_Unload 0 Botsareus 12/12/2012 Info form does not auto hide
     robfocus = 0
     MDIForm1.DisableRobotsMenu
     If ActivForm.Visible Then ActivForm.NoFocus

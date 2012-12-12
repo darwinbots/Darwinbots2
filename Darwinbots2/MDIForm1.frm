@@ -529,7 +529,7 @@ Begin VB.MDIForm MDIForm1
          Shortcut        =   ^{F3}
       End
       Begin VB.Menu pause 
-         Caption         =   "Use F12 key to pause simulation"
+         Caption         =   "Pause Sim (F12)"
       End
       Begin VB.Menu sep10 
          Caption         =   "-"

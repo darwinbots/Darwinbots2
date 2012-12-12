@@ -123,35 +123,35 @@ Begin VB.Form optionsform
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Frame20"
-      Tab(2).Control(1)=   "Frame21"
+      Tab(2).Control(0)=   "Frame21"
+      Tab(2).Control(1)=   "Frame20"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Mutations"
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "DisableMutationsCheck"
-      Tab(3).Control(1)=   "Frame14"
-      Tab(3).Control(2)=   "Frame13"
-      Tab(3).Control(3)=   "Frame15"
+      Tab(3).Control(0)=   "Frame15"
+      Tab(3).Control(1)=   "Frame13"
+      Tab(3).Control(2)=   "Frame14"
+      Tab(3).Control(3)=   "DisableMutationsCheck"
       Tab(3).ControlCount=   4
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame7"
+      Tab(4).Control(0)=   "Frame8"
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(2)=   "Frame8"
+      Tab(4).Control(2)=   "Frame7"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Label41"
-      Tab(5).Control(1)=   "Simulazione"
+      Tab(5).Control(0)=   "Simulazione"
+      Tab(5).Control(1)=   "Label41"
       Tab(5).ControlCount=   2
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "Frame10"
-      Tab(6).Control(1)=   "Frame4"
+      Tab(6).Control(0)=   "Frame4"
+      Tab(6).Control(1)=   "Frame10"
       Tab(6).ControlCount=   2
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "Show Non-Native Species"
@@ -2311,6 +2311,7 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":059F
@@ -4319,7 +4320,7 @@ End Sub
 
 Private Sub LightText_Change()
   TmpOpts.LightIntensity = val(LightText.text)
-  color_lightlines
+  'color_lightlines
 End Sub
 
 Private Sub LightUpDn_Change()
@@ -4336,7 +4337,7 @@ Private Sub GradientUpDn_Change()
   a = GradientUpDn.value
   Gradient.text = (a / 5)
   TmpOpts.Gradient = a / 5
-  color_lightlines
+  'color_lightlines Botsareus 12/12/2012 No need for checking light mods twise
 End Sub
 
 Private Sub EnergyScalingFactor_Change()
@@ -4646,6 +4647,11 @@ Private Sub Form_Activate()
  ' Next i
   
 '  DispSettings
+
+'Botsareus 12/12/2012 Hide always on top forms for easy readability
+datirob.Visible = False
+ActivForm.Visible = False
+
 End Sub
 
 Private Sub Form_Load()
