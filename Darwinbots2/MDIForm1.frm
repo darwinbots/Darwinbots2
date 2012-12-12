@@ -1913,6 +1913,7 @@ Dim revision As String
   TmpOpts.MaxVelocity = 60
   TmpOpts.Costs(DYNAMICCOSTSENSITIVITY) = 50
   TmpOpts.Costs(BOTNOCOSTLEVEL) = -1 'Botsareus 5/11/2012 Sets BotNoCostThreshold to -1 to fix a bug when running a veg only sim.
+  TmpOpts.Gradient = 1.02 'Botsareus 12/12/2012 Default for Gradient
   TmpOpts.DayNightCycleCounter = 0
   TmpOpts.Daytime = True
   TmpOpts.BadWastelevel = -1
