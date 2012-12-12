@@ -119,6 +119,7 @@ Begin VB.Form optionsform
       TabPicture(1)   =   "OptionsForm.frx":001C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "GenPropFrame"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
@@ -804,9 +805,9 @@ Begin VB.Form optionsform
                End
                Begin VB.TextBox Gradient 
                   Height          =   285
-                  Left            =   1350
+                  Left            =   1320
                   TabIndex        =   182
-                  Text            =   "1"
+                  Text            =   "0"
                   ToolTipText     =   "Set the gradient for light transmission through the water. A value of zero means no light reduction at any depth."
                   Top             =   1140
                   Width           =   420
@@ -849,9 +850,8 @@ Begin VB.Form optionsform
                   OrigBottom      =   1425
                   Increment       =   2
                   Max             =   1000
-                  Min             =   1
                   SyncBuddy       =   -1  'True
-                  BuddyProperty   =   65547
+                  BuddyProperty   =   65569
                   Enabled         =   -1  'True
                End
                Begin ComCtl2.UpDown LightUpDn 
@@ -3129,10 +3129,6 @@ Private Sub FixBotRadius_Click()
   TmpOpts.FixedBotRadii = FixBotRadius.value * True
 End Sub
 
-Private Sub Leaguename_Change()
-
-End Sub
-
 Private Sub MaxCyclesText_Change()
  If val(MaxCyclesText.text) >= 0 Then
     F1Mode.MaxCycles = val(MaxCyclesText.text)
@@ -4320,7 +4316,7 @@ End Sub
 
 Private Sub LightText_Change()
   TmpOpts.LightIntensity = val(LightText.text)
-  'color_lightlines
+  color_lightlines
 End Sub
 
 Private Sub LightUpDn_Change()
@@ -4336,7 +4332,7 @@ Private Sub GradientUpDn_Change()
   Dim a As Single
   a = GradientUpDn.value
   Gradient.text = (a / 5)
-  TmpOpts.Gradient = a / 5
+  'TmpOpts.Gradient = a / 5 Botsareus 12/12/2012 No need to store gradient here, use text conversion
   'color_lightlines Botsareus 12/12/2012 No need for checking light mods twise
 End Sub
 
@@ -4344,7 +4340,7 @@ Private Sub EnergyScalingFactor_Change()
   'this just controls the little graph to the left of this control,
   'doesn't effect the simulation
   If val(EnergyScalingFactor.text) = 0 Then EnergyScalingFactor.text = "1"
-  color_lightlines
+  Gradient_Change 'Botsareus 12/12/2012 Update the graph by updating the gradient
 End Sub
 
 Private Sub EnergyScalingFactorUpDown_Change()
@@ -4685,12 +4681,12 @@ End Sub
 '  FrequencyCheckText = FrequencyCheckUpDn.value
 'End Sub
 
-Private Sub Gradient_lostfocus()
-  On Error Resume Next
-  If val(Gradient.text) > 20 Then Gradient.text = "20"
-  TmpOpts.Gradient = val(Gradient.text)
-  GradientUpDn.value = val(Gradient.text) * 5
-End Sub
+'Private Sub Gradient_lostfocus()
+'  On Error Resume Next
+'  If val(Gradient.text) > 20 Then Gradient.text = "20"
+'  TmpOpts.Gradient = val(Gradient.text)
+'  GradientUpDn.value = val(Gradient.text) * 5
+'End Sub
 
 Private Sub LeagueCheck_Click()
   If LeagueCheck.value = 1 Then
@@ -5030,6 +5026,7 @@ End Sub
 Private Sub DispSettings()
   Dim t As Integer
   
+  
   PauseButton.Caption = IIf(Form1.Active, "Unpaused", "Paused")
   
  
@@ -5040,7 +5037,8 @@ Private Sub DispSettings()
   RepopCooldownText.text = TmpOpts.RepopCooldown
   DecayText.text = TmpOpts.Decay
   LightText.text = TmpOpts.LightIntensity
-  Gradient.text = TmpOpts.Gradient
+  Gradient.text = (TmpOpts.Gradient - 1) * 10 'Botsareus 12/12/2012 Fix for Gradient
+  GradientUpDn.value = Gradient.text * 5
 '  DNLength.text = TmpOpts.CycleLength
   UserSeedText.text = TmpOpts.UserSeedNumber
   FrequencyText.text = TmpOpts.Decaydelay
