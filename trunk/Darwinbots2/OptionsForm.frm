@@ -119,7 +119,6 @@ Begin VB.Form optionsform
       TabPicture(1)   =   "OptionsForm.frx":001C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "GenPropFrame"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
@@ -5002,6 +5001,7 @@ Public Sub StartNew_Click() 'startnew
   
   SimOpts = TmpOpts
   
+  
   If SimOpts.League = True Then
     LeagueMode = True 'should be anyway, but sometimes when
                       'restarting a league it screws up
@@ -5024,6 +5024,7 @@ Public Sub StartNew_Click() 'startnew
 End Sub
 
 Private Sub DispSettings()
+
   Dim t As Integer
   
   
@@ -5243,8 +5244,9 @@ Private Sub DispSettings()
    
   FixBotRadius.value = TmpOpts.FixedBotRadii * True
   
+  ' Botsareus 12/12/2012 SimOpts should never overwrite TmpOpts during display settings
   'Do this so the right CostX gets put back into SimOpts even when no Cost changes are made
-  TmpOpts.Costs(COSTMULTIPLIER) = SimOpts.Costs(COSTMULTIPLIER)
+ 'TmpOpts.Costs(COSTMULTIPLIER) = SimOpts.Costs(COSTMULTIPLIER)
   
   ' EricL Initialize that no species is selected
   CurrSpec = -1
@@ -5256,13 +5258,14 @@ Private Sub DispSettings()
   DisableDNACheck.value = 0
   VirusImmuneCheck.value = 0
   
-  'So the right value gets put back in when the dialog is closed and tmpopts is copied back into simopts...
-  'TmpOpts.SpeciesNum = SimOpts.SpeciesNum
-  For t = 0 To TmpOpts.SpeciesNum - 1
-    TmpOpts.Specie(t) = SimOpts.Specie(t) ' Population
-    'TmpOpts.Specie(t).SubSpeciesCounter = SimOpts.Specie(t).SubSpeciesCounter
-    'TmpOpts.Specie(t).Native = SimOpts.Specie(t).Native
-  Next t
+' Botsareus 12/12/2012 SimOpts should never overwrite TmpOpts during display settings
+'  'So the right value gets put back in when the dialog is closed and tmpopts is copied back into simopts...
+'  'TmpOpts.SpeciesNum = SimOpts.SpeciesNum
+'  For t = 0 To TmpOpts.SpeciesNum - 1
+'    TmpOpts.Specie(t) = SimOpts.Specie(t) ' Population
+'    'TmpOpts.Specie(t).SubSpeciesCounter = SimOpts.Specie(t).SubSpeciesCounter
+'    'TmpOpts.Specie(t).Native = SimOpts.Specie(t).Native
+'  Next t
        
   'display the scriptlist
   LoadLists
@@ -5289,6 +5292,8 @@ Private Sub LoadSettings_Click() 'opensettings
     Next i
     
     DispSettings
+
+
   End If
   Exit Sub
 fine:
@@ -5538,7 +5543,6 @@ carica:
     ReadSettFromFile
   End If
   Close 1
-  
   'EricL 3/21/2006 Added following three lines to work around problem with default settings file
   If (TmpOpts.MaxEnergy = 500000) And (Right(path, 11) = "default.set") Then
     TmpOpts.MaxEnergy = 50
@@ -5572,6 +5576,7 @@ aiuto:
     path = CommonDialog1.FileName
     If path <> "" Then GoTo carica
   End If
+  
 End Sub
 
 
@@ -5793,6 +5798,7 @@ Public Sub ReadSettFromFile()
   
   TmpOpts.DayNightCycleCounter = 0 ' When you load settings, you don't get the state from the last sim
   TmpOpts.Daytime = True ' EricL 3/21/2006 - this is a bettter place for this than in MDIForm_Load
+  
 End Sub
 
 '
