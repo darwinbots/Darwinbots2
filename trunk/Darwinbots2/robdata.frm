@@ -614,6 +614,10 @@ Private Sub dnashow_Click()
   End If
 End Sub
 
+Private Sub Form_Activate()
+SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
+End Sub
+
 Private Sub MemoryCommand_Click()
  showingMemory = True
  MemoryStateCheck.Visible = True
@@ -686,7 +690,6 @@ Sub Form_Load()
   enlarged = False
   ShowMemoryEarlyCycle = False
   MemoryStateCheck.value = 0
-  SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
 End Sub
 
 Sub infoupdate(n As Integer, nrg As Single, par As Long, mut As Integer, age As Long, _
