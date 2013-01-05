@@ -11,6 +11,7 @@ Begin VB.Form grafico
    LinkTopic       =   "Form2"
    ScaleHeight     =   10950
    ScaleWidth      =   7995
+   ShowInTaskbar   =   0   'False
    Begin VB.CheckBox chk_GDsave 
       BackColor       =   &H00FFFFFF&
       Caption         =   "Save on d.p. 999"
@@ -3888,7 +3889,7 @@ Dim t As Integer
     popnum(t).Visible = False
     popnum(t).Height = 255
   Next t
-  SetWindowPos hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
+  SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
   If FHeight = 0 Then FHeight = 4000
  ' If FWidth = 0 Then FWidth = 5900
  If FWidth = 0 Then FWidth = 6500
