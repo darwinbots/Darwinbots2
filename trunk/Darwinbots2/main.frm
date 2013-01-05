@@ -1565,6 +1565,7 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
   If n = 0 Then
     DraggingBot = False
     If Not Form1.SecTimer.Enabled Then datirob.Visible = False 'Botsareus 1/5/2013 Small fix to do with wrong data displayed in robot info, auto hide the window
+  Else
     DraggingBot = True
   End If
   
