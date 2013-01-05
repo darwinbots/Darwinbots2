@@ -9,6 +9,8 @@ Begin VB.Form grafico
    ClientWidth     =   7995
    Icon            =   "grafico.frx":0000
    LinkTopic       =   "Form2"
+   MaxButton       =   0   'False
+   MinButton       =   0   'False
    ScaleHeight     =   10950
    ScaleWidth      =   7995
    ShowInTaskbar   =   0   'False
