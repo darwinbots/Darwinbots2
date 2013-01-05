@@ -861,7 +861,7 @@ Private Sub ManageDeath(n As Integer)
     
   If SimOpts.CorpseEnabled Then
     If Not .Corpse Then
-      If (.nrg < 0.5 Or .body < 0.5) And .age > 0 Then
+      If (.nrg < 15) And .age > 0 Then 'Botsareus 1/5/2013 Corpse forms more often
         .Corpse = True
         .FName = "Corpse"
       '  delallties n
