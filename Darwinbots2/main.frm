@@ -390,7 +390,7 @@ Private Sub DrawArena()
 End Sub
 
 ' draws rob perimeter
-Private Sub DrawRobPer(n As Integer)
+Private Sub DrawRobPer(n As Integer) ' Botsareusnotdone
   Dim Sides As Integer
   Dim t As Single
   Dim Sdlen As Single
@@ -1564,7 +1564,7 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
   
   If n = 0 Then
     DraggingBot = False
-  Else
+    If Not Form1.SecTimer.Enabled Then datirob.Visible = False 'Botsareus 1/5/2013 Small fix to do with wrong data displayed in robot info, auto hide the window
     DraggingBot = True
   End If
   
@@ -1821,6 +1821,10 @@ Public Sub NewGraph(n As Integer, YLab As String)
     Set Charts(n).graf = k
     Charts(n).graf.ResetGraph
   '  Charts(n).graf.SetYLabel YLab ' EricL - Don't need this line - dup of line below
+  Else
+    'Botsareus 1/5/2013 reposition graph
+    Charts(n).graf.Top = 0
+    Charts(n).graf.Left = 0
   End If
   
   'Charts(n).graf.SetYLabel YLab ' EricL 4/7/2006 Commented out - just no longer need to call SetYLabel
