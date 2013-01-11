@@ -185,37 +185,37 @@ Public Sub feedveg2(t As Integer) 'gives veg an additional meal based on waste
   End With
 End Sub
 
-' kill vegetables which are too distant from any robot
-'currently broken, so it's commented out
-Public Sub KillDistVegs(mdist As Long)
-  Dim n As node
-  Dim t As Integer
-  Dim k As Integer
-  Dim mdist2 As Long
-  Dim dist2 As Long
-  Dim currdist2 As Long
-  mdist2 = mdist ^ 2
-  For t = 1 To MaxRobs
-'    If rob(t).Veg And rob(t).Exist Then
-'      currdist2 = 10 ^ 8
-'      While Abs(nn.xpos - n.xpos) < mdist And Not nn Is rlist.last
-'        k = nn.robn
-'        If rob(k).Exist And Not rob(k).Veg Then
-'          dist2 = (rob(k).pos.x - rob(t).pos.x) ^ 2 + (rob(k).pos.y - rob(t).pos.y) ^ 2
-'          If dist2 < currdist2 Then currdist2 = dist2
-'        End If
-'        Set nn = rlist.nextorder(nn)
-'      Wend
-'      Set nn = rlist.prevorder(n)
-'      While Abs(nn.xpos - n.xpos) < mdist And Not nn Is rlist.head
-'        k = nn.robn
-'        If Not rob(k).Veg Then
-'          dist2 = (rob(k).pos.x - rob(t).pos.x) ^ 2 + (rob(k).pos.y - rob(t).pos.y) ^ 2
-'          If dist2 < currdist2 Then currdist2 = dist2
-'        End If
-'        Set nn = rlist.prevorder(nn)
-'      Wend
-'      If currdist2 > mdist2 Then KillRobot (t)
-'    End If
-  Next t
-End Sub
+'' kill vegetables which are too distant from any robot
+''currently broken, so it's commented out
+'Public Sub KillDistVegs(mdist As Long)
+'  Dim n As node
+'  Dim t As Integer
+'  Dim k As Integer
+'  Dim mdist2 As Long
+'  Dim dist2 As Long
+'  Dim currdist2 As Long
+'  mdist2 = mdist ^ 2
+'  For t = 1 To MaxRobs
+''    If rob(t).Veg And rob(t).Exist Then
+''      currdist2 = 10 ^ 8
+''      While Abs(nn.xpos - n.xpos) < mdist And Not nn Is rlist.last
+''        k = nn.robn
+''        If rob(k).Exist And Not rob(k).Veg Then
+''          dist2 = (rob(k).pos.x - rob(t).pos.x) ^ 2 + (rob(k).pos.y - rob(t).pos.y) ^ 2
+''          If dist2 < currdist2 Then currdist2 = dist2
+''        End If
+''        Set nn = rlist.nextorder(nn)
+''      Wend
+''      Set nn = rlist.prevorder(n)
+''      While Abs(nn.xpos - n.xpos) < mdist And Not nn Is rlist.head
+''        k = nn.robn
+''        If Not rob(k).Veg Then
+''          dist2 = (rob(k).pos.x - rob(t).pos.x) ^ 2 + (rob(k).pos.y - rob(t).pos.y) ^ 2
+''          If dist2 < currdist2 Then currdist2 = dist2
+''        End If
+''        Set nn = rlist.prevorder(nn)
+''      Wend
+''      If currdist2 > mdist2 Then KillRobot (t)
+''    End If
+'  Next t
+'End Sub
