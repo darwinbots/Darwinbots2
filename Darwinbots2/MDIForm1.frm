@@ -1116,7 +1116,7 @@ tryagain:
     'Chr(34) = "
     iq = Chr(34) & Teleporters(i).intInPath & Chr(34)
     oq = Chr(34) & Teleporters(i).intOutPath & Chr(34)
-     s = "DarwinbotsIM.exe" _
+     s = App.path & "\DarwinbotsIM.exe" _
      & " -in " & iq _
      & " -out " & oq _
      & " -name " & IntOpts.IName _
@@ -1429,6 +1429,7 @@ If Form1.Flickermode Then Toolbar1.Buttons(11).value = tbrPressed Else Toolbar1.
 If Not Form1.dispskin Then Toolbar1.Buttons(12).value = tbrPressed Else Toolbar1.Buttons(12).value = tbrUnpressed
 If nopoff Then Toolbar1.Buttons(13).value = tbrPressed Else Toolbar1.Buttons(13).value = tbrUnpressed
 If Not visualize Then Toolbar1.Buttons(14).value = tbrPressed Else Toolbar1.Buttons(14).value = tbrUnpressed
+Toolbar1.Refresh 'Botsareus 1/11/2013 Force toolbar to refresh
 End Sub
 
 Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
