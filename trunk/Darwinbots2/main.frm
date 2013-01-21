@@ -35,10 +35,30 @@ Begin VB.Form Form1
       Left            =   1440
       Top             =   120
    End
+   Begin VB.Label BoyLabl 
+      BackStyle       =   0  'Transparent
+      Caption         =   $"main.frx":08CA
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H000000FF&
+      Height          =   615
+      Left            =   600
+      TabIndex        =   2
+      Top             =   3480
+      Visible         =   0   'False
+      Width           =   9855
+   End
    Begin VB.Image InternetModePopFileProblem 
       Height          =   255
       Left            =   5280
-      Picture         =   "main.frx":08CA
+      Picture         =   "main.frx":0959
       Top             =   5400
       Visible         =   0   'False
       Width           =   240
@@ -46,7 +66,7 @@ Begin VB.Form Form1
    Begin VB.Image InternetModeBackPressure 
       Height          =   255
       Left            =   5280
-      Picture         =   "main.frx":0C3C
+      Picture         =   "main.frx":0CCB
       Top             =   5040
       Visible         =   0   'False
       Width           =   240
@@ -54,7 +74,7 @@ Begin VB.Form Form1
    Begin VB.Image InternetModeStart 
       Height          =   255
       Left            =   5280
-      Picture         =   "main.frx":0FAE
+      Picture         =   "main.frx":103D
       Top             =   4680
       Visible         =   0   'False
       Width           =   240
@@ -62,7 +82,7 @@ Begin VB.Form Form1
    Begin VB.Image InternetModeOff 
       Height          =   255
       Left            =   5280
-      Picture         =   "main.frx":1320
+      Picture         =   "main.frx":13AF
       Top             =   4320
       Visible         =   0   'False
       Width           =   240
@@ -70,7 +90,7 @@ Begin VB.Form Form1
    Begin VB.Image ServerGood 
       Height          =   255
       Left            =   5280
-      Picture         =   "main.frx":1692
+      Picture         =   "main.frx":1721
       Top             =   3600
       Visible         =   0   'False
       Width           =   240
@@ -78,7 +98,7 @@ Begin VB.Form Form1
    Begin VB.Image ServerBad 
       Height          =   255
       Left            =   5280
-      Picture         =   "main.frx":1A04
+      Picture         =   "main.frx":1A93
       Top             =   3960
       Visible         =   0   'False
       Width           =   240
@@ -97,17 +117,17 @@ Begin VB.Form Form1
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00FF0000&
-      Height          =   855
-      Left            =   720
+      Height          =   495
+      Left            =   600
       TabIndex        =   1
-      Top             =   2880
+      Top             =   2760
       Visible         =   0   'False
-      Width           =   5145
+      Width           =   3225
    End
    Begin VB.Image TeleporterMask 
       Height          =   720
       Left            =   240
-      Picture         =   "main.frx":1D76
+      Picture         =   "main.frx":1E05
       Top             =   7560
       Visible         =   0   'False
       Width           =   11520
@@ -116,7 +136,7 @@ Begin VB.Form Form1
       Appearance      =   0  'Flat
       Height          =   720
       Left            =   240
-      Picture         =   "main.frx":1CDB8
+      Picture         =   "main.frx":1CE47
       Stretch         =   -1  'True
       Top             =   6600
       Visible         =   0   'False
@@ -243,6 +263,10 @@ Public InTimer2 As Boolean
 Private p_reclev As Integer 'Botsareus 8/3/2012 for generational distance
 
 
+
+Private Sub BoyLabl_Click()
+BoyLabl.Visible = False
+End Sub
 
 Private Sub Form_Load()
   Dim i As Integer
@@ -999,6 +1023,8 @@ Sub changerobcol()
   ColorForm.setcolor rob(robfocus).color
   rob(robfocus).color = ColorForm.color
 End Sub
+
+
 
 ' counts minutes for autosaves
 Private Sub Timer2_Timer()

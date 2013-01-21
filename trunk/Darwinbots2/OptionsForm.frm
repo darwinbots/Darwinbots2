@@ -102,7 +102,6 @@ Begin VB.Form optionsform
       TabPicture(1)   =   "OptionsForm.frx":001C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "GenPropFrame"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
@@ -121,9 +120,9 @@ Begin VB.Form optionsform
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame8"
+      Tab(4).Control(0)=   "Frame7"
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(2)=   "Frame7"
+      Tab(4).Control(2)=   "Frame8"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
@@ -586,6 +585,15 @@ Begin VB.Form optionsform
                TabIndex        =   176
                Top             =   240
                Width           =   3375
+               Begin VB.CommandButton BoyAll 
+                  Caption         =   "All Pond Mode Settings"
+                  Height          =   330
+                  Left            =   120
+                  TabIndex        =   259
+                  ToolTipText     =   "Configures all settings for a Pond Mode Simulation"
+                  Top             =   1080
+                  Width           =   1935
+               End
                Begin VB.Frame Frame17 
                   Caption         =   "Light"
                   Height          =   1275
@@ -613,7 +621,7 @@ Begin VB.Form optionsform
                      _Version        =   327681
                      Value           =   1
                      BuddyControl    =   "EnergyScalingFactor"
-                     BuddyDispid     =   196655
+                     BuddyDispid     =   196656
                      OrigLeft        =   796
                      OrigTop         =   840
                      OrigRight       =   1036
@@ -792,7 +800,7 @@ Begin VB.Form optionsform
                   TabIndex        =   179
                   Text            =   "0"
                   ToolTipText     =   "Set the gradient for light transmission through the water. A value of zero means no light reduction at any depth."
-                  Top             =   1140
+                  Top             =   780
                   Width           =   420
                End
                Begin VB.TextBox LightText 
@@ -801,7 +809,7 @@ Begin VB.Form optionsform
                   TabIndex        =   178
                   Text            =   "100"
                   ToolTipText     =   "Set the light intensity to feed your veggies"
-                  Top             =   720
+                  Top             =   480
                   Width           =   420
                End
                Begin VB.CheckBox Pondcheck 
@@ -811,7 +819,7 @@ Begin VB.Form optionsform
                   Left            =   60
                   TabIndex        =   177
                   ToolTipText     =   $"OptionsForm.frx":02C6
-                  Top             =   300
+                  Top             =   240
                   Width           =   1980
                End
                Begin ComCtl2.UpDown GradientUpDn 
@@ -819,14 +827,14 @@ Begin VB.Form optionsform
                   Left            =   1800
                   TabIndex        =   184
                   ToolTipText     =   "Set the gradient for light transmission through the water. A value of zero means no light reduction at any depth."
-                  Top             =   1140
+                  Top             =   780
                   Width           =   255
                   _ExtentX        =   450
                   _ExtentY        =   503
                   _Version        =   327681
                   Value           =   1
                   BuddyControl    =   "Gradient"
-                  BuddyDispid     =   196659
+                  BuddyDispid     =   196660
                   OrigLeft        =   1800
                   OrigTop         =   1140
                   OrigRight       =   2055
@@ -842,13 +850,13 @@ Begin VB.Form optionsform
                   Left            =   1800
                   TabIndex        =   185
                   ToolTipText     =   "Set the light intensity to feed your veggies"
-                  Top             =   720
+                  Top             =   480
                   Width           =   255
                   _ExtentX        =   450
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "LightText"
-                  BuddyDispid     =   196660
+                  BuddyDispid     =   196661
                   OrigLeft        =   5040
                   OrigTop         =   1560
                   OrigRight       =   5280
@@ -865,7 +873,7 @@ Begin VB.Form optionsform
                   Left            =   90
                   TabIndex        =   187
                   ToolTipText     =   "Set the light intensity to feed your veggies"
-                  Top             =   780
+                  Top             =   540
                   Width           =   975
                End
                Begin VB.Label GradientLabel 
@@ -874,7 +882,7 @@ Begin VB.Form optionsform
                   Left            =   90
                   TabIndex        =   186
                   ToolTipText     =   "Set the gradient for light transmission through the water. A value of zero means no light reduction at any depth."
-                  Top             =   1200
+                  Top             =   840
                   Width           =   1155
                End
             End
@@ -950,8 +958,8 @@ Begin VB.Form optionsform
                   Left            =   120
                   TabIndex        =   162
                   Text            =   "10"
-                  ToolTipText     =   "How many veggies to drop in the sim per repopulation events."
-                  Top             =   1020
+                  ToolTipText     =   "How many robots to drop in the sim per repopulation events."
+                  Top             =   1040
                   Width           =   480
                End
                Begin VB.TextBox MinVegText 
@@ -968,7 +976,7 @@ Begin VB.Form optionsform
                   Left            =   120
                   TabIndex        =   160
                   Text            =   "1000"
-                  Top             =   300
+                  Top             =   280
                   Width           =   480
                End
                Begin ComCtl2.UpDown RepopAmountUpDown 
@@ -976,13 +984,13 @@ Begin VB.Form optionsform
                   Index           =   0
                   Left            =   600
                   TabIndex        =   164
-                  Top             =   1020
+                  Top             =   1040
                   Width           =   255
                   _ExtentX        =   450
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "RepopAmountText"
-                  BuddyDispid     =   196668
+                  BuddyDispid     =   196670
                   OrigLeft        =   660
                   OrigTop         =   1020
                   OrigRight       =   900
@@ -995,14 +1003,14 @@ Begin VB.Form optionsform
                   Height          =   285
                   Left            =   600
                   TabIndex        =   165
-                  Top             =   300
+                  Top             =   280
                   Width           =   255
                   _ExtentX        =   450
                   _ExtentY        =   503
                   _Version        =   327681
                   Value           =   1
                   BuddyControl    =   "MaxPopText"
-                  BuddyDispid     =   196671
+                  BuddyDispid     =   196672
                   OrigLeft        =   660
                   OrigTop         =   300
                   OrigRight       =   900
@@ -1025,7 +1033,7 @@ Begin VB.Form optionsform
                   _Version        =   327681
                   Value           =   100
                   BuddyControl    =   "MinVegText"
-                  BuddyDispid     =   196670
+                  BuddyDispid     =   196671
                   OrigLeft        =   2730
                   OrigTop         =   2295
                   OrigRight       =   2970
@@ -1048,7 +1056,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "RepopCooldownText"
-                  BuddyDispid     =   196667
+                  BuddyDispid     =   196669
                   OrigLeft        =   660
                   OrigTop         =   1380
                   OrigRight       =   900
@@ -1063,7 +1071,7 @@ Begin VB.Form optionsform
                   Index           =   0
                   Left            =   960
                   TabIndex        =   171
-                  Top             =   330
+                  Top             =   310
                   Width           =   2175
                End
                Begin VB.Label LabelZZ 
@@ -1072,7 +1080,7 @@ Begin VB.Form optionsform
                   Index           =   1
                   Left            =   960
                   TabIndex        =   170
-                  Top             =   570
+                  Top             =   600
                   Width           =   2055
                End
                Begin VB.Label LabelZZ 
@@ -1081,7 +1089,7 @@ Begin VB.Form optionsform
                   Index           =   2
                   Left            =   960
                   TabIndex        =   169
-                  Top             =   1080
+                  Top             =   1100
                   Width           =   2235
                End
                Begin VB.Label LabelZZ 
@@ -1152,7 +1160,7 @@ Begin VB.Form optionsform
                   Left            =   60
                   MultiLine       =   -1  'True
                   TabIndex        =   153
-                  Text            =   "OptionsForm.frx":04B4
+                  Text            =   "OptionsForm.frx":04B9
                   Top             =   2760
                   Width           =   1695
                End
@@ -1220,7 +1228,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "DecayText"
-                  BuddyDispid     =   196682
+                  BuddyDispid     =   196683
                   OrigLeft        =   5040
                   OrigTop         =   2280
                   OrigRight       =   5280
@@ -1242,7 +1250,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "FrequencyText"
-                  BuddyDispid     =   196681
+                  BuddyDispid     =   196682
                   OrigLeft        =   5040
                   OrigTop         =   2280
                   OrigRight       =   5280
@@ -1353,7 +1361,7 @@ Begin VB.Form optionsform
                _Version        =   327681
                Value           =   100
                BuddyControl    =   "ChartInterval"
-               BuddyDispid     =   196688
+               BuddyDispid     =   196689
                OrigLeft        =   4320
                OrigTop         =   3240
                OrigRight       =   4560
@@ -1397,9 +1405,9 @@ Begin VB.Form optionsform
       End
       Begin VB.ListBox SpecList 
          Height          =   2400
-         ItemData        =   "OptionsForm.frx":04DD
+         ItemData        =   "OptionsForm.frx":04E2
          Left            =   240
-         List            =   "OptionsForm.frx":04DF
+         List            =   "OptionsForm.frx":04E4
          TabIndex        =   129
          Top             =   720
          Width           =   3465
@@ -1476,7 +1484,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   100000
             BuddyControl    =   "CyclesHi"
-            BuddyDispid     =   196697
+            BuddyDispid     =   196698
             OrigLeft        =   3570
             OrigTop         =   3465
             OrigRight       =   3810
@@ -1499,7 +1507,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   10000
             BuddyControl    =   "CyclesLo"
-            BuddyDispid     =   196698
+            BuddyDispid     =   196699
             OrigLeft        =   3570
             OrigTop         =   2940
             OrigRight       =   3810
@@ -1554,7 +1562,7 @@ Begin VB.Form optionsform
          End
          Begin VB.Label Label31 
             BorderStyle     =   1  'Fixed Single
-            Caption         =   $"OptionsForm.frx":04E1
+            Caption         =   $"OptionsForm.frx":04E6
             Height          =   975
             Left            =   300
             TabIndex        =   90
@@ -1633,9 +1641,9 @@ Begin VB.Form optionsform
          Width           =   9315
          Begin VB.ListBox Scripts 
             Height          =   840
-            ItemData        =   "OptionsForm.frx":059C
+            ItemData        =   "OptionsForm.frx":05A1
             Left            =   180
-            List            =   "OptionsForm.frx":059E
+            List            =   "OptionsForm.frx":05A3
             TabIndex        =   81
             Top             =   1320
             Width           =   9015
@@ -1658,9 +1666,9 @@ Begin VB.Form optionsform
          End
          Begin VB.ComboBox Action 
             Height          =   315
-            ItemData        =   "OptionsForm.frx":05A0
+            ItemData        =   "OptionsForm.frx":05A5
             Left            =   4020
-            List            =   "OptionsForm.frx":05A2
+            List            =   "OptionsForm.frx":05A7
             TabIndex        =   78
             Text            =   "Action"
             Top             =   900
@@ -1840,7 +1848,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "MaxRoundsToDrawText"
-            BuddyDispid     =   196728
+            BuddyDispid     =   196729
             OrigLeft        =   3480
             OrigTop         =   1140
             OrigRight       =   3735
@@ -1860,7 +1868,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   5
             BuddyControl    =   "ContestsText"
-            BuddyDispid     =   196727
+            BuddyDispid     =   196728
             OrigLeft        =   3240
             OrigTop         =   960
             OrigRight       =   3480
@@ -2151,7 +2159,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Prop"
-            BuddyDispid     =   196762
+            BuddyDispid     =   196763
             OrigLeft        =   4260
             OrigTop         =   2760
             OrigRight       =   4500
@@ -2202,7 +2210,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Fixed"
-            BuddyDispid     =   196761
+            BuddyDispid     =   196762
             OrigLeft        =   4245
             OrigTop         =   2340
             OrigRight       =   4485
@@ -2258,7 +2266,7 @@ Begin VB.Form optionsform
          End
          Begin VB.Label Label8 
             BorderStyle     =   1  'Fixed Single
-            Caption         =   $"OptionsForm.frx":05A4
+            Caption         =   $"OptionsForm.frx":05A9
             Height          =   945
             Left            =   225
             TabIndex        =   17
@@ -2294,7 +2302,7 @@ Begin VB.Form optionsform
          _Version        =   393217
          ReadOnly        =   -1  'True
          ScrollBars      =   2
-         TextRTF         =   $"OptionsForm.frx":0669
+         TextRTF         =   $"OptionsForm.frx":066E
       End
       Begin VB.Frame Frame1 
          Caption         =   "Species Properties"
@@ -2448,9 +2456,9 @@ Begin VB.Form optionsform
          End
          Begin VB.ComboBox SpecCol 
             Height          =   315
-            ItemData        =   "OptionsForm.frx":06EB
+            ItemData        =   "OptionsForm.frx":06F0
             Left            =   1350
-            List            =   "OptionsForm.frx":070D
+            List            =   "OptionsForm.frx":0712
             Style           =   2  'Dropdown List
             TabIndex        =   108
             ToolTipText     =   "Initial colour"
@@ -2505,7 +2513,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "SpecQty"
-            BuddyDispid     =   196780
+            BuddyDispid     =   196781
             OrigLeft        =   2310
             OrigTop         =   525
             OrigRight       =   2550
@@ -2527,7 +2535,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   1000
             BuddyControl    =   "SpecNrg"
-            BuddyDispid     =   196782
+            BuddyDispid     =   196783
             OrigLeft        =   1560
             OrigTop         =   240
             OrigRight       =   1800
@@ -2789,7 +2797,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoSimTxt"
-            BuddyDispid     =   196809
+            BuddyDispid     =   196810
             OrigLeft        =   3360
             OrigTop         =   360
             OrigRight       =   3600
@@ -2809,7 +2817,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoRobTxt"
-            BuddyDispid     =   196806
+            BuddyDispid     =   196807
             OrigLeft        =   3120
             OrigTop         =   240
             OrigRight       =   3375
@@ -2905,7 +2913,7 @@ Begin VB.Form optionsform
          End
          Begin VB.Label Label26 
             BorderStyle     =   1  'Fixed Single
-            Caption         =   $"OptionsForm.frx":0757
+            Caption         =   $"OptionsForm.frx":075C
             Height          =   1470
             Left            =   7080
             TabIndex        =   65
@@ -2915,7 +2923,7 @@ Begin VB.Form optionsform
          End
       End
       Begin VB.Label Label41 
-         Caption         =   $"OptionsForm.frx":07F8
+         Caption         =   $"OptionsForm.frx":07FD
          Height          =   2655
          Left            =   -70560
          TabIndex        =   257
@@ -3052,6 +3060,24 @@ Private Sub AutoSimTxt_Change()
 If val(AutoSimTxt.text) > 10000 Then AutoSimTxt.text = "10000"
 If val(AutoSimTxt.text) < 0 Then AutoSimTxt.text = "0"
 
+End Sub
+
+Private Sub BoyAll_Click()
+ TmpOpts.Updnconnected = False
+ TmpOpts.Ygravity = 6.2
+ TmpOpts.Pondmode = True
+ TmpOpts.LightIntensity = 100
+ TmpOpts.Gradient = 2
+ DispSettings
+End Sub
+
+Private Sub CorpseCheck_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+If CorpseCheck.value = 1 Then 'Botsareus 1/17/2013 set default values
+    TmpOpts.DecayType = 3
+    TmpOpts.Decay = 75
+    TmpOpts.Decaydelay = 3
+    DispSettings
+  End If
 End Sub
 
 Private Sub DisableDNACheck_Click()
@@ -3367,13 +3393,15 @@ End Sub
 Private Sub AddSpec_Click()
   On Error GoTo fine
   CommonDialog1.FileName = ""
-  CommonDialog1.Filter = "Dna or organism file(*.txt;*.org)|*.txt;*.org"
+  CommonDialog1.Filter = "Dna file(*.txt)|*.txt" 'Botsareus 1/11/2013 DNA only
   CommonDialog1.InitDir = MDIForm1.MainDir + "\robots"
   CommonDialog1.DialogTitle = WSchoosedna
   CommonDialog1.ShowOpen
+  If CommonDialog1.FileName <> "" Then 'Botsareus 1/11/2013 Do not insert robot if filename is blank
   additem CommonDialog1.FileName
  ' TmpOpts.SpeciesNum = TmpOpts.SpeciesNum + 1
   PopulateSpeciesList
+  End If
 fine:
 End Sub
 
@@ -4469,16 +4497,16 @@ End Sub
 
 ''''''''''''''''''''''''''''''''''''''''''''
 
-Private Sub SubstanceOption_Click(Index As Integer)
-  Select Case Index
-    Case 0 'liquid
-      FrictionCombo.Enabled = False
-      DragCombo.Enabled = True
-    Case 1 'solid
-      FrictionCombo.Enabled = True
-      DragCombo.Enabled = False
-  End Select
-End Sub
+'Private Sub SubstanceOption_Click(Index As Integer)
+'  Select Case Index
+'    Case 0 'liquid
+'      FrictionCombo.Enabled = False
+'      DragCombo.Enabled = True
+'    Case 1 'solid
+'      FrictionCombo.Enabled = True
+'      DragCombo.Enabled = False
+'  End Select
+'End Sub
 
 'needs work
 Private Sub DragCombo_Click()
@@ -4807,8 +4835,7 @@ Private Sub OKButton_Click()
   Form1.Active = True
   
         'Botsareus 1/5/2013 more fix for n-vedio button
-         MDIForm1.visualize = False
-         MDIForm1.menuupdate
+         MDIForm1.visualize = True 'Botsareus 1/11/2013 set to true
   
   'Me.Hide
   Unload Me
@@ -5362,7 +5389,7 @@ skipthisspecie:
   'TmpOpts.SpeciesNum = SpecList.ListCount
   
   'generali
-  Write #1, TmpOpts.SpeciesNum
+  Write #1, numSpecies 'Botsareus 1/21/2013 No more non-native species -bug fixed
   Write #1, TmpOpts.FieldSize
   Write #1, TmpOpts.FieldWidth
   Write #1, TmpOpts.FieldHeight
@@ -5906,20 +5933,20 @@ End Sub
 'Private Sub AutoSimTxt_Change()
 'End Sub
 
-Private Sub AutoSimBrowse_Click()
-  CommonDialog1.InitDir = MDIForm1.MainDir + "/saves"
-  CommonDialog1.DialogTitle = "Choose filename for simulation autosaves"
-  CommonDialog1.Filter = "Simulation file(*.sim)|*.sim"
-  CommonDialog1.ShowSave
-  AutoSimPath.text = CommonDialog1.FileName
-End Sub
+'Private Sub AutoSimBrowse_Click()
+'  CommonDialog1.InitDir = MDIForm1.MainDir + "/saves"
+'  CommonDialog1.DialogTitle = "Choose filename for simulation autosaves"
+'  CommonDialog1.Filter = "Simulation file(*.sim)|*.sim"
+'  CommonDialog1.ShowSave
+'  AutoSimPath.text = CommonDialog1.FileName
+'End Sub
 
-Private Sub AutoRobBrowse_Click()
-  CommonDialog1.InitDir = MDIForm1.MainDir + "/robots"
-  CommonDialog1.DialogTitle = "Choose a filename for robot autosaves"
-  CommonDialog1.ShowSave
-  AutoRobPath.text = CommonDialog1.FileName
-End Sub
+'Private Sub AutoRobBrowse_Click()
+'  CommonDialog1.InitDir = MDIForm1.MainDir + "/robots"
+'  CommonDialog1.DialogTitle = "Choose a filename for robot autosaves"
+'  CommonDialog1.ShowSave
+'  AutoRobPath.text = CommonDialog1.FileName
+'End Sub
 
 '
 '  D A T A B A S E   O P T I O N S
