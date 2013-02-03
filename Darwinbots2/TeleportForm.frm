@@ -54,7 +54,7 @@ Begin VB.Form TeleportForm
    End
    Begin VB.Frame Frame4 
       Caption         =   "Statistics"
-      Height          =   2415
+      Height          =   975
       Left            =   120
       TabIndex        =   12
       Top             =   3840
@@ -307,6 +307,14 @@ Begin VB.Form TeleportForm
       ToolTipText     =   "The folder or network share to use to exchange bots"
       Top             =   240
       Width           =   2535
+   End
+   Begin VB.Label Label42 
+      Caption         =   $"TeleportForm.frx":0000
+      Height          =   735
+      Left            =   120
+      TabIndex        =   37
+      Top             =   4920
+      Width           =   8535
    End
    Begin VB.Label Label2 
       Caption         =   "e.g.   c:\db   or  \\server\share"

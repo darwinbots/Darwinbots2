@@ -879,7 +879,7 @@ Private Sub ManageDeath(n As Integer)
         For i = (EyeStart + 1) To (EyeEnd - 1)
           .mem(i) = 0
         Next i
-        If SimOpts.Bouyancy Then .Bouyancy = -1.5
+        .Bouyancy = 0 'Botsareus 2/2/2013 dead robot no bouy.
       End If
     End If
   ElseIf (.nrg < 0.5 Or .body < 0.5) Then .Dead = True
@@ -892,17 +892,11 @@ Private Sub ManageDeath(n As Integer)
   End With
 End Sub
 
-Private Sub ManageBouyancy(n As Integer)
+Private Sub ManageBouyancy(n As Integer) 'Botsareus 2/2/2013 Bouyancy fix
   With rob(n)
-    'Bouyancy
-    'obsolete, so how to fix?
     If .mem(setboy) > 2000 Or .mem(setboy) < -2000 Then .mem(setboy) = 2000 * Sgn(.mem(setboy))
-    If SimOpts.Bouyancy Then
-       .Bouyancy = .mem(setboy) / 1000
-    Else
-        .Bouyancy = 0
-    End If
-    .mem(rdboy) = .Bouyancy * 1000
+    .Bouyancy = .mem(setboy) / 2000
+    .mem(rdboy) = .Bouyancy * 2000
   End With
 End Sub
 

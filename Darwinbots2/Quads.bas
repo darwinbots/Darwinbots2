@@ -381,17 +381,32 @@ End Function
 'Returns the distance an eye of absolute width w can see.
 'Eye sight distance S varies as a function of eye width according to:  S =  1 - ln(w)/4
 'where w is the absolute eyewidth as a multiple of the standard Pi/18 eyewidths
-Public Function EyeSightDistance(w As Integer) As Single
+Public Function EyeSightDistance(w As Integer, n1 As Integer) As Single 'Botsareus 2/3/2013 modified to except robot id
   If w = 35 Then
-    EyeSightDistance = 1440
+    EyeSightDistance = 1440 * eyestrength(n1)
   Else
-    EyeSightDistance = 1440 * (1 - (Log(w / 35) / 4))
+    EyeSightDistance = 1440 * (1 - (Log(w / 35) / 4)) * eyestrength(n1)
   End If
+End Function
+
+Private Function eyestrength(n1 As Integer) As Single 'Botsareus 2/3/2013 eye strength mod
+
+If SimOpts.Pondmode And Not rob(n1).pos.Y = 0 Then
+  eyestrength = (SimOpts.LightIntensity / (rob(n1).pos.Y / 2000) ^ SimOpts.Gradient) / 100
+Else
+  eyestrength = 1
+End If
+
+If Not SimOpts.Daytime Then eyestrength = eyestrength * 0.8
+
+If eyestrength > 1 Then eyestrength = 1
+
 End Function
 
 'New compare routine from EricL
 'Takes into consideration movable eyes and eyes of variable width
 Public Sub CompareRobots3(n1 As Integer, N2 As Integer)
+
       Dim ab As vector, ac As vector, ad As vector 'vector from n1 to n2
       Dim invdist As Single, sightdist As Single, eyedist As Single, distsquared As Single
       Dim edgetoedgedist As Single, percentdist As Single
@@ -427,7 +442,7 @@ Public Sub CompareRobots3(n1 As Integer, N2 As Integer)
       If eyesum = 0 Then
          sightdist = 1440
       Else
-        sightdist = EyeSightDistance(NarrowestEye(n1))
+        sightdist = EyeSightDistance(NarrowestEye(n1), n1)
       End If
             
       'Now we check the maximum possible distance bot N1 can see against how far away bot N2 is.
@@ -504,9 +519,9 @@ Public Sub CompareRobots3(n1 As Integer, N2 As Integer)
                   
         'Now we check to see if the sight distance for this specific eye is far enough to see bot N2
         If rob(n1).mem(EYE1WIDTH + a) = 0 Then
-          eyedist = 1440
+          eyedist = 1440 * eyestrength(n1)
         Else
-          eyedist = EyeSightDistance(AbsoluteEyeWidth(rob(n1).mem(EYE1WIDTH + a)))
+          eyedist = EyeSightDistance(AbsoluteEyeWidth(rob(n1).mem(EYE1WIDTH + a)), n1)
         End If
         If edgetoedgedist <= eyedist Then
       
@@ -621,7 +636,7 @@ Dim lastopppos As vector
 Dim percentdist As Single
 
 
-  sightdist = EyeSightDistance(NarrowestEye(n)) + rob(n).radius
+  sightdist = EyeSightDistance(NarrowestEye(n), n) + rob(n).radius
 
   For o = 1 To numObstacles
   If Obstacles.Obstacles(o).exist Then
@@ -704,7 +719,7 @@ Dim percentdist As Single
       For a = 0 To 8
       
         'Now we check to see if the sight distance for this specific eye is far enough to see this specific shape
-        eyedist = EyeSightDistance(AbsoluteEyeWidth(rob(n).mem(EYE1WIDTH + a)))
+        eyedist = EyeSightDistance(AbsoluteEyeWidth(rob(n).mem(EYE1WIDTH + a)), n)
         
         If (Obstacles.Obstacles(o).pos.X > rob(n).pos.X + eyedist) Or _
            (Obstacles.Obstacles(o).pos.X + Obstacles.Obstacles(o).Width < rob(n).pos.X - eyedist) Or _

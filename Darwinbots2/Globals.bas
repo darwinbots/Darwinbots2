@@ -34,15 +34,17 @@ Public NoDeaths As Boolean     'Attempt to stop robots dying during the first cy
                                 'later used in conjunction with a routine to give robs a bit of energy back after loading up.
 Public maxfieldsize As Long
 
+Public ismutating As Boolean 'Botsareus 2/2/2013 Tells the parseor to ignore debugint and debugbool while the robot is mutating
+
 Declare Function CallWindowProc Lib "user32" Alias "CallWindowProcA" _
            (ByVal lpPrevWndFunc As Long, _
-            ByVal hwnd As Long, _
+            ByVal hWnd As Long, _
             ByVal MSG As Long, _
             ByVal wParam As Long, _
             ByVal lParam As Long) As Long
 
 Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongA" _
-           (ByVal hwnd As Long, _
+           (ByVal hWnd As Long, _
             ByVal nIndex As Long, _
             ByVal dwNewLong As Long) As Long
             
@@ -52,26 +54,26 @@ Private Declare Function RegisterWindowMessage Lib "user32" _
 'Windows API calls for GetWinHandle
 'Stolen from MSDN somewhere
 Private Const GW_HWNDNEXT = 2
-Private Declare Function GetParent Lib "user32" (ByVal hwnd As Long) As Long
-Private Declare Function GetWindow Lib "user32" (ByVal hwnd As Long, _
+Private Declare Function GetParent Lib "user32" (ByVal hWnd As Long) As Long
+Private Declare Function GetWindow Lib "user32" (ByVal hWnd As Long, _
   ByVal wCmd As Long) As Long
 Private Declare Function FindWindow Lib "user32" Alias "FindWindowA" _
   (ByVal lpClassName As String, ByVal lpWindowName As String) As Long
 Public Const GWL_WNDPROC = -4
 Public Declare Function GetWindowThreadProcessId Lib "user32" _
-  (ByVal hwnd As Long, lpdwprocessid As Long) As Long
+  (ByVal hWnd As Long, lpdwprocessid As Long) As Long
 'Stuff for close window
 Private Declare Function WaitForSingleObject Lib "kernel32" _
    (ByVal hHandle As Long, _
    ByVal dwMilliseconds As Long) As Long
 Private Declare Function PostMessage Lib "user32" _
    Alias "PostMessageA" _
-   (ByVal hwnd As Long, _
+   (ByVal hWnd As Long, _
    ByVal wMsg As Long, _
    ByVal wParam As Long, _
    ByVal lParam As Long) As Long
 Private Declare Function IsWindow Lib "user32" _
-   (ByVal hwnd As Long) As Long
+   (ByVal hWnd As Long) As Long
 Private Declare Function OpenProcess Lib "kernel32" _
    (ByVal dwDesiredAccess As Long, _
    ByVal bInheritHandle As Long, _
@@ -115,11 +117,11 @@ Function WindowProc(ByVal hw As Long, _
   End Select
 End Function
 
-Private Function ProcIDFromWnd(ByVal hwnd As Long) As Long
+Private Function ProcIDFromWnd(ByVal hWnd As Long) As Long
    Dim idProc As Long
    
    ' Get PID for this HWnd
-   GetWindowThreadProcessId hwnd, idProc
+   GetWindowThreadProcessId hWnd, idProc
    
    ' Return PID
    ProcIDFromWnd = idProc

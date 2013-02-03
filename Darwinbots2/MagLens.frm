@@ -20,6 +20,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'Botsareusnotdone to be replaced later by zoom-in-follow
 Option Explicit
 
 Private Sub Form_Load()

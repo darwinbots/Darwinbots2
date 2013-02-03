@@ -47,6 +47,7 @@ Begin VB.Form datirob
          _ExtentX        =   11562
          _ExtentY        =   12250
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"robdata.frx":0E42
@@ -569,15 +570,8 @@ Public showingMemory As Boolean
 Public ShowMemoryEarlyCycle As Boolean
 
 Public Sub ShowDna()
-  showingMemory = False
-  MemoryStateCheck.Visible = False
-  Me.Width = 6700
-  enlarged = True
-  If rob(robfocus).exist Then
-    dnatext.text = DetokenizeDNA(robfocus, False)
-  Else
-    dnatext.text = "This Robot is dead.  No DNA available."
-  End If
+  'Botsareusnotdone showdna will not autohide when I add autohide
+  dnashow_Click 'Botsareus 1/25/2013 Show dna using the button
 End Sub
 
 Private Sub Command3_Click()

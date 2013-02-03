@@ -46,6 +46,8 @@ Public DisplayActivations As Boolean 'EricL - Toggle for displaying activations 
                                      'Indicates whether the cycle was executed from a console
 Public ingene As Boolean             ' Flag for current gene counting.
 
+Public DisplayDebug As Boolean
+
 ''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''
@@ -102,7 +104,7 @@ Private Sub ExecuteDNA(n As Integer)
         End If
       Case 3 'advanced commands
         If CurrentFlow <> CLEAR Then
-          ExecuteAdvancedCommand .DNA(a).value
+          ExecuteAdvancedCommand .DNA(a).value, n, a
         End If
       Case 4 'bitwise commands
         If CurrentFlow <> CLEAR Then
@@ -297,7 +299,7 @@ End Sub
 '''''''''''''''''''''''''''''''''''''''''''''''''
 '''''''''''''''''''''''''''''''''''''''''''''''''
 
-Private Sub ExecuteAdvancedCommand(n As Integer)
+Private Sub ExecuteAdvancedCommand(n As Integer, robid As Integer, at_position As Integer)
   Select Case n
     Case 1 'findang
       findang
@@ -313,6 +315,10 @@ Private Sub ExecuteAdvancedCommand(n As Integer)
       DNApow
     Case 7 ' pyth
       DNApyth
+    Case 8
+      DNAdebugint robid, at_position   'Botsareus 1/31/2013 the new debugint command
+    Case 9
+      DNAdebugbool robid, at_position   'Botsareus 1/31/2013 the new debugbool command
   End Select
 End Sub
 
@@ -419,6 +425,30 @@ Private Sub DNApyth()
   If Abs(c) > 2000000000 Then c = Sgn(c) * 2000000000
   
   PushIntStack c
+End Sub
+
+
+Private Sub DNAdebugint(robid As Integer, at_position As Integer)   'Botsareus 1/31/2013 The new debugint command
+
+    Dim a As Single
+    a = PopIntStack
+    
+    If Not (rob(robid).console Is Nothing) And DisplayDebug Then rob(robid).console.textout a & " at position " & at_position
+    
+    PushIntStack a
+    
+End Sub
+
+
+Private Sub DNAdebugbool(robid As Integer, at_position As Integer)   'Botsareus 1/31/2013 The new debugbool command
+
+    Dim a As Boolean
+    a = PopBoolStack
+    
+    If Not (rob(robid).console Is Nothing) And DisplayDebug Then rob(robid).console.textout a & " at position " & at_position
+    
+    PushBoolStack a
+    
 End Sub
 
 '''''''''''''''''''''''''''''''''''''''''

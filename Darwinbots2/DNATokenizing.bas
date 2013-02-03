@@ -360,6 +360,10 @@ Private Function AdvancedCommandDetok(n As Integer) As String
       AdvancedCommandDetok = "pow"
     Case 7
       AdvancedCommandDetok = "pyth"
+    Case 8
+      If Not ismutating Then AdvancedCommandDetok = "debugint" 'Botsareus 1/31/2013 the new debugint command
+    Case 9
+      If Not ismutating Then AdvancedCommandDetok = "debugbool" 'Botsareus 1/31/2013 the new debugbool command
   End Select
 End Function
 
@@ -381,6 +385,10 @@ Private Function AdvancedCommandTok(s As String) As block
       AdvancedCommandTok.value = 6
     Case "pyth"
       AdvancedCommandTok.value = 7
+    Case "debugint" 'Botsareus 1/31/2013 the new debugint command
+      If Not ismutating Then AdvancedCommandTok.value = 8
+    Case "debugbool" 'Botsareus 1/31/2013 the new debugbool command
+      If Not ismutating Then AdvancedCommandTok.value = 9
   End Select
 End Function
 

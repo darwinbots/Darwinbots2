@@ -102,6 +102,7 @@ Begin VB.Form optionsform
       TabPicture(1)   =   "OptionsForm.frx":001C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "GenPropFrame"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
@@ -127,9 +128,10 @@ Begin VB.Form optionsform
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Simulazione"
-      Tab(5).Control(1)=   "Label41"
-      Tab(5).ControlCount=   2
+      Tab(5).Control(0)=   "Label41"
+      Tab(5).Control(1)=   "Label42"
+      Tab(5).Control(2)=   "Simulazione"
+      Tab(5).ControlCount=   3
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
       Tab(6).ControlEnabled=   0   'False
@@ -137,7 +139,7 @@ Begin VB.Form optionsform
       Tab(6).Control(1)=   "Frame10"
       Tab(6).ControlCount=   2
       Begin VB.CommandButton NativeSpeciesButton 
-         Caption         =   "Show Non-Native Species"
+         Caption         =   "List Non-Native Species "
          Height          =   375
          Left            =   1440
          TabIndex        =   250
@@ -2300,6 +2302,7 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":066E
@@ -2922,9 +2925,17 @@ Begin VB.Form optionsform
             Width           =   2250
          End
       End
-      Begin VB.Label Label41 
+      Begin VB.Label Label42 
          Caption         =   $"OptionsForm.frx":07FD
-         Height          =   2655
+         Height          =   975
+         Left            =   -70560
+         TabIndex        =   260
+         Top             =   1560
+         Width           =   5655
+      End
+      Begin VB.Label Label41 
+         Caption         =   $"OptionsForm.frx":0932
+         Height          =   735
          Left            =   -70560
          TabIndex        =   257
          Top             =   600
@@ -2989,7 +3000,7 @@ Dim follow2 As Boolean
 Dim follow3 As Boolean
 Dim follow4 As Boolean
 
-Dim SpeciesToggle As Boolean
+'Dim SpeciesToggle As Boolean 'Botsareus 1/21/2013 no more need for speices toggle
 
 Dim lastsettings As String
 Dim contrmethod As Integer
@@ -3005,13 +3016,13 @@ Dim multx As Long
 Dim multy As Long
 
 'Windows declarations
-Private Declare Function SetCapture Lib "user32" (ByVal hwnd As Long) As Long
+Private Declare Function SetCapture Lib "user32" (ByVal hWnd As Long) As Long
 Private Declare Function ClipCursor Lib "user32" (lpRect As Any) As Long
 Private Declare Function ReleaseCapture Lib "user32" () As Long
-Private Declare Function GetWindowRect Lib "user32" (ByVal hwnd As Long, lpRect As RECT) As Long
+Private Declare Function GetWindowRect Lib "user32" (ByVal hWnd As Long, lpRect As RECT) As Long
 Private Declare Function GetCursorPos Lib "user32" (lpPoint As POINTAPI) As Long
-Private Declare Function GetDC Lib "user32" (ByVal hwnd As Long) As Long
-Private Declare Function ReleaseDC Lib "user32" (ByVal hwnd As Long, ByVal hdc As Long) As Long
+Private Declare Function GetDC Lib "user32" (ByVal hWnd As Long) As Long
+Private Declare Function ReleaseDC Lib "user32" (ByVal hWnd As Long, ByVal hdc As Long) As Long
 Private Declare Function SelectObject Lib "gdi32" (ByVal hdc As Long, ByVal hObject As Long) As Long
 Private Declare Function DeleteObject Lib "gdi32" (ByVal hObject As Long) As Long
 Private Declare Function GetStockObject Lib "gdi32" (ByVal nIndex As Long) As Long
@@ -3168,31 +3179,39 @@ Public Sub PopulateSpeciesList()
 Dim i As Integer
 
  SortSpecies
- If SpeciesToggle Then
-    SpeciesLabel = "Native and Non-Native Species:"
-    NativeSpeciesButton.Caption = "Show Native Species Only"
-    SpecList.CLEAR
-    For i = 0 To TmpOpts.SpeciesNum - 1
-      SpecList.additem (TmpOpts.Specie(i).Name)
-    Next i
-  Else
-    SpeciesLabel = "Native Species:"
-    NativeSpeciesButton.Caption = "Show Non-Native Species"
+' If SpeciesToggle Then 'Botsareus 1/21/2013 Get non-native species via SnapShotSearch
+'    SpeciesLabel = "Native and Non-Native Species:"
+'    NativeSpeciesButton.Caption = "Show Native Species Only"
+'    SpecList.CLEAR
+'    For i = 0 To TmpOpts.SpeciesNum - 1
+'      SpecList.additem (TmpOpts.Specie(i).Name)
+'    Next i
+'  Else
+'    SpeciesLabel = "Native Species:"
+'    NativeSpeciesButton.Caption = "Show Non-Native Species"
     SpecList.CLEAR
     For i = 0 To TmpOpts.SpeciesNum - 1
        If TmpOpts.Specie(i).Native Then SpecList.additem (TmpOpts.Specie(i).Name)
     Next i
-  End If
+'  End If
  
   SpecList.Refresh
 End Sub
 
 
-Private Sub NativeSpeciesButton_Click()
-  Dim i As Integer
-  SpeciesToggle = Not SpeciesToggle
-  PopulateSpeciesList
- 
+Private Sub NativeSpeciesButton_Click() 'Botsareus 1/21/2013 new code for view non-native speices
+Dim i As Integer
+Dim MSG As String
+Dim found As Boolean
+MSG = "The Non-Native Species are:" & vbCrLf & vbCrLf
+For i = 0 To SimOpts.SpeciesNum - 1
+ If Not SimOpts.Specie(i).Native Then
+    MSG = MSG & """" & SimOpts.Specie(i).Name & """, "
+    found = True
+ End If
+Next i
+MSG = MSG & vbCrLf & vbCrLf & "Save a snapshot and use snapshotsearch.exe to extract DNA. Press CTRL+C to copy this message."
+If found Then MsgBox MSG Else MsgBox "There are no non-native species."
 End Sub
 
 Private Sub RenameButton_Click()
@@ -3927,10 +3946,10 @@ Public Sub DragBegin(ctl As Control)
     'we set the mouse capture to the form and will process mouse
     'movement from the applicable form events
     ReleaseCapture  'This appears needed before calling SetCapture
-    SetCapture hwnd
+    SetCapture hWnd
     
     'Limit cursor movement within form
-    GetWindowRect hwnd, rc
+    GetWindowRect hWnd, rc
     ClipCursor rc
 End Sub
 
@@ -4064,9 +4083,9 @@ Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As In
     'In order to detect mouse movement over any part of the form,
     'we set the mouse capture to the form and will process mouse
     'movement from the applicable form events
-    SetCapture hwnd
+    SetCapture hWnd
     'Limit cursor movement within form
-    GetWindowRect hwnd, rc
+    GetWindowRect hWnd, rc
     ClipCursor rc
 End Sub
 
@@ -4094,9 +4113,9 @@ Private Sub Robplacline_MouseDown(Index As Integer, Button As Integer, Shift As 
     'In order to detect mouse movement over any part of the form,
     'we set the mouse capture to the form and will process mouse
     'movement from the applicable form events
-    SetCapture hwnd
+    SetCapture hWnd
     'Limit cursor movement within form
-    GetWindowRect hwnd, rc
+    GetWindowRect hWnd, rc
     ClipCursor rc
 End Sub
 
@@ -4664,7 +4683,7 @@ End Sub
 
 Private Sub Form_Load()
 Dim i As Integer
-  SpeciesToggle = False
+  'SpeciesToggle = False 'Botsareus 1/21/2013 No more need for species toggle
   Form1.SecTimer.Enabled = False
   TmpOpts = SimOpts
   CurrSpec = -1 ' EricL 4/1/2006 Initialize that no species is selected

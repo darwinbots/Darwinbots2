@@ -127,6 +127,8 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False)
     If Not .Mutables.Mutations Or SimOpts.DisableMutations Then GoTo getout
     delta = CLng(.LastMut)
     
+    
+    ismutating = True 'Botsareus 2/2/2013 Tells the parseor to ignore debugint and debugbool while the robot is mutating
     If Not reproducing Then
       If .Mutables.mutarray(PointUP) > 0 Then PointMutation robn
       If .Mutables.mutarray(DeltaUP) > 0 Then DeltaMut robn
@@ -139,6 +141,7 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False)
       If .Mutables.mutarray(MajorDeletionUP) > 0 Then MajorDeletion robn
       If .Mutables.mutarray(MinorDeletionUP) > 0 Then MinorDeletion robn
     End If
+    ismutating = False 'Botsareus 2/2/2013 Tells the parseor to ignore debugint and debugbool while the robot is mutating
     
     delta = CLng(.LastMut) - delta 'Botsareus 9/4/2012 Moved delta check before overflow reset to fix an error where robot info is not being updated
     
