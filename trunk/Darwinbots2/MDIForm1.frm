@@ -858,7 +858,7 @@ Attribute VB_Exposed = False
 ' Modifications by Purple Youko and Numsgil - 2004, 2005
 ' Post V2.42 modifications copyright (c) 2006, 2007 Eric Lockard  eric@sulaadventures.com
 '
-' Post V2.45 modifications copyright (c) 2012 Paul Kononov:
+' Post V2.45 modifications copyright (c) 2012, 2013 Paul Kononov:
 '______________________________________________1$$$___108033_____$$______________________________
 '____1$$$$$$$3________________011_______________$$__$$$$$$$$$$8_1$_________1$$$1__8$$$1_______3$$
 '____3$$811$$$0______________1$$3_______________0___$$$$__1$$$8____________0$$$__1$$$$______0$$8_
@@ -1385,7 +1385,7 @@ Dim pauseInterval As Single
   MDIForm1.Height = Screen.Height + 500
   MDIForm1.Width = Screen.Width + 100
 
-  SetWindowPos MDIForm1.hwnd, HWND_TOPMOST, -5, -85, Screen.Width + 10, Screen.Height + 100, SWP_NOSIZE Or SWP_NOMOVE
+  SetWindowPos MDIForm1.hWnd, HWND_TOPMOST, -5, -85, Screen.Width + 10, Screen.Height + 100, SWP_NOSIZE Or SWP_NOMOVE
   Me.Show
 End Sub
 
@@ -1852,7 +1852,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
 Dim revision As String
 
   globstrings

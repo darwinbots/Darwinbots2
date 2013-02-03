@@ -198,9 +198,15 @@ Private Sub Command3_Click()
   Consoleform.evnt.fire cnum, "printtaste"
 End Sub
 
+Private Sub debug_Click() 'Botsareus 2/2/2013 The debug button
+  words(1) = "debug"
+  wcount = 1
+  Consoleform.evnt.fire cnum, "debug"
+End Sub
+
 Private Sub Form_Load()
   strings Me
-  SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
+  SetWindowPos hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
 End Sub
 
 Private Sub Form_Resize()
@@ -326,12 +332,19 @@ End Sub
 
 ' parses console commands
 Private Sub evnt_textentered(ind As Integer, text As String)
-  Dim n As Integer
-  
+ 
   If rob(ind).console Is Nothing Then Exit Sub ' EricL 3/19/2006 Prevents crash when bot has died
   
   text = rob(ind).console.text(1)
   Select Case text
+    Case "debug"
+        Dim t As Integer
+        For t = 1 To MaxRobs
+            If Not (rob(t).console Is Nothing) Then rob(t).console.textout "***ROBOT DEBUG***"
+        Next
+        DisplayDebug = True
+        cycle 1
+        DisplayDebug = False
     Case "printeye"
       rob(ind).console.textout printeye(ind)
     Case "printtouch"
@@ -367,7 +380,7 @@ Private Sub evnt_textentered(ind As Integer, text As String)
       datirob.Visible = True
       datirob.RefreshDna
       datirob.ZOrder
-      datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime
+      datirob.infoupdate ind, rob(ind).nrg, rob(ind).parent, rob(ind).Mutations, rob(ind).age, rob(ind).SonNumber, 1, rob(ind).FName, rob(ind).genenum, rob(ind).LastMut, rob(ind).generation, rob(ind).DnaLen, rob(ind).LastOwner, rob(ind).Waste, rob(ind).body, rob(ind).mass, rob(ind).venom, rob(ind).shell, rob(ind).Slime
       datirob.ShowDna
     Case "help"
       rob(ind).console.textout ""
@@ -388,6 +401,7 @@ Private Sub evnt_textentered(ind As Integer, text As String)
       rob(ind).console.textout "cycle n : executes n cycles"
       rob(ind).console.textout "execrob : executes all robots without doing a cycle"
       rob(ind).console.textout "showdna : brings up the robot details window showing the robot's dna"
+      rob(ind).console.textout "debug : fires one cycle we debugger enabled"
   End Select
 End Sub
 

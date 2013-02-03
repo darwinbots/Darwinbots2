@@ -183,7 +183,7 @@ Attribute VB_Exposed = False
 ' V2.35, 2.36.X, 2.37.X by PurpleYouko and Numsgil
 ' Post V2.42 modifications copyright (c) 2006 2007 Eric Lockard  eric@sulaadventures.com
 
-' Post V2.45 modifications copyright (c) 2012 Paul Kononov a.k.a Botsareus
+' Post V2.45 modifications copyright (c) 2012, 2013 Paul Kononov a.k.a Botsareus
 '
 ' All rights reserved.
 '
@@ -414,7 +414,7 @@ Private Sub DrawArena()
 End Sub
 
 ' draws rob perimeter
-Private Sub DrawRobPer(n As Integer) ' Botsareusnotdone
+Private Sub DrawRobPer(n As Integer) 'Botsareusnotdone need to add chloroplasts to robot view
   Dim Sides As Integer
   Dim t As Single
   Dim Sdlen As Single
@@ -889,13 +889,13 @@ Public Sub DrawAllRobs()
         DrawMode = vbNotMergePen
         'length = (RobSize * 100) / rob(robfocus).mem(EyeStart + a + 1) - RobSize + rob(robfocus).radius + rob(robfocus).radius + 1
   
-        length = (1 / Sqr(rob(robfocus).mem(EyeStart + a + 1))) * (EyeSightDistance(AbsoluteEyeWidth(rob(robfocus).mem(EYE1WIDTH + a))) + rob(robfocus).radius) + rob(robfocus).radius ' + rob(robfocus).radius
+        length = (1 / Sqr(rob(robfocus).mem(EyeStart + a + 1))) * (EyeSightDistance(AbsoluteEyeWidth(rob(robfocus).mem(EYE1WIDTH + a)), robfocus) + rob(robfocus).radius) + rob(robfocus).radius ' + rob(robfocus).radius
  '       length = Buckets_Module.eyeDistance(a + 1)
   '      Buckets_Module.eyeDistance(a + 1) = 0
         If length < 0 Then length = 0
       Else
         DrawMode = vbCopyPen
-        length = EyeSightDistance(AbsoluteEyeWidth(rob(robfocus).mem(EYE1WIDTH + a))) + rob(robfocus).radius + rob(robfocus).radius
+        length = EyeSightDistance(AbsoluteEyeWidth(rob(robfocus).mem(EYE1WIDTH + a)), robfocus) + rob(robfocus).radius + rob(robfocus).radius
       End If
             
       Circle (rob(robfocus).pos.X, rob(robfocus).pos.Y), length, vbCyan, -low, -hi
@@ -1043,7 +1043,7 @@ Private Sub Timer2_Timer()
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As File
+          Dim fileToDelete As file
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1061,7 +1061,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As File
+          Dim fileToDelete2 As file
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -1529,7 +1529,7 @@ Private Sub Form_Click()
     Form1.BackPic = ""
     Form1.Picture = Nothing
     Form1.PiccyMode = False
-    SetWindowPos MDIForm1.hwnd, HWND_TOPMOST, 0, 0, 1000, 1000, 0
+    SetWindowPos MDIForm1.hWnd, HWND_TOPMOST, 0, 0, 1000, 1000, 0
     MDIForm1.WindowState = 2
   End If
   

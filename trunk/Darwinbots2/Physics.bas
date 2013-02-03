@@ -17,6 +17,8 @@ Public mlink As Single
 
 Public Const smudgefactor As Single = 50 'just to keep the bots more likely to stay visible
 
+Dim boylabldisp As Boolean
+
 Public Function NetForces(n As Integer)
   Dim mag As Single
   Dim sign As Integer
@@ -32,7 +34,7 @@ Public Function NetForces(n As Integer)
     SphereDragForces n
     TieDragForces n
     BrownianForces n
-    BouyancyForces n
+    'BouyancyForces n  BouyancyForces are no longer needed since boy is proportional to y gravity
     GravityForces n
     VoluntaryForces n
  
@@ -382,27 +384,40 @@ Public Function CylinderCd(ByVal velocitymagnitude As Single, ByVal radius As Si
 getout:
   End With
 End Function
+'
+'Public Sub BouyancyForces(n As Integer) 'Botsareus 2/2/2013 BouyancyForces are no longer needed since boy is proportional to y gravity
+'  Dim Impulse As Single
+'
+'  If SimOpts.Ygravity = 0 Then GoTo getout
+'
+'    If SimOpts.EGridEnabled Then
+'      'Impulse = -SimOpts.Density * rob(n).radius ^ 3 * 4 / 3 * PI * EGrid(FindEGridX(rob(n).pos), FindEGridY(rob(n).pos)).Ygravity
+'    Else
+'      Impulse = -SimOpts.Density * rob(n).radius ^ 3 * 4 / 3 * PI * SimOpts.Ygravity
+'    End If
+'    rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(0, Impulse))
+'
+'getout:
+'
+'End Sub
 
-Public Sub BouyancyForces(n As Integer)
-  Dim Impulse As Single
-  
-  If SimOpts.Ygravity = 0 Then GoTo getout
+Public Sub GravityForces(n As Integer) 'Botsareus 2/2/2013 added bouy as part of y-gravity formula
+'Botsareusnotdone still need to implement costs and bouy ristrictions
 
-    If SimOpts.EGridEnabled Then
-      'Impulse = -SimOpts.Density * rob(n).radius ^ 3 * 4 / 3 * PI * EGrid(FindEGridX(rob(n).pos), FindEGridY(rob(n).pos)).Ygravity
-    Else
-      Impulse = -SimOpts.Density * rob(n).radius ^ 3 * 4 / 3 * PI * SimOpts.Ygravity
+If (SimOpts.Ygravity = 0 Or Not SimOpts.Pondmode Or SimOpts.Updnconnected) Then
+    If rob(n).Bouyancy > 0 Then
+        If Not boylabldisp Then Form1.BoyLabl.Visible = True
+        boylabldisp = True
     End If
-    rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(0, Impulse))
-  
-getout:
-
-End Sub
-
-Public Sub GravityForces(n As Integer)
-
-   rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(0, SimOpts.Ygravity * rob(n).mass))
-
+    rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(0, SimOpts.Ygravity * rob(n).mass))
+Else
+    If Form1.BoyLabl.Visible Then Form1.BoyLabl.Visible = False
+    If (1 - rob(n).pos.Y / SimOpts.FieldHeight) > rob(n).Bouyancy Then
+       rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(0, SimOpts.Ygravity * rob(n).mass))
+    Else
+       rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(0, -SimOpts.Ygravity * rob(n).mass))
+    End If
+End If
 End Sub
 
 Public Sub VoluntaryForces(n As Integer)
@@ -1025,7 +1040,7 @@ End Sub
 
 'EricL - My attempt to back port 2.5 physics to address collision detection
 'with a bunch of extra tweaks figurred out via trial and error.
-Public Sub Repel3(rob1 As Integer, rob2 As Integer)
+Public Sub Repel3(rob1 As Integer, rob2 As Integer) 'Botsareusnotdone collision code to add to ties
   Dim normal As vector
   Dim vy As vector
   Dim length As Single

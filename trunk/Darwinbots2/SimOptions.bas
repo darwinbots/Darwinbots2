@@ -119,7 +119,6 @@ Public Type SimOptions
   Daytime As Boolean 'the variable
   CycleLength As Integer
   CorpseEnabled As Boolean
-  Bouyancy As Boolean
   Decay As Single
   Decaydelay As Integer
   DecayType As Integer
