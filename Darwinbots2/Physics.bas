@@ -402,8 +402,6 @@ End Function
 'End Sub
 
 Public Sub GravityForces(n As Integer) 'Botsareus 2/2/2013 added bouy as part of y-gravity formula
-'Botsareusnotdone still need to implement costs and bouy ristrictions
-
 If (SimOpts.Ygravity = 0 Or Not SimOpts.Pondmode Or SimOpts.Updnconnected) Then
     If rob(n).Bouyancy > 0 Then
         If Not boylabldisp Then Form1.BoyLabl.Visible = True
@@ -412,6 +410,10 @@ If (SimOpts.Ygravity = 0 Or Not SimOpts.Pondmode Or SimOpts.Updnconnected) Then
     rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(0, SimOpts.Ygravity * rob(n).mass))
 Else
     If Form1.BoyLabl.Visible Then Form1.BoyLabl.Visible = False
+    'bouy costs energy (calculated from voluntery movment)
+    With rob(n)
+    .nrg = .nrg - (SimOpts.Ygravity / (SimOpts.PhysMoving) * ((.body / 1000) + (.shell / 200)) * SimOpts.Costs(MOVECOST) * SimOpts.Costs(COSTMULTIPLIER)) * rob(n).Bouyancy
+    End With
     If (1 - rob(n).pos.Y / SimOpts.FieldHeight) > rob(n).Bouyancy Then
        rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(0, SimOpts.Ygravity * rob(n).mass))
     Else
@@ -438,7 +440,7 @@ Public Sub VoluntaryForces(n As Integer)
     Else
         mult = 1
     End If
-    
+       
     'yes it's backwards, that's on purpose
     dir = VectorSet(CLng(.mem(dirup)) - CLng(.mem(dirdn)), CLng(.mem(dirsx)) - CLng(.mem(dirdx)))
     dir = VectorScalar(dir, mult)
