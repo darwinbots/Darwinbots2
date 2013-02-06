@@ -895,7 +895,7 @@ End Sub
 Private Sub ManageBouyancy(n As Integer) 'Botsareus 2/2/2013 Bouyancy fix
   With rob(n)
     If .mem(setboy) > 2000 Or .mem(setboy) < -2000 Then .mem(setboy) = 2000 * Sgn(.mem(setboy))
-    .Bouyancy = .mem(setboy) / 2000
+    .Bouyancy = Abs(.mem(setboy)) / 2000
     .mem(rdboy) = .Bouyancy * 2000
   End With
 End Sub

@@ -392,7 +392,7 @@ End Function
 Private Function eyestrength(n1 As Integer) As Single 'Botsareus 2/3/2013 eye strength mod
 
 If SimOpts.Pondmode And Not rob(n1).pos.Y = 0 Then
-  eyestrength = (SimOpts.LightIntensity / (rob(n1).pos.Y / 2000) ^ SimOpts.Gradient) / 100
+  eyestrength = (SimOpts.LightIntensity / (rob(n1).pos.Y / 2000) ^ SimOpts.Gradient) / 50
 Else
   eyestrength = 1
 End If
@@ -440,7 +440,7 @@ Public Sub CompareRobots3(n1 As Integer, N2 As Integer)
                CLng(rob(n1).mem(538)) + _
                CLng(rob(n1).mem(539))
       If eyesum = 0 Then
-         sightdist = 1440
+         sightdist = 1440 * eyestrength(n1)
       Else
         sightdist = EyeSightDistance(NarrowestEye(n1), n1)
       End If
