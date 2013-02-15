@@ -132,7 +132,7 @@ Public Type SimOptions
   Ygravity As Single
   Density As Double
   Viscosity As Double
-  FlowType As Byte
+  'FlowType As Byte Botsareus 2/6/2013 never implemented
   '
   PhysBrown As Single
   PhysMoving As Single
