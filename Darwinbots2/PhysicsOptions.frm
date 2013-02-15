@@ -19,7 +19,7 @@ Begin VB.Form PhysicsOptions
       Height          =   435
       Index           =   2
       Left            =   7320
-      TabIndex        =   27
+      TabIndex        =   24
       Top             =   5280
       Width           =   1815
    End
@@ -27,14 +27,14 @@ Begin VB.Form PhysicsOptions
       Caption         =   "Misc"
       Height          =   3375
       Left            =   4980
-      TabIndex        =   14
+      TabIndex        =   11
       Top             =   120
       Width           =   4215
       Begin VB.Frame Frame6 
          Caption         =   "Planet Eaters"
          Height          =   1095
          Left            =   2340
-         TabIndex        =   28
+         TabIndex        =   25
          Top             =   2220
          Width           =   1755
          Begin VB.CheckBox Toggles 
@@ -42,14 +42,14 @@ Begin VB.Form PhysicsOptions
             Height          =   315
             Index           =   1
             Left            =   180
-            TabIndex        =   30
+            TabIndex        =   27
             Top             =   300
             Width           =   1275
          End
          Begin VB.TextBox PlanetEatersText 
             Height          =   285
             Left            =   420
-            TabIndex        =   29
+            TabIndex        =   26
             Text            =   "100"
             Top             =   630
             Width           =   555
@@ -58,7 +58,7 @@ Begin VB.Form PhysicsOptions
             Caption         =   "G:  XXXXX E+3"
             Height          =   255
             Left            =   180
-            TabIndex        =   31
+            TabIndex        =   28
             Top             =   660
             Width           =   1215
          End
@@ -67,7 +67,7 @@ Begin VB.Form PhysicsOptions
          Caption         =   "Toggles"
          Height          =   1095
          Left            =   120
-         TabIndex        =   24
+         TabIndex        =   21
          Top             =   2220
          Width           =   2175
          Begin VB.CheckBox Toggles 
@@ -75,7 +75,7 @@ Begin VB.Form PhysicsOptions
             Height          =   315
             Index           =   0
             Left            =   180
-            TabIndex        =   25
+            TabIndex        =   22
             Top             =   480
             Width           =   1515
          End
@@ -84,7 +84,7 @@ Begin VB.Form PhysicsOptions
          Height          =   615
          Index           =   0
          Left            =   1380
-         TabIndex        =   16
+         TabIndex        =   13
          Top             =   240
          Width           =   2355
          _ExtentX        =   4154
@@ -98,7 +98,7 @@ Begin VB.Form PhysicsOptions
          Height          =   615
          Index           =   1
          Left            =   1380
-         TabIndex        =   19
+         TabIndex        =   16
          Top             =   900
          Width           =   2355
          _ExtentX        =   4154
@@ -112,7 +112,7 @@ Begin VB.Form PhysicsOptions
          Height          =   615
          Index           =   2
          Left            =   1380
-         TabIndex        =   22
+         TabIndex        =   19
          Top             =   1620
          Width           =   2355
          _ExtentX        =   4154
@@ -127,7 +127,7 @@ Begin VB.Form PhysicsOptions
          Height          =   315
          Index           =   2
          Left            =   3720
-         TabIndex        =   23
+         TabIndex        =   20
          Top             =   1800
          Width           =   435
       End
@@ -136,7 +136,7 @@ Begin VB.Form PhysicsOptions
          Height          =   255
          Index           =   5
          Left            =   180
-         TabIndex        =   21
+         TabIndex        =   18
          Top             =   1800
          Width           =   1215
       End
@@ -145,7 +145,7 @@ Begin VB.Form PhysicsOptions
          Height          =   315
          Index           =   1
          Left            =   3720
-         TabIndex        =   20
+         TabIndex        =   17
          Top             =   1080
          Width           =   435
       End
@@ -154,7 +154,7 @@ Begin VB.Form PhysicsOptions
          Height          =   255
          Index           =   4
          Left            =   180
-         TabIndex        =   18
+         TabIndex        =   15
          Top             =   1080
          Width           =   1155
       End
@@ -163,7 +163,7 @@ Begin VB.Form PhysicsOptions
          Height          =   315
          Index           =   0
          Left            =   3720
-         TabIndex        =   17
+         TabIndex        =   14
          Top             =   420
          Width           =   435
       End
@@ -172,7 +172,7 @@ Begin VB.Form PhysicsOptions
          Height          =   255
          Index           =   3
          Left            =   180
-         TabIndex        =   15
+         TabIndex        =   12
          Top             =   420
          Width           =   1155
       End
@@ -182,7 +182,7 @@ Begin VB.Form PhysicsOptions
       Height          =   435
       Index           =   3
       Left            =   3720
-      TabIndex        =   13
+      TabIndex        =   10
       Top             =   5280
       Width           =   1815
    End
@@ -190,14 +190,14 @@ Begin VB.Form PhysicsOptions
       Caption         =   "Friction"
       Height          =   2415
       Left            =   120
-      TabIndex        =   12
+      TabIndex        =   9
       Top             =   2700
       Width           =   4695
       Begin MSComctlLib.Slider Friction 
          Height          =   615
          Index           =   0
          Left            =   1440
-         TabIndex        =   33
+         TabIndex        =   29
          Top             =   240
          Width           =   2595
          _ExtentX        =   4577
@@ -211,7 +211,7 @@ Begin VB.Form PhysicsOptions
          Height          =   615
          Index           =   2
          Left            =   1440
-         TabIndex        =   34
+         TabIndex        =   30
          Top             =   990
          Width           =   2595
          _ExtentX        =   4577
@@ -225,7 +225,7 @@ Begin VB.Form PhysicsOptions
          Height          =   615
          Index           =   1
          Left            =   1440
-         TabIndex        =   39
+         TabIndex        =   35
          Top             =   1740
          Width           =   2595
          _ExtentX        =   4577
@@ -240,7 +240,7 @@ Begin VB.Form PhysicsOptions
          Height          =   255
          Index           =   1
          Left            =   120
-         TabIndex        =   41
+         TabIndex        =   37
          Top             =   1920
          Width           =   1395
       End
@@ -249,7 +249,7 @@ Begin VB.Form PhysicsOptions
          Height          =   195
          Index           =   1
          Left            =   4080
-         TabIndex        =   40
+         TabIndex        =   36
          Top             =   1920
          Width           =   435
       End
@@ -258,7 +258,7 @@ Begin VB.Form PhysicsOptions
          Height          =   255
          Index           =   0
          Left            =   120
-         TabIndex        =   38
+         TabIndex        =   34
          Top             =   420
          Width           =   1275
       End
@@ -267,7 +267,7 @@ Begin VB.Form PhysicsOptions
          Height          =   255
          Index           =   2
          Left            =   120
-         TabIndex        =   37
+         TabIndex        =   33
          Top             =   1170
          Width           =   1275
       End
@@ -276,7 +276,7 @@ Begin VB.Form PhysicsOptions
          Height          =   195
          Index           =   0
          Left            =   4080
-         TabIndex        =   36
+         TabIndex        =   32
          Top             =   360
          Width           =   435
       End
@@ -285,7 +285,7 @@ Begin VB.Form PhysicsOptions
          Height          =   195
          Index           =   2
          Left            =   4080
-         TabIndex        =   35
+         TabIndex        =   31
          Top             =   1170
          Width           =   435
       End
@@ -319,56 +319,19 @@ Begin VB.Form PhysicsOptions
       Begin VB.CommandButton Command1 
          Caption         =   "?"
          Height          =   255
-         Left            =   3840
-         TabIndex        =   26
-         Top             =   1740
+         Left            =   2760
+         TabIndex        =   23
+         Top             =   1680
          Width           =   255
-      End
-      Begin VB.Frame Frame2 
-         Caption         =   "Flow Type"
-         Height          =   1095
-         Left            =   120
-         TabIndex        =   9
-         Top             =   1200
-         Width           =   1275
-         Begin VB.OptionButton FlowType 
-            Caption         =   "Dynamic"
-            Enabled         =   0   'False
-            Height          =   255
-            Index           =   2
-            Left            =   180
-            TabIndex        =   32
-            Top             =   780
-            Width           =   1035
-         End
-         Begin VB.OptionButton FlowType 
-            Caption         =   "Turbulent"
-            Enabled         =   0   'False
-            Height          =   255
-            Index           =   1
-            Left            =   180
-            TabIndex        =   11
-            Top             =   510
-            Width           =   1035
-         End
-         Begin VB.OptionButton FlowType 
-            Caption         =   "Laminar"
-            Height          =   255
-            Index           =   0
-            Left            =   180
-            TabIndex        =   10
-            Top             =   240
-            Width           =   915
-         End
       End
       Begin VB.TextBox FluidText 
          Enabled         =   0   'False
          Height          =   255
          Index           =   2
-         Left            =   2580
+         Left            =   1560
          TabIndex        =   7
          Text            =   "10000"
-         Top             =   1740
+         Top             =   1680
          Width           =   1215
       End
       Begin VB.TextBox FluidText 
@@ -393,9 +356,9 @@ Begin VB.Form PhysicsOptions
          Caption         =   "Reynold's Number for an average bot moving at 1 twip/cycle:"
          Height          =   435
          Index           =   0
-         Left            =   1440
+         Left            =   240
          TabIndex        =   5
-         Top             =   1560
+         Top             =   1440
          Width           =   3195
       End
       Begin VB.Label Label1 
@@ -470,31 +433,6 @@ Private Sub Command1_Click()
     "use this number if flow type is dynamic.  Otherwise it's for your " + _
     "information only.  A reynolds number of less than 3E+5 is characteristic " + _
     "of Laminar flows."
-End Sub
-
-Private Sub FlowType_Click(Index As Integer)
-  Select Case Index
-    Case 0 'laminar, low reynolds
-      Text1.text = "Laminar flow is characteristic of small objects moving " + _
-        "slowly through thick liquids.  Imagine dust moving through air or " + _
-        "bacteria moving through water.  The resistive force to movement is " + _
-        "linearly proportional to velocity."
-      TmpOpts.FlowType = 0
-    Case 1 'Turbulent flow
-      Text1.text = "Terbulent flow is characteristic of large objects moving " + _
-        "quickly through a thin liquid.  This is best exemplified by an " + _
-        "airplane's movement through the air.  Resistive force to movement " + _
-        "is proportional to velocity squared."
-      TmpOpts.FlowType = 1
-    Case 2 'Dynamically decide flow based on Reynolds number
-      Text1.text = "The program will attempt to model the transition from " + _
-        "laminar to turbulent flows as the Reynolds number changes (either " + _
-        "from changes in density, viscosity, or velocity).  This is only an " + _
-        "approximation using piecewise functions.  For Reynolds below 3E+5, " + _
-        "the program will use Laminar flow.  For actions taken after 3E+5, " + _
-        "consult the source code."
-      TmpOpts.FlowType = 2
-  End Select
 End Sub
 
 Private Sub FluidText_GotFocus(Index As Integer)
