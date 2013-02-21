@@ -1385,7 +1385,7 @@ Dim pauseInterval As Single
   MDIForm1.Height = Screen.Height + 500
   MDIForm1.Width = Screen.Width + 100
 
-  SetWindowPos MDIForm1.hWnd, HWND_TOPMOST, -5, -85, Screen.Width + 10, Screen.Height + 100, SWP_NOSIZE Or SWP_NOMOVE
+  SetWindowPos MDIForm1.hwnd, HWND_TOPMOST, -5, -85, Screen.Width + 10, Screen.Height + 100, SWP_NOSIZE Or SWP_NOMOVE
   Me.Show
 End Sub
 
@@ -1852,8 +1852,10 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As file
+Dim lastSim As File
 Dim revision As String
+
+Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause initial simulation
 
   globstrings
   strings Me
