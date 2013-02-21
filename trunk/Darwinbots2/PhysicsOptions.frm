@@ -446,9 +446,9 @@ Private Sub FluidText_GotFocus(Index As Integer)
         "1E-3 (or between 1 and 100 in the text box, since it's multiplied by E-5)."
         
     Case 1 'density
-      Text1.text = "Density controls Bouyancy, Added Mass, and Terbulent Flow.  " + _
+      Text1.text = "Density controls Added Mass, and Terbulent Flow.  " + _
         "A small bot has a density of about 1E-6" + _
-        ".  The higher the density, the stronger bouyancy forces, added mass, " + _
+        ".  The higher the density, the stronger added mass, " + _
         "and terbulent drag are.  Terbulent drag is pi/4 * radius of bot ^ 2 " + _
         "(remember that an average bot radius is 60) * velocity ^2 * density."
   End Select

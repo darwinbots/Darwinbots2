@@ -184,35 +184,35 @@ Public Sub Update_Ties(t As Integer)
       .mem(DELTIE) = 0 'resets .deltie command
     End If
     
-    
-    If .mem(480) <> 32000 Then
-      .Ties(1).ang = .mem(480) / 200
-    End If
-    If .mem(481) <> 32000 Then
-      .Ties(2).ang = .mem(481) / 200
-    End If
-    If .mem(482) <> 32000 Then
-      .Ties(3).ang = .mem(482) / 200
-    End If
-    If .mem(483) <> 32000 Then
-      .Ties(4).ang = .mem(483) / 200
-    End If
-    If .mem(484) > RobSize And .mem(484) > RobSize Then 'set tie 1 length
-      .Ties(1).ln = .mem(484)
-      rob(.Ties(1).pnt).Ties(srctie((.Ties(1).pnt), t)).ln = .mem(484)
-    End If
-    If .mem(485) > RobSize And .mem(485) > RobSize Then 'set tie 2 length
-      .Ties(2).ln = .mem(485)
-      rob(.Ties(2).pnt).Ties(srctie((.Ties(2).pnt), t)).ln = .mem(485)
-    End If
-    If .mem(486) > RobSize And .mem(486) > RobSize Then 'set tie 3 length
-      .Ties(3).ln = .mem(485)
-      rob(.Ties(3).pnt).Ties(srctie((.Ties(3).pnt), t)).ln = .mem(486)
-    End If
-    If .mem(487) > RobSize And .mem(487) > RobSize Then 'set tie 4 length
-      .Ties(4).ln = .mem(487)
-      rob(.Ties(4).pnt).Ties(srctie((.Ties(4).pnt), t)).ln = .mem(487)
-    End If
+'Botsareus 2/21/2013 Broken
+'    If .mem(480) <> 32000 Then
+'      .Ties(1).ang = .mem(480) / 200
+'    End If
+'    If .mem(481) <> 32000 Then
+'      .Ties(2).ang = .mem(481) / 200
+'    End If
+'    If .mem(482) <> 32000 Then
+'      .Ties(3).ang = .mem(482) / 200
+'    End If
+'    If .mem(483) <> 32000 Then
+'      .Ties(4).ang = .mem(483) / 200
+'    End If
+'    If .mem(484) > RobSize And .mem(484) > RobSize Then 'set tie 1 length
+'      .Ties(1).ln = .mem(484)
+'      rob(.Ties(1).pnt).Ties(srctie((.Ties(1).pnt), t)).ln = .mem(484)
+'    End If
+'    If .mem(485) > RobSize And .mem(485) > RobSize Then 'set tie 2 length
+'      .Ties(2).ln = .mem(485)
+'      rob(.Ties(2).pnt).Ties(srctie((.Ties(2).pnt), t)).ln = .mem(485)
+'    End If
+'    If .mem(486) > RobSize And .mem(486) > RobSize Then 'set tie 3 length
+'      .Ties(3).ln = .mem(485)
+'      rob(.Ties(3).pnt).Ties(srctie((.Ties(3).pnt), t)).ln = .mem(486)
+'    End If
+'    If .mem(487) > RobSize And .mem(487) > RobSize Then 'set tie 4 length
+'      .Ties(4).ln = .mem(487)
+'      rob(.Ties(4).pnt).Ties(srctie((.Ties(4).pnt), t)).ln = .mem(487)
+'    End If
     
     If tn = 0 Then tn = .mem(TIEPRES)
     If tn = 0 Then GoTo getout
@@ -263,6 +263,14 @@ Public Sub Update_Ties(t As Integer)
       .mem(FIXANG) = 32000
       .mem(FIXLEN) = 0
       .mem(stifftie) = 0
+      k = 1
+      
+      For k = 1 To 4
+        If .Ties(k).pnt > 0 Then
+        .mem(480) = k
+        End If
+      Next
+      
       k = 1
           
 '      If .mem(tp) Then  '.tieang value

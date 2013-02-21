@@ -301,7 +301,7 @@ Private Sub Form_Load()
   ReDim Shots(maxshotarray)
   'MaxAbsNum = 0
   dispskin = True
-  Form1.Active = True
+  'Form1.Active = True Botsareus 2/21/2013 moved to mdiform1
   
   FlashColor(1) = vbBlack         ' Hit with memory shot
   FlashColor(-1 + 10) = vbRed     ' Hit with Nrg feeding shot
@@ -1043,7 +1043,7 @@ Private Sub Timer2_Timer()
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As file
+          Dim fileToDelete As File
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1061,7 +1061,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As file
+          Dim fileToDelete2 As File
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -1333,10 +1333,10 @@ Private Sub loadrobs()
       rob(a).radius = FindRadius(rob(a).body)
       rob(a).mem(468) = 32000
       rob(a).mem(SetAim) = rob(a).aim * 200
-      rob(a).mem(480) = 32000
-      rob(a).mem(481) = 32000
-      rob(a).mem(482) = 32000
-      rob(a).mem(483) = 32000
+'      rob(a).mem(480) = 32000 Botsareus 2/21/2013 Broken
+'      rob(a).mem(481) = 32000
+'      rob(a).mem(482) = 32000
+'      rob(a).mem(483) = 32000
       rob(a).Dead = False
       If rob(a).Shape = 0 Then
         rob(a).Shape = Random(3, 5)
@@ -1529,7 +1529,7 @@ Private Sub Form_Click()
     Form1.BackPic = ""
     Form1.Picture = Nothing
     Form1.PiccyMode = False
-    SetWindowPos MDIForm1.hWnd, HWND_TOPMOST, 0, 0, 1000, 1000, 0
+    SetWindowPos MDIForm1.hwnd, HWND_TOPMOST, 0, 0, 1000, 1000, 0
     MDIForm1.WindowState = 2
   End If
   
