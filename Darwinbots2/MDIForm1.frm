@@ -1436,6 +1436,7 @@ Sub fixcam() 'Botsareus 2/23/2013 When simulation starts the screen is normailiz
 Form1.visiblew = Screen.Width / Screen.Height * 4 / 3 * Form1.visibleh
 ZoomLock.value = 1
 ZoomOut
+ZoomIn
 End Sub
 
 Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
@@ -1858,7 +1859,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As file
+Dim lastSim As File
 Dim revision As String
 
 Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause initial simulation
