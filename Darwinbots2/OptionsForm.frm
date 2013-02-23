@@ -2301,6 +2301,7 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":066E

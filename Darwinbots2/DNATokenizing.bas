@@ -114,6 +114,15 @@ here:
 fine:
   pos = Err.Number
   If Err.Number = 53 Or Err.Number = 76 Then
+  
+    If path <> MDIForm1.MainDir + "\Robots\" & rob(n).FName Then 'Attempt to load a robot from common folder if not found.
+      If dir(MDIForm1.MainDir + "\Robots\" & rob(n).FName) <> "" Then
+        path = MDIForm1.MainDir + "\Robots\" & rob(n).FName
+        SimOpts.Specie(SpeciesFromBot(n)).path = Left(path, Len(path) - Len(rob(n).FName) - 1)
+        GoTo inizio
+      End If
+    End If
+  
     Form1.CommonDialog1.DialogTitle = WScannotfind + path
     Form1.CommonDialog1.ShowOpen
     
