@@ -1432,6 +1432,12 @@ If Not visualize Then Toolbar1.Buttons(14).value = tbrPressed Else Toolbar1.Butt
 Toolbar1.Refresh 'Botsareus 1/11/2013 Force toolbar to refresh
 End Sub
 
+Sub fixcam() 'Botsareus 2/23/2013 When simulation starts the screen is normailized
+Form1.visiblew = Screen.Width / Screen.Height * 4 / 3 * Form1.visibleh
+ZoomLock.value = 1
+ZoomOut
+End Sub
+
 Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
   Dim a As String
  
@@ -1852,7 +1858,7 @@ End Sub
 Private Sub MDIForm_Load()
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
 Dim revision As String
 
 Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause initial simulation

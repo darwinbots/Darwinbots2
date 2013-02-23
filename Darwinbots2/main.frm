@@ -207,6 +207,8 @@ Option Explicit
 'Botsareus 5/19/2012 removed old teleporter pics that are no longer in use
 'Botsareus 5/19/2012 removed 'smilymode' pics that are no longer in use
 
+Public camfix As Boolean 'Botsareus 2/23/2013 normalizes screen
+
 Public WithEvents t As TrayIcon
 Attribute t.VB_VarHelpID = -1
 Public BackPic As String
@@ -1043,7 +1045,7 @@ Private Sub Timer2_Timer()
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As File
+          Dim fileToDelete As file
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1061,7 +1063,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As File
+          Dim fileToDelete2 As file
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -1075,6 +1077,8 @@ End Sub
 
 ' initializes a simulation.
 Sub StartSimul()
+Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is normailized
+
 MDIForm1.visualize = True 'Botsareus 8/31/2012 reset vedio tuggle button
 MDIForm1.menuupdate
 
@@ -1204,6 +1208,7 @@ MDIForm1.menuupdate
   End If
  ' MDIForm1.ZoomOut
   main
+  
 End Sub
 
 ' same, but for a loaded sim
@@ -1783,7 +1788,9 @@ Private Sub main()
       If SimOpts.TotRunCycle Mod SimOpts.chartingInterval = 0 Then
         For i = 1 To NUMGRAPHS
           If Not (Charts(i).graf Is Nothing) Then
+           If Charts(i).graf.Visible Then  'Botsareus 2/23/2013 Do not update chart if invisable
             FeedGraph (i)
+           End If
           End If
         Next i
       End If
@@ -1796,6 +1803,11 @@ Private Sub main()
             
         Wend
       End If
+    End If
+    
+    If Not camfix Then
+        MDIForm1.fixcam 'Botsareus 2/23/2013 normalizes screen
+        camfix = True
     End If
   Loop
   Exit Sub

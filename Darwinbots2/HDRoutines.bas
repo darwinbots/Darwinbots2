@@ -76,7 +76,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As File
+  Dim robotFile As file
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -278,7 +278,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As File
+  Dim fileToDelete As file
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -611,6 +611,8 @@ End Sub
 
 ' loads a whole simulation
 Public Sub LoadSimulation(path As String)
+Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is normailized
+
   'Because of the way that loadrobot and saverobot work, all save and load
   'sim routines are backwards and forwards compatible after 2.37.2
   '(not 2.37.2, but everything that comes after)
@@ -1275,6 +1277,13 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     If FileContinue(1) Then Get #1, , .sim
     If FileContinue(1) Then Get #1, , .AbsNum
     
+    'Botsareus 2/23/2013 Rest of tie data
+    If FileContinue(1) Then Get #n, , .Multibot
+    For t = 0 To MAXTIES
+        If FileContinue(1) Then Get #n, , .Ties(t).type
+        If FileContinue(1) Then Get #n, , .Ties(t).b
+    Next
+    
     'read in any future data here
     
 OldFile:
@@ -1492,6 +1501,12 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     Put #n, , .sim
     Put #n, , .AbsNum
     
+    'Botsareus 2/23/2013 Rest of tie data
+    Put #n, , .Multibot
+    For t = 0 To MAXTIES
+        Put #n, , .Ties(t).type
+        Put #n, , .Ties(t).b
+    Next
     
     'write any future data here
     

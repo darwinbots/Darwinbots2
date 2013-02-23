@@ -265,11 +265,20 @@ Public Sub Update_Ties(t As Integer)
       .mem(stifftie) = 0
       k = 1
       
+      If .age > 1000 Then
+      If .Multibot Then
       For k = 1 To 4
-        If .Ties(k).pnt > 0 Then
-        .mem(480) = k
+        If .Ties(k).pnt > 0 And .Ties(k).type = 3 Then
+            length = k * 100 + .radius + rob(.Ties(k).pnt).radius ' include the radius of the tied bots in the length
+            If length > 32000 Then length = 32000 ' Can happen for very big bots with very long ties.
+            .Ties(k).NaturalLength = CInt(length) 'for first robot
+            rob(.Ties(k).pnt).Ties(srctie((.Ties(k).pnt), t)).NaturalLength = CInt(length) 'for second robot. What a messed up formula
+            .Ties(k).ang = (k * 314) / 200
+              .Ties(k).angreg = True 'EricL 4/24/2006
         End If
       Next
+      End If
+      End If
       
       k = 1
           
