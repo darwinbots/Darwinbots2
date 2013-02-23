@@ -2301,7 +2301,6 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":066E
@@ -3147,6 +3146,7 @@ End Sub
 
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer) 'Botsareus 1/5/2013 moved cancel code here
+  Form1.camfix = False 'Botsareus 2/23/2013 re-normalize screen
   Canc = True
 End Sub
 
@@ -3319,6 +3319,7 @@ Private Sub SpecList_Click()
   w = IPB.Width
   h = IPB.Height
   
+  
   enprop
   DragEnd
   k = SpecList.ListIndex
@@ -3406,6 +3407,7 @@ Private Sub SpecList_Click()
   Initial_Position.Visible = True
   
   Frame1.Refresh
+  
 End Sub
 
 Private Sub AddSpec_Click()
@@ -3665,6 +3667,20 @@ Dim j As Integer
     Next j
   Next i
 
+'Botsareus 2/23/2013 Remove nonnative species
+For i = 0 To TmpOpts.SpeciesNum - 1
+    If TmpOpts.Specie(i).Native = False Then
+        For j = i To TmpOpts.SpeciesNum - 1 'Listcount now has one fewer than it did before!!!
+         TmpOpts.Specie(j) = TmpOpts.Specie(j + 1)
+        Next j
+    End If
+Next
+
+j = TmpOpts.SpeciesNum - 1
+For i = 0 To j
+If TmpOpts.Specie(i).Native = False Then TmpOpts.SpeciesNum = TmpOpts.SpeciesNum - 1
+Next
+
 End Sub
 
 
@@ -3675,9 +3691,10 @@ Public Sub datatolist() 'datatolist
   SortSpecies
   
   For i = 0 To TmpOpts.SpeciesNum - 1
-    If TmpOpts.Specie(i).Native Then SpecList.additem (TmpOpts.Specie(i).Name)
-    ExtractComment TmpOpts.Specie(i).path + "\" + TmpOpts.Specie(i).Name, i
+      SpecList.additem (TmpOpts.Specie(i).Name)
+      ExtractComment TmpOpts.Specie(i).path + "\" + TmpOpts.Specie(i).Name, i
   Next i
+   
    
 End Sub
 
