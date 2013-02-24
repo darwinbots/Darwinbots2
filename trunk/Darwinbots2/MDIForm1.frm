@@ -1433,6 +1433,7 @@ Toolbar1.Refresh 'Botsareus 1/11/2013 Force toolbar to refresh
 End Sub
 
 Sub fixcam() 'Botsareus 2/23/2013 When simulation starts the screen is normailized
+If MDIForm1.WindowState <> 2 Then Exit Sub
 Form1.visiblew = Screen.Width / Screen.Height * 4 / 3 * Form1.visibleh
 ZoomLock.value = 1
 ZoomOut

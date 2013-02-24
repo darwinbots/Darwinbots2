@@ -3667,13 +3667,14 @@ Dim j As Integer
       End If
     Next j
   Next i
-
+  
 'Botsareus 2/23/2013 Remove nonnative species
 For i = 0 To TmpOpts.SpeciesNum - 1
-    If TmpOpts.Specie(i).Native = False Then
-        For j = i To TmpOpts.SpeciesNum - 1 'Listcount now has one fewer than it did before!!!
+    If TmpOpts.Specie(i).Native = False And TmpOpts.Specie(i).Name <> "" Then
+        For j = i To TmpOpts.SpeciesNum - 1
          TmpOpts.Specie(j) = TmpOpts.Specie(j + 1)
         Next j
+        i = i - 1
     End If
 Next
 
@@ -3683,7 +3684,6 @@ If TmpOpts.Specie(i).Native = False Then TmpOpts.SpeciesNum = TmpOpts.SpeciesNum
 Next
 
 End Sub
-
 
 Public Sub datatolist() 'datatolist
   Dim i As Integer
