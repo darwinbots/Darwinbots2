@@ -39,8 +39,8 @@ End Function
 Public Sub InsertOrganism(path As String)
   Dim X As Single, Y As Single
   Dim n As Integer
-  X = Random(Form1.ScaleLeft, Form1.ScaleWidth)
-  Y = Random(Form1.ScaleTop, Form1.ScaleHeight)
+  X = Random(60, SimOpts.FieldWidth - 60) 'Botsareus 2/24/2013 bug fix: robots location within screen limits
+  Y = Random(60, SimOpts.FieldHeight - 60)
   n = LoadOrganism(path, X, Y)
   'rob(n).BucketPos.x = -2
   'rob(n).BucketPos.Y = -2
@@ -76,7 +76,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As file
+  Dim robotFile As File
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -278,7 +278,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As file
+  Dim fileToDelete As File
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
