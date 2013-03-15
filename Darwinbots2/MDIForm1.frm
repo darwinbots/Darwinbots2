@@ -592,9 +592,6 @@ Begin VB.MDIForm MDIForm1
       Begin VB.Menu removepiccy 
          Caption         =   "Remove Background Picture"
       End
-      Begin VB.Menu ScreenSaverMode 
-         Caption         =   "Screen Saver Mode"
-      End
       Begin VB.Menu backsep 
          Caption         =   "-"
          Index           =   1
@@ -891,7 +888,7 @@ Attribute VB_Exposed = False
 
 Option Explicit
 'Botsareus 5/19/2012 Update to the way the tool menu looks; removed unnecessary pictures from collection
-
+'Botsareus 3/15/2013 got rid of screen save code (was broken)
 
 Public zoomval As Integer
 Public startdir As String
@@ -922,47 +919,6 @@ Public HandlingMenuItem As Boolean ' global used to prevent recursion between in
 Dim pro As Object
 
 Public exitDB As Boolean
-Private Declare Sub keybd_event Lib "user32" (ByVal bVk As Byte, _
-    ByVal bScan As Byte, ByVal dwFlags As Long, ByVal dwExtraInfo As Long)
-Private Const KEYEVENTF_KEYUP = &H2
-
-' Return the current contents of the screen or the active window
-'
-' It works by simulating the typing of the Print-Screen key
-' (and Alt key if ActiveWindow is True), which dumps the screen
-' to the clipboard. The original contents of the clipboard is then
-' restored, but this action might affect the behavior of other
-' applications that are monitoring the clipboard.
-
-Function GetScreenBitmap(Optional ActiveWindow As Boolean) As Picture
-    ' save the current picture in the clipboard, if any
-    Dim pic As StdPicture
-    Set pic = Clipboard.GetData(vbCFBitmap)
-    
-    ' Alt-Print Screen captures the active window only
-    If ActiveWindow Then
-        ' Press the Alt key
-        keybd_event vbKeyMenu, 0, 0, 0
-    End If
-    ' Press the Print Screen key
-    keybd_event vbKeySnapshot, 0, 0, 0
-    DoEvents
-
-    ' Release the Print Screen key
-    keybd_event vbKeySnapshot, 0, KEYEVENTF_KEYUP, 0
-    If ActiveWindow Then
-        ' Release the Alt key
-        keybd_event vbKeyMenu, 0, KEYEVENTF_KEYUP, 0
-    End If
-    DoEvents
-    
-    ' return the bitmap now in the clipboard
-    Set GetScreenBitmap = Clipboard.GetData(vbCFBitmap)
-    ' restore the original contents of the clipboard
-    Clipboard.SetData pic, vbCFBitmap
-    
-End Function
-
 
 Private Sub AddTenObstacles_Click()
   AddRandomObstacles (10)
@@ -1328,7 +1284,7 @@ End Sub
 
 Private Sub removepiccy_Click() 'Botsareus 3/24/2012 Added code that deletes the background picture
 Form1.PiccyMode = False
-Form1.Picture = optionsform.Picture
+Form1.Picture = Nothing
 End Sub
 
 Private Sub Report_Click()
@@ -1353,41 +1309,6 @@ Private Sub SaveSimWithoutMutations_Click()
   simsave
 End Sub
 
-Private Sub ScreenSaverMode_Click()
-Dim i As Integer
-Dim pauseInterval As Single
-  
-  MDIForm1.Visible = False
-  pauseInterval = Timer
-  
-  While pauseInterval <= Timer And Timer < pauseInterval + 1#
-  Wend
-    
-  Form1.Picture = GetScreenBitmap()
-  Form1.BackPic = "ScreenSaver"
-  Form1.PiccyMode = True
-  MDIForm1.Visible = True
-  
-  MDIForm1.WindowState = 0
-  
-  Const SWP_NOMOVE = 2
-  Const SWP_NOSIZE = 1
-  Const HWND_TOPMOST = -1
-  Const HWND_NOTOPMOST = -2
-  
-  SimOpts.FieldHeight = Screen.Height
-  SimOpts.FieldWidth = Screen.Width
-  
-  Form1.ScaleWidth = SimOpts.FieldWidth
-  Form1.ScaleHeight = SimOpts.FieldHeight
-  Form1.Height = Screen.Height
-  Form1.Width = Screen.Width
-  MDIForm1.Height = Screen.Height + 500
-  MDIForm1.Width = Screen.Width + 100
-
-  SetWindowPos MDIForm1.hwnd, HWND_TOPMOST, -5, -85, Screen.Width + 10, Screen.Height + 100, SWP_NOSIZE Or SWP_NOMOVE
-  Me.Show
-End Sub
 
 Private Sub shapes_Click()
   ObstacleForm.InitShapesDialog
@@ -1434,6 +1355,7 @@ End Sub
 
 Sub fixcam() 'Botsareus 2/23/2013 When simulation starts the screen is normailized
 If MDIForm1.WindowState <> 2 Then Exit Sub
+If screenratiofix = False Then Exit Sub
 Form1.visiblew = Screen.Width / Screen.Height * 4 / 3 * Form1.visibleh
 ZoomLock.value = 1
 ZoomOut
@@ -1460,10 +1382,12 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
       Form1.Active = True
       Form1.SecTimer.Enabled = True
       Form1.unfocus
+      Form1.pausefix = False  'Botsareus 3/15/2013 Figure out if simulation must start paused
     Case "stop"
       DisplayActivations = False
       Form1.Active = False
       Form1.SecTimer.Enabled = False
+      Form1.pausefix = True 'Botsareus 3/15/2013 Figure out if simulation must start paused
     Case "cycle"
       DisplayActivations = False
       Consoleform.cycle 1
@@ -1597,20 +1521,20 @@ Private Sub costi_Click()
   optionsform.Show vbModal
 End Sub
 
-Private Sub czin_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czin_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   AspettaFlag = True
   ZoomInPremuto
 End Sub
 
-Private Sub czin_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czin_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   AspettaFlag = False
 End Sub
 
 Public Sub ZoomIn()
   If Form1.visiblew > RobSize * 4 Then
     If robfocus > 0 Then
-      xc = rob(robfocus).pos.X
-      yc = rob(robfocus).pos.Y
+      xc = rob(robfocus).pos.x
+      yc = rob(robfocus).pos.y
     Else
       xc = Form1.visiblew / 2 + Form1.ScaleLeft
       yc = Form1.visibleh / 2 + Form1.ScaleTop
@@ -1639,7 +1563,7 @@ Private Sub ZoomOutPremuto()
   Wend
 End Sub
 
-Private Sub czo_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czo_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   AspettaFlag = True
   ZoomOutPremuto
 End Sub
@@ -1689,7 +1613,7 @@ Public Sub ZoomOut()
   Form1.Redraw
 End Sub
 
-Private Sub czo_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czo_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
  AspettaFlag = False
 End Sub
 
@@ -1858,6 +1782,8 @@ MsgBox "Saving sim failed.  " + Err.Description, vbOKOnly
 End Sub
 
 Private Sub MDIForm_Load()
+LoadGlobalSettings 'Botsareus 3/15/2013 lets try to load global settings first
+
 Dim path As String
 Dim fso As New FileSystemObject
 Dim lastSim As File
