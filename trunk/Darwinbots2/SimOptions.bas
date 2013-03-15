@@ -54,7 +54,7 @@ Public Type SimOptions
   TotRunTime As Long
   TotBorn As Long
   SpeciesNum As Integer
-  Specie(MAXNATIVESPECIES) As datispecie
+  Specie(MAXNATIVESPECIES + 1) As datispecie 'Botsareus 3/15/2013 Had to resize this so it works better with nonnative species elimination
   FieldSize As Integer
   FieldWidth As Long
   FieldHeight As Long

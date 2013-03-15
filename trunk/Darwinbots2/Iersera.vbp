@@ -63,6 +63,7 @@ Form=TeleportForm.frm
 Module=Teleport; Teleport.bas
 Form=MagLens.frm
 Module=IntOpts; provvisorio.bas
+Form=frmGset.frm
 ResFile32="DARWINE.RES"
 IconForm="MDIForm1"
 Startup="MDIForm1"

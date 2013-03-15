@@ -106,8 +106,8 @@ Public Sub UpdateTieAngles(t As Integer)
   While k > 0
     If rob(t).Ties(k).Port = whichTie Then
        n = rob(t).Ties(k).pnt  ' The bot number of the robot on the other end of the tie
-       tieAngle = angle(rob(t).pos.X, rob(t).pos.Y, rob(n).pos.X, rob(n).pos.Y)
-       dist = Sqr((rob(t).pos.X - rob(n).pos.X) ^ 2 + (rob(t).pos.Y - rob(n).pos.Y) ^ 2)
+       tieAngle = angle(rob(t).pos.x, rob(t).pos.y, rob(n).pos.x, rob(n).pos.y)
+       dist = Sqr((rob(t).pos.x - rob(n).pos.x) ^ 2 + (rob(t).pos.y - rob(n).pos.y) ^ 2)
        'Overflow prevention.  Very long ties can happen for one cycle when bots wrap in torridal fields
        If dist > 32000 Then dist = 32000
        rob(t).mem(TIEANG) = -CInt(AngDiff(angnorm(tieAngle), angnorm(rob(t).aim)) * 200)
@@ -236,7 +236,7 @@ Public Sub Update_Ties(t As Integer)
               .Ties(k).angreg = False 'EricL 4/24/2006
             End If
           End If
-          
+                    
           'TieLen Section
           If .mem(FIXLEN) <> 0 And .Ties(k).Port = tn Then 'fixes tie length
            'length = Abs(.mem(FIXLEN))
@@ -265,20 +265,22 @@ Public Sub Update_Ties(t As Integer)
       .mem(stifftie) = 0
       k = 1
       
-      If .age > 1000 Then
-      If .Multibot Then
-      For k = 1 To 4
-        If .Ties(k).pnt > 0 And .Ties(k).type = 3 Then
-            length = k * 100 + .radius + rob(.Ties(k).pnt).radius ' include the radius of the tied bots in the length
-            If length > 32000 Then length = 32000 ' Can happen for very big bots with very long ties.
-            .Ties(k).NaturalLength = CInt(length) 'for first robot
-            rob(.Ties(k).pnt).Ties(srctie((.Ties(k).pnt), t)).NaturalLength = CInt(length) 'for second robot. What a messed up formula
-            .Ties(k).ang = (k * 314) / 200
-              .Ties(k).angreg = True 'EricL 4/24/2006
-        End If
-      Next
-      End If
-      End If
+      
+'Botsareusnotdone work in progress...
+'      If .age > 1000 Then
+'      If .Multibot Then
+'      For k = 1 To 4
+'        If .Ties(k).pnt > 0 And .Ties(k).type = 3 Then
+'            length = 100 * k + .radius + rob(.Ties(k).pnt).radius ' include the radius of the tied bots in the length
+'            If length > 32000 Then length = 32000 ' Can happen for very big bots with very long ties.
+'            .Ties(k).NaturalLength = CInt(length) 'for first robot
+'            rob(.Ties(k).pnt).Ties(srctie((.Ties(k).pnt), t)).NaturalLength = CInt(length) 'for second robot. What a messed up formula
+'            .Ties(k).ang = (k * 314) / 200
+'              .Ties(k).angreg = True 'EricL 4/24/2006
+'        End If
+'      Next
+'      End If
+'      End If
       
       k = 1
           
@@ -574,12 +576,15 @@ End Sub
 
 
 Public Sub readtie(t As Integer)
+
 'reads all of the tref variables from a given tie number
   Dim k As Integer
   Dim tn As Integer
   Dim counter
  
   With rob(t)
+    If rob(t).newage < 2 Then Exit Sub 'Botsareus 3/6/2013 Bug fix: Robot must be fully loaded before checking ties
+  
     If .numties = 0 Then
       EraseTRefVars (t)
       GoTo getout
@@ -655,9 +660,9 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
     .mem(trefvelyoursx) = rob(.Ties(k).pnt).mem(velsx)
     .mem(trefvelyourdx) = rob(.Ties(k).pnt).mem(veldx)
                 
-    .mem(trefvelmyup) = rob(.Ties(k).pnt).vel.X * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.Y * -1 - .mem(velup) 'gives velocity from mybots frame of reference
+    .mem(trefvelmyup) = rob(.Ties(k).pnt).vel.x * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.y * -1 - .mem(velup) 'gives velocity from mybots frame of reference
     .mem(trefvelmydn) = .mem(trefvelmyup) * -1
-    .mem(trefvelmydx) = rob(.Ties(k).pnt).vel.Y * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.X - .mem(veldx)
+    .mem(trefvelmydx) = rob(.Ties(k).pnt).vel.y * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.x - .mem(veldx)
     .mem(trefvelmysx) = .mem(trefvelmydx) * -1
     .mem(trefvelscalar) = rob(.Ties(k).pnt).mem(velscalar)
    ' .mem(trefbody) = rob(.Ties(k).pnt).body
@@ -854,9 +859,9 @@ Public Sub regang(t As Integer, j As Integer)
       .Ties(j).k = 0.05 ' was 0.05
       .Ties(j).type = 3
       n = .Ties(j).pnt
-      angl = angle(.pos.X, .pos.Y, rob(n).pos.X, rob(n).pos.Y)
+      angl = angle(.pos.x, .pos.y, rob(n).pos.x, rob(n).pos.y)
     '  angl = angnorm(angl)
-      dist = Sqr((.pos.X - rob(n).pos.X) ^ 2 + (.pos.Y - rob(n).pos.Y) ^ 2)
+      dist = Sqr((.pos.x - rob(n).pos.x) ^ 2 + (.pos.y - rob(n).pos.y) ^ 2)
       If .Ties(j).back = False Then
         .Ties(j).ang = AngDiff(angnorm(angl), angnorm(rob(t).aim)) ' only fix the angle of the bot that created the tie
         .Ties(j).angreg = True

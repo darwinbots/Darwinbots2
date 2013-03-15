@@ -30,10 +30,18 @@ Begin VB.Form datirob
       TabIndex        =   24
       Top             =   0
       Width           =   6795
+      Begin VB.CommandButton btnMark 
+         Caption         =   "Mark a location"
+         Height          =   240
+         Left            =   2160
+         TabIndex        =   59
+         Top             =   7150
+         Width           =   1770
+      End
       Begin VB.CheckBox MemoryStateCheck 
          Caption         =   "Display memory post DNA execution but before cycle executes"
          Height          =   375
-         Left            =   2280
+         Left            =   2160
          TabIndex        =   58
          Top             =   7080
          Width           =   5775
@@ -47,7 +55,6 @@ Begin VB.Form datirob
          _ExtentX        =   11562
          _ExtentY        =   12250
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"robdata.frx":0E42
@@ -574,6 +581,16 @@ Public Sub ShowDna()
   dnashow_Click 'Botsareus 1/25/2013 Show dna using the button
 End Sub
 
+Private Sub btnMark_Click() 'Botsareus 2/25/2013 Makes the program easy to debug
+Visible = False
+Dim poz As Double
+    poz = val(InputBox("""[<POSITION MARKER]"" will be displayed next to dna location. Specify position:"))
+    poz = Abs(poz)
+    If poz > 32000 Then poz = 32000
+Visible = True
+dnatext.text = DetokenizeDNA(robfocus, False, CInt(poz))
+End Sub
+
 Private Sub Command3_Click()
   Consoleform.openconsole
 End Sub
@@ -602,10 +619,11 @@ Private Sub dnashow_Click()
   Frame2.Width = 4695 + 8055
   enlarged = True
   If rob(robfocus).exist Then
-    dnatext.text = DetokenizeDNA(robfocus, False)
+    dnatext.text = DetokenizeDNA(robfocus, False) ', CInt(poz))
   Else
     dnatext.text = "This Robot is dead.  No DNA available."
   End If
+  btnMark.Visible = True 'Botsareus 3/15/2013 Makes dna easyer to debug
 End Sub
 
 Private Sub Form_Activate()
@@ -624,6 +642,7 @@ Private Sub MemoryCommand_Click()
   Else
     dnatext.text = "This Robot is dead.  No DNA available."
   End If
+  btnMark.Visible = False 'Botsareus 3/15/2013 Makes dna easyer to debug
 End Sub
 Public Function GetRobMemoryString(n As Integer) As String
 Dim i As Integer
@@ -656,6 +675,7 @@ Private Sub MutDetails_Click()
   Frame2.Width = 4695 + 8055
   enlarged = True
   dnatext.text = GiveMutationDetails(robfocus)
+  btnMark.Visible = False 'Botsareus 3/15/2013 Makes dna easyer to debug
 End Sub
 
 Private Function GiveMutationDetails(robfocus) As String

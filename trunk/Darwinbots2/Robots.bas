@@ -269,6 +269,7 @@ Private Type robot
   LastMut As Integer        ' last mutations
   parent As Long            ' parent absolute number
   age As Long               ' age in cycles
+  newage As Long            ' age this simulation
   BirthCycle As Long        ' birth cycle
   genenum As Integer        ' genes number
   generation As Integer     ' generation
@@ -498,9 +499,9 @@ Public Sub UpdatePosition(ByVal n As Integer)
   .mem(dirsx) = 0
   
   .mem(velscalar) = iceil(Sqr(vt))
-  .mem(vel) = iceil(Cos(.aim) * .vel.X + Sin(.aim) * .vel.Y * -1)
+  .mem(vel) = iceil(Cos(.aim) * .vel.x + Sin(.aim) * .vel.y * -1)
   .mem(veldn) = .mem(vel) * -1
-  .mem(veldx) = iceil(Sin(.aim) * .vel.X + Cos(.aim) * .vel.Y)
+  .mem(veldx) = iceil(Sin(.aim) * .vel.x + Cos(.aim) * .vel.y)
   .mem(velsx) = .mem(veldx) * -1
   
   .mem(masssys) = .mass
@@ -508,9 +509,9 @@ Public Sub UpdatePosition(ByVal n As Integer)
   End With
 End Sub
 
-Private Function iceil(X As Single) As Integer
-    If (Abs(X) > 32000) Then X = Sgn(X) * 32000
-    iceil = X
+Private Function iceil(x As Single) As Integer
+    If (Abs(x) > 32000) Then x = Sgn(x) * 32000
+    iceil = x
 End Function
 
 Private Sub makeshell(n)
@@ -594,7 +595,8 @@ Dim slimeNrgConvRate As Single
     .Waste = .Waste + Cost                 ' waste is created proportional to the transaction cost
     
     .mem(820) = 0                          ' reset the .mkslime sysvar
-    .mem(821) = CInt(.Slime)               ' update the .slime sysvar
+    .mem(821) = CInt(.Slime)                ' update the .slime sysvar
+    
 getout:
   End With
 End Sub
@@ -648,7 +650,7 @@ Private Sub Upkeep(n As Integer)
     
     'degrade poison
     .poison = .poison * 0.98
-    If .poison < 0.5 Then .Slime = 0
+    If .poison < 0.5 Then .poison = 0 'Botsareus 3/15/2013 bug fix for poison so it does not change slime
     .mem(827) = CInt(.poison)
     
   End With
@@ -805,6 +807,7 @@ Private Sub Ageing(n As Integer)
 
     'aging
     rob(n).age = rob(n).age + 1
+    rob(n).newage = rob(n).newage + 1 'Age this simulation to be used by tie code
     tempAge = rob(n).age
     If tempAge > 32000 Then tempAge = 32000
     rob(n).mem(robage) = CInt(tempAge)        'line added to copy robots age into a memory location
@@ -981,11 +984,11 @@ Private Sub FireTies(n As Integer)
 End Sub
 
 Private Sub DeleteSpecies(i As Integer)
-  Dim X As Integer
+  Dim x As Integer
   
-  For X = i To SimOpts.SpeciesNum - 1
-    SimOpts.Specie(X) = SimOpts.Specie(X + 1)
-  Next X
+  For x = i To SimOpts.SpeciesNum - 1
+    SimOpts.Specie(x) = SimOpts.Specie(x + 1)
+  Next x
   SimOpts.Specie(SimOpts.SpeciesNum - 1).Native = False ' Do this just in case
   SimOpts.SpeciesNum = SimOpts.SpeciesNum - 1
    
@@ -1015,7 +1018,7 @@ Public Sub UpdateBots()
   Dim z As Integer
   Dim q As Integer
   Dim ti As Single
-  Dim X As Integer
+  Dim x As Integer
   Dim staticV As vector
     
   rp = 1
@@ -1613,8 +1616,8 @@ Public Sub Reproduce(n As Integer, per As Integer)
   
   tempnrg = rob(n).nrg
   If tempnrg > 0 Then
-    nx = rob(n).pos.X + absx(rob(n).aim, sondist, 0, 0, 0)
-    ny = rob(n).pos.Y + absy(rob(n).aim, sondist, 0, 0, 0)
+    nx = rob(n).pos.x + absx(rob(n).aim, sondist, 0, 0, 0)
+    ny = rob(n).pos.y + absy(rob(n).aim, sondist, 0, 0, 0)
     tests = tests Or simplecoll(nx, ny, n)
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
     If Not tests Then
@@ -1646,11 +1649,11 @@ Public Sub Reproduce(n As Integer, per As Integer)
       Erase rob(nuovo).mem
       Erase rob(nuovo).Ties
       
-      rob(nuovo).pos.X = rob(n).pos.X + absx(rob(n).aim, sondist, 0, 0, 0)
-      rob(nuovo).pos.Y = rob(n).pos.Y + absy(rob(n).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.x = rob(n).pos.x + absx(rob(n).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.y = rob(n).pos.y + absy(rob(n).aim, sondist, 0, 0, 0)
       rob(nuovo).exist = True
-      rob(nuovo).BucketPos.X = -2
-      rob(nuovo).BucketPos.Y = -2
+      rob(nuovo).BucketPos.x = -2
+      rob(nuovo).BucketPos.y = -2
       UpdateBotBucket nuovo
       rob(nuovo).vel = rob(n).vel
       rob(nuovo).color = rob(n).color
@@ -1814,8 +1817,8 @@ Public Function SexReproduce(female As Integer)
   
   tempnrg = rob(female).nrg
   If tempnrg > 0 Then
-    nx = rob(female).pos.X + absx(rob(female).aim, sondist, 0, 0, 0)
-    ny = rob(female).pos.Y + absy(rob(female).aim, sondist, 0, 0, 0)
+    nx = rob(female).pos.x + absx(rob(female).aim, sondist, 0, 0, 0)
+    ny = rob(female).pos.y + absy(rob(female).aim, sondist, 0, 0, 0)
     tests = tests Or simplecoll(nx, ny, female)
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
     If Not tests Then
@@ -1845,11 +1848,11 @@ Public Function SexReproduce(female As Integer)
       Erase rob(nuovo).mem
       Erase rob(nuovo).Ties
       
-      rob(nuovo).pos.X = rob(female).pos.X + absx(rob(female).aim, sondist, 0, 0, 0)
-      rob(nuovo).pos.Y = rob(female).pos.Y + absy(rob(female).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.x = rob(female).pos.x + absx(rob(female).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.y = rob(female).pos.y + absy(rob(female).aim, sondist, 0, 0, 0)
       rob(nuovo).exist = True
-      rob(nuovo).BucketPos.X = -2
-      rob(nuovo).BucketPos.Y = -2
+      rob(nuovo).BucketPos.x = -2
+      rob(nuovo).BucketPos.y = -2
       UpdateBotBucket nuovo
       
       rob(nuovo).vel = rob(female).vel
@@ -1962,8 +1965,8 @@ End Function
 ' Returns the length the longest shared DNA sequence between a and b
 ' Changes c to contain the sequence
 Private Function FindLongestMatch(a As blockarray, b As blockarray, ByRef c() As block) As Integer
-Dim X As Integer
-Dim Y As Integer
+Dim x As Integer
+Dim y As Integer
 Dim Index As Integer
 Dim maxLength
 Dim length As Integer
@@ -1971,39 +1974,39 @@ Dim length As Integer
 
   maxLength = 0
   length = 0
-  X = 1
-  Y = 1
+  x = 1
+  y = 1
 
-  While X <= UBound(a.DNA)
-    While Y <= UBound(b.DNA)
-      If (X + length <= UBound(a.DNA)) Then
-        If a.DNA(X + length).tipo = b.DNA(Y).tipo And _
-           a.DNA(X + length).value = b.DNA(Y).value Then
+  While x <= UBound(a.DNA)
+    While y <= UBound(b.DNA)
+      If (x + length <= UBound(a.DNA)) Then
+        If a.DNA(x + length).tipo = b.DNA(y).tipo And _
+           a.DNA(x + length).value = b.DNA(y).value Then
           length = length + 1
         Else
           length = 0
         End If
         If length > maxLength Then
-          Index = X
+          Index = x
           maxLength = length
         End If
       Else
         'we ran off the end of sequence a.  Must have found the longest sequence already.
         GoTo done
       End If
-      Y = Y + 1
+      y = y + 1
     Wend
-    X = X + 1
+    x = x + 1
   Wend
   
 done:
   ' Index should now point to the starting location in a of the longest matching sequence of length maxLength
   ' Note that the end base pair is not matched and not returned in the matching sequence
   ReDim c(maxLength)
-  For Y = 0 To maxLength - 1
-    c(Y + 1).tipo = a.DNA(Index + Y).tipo
-    c(Y + 1).value = a.DNA(Index + Y).value
-  Next Y
+  For y = 0 To maxLength - 1
+    c(y + 1).tipo = a.DNA(Index + y).tipo
+    c(y + 1).value = a.DNA(Index + y).value
+  Next y
   
   FindLongestMatch = maxLength
     
@@ -2012,8 +2015,8 @@ End Function
 ' Finds the all the places in sequence 'a' which match sequence 'match' and sets the locations in 'matchindex'
 ' Returns the number of matches
 Private Function FindMatches(a As blockarray, match As blockarray, ByRef matchindex() As Integer) As Integer
-Dim X As Integer
-Dim Y As Integer
+Dim x As Integer
+Dim y As Integer
 Dim z As Integer
 Dim foundmatch As Boolean
 Dim matchlen As Integer
@@ -2023,26 +2026,26 @@ Dim matchlen As Integer
   
   ReDim matchindex(UBound(a.DNA)) ' dimension the size of the match array large
 
-  X = 1
-  While X <= UBound(a.DNA)
+  x = 1
+  While x <= UBound(a.DNA)
     foundmatch = True
-    Y = 0
-    While foundmatch And Y < matchlen
-      If X + Y <= UBound(a.DNA) Then
-        If (a.DNA(X + Y).tipo <> match.DNA(Y + 1).tipo) Or (a.DNA(X + Y).value <> match.DNA(Y + 1).value) Then
+    y = 0
+    While foundmatch And y < matchlen
+      If x + y <= UBound(a.DNA) Then
+        If (a.DNA(x + y).tipo <> match.DNA(y + 1).tipo) Or (a.DNA(x + y).value <> match.DNA(y + 1).value) Then
           foundmatch = False
         End If
       Else
         foundmatch = False
         GoTo done
       End If
-      Y = Y + 1
+      y = y + 1
     Wend
     If foundmatch Then
       z = z + 1
-      matchindex(z) = X
+      matchindex(z) = x
     End If
-  X = X + 1
+  x = x + 1
   Wend
 done:
   ReDim Preserve matchindex(UBound(matchindex)) ' dimension the size of the match array so it contains only the match indecies
@@ -2053,8 +2056,8 @@ End Function
 
 
 Public Function MatchLongestSequence(StartOffsetA As Integer, LengthInA As Integer, StartOffsetB As Integer, LengthInB As Integer)
-Dim X As Integer
-Dim Y As Integer
+Dim x As Integer
+Dim y As Integer
 Dim z As Integer
 Dim a As Integer
 Dim b As Integer
@@ -2102,26 +2105,26 @@ Dim Bsegment As blockarray
   AStart = -1
   BStart = -1
   
-  For Y = 1 To a
+  For y = 1 To a
     For z = 1 To b
-      DistanceUp = Abs(aList(Y) - bList(z))
-      ARemaining = UBound(Asegment.DNA) - aList(Y) - Longest + 1
+      DistanceUp = Abs(aList(y) - bList(z))
+      ARemaining = UBound(Asegment.DNA) - aList(y) - Longest + 1
       BRemaining = UBound(Bsegment.DNA) - bList(z) - Longest + 1
       DistanceDown = Abs(ARemaining - BRemaining)
       
       TotalDistance = DistanceUp + DistanceDown
       If TotalDistance < BestDistance Then
-        AStart = aList(Y)
+        AStart = aList(y)
         BStart = bList(z)
         BestDistance = TotalDistance
       End If
     Next z
-  Next Y
+  Next y
   
-  For X = 1 To Longest
-    If (AStart + StartOffsetA + X - 1) > UBound(Matching) Then Exit For 'Botsareus 5/20/2012 fixed a bug where system searching beyond upper bounds
-    Matching(AStart + StartOffsetA + X - 1) = BStart + StartOffsetB + X - 1
-  Next X
+  For x = 1 To Longest
+    If (AStart + StartOffsetA + x - 1) > UBound(Matching) Then Exit For 'Botsareus 5/20/2012 fixed a bug where system searching beyond upper bounds
+    Matching(AStart + StartOffsetA + x - 1) = BStart + StartOffsetB + x - 1
+  Next x
   
   MatchLongestSequence StartOffsetA, AStart, StartOffsetB, BStart
   MatchLongestSequence StartOffsetA + AStart + Longest, LengthInA - AStart - Longest, _
@@ -2132,7 +2135,7 @@ End Function
 
 Public Function DoOneCrossOver()
 Dim AtLeastOnePlace As Boolean
-Dim X As Integer
+Dim x As Integer
 Dim numOfMatches As Integer
 Dim RandPlace As Integer
 Dim ADown As blockarray
@@ -2142,12 +2145,12 @@ Dim temp As block
   AtLeastOnePlace = False
   numOfMatches = strandlen(2)
   
-  For X = 1 To numOfMatches
-    If Matching(X) > 0 Then
+  For x = 1 To numOfMatches
+    If Matching(x) > 0 Then
       AtLeastOnePlace = True
       GoTo Out
     End If
-  Next X
+  Next x
 Out:
   If Not AtLeastOnePlace Then Exit Function
   
@@ -2159,11 +2162,11 @@ Out:
   
   'Swap the downstream sections of the strands
   'down to end of the shorter strand
-  For X = Matching(RandPlace) To strandlen(2)
-    temp = strand(1).DNA(X)
-    strand(1).DNA(X) = strand(2).DNA(Matching(X))
-    strand(2).DNA(Matching(X)) = temp
-  Next X
+  For x = Matching(RandPlace) To strandlen(2)
+    temp = strand(1).DNA(x)
+    strand(1).DNA(x) = strand(2).DNA(Matching(x))
+    strand(2).DNA(Matching(x)) = temp
+  Next x
     
   'Swap downstreams of strands
  ' ReDim ADown.DNA(UBound(strand(1).DNA) - Matching(RandPlace))
@@ -2193,7 +2196,7 @@ Public Function Crossover(female As Integer, offspring As Integer)
 Dim parent As Integer
 Dim i As Integer
 Dim t As Integer
-Dim X As Integer
+Dim x As Integer
 Dim NumCrossOverEvents As Integer
 Dim z As Integer
 
@@ -2225,12 +2228,12 @@ Dim z As Integer
   MatchLongestSequence 0, strandlen(1), 0, strandlen(2)
   
   'ReDim rob(offspring).DNA(UBound(strand(1).DNA))
-  X = FindLongestMatch(strand(1), strand(2), rob(offspring).DNA())
+  x = FindLongestMatch(strand(1), strand(2), rob(offspring).DNA())
     
   'Do the crossover
-  For X = 1 To NumCrossOverEvents
+  For x = 1 To NumCrossOverEvents
     DoOneCrossOver
-  Next X
+  Next x
   
   'Choose one of the two strands at random
   z = Random(1, 2)
@@ -2436,7 +2439,7 @@ Public Function DoGeneticMemory(t As Integer)
 End Function
 
 ' verifies rapidly if a field position is already occupied
-Public Function simplecoll(X As Long, Y As Long, k As Integer) As Boolean
+Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
   Dim t As Integer
   Dim radius As Long
   
@@ -2444,8 +2447,8 @@ Public Function simplecoll(X As Long, Y As Long, k As Integer) As Boolean
   
   For t = 1 To MaxRobs
     If rob(t).exist Then
-      If Abs(rob(t).pos.X - X) < rob(t).radius + rob(k).radius And _
-        Abs(rob(t).pos.Y - Y) < rob(t).radius + rob(k).radius Then
+      If Abs(rob(t).pos.x - x) < rob(t).radius + rob(k).radius And _
+        Abs(rob(t).pos.y - y) < rob(t).radius + rob(k).radius Then
         If k <> t Then
           simplecoll = True
           GoTo getout
@@ -2456,21 +2459,21 @@ Public Function simplecoll(X As Long, Y As Long, k As Integer) As Boolean
   
   'EricL Can't reproduce into or across a shape
   For t = 1 To numObstacles
-    If Not ((Obstacles.Obstacles(t).pos.X > Max(rob(k).pos.X, X)) Or _
-           (Obstacles.Obstacles(t).pos.X + Obstacles.Obstacles(t).Width < Min(rob(k).pos.X, X)) Or _
-           (Obstacles.Obstacles(t).pos.Y > Max(rob(k).pos.Y, Y)) Or _
-           (Obstacles.Obstacles(t).pos.Y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.Y, Y))) Then
+    If Not ((Obstacles.Obstacles(t).pos.x > Max(rob(k).pos.x, x)) Or _
+           (Obstacles.Obstacles(t).pos.x + Obstacles.Obstacles(t).Width < Min(rob(k).pos.x, x)) Or _
+           (Obstacles.Obstacles(t).pos.y > Max(rob(k).pos.y, y)) Or _
+           (Obstacles.Obstacles(t).pos.y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.y, y))) Then
        simplecoll = True
        GoTo getout
     End If
   Next t
   
   If SimOpts.Dxsxconnected = False Then
-    If X < rob(k).radius + smudgefactor Or X + rob(k).radius + smudgefactor > SimOpts.FieldWidth Then simplecoll = True
+    If x < rob(k).radius + smudgefactor Or x + rob(k).radius + smudgefactor > SimOpts.FieldWidth Then simplecoll = True
   End If
   
   If SimOpts.Updnconnected = False Then
-    If Y < rob(k).radius + smudgefactor Or Y + rob(k).radius + smudgefactor > SimOpts.FieldHeight Then simplecoll = True
+    If y < rob(k).radius + smudgefactor Or y + rob(k).radius + smudgefactor > SimOpts.FieldHeight Then simplecoll = True
   End If
 getout:
 End Function
@@ -2480,7 +2483,7 @@ Public Function posto() As Integer
   Dim newsize As Long
   Dim t As Integer
   Dim foundone As Boolean
-  Dim X As Long
+  Dim x As Long
   
   t = 1
   foundone = False
@@ -2540,7 +2543,7 @@ End Function
 ' Kill Bill
 Public Sub KillRobot(n As Integer)
  Dim newsize As Long
- Dim X As Long
+ Dim x As Long
  
   If n = -1 Then n = robfocus
   
