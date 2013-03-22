@@ -23,6 +23,7 @@ Begin VB.Form Consoleform
       _ExtentX        =   8281
       _ExtentY        =   3572
       _Version        =   393217
+      Enabled         =   -1  'True
       ReadOnly        =   -1  'True
       ScrollBars      =   2
       TextRTF         =   $"console.frx":058A
@@ -401,7 +402,7 @@ Private Sub evnt_textentered(ind As Integer, text As String)
       rob(ind).console.textout "cycle n : executes n cycles"
       rob(ind).console.textout "execrob : executes all robots without doing a cycle"
       rob(ind).console.textout "showdna : brings up the robot details window showing the robot's dna"
-      rob(ind).console.textout "debug : fires one cycle we debugger enabled"
+      rob(ind).console.textout "debug : fires one cycle with debugger enabled"
   End Select
 End Sub
 
