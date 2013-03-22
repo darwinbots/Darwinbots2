@@ -14,9 +14,6 @@ Public CurrentEnergyCycle As Integer ' Index into he above array for calculating
 Public TotalSimEnergyDisplayed As Long
 Public PopulationLastCycle As Integer
 
-
-
-
 ' adds vegetables in random positions
 Public Sub VegsRepopulate()
   Dim n As node
@@ -27,10 +24,10 @@ Public Sub VegsRepopulate()
   cooldown = cooldown + 1
   If cooldown >= SimOpts.RepopCooldown Then
     For t = 1 To SimOpts.RepopAmount
-      If Form1.Active Then
+      'If Form1.Active Then 'Botsareus 3/20/2013 Bug fix to load vegs when cycle button pressed
         aggiungirob -1, Random(60, SimOpts.FieldWidth - 60), Random(60, SimOpts.FieldHeight - 60)
         totvegs = totvegs + 1
-      End If
+      'End If
     Next t
     cooldown = cooldown - SimOpts.RepopCooldown
   End If

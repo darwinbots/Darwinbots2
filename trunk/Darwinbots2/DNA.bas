@@ -770,6 +770,14 @@ Private Sub DNAstore()
        a = a Mod 32000
        If a = 0 Then a = -32000 ' special case -32000
      End If
+     
+     'Botsareus 3/22/2013 handle tieang...tielen 1...4 overwrites
+     Dim k As Byte
+     For k = 0 To 3
+      If b = 480 + k Then rob(currbot).TieAngOverwrite(k) = True
+      If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
+     Next
+     
      rob(currbot).mem(b) = a
      rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER))
    End If

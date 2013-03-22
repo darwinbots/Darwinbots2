@@ -196,6 +196,7 @@ Private Sub PointMutWhereAndWhen(randval As Single, robn As Integer, Optional of
   
     'result = offset + Fix(Log(randval) / Log(1 - 1 / (1000 * .Mutables.mutarray(PointUP))))
     result = Log(1 - randval) / Log(1 - 1 / (1000 * .Mutables.mutarray(PointUP)))
+    While result > 2000000000: result = result - 2000000000: Wend 'Botsareus 3/15/2013 overflow fix
     .PointMutBP = (result Mod (.DnaLen - 1)) + 1 'note that DNA(DNALen) = end.
     'We don't mutate end.  Also note that DNA does NOT start at 0th element
     .PointMutCycle = .age + result / (.DnaLen - 1)
