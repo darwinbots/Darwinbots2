@@ -1,6 +1,8 @@
 Attribute VB_Name = "Buckets_Module"
 Option Explicit
 
+Private Const EyeEffectiveness = 3 'Botsareus 3/26/2013 For eye strength formula
+
 
 'Using a bucket size of 4000.  3348 plus twice radius of the largest possible bot is the farthest possible a bot can see.  4000 is a
 'nice round number.
@@ -391,8 +393,8 @@ End Function
 
 Private Function eyestrength(n1 As Integer) As Single 'Botsareus 2/3/2013 eye strength mod
 
-If SimOpts.Pondmode And Not rob(n1).pos.Y = 0 Then
-  eyestrength = (SimOpts.LightIntensity / (rob(n1).pos.Y / 2000) ^ SimOpts.Gradient) / 50
+If SimOpts.Pondmode And Not rob(n1).pos.Y <= 0 Then 'Botsareus 3/26/2013 Bug fix if robot Y pos is less then zero
+  eyestrength = (EyeEffectiveness / (rob(n1).pos.Y / 2000) ^ SimOpts.Gradient) 'Botsareus 3/26/2013 Robots only effected by density, not light intensity
 Else
   eyestrength = 1
 End If
