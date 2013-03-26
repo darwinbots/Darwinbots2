@@ -134,7 +134,7 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
       If SimOpts.Pondmode Then
         depth = (rob(t).pos.Y / 2000) + 1
         If depth < 1 Then depth = 1
-        tok = (SimOpts.LightIntensity / depth ^ SimOpts.Gradient) * daymod + 1
+        tok = (SimOpts.LightIntensity / depth ^ SimOpts.Gradient) * daymod 'Botsareus 3/26/2013 No longer add one, robots get fed more accuratly
       Else
         tok = totnrg
       End If
