@@ -3790,12 +3790,12 @@ End Sub
 
 
 Public Function SwapSeries(i As Integer, t As Integer)
-Dim X As Integer
-  For X = 0 To MaxData
-     data(X, MaxItems) = data(X, i)
-     data(X, i) = data(X, t)
-     data(X, t) = data(X, MaxItems)
-  Next X
+Dim x As Integer
+  For x = 0 To MaxData
+     data(x, MaxItems) = data(x, i)
+     data(x, i) = data(x, t)
+     data(x, t) = data(x, MaxItems)
+  Next x
   Label1(MaxItems).Caption = Label1(i).Caption
   Shape3(MaxItems).FillColor = Shape3(i).FillColor
   popnum(MaxItems).Caption = popnum(i).Caption
@@ -3962,9 +3962,10 @@ Public Sub NewPoints()
 End Sub
 
 Public Sub RedrawGraph()
+BackColor = chartcolor 'Botsareus 4/37/2013 Set Chart Skin
   
   Dim k, P As Integer
-  Dim t, X As Integer
+  Dim t, x As Integer
   Dim maxv As Single
   Dim xunit As Single, yunit As Single
   maxv = -1000
@@ -4013,22 +4014,22 @@ Public Sub RedrawGraph()
   Wend
   
   If t > 10 Then
-    For X = (MaxSeries - 1) To 0 Step -1
-      If Sum(X) = 0 Then
-        DelSeries (X)
+    For x = (MaxSeries - 1) To 0 Step -1
+      If Sum(x) = 0 Then
+        DelSeries (x)
       End If
-    Next X
+    Next x
   End If
   
   P = Pivot - 1
   If P < 0 Then P = MaxData
   
   If t > 50 Then
-   For X = (MaxSeries - 1) To 0 Step -1
-      If data(P, X) = 0 Then
-        DelSeries (X)
+   For x = (MaxSeries - 1) To 0 Step -1
+      If data(P, x) = 0 Then
+        DelSeries (x)
       End If
-    Next X
+    Next x
   End If
     
   maxy = maxv
@@ -4096,10 +4097,12 @@ Private Function WhichGraphAmI() As Integer 'Botsareus 8/3/2012 use names for gr
       chartNumber = DYNAMICCOSTS_GRAPH
     Case "Species_Diversity"
       chartNumber = SPECIESDIVERSITY_GRAPH
-    Case "Max_Genetic_Distance"
+    Case "Genetic_Distance_x1000-"
       chartNumber = GENETIC_DIST_GRAPH
     Case "Max_Generational_Distance"
       chartNumber = GENERATION_DIST_GRAPH
+    Case "Simple_Genetic_Distance_x1000-"
+      chartNumber = GENETIC_SIMPLE_GRAPH
   End Select
   
   WhichGraphAmI = chartNumber

@@ -212,7 +212,7 @@ Begin VB.MDIForm MDIForm1
             ImageIndex      =   11
             Style           =   5
             BeginProperty ButtonMenus {66833FEC-8583-11D1-B16A-00C0F0283628} 
-               NumButtonMenus  =   16
+               NumButtonMenus  =   17
                BeginProperty ButtonMenu1 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "pop"
                   Text            =   "Population graph"
@@ -263,17 +263,21 @@ Begin VB.MDIForm MDIForm1
                EndProperty
                BeginProperty ButtonMenu13 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "maxgeneticdistance"
-                  Text            =   "Genetic Distance (Maximum)"
+                  Text            =   "(Slow) Genetic Distance (Maximum)"
                EndProperty
                BeginProperty ButtonMenu14 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "maxgenerationaldistance"
                   Text            =   "Generational Distance (Maximum)"
                EndProperty
                BeginProperty ButtonMenu15 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "simplegeneticdistance"
+                  Text            =   "(Slow) Simple Genetic Distance  (Maximum)"
+               EndProperty
+               BeginProperty ButtonMenu16 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Enabled         =   0   'False
                   Text            =   "-"
                EndProperty
-               BeginProperty ButtonMenu16 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu17 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "resgraph"
                   Text            =   "Reset all graphs"
                EndProperty
@@ -583,6 +587,15 @@ Begin VB.MDIForm MDIForm1
          Caption         =   "Recording Options..."
          Shortcut        =   ^V
       End
+      Begin VB.Menu sep90 
+         Caption         =   "-"
+      End
+      Begin VB.Menu DisableArep 
+         Caption         =   "Disable asexual reproduction for un-repopulating robots"
+      End
+      Begin VB.Menu BetaDebug 
+         Caption         =   "Auto-save a sex-reproduction every ~15 reproductions"
+      End
    End
    Begin VB.Menu Backgrounds 
       Caption         =   "View"
@@ -889,6 +902,7 @@ Attribute VB_Exposed = False
 Option Explicit
 'Botsareus 5/19/2012 Update to the way the tool menu looks; removed unnecessary pictures from collection
 'Botsareus 3/15/2013 got rid of screen save code (was broken)
+'Botsareus 4/17/2013 Added a bunch of new components
 
 Public zoomval As Integer
 Public startdir As String
@@ -940,6 +954,11 @@ Private Sub AutoSpeciationMenu_Click()
   'Speciation.Show 'Commented out to remove error.
 End Sub
 
+'Botsareus 4/17/2013 Temporary (Beta only) debug
+Private Sub BetaDebug_Click()
+BetaDebug.Checked = Not BetaDebug.Checked
+End Sub
+
 Private Sub DeleteAllShapes_Click()
   DeleteAllObstacles
 End Sub
@@ -966,6 +985,12 @@ End Sub
 
 Private Sub DeleteTenObstacles_Click()
   DeleteTenRandomObstacles
+End Sub
+
+Private Sub DisableArep_Click() 'Botsareus 4/17/2013 The new disable asexrepro button
+  DisableArep.Checked = Not DisableArep.Checked
+  SimOpts.DisableTypArepro = DisableArep.Checked
+  TmpOpts.DisableTypArepro = DisableArep.Checked
 End Sub
 
 Private Sub DisableTies_Click()
@@ -1354,6 +1379,7 @@ Toolbar1.Refresh 'Botsareus 1/11/2013 Force toolbar to refresh
 End Sub
 
 Sub fixcam() 'Botsareus 2/23/2013 When simulation starts the screen is normailized
+Form1.BackColor = backgcolor 'Botsareus 4/27/2013 Set back ground skin color
 If MDIForm1.WindowState <> 2 Then Exit Sub
 If screenratiofix = False Then Exit Sub
 Form1.visiblew = Screen.Width / Screen.Height * 4 / 3 * Form1.visibleh
@@ -1367,6 +1393,7 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
  
   Select Case Button.key
     Case "newsim"
+      If Form1.GraphLab.Visible Then Exit Sub
       NetEvent.Timer1.Enabled = False
       NetEvent.Hide
       optionsform.Show vbModal
@@ -1483,10 +1510,12 @@ Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
     Case "speciesdiversity"
       Form1.NewGraph SPECIESDIVERSITY_GRAPH, "Species_Diversity"
     Case "maxgeneticdistance"
-      Form1.NewGraph GENETIC_DIST_GRAPH, "Max_Genetic_Distance"
+      'Botsareus 4/9/2013 added a proper warning
+      Form1.NewGraph GENETIC_DIST_GRAPH, "Genetic_Distance_x1000-"
     Case "maxgenerationaldistance"
       Form1.NewGraph GENERATION_DIST_GRAPH, "Max_Generational_Distance"
-    
+    Case "simplegeneticdistance"
+      Form1.NewGraph GENETIC_SIMPLE_GRAPH, "Simple_Genetic_Distance_x1000-"
     Case "resgraph"
       If MsgBox("Are you sure you want to reset all graphs?", vbOKCancel) = vbOK Then
         Form1.ResetGraphs (0)
@@ -1642,6 +1671,7 @@ Private Sub listcont_Click()
 End Sub
 
 Private Sub loadsim_Click(Index As Integer)
+If Form1.GraphLab.Visible Then Exit Sub
   simload
 End Sub
 
@@ -1842,7 +1872,9 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   HighLightAllTeleporters
   DontDecayNrgShots.Checked = False
   DisableTies.Checked = False
+  DisableArep.Checked = False
   TmpOpts.DisableTies = False
+  TmpOpts.DisableTypArepro = False
   TmpOpts.NoShotDecay = False
   TmpOpts.chartingInterval = 200
   TmpOpts.FieldWidth = 16000
@@ -1995,7 +2027,7 @@ Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Integer, br
   Dim k As Integer
  ' Dim AvgSimEnergyLastHundredCycles As Long
   Dim AvgSimEnergyLastTenCycles As Long
-  Dim delta As Double
+  Dim Delta As Double
   
   If tot = 0 Then Exit Sub
   StatusBar1.Panels(1).text = SBcycsec + Str$(Round(cyc, 3)) + " "
@@ -2038,14 +2070,15 @@ Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Integer, br
 
   'If AvgSimEnergyLastTenCycles <> 0 Then delta = TotalSimEnergyDisplayed - AvgSimEnergyLastTenCycles
   k = (CurrentEnergyCycle + 98) Mod 100
-  delta = TotalSimEnergyDisplayed - TotalSimEnergy(k)
+  Delta = TotalSimEnergyDisplayed - TotalSimEnergy(k)
   
   StatusBar1.Panels(11).text = "Nrg " + Str$(TotalSimEnergyDisplayed) + " "
-  StatusBar1.Panels(12).text = "Delta " + Str$(Round(delta, 5)) + " "
+  StatusBar1.Panels(12).text = "Delta " + Str$(Round(Delta, 5)) + " "
   StatusBar1.Panels(13).text = "CostX " + Str$(Round(SimOpts.Costs(COSTMULTIPLIER), 5)) + " "
 End Sub
 
 Private Sub newsim_Click(Index As Integer)
+If Form1.GraphLab.Visible Then Exit Sub
   TmpOpts = SimOpts
   NetEvent.Timer1.Enabled = False
   NetEvent.Hide

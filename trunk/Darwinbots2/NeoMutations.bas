@@ -122,6 +122,8 @@ End Function
 
 Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False)
   Dim delta As Long
+  Dim rates As Single 'Botsareus 4/9/2013 Robots that mutate faster retain more genetic
+  rates = 15000
 
   With rob(robn)
     If Not .Mutables.Mutations Or SimOpts.DisableMutations Then GoTo getout
@@ -130,25 +132,52 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False)
     
     ismutating = True 'Botsareus 2/2/2013 Tells the parseor to ignore debugint and debugbool while the robot is mutating
     If Not reproducing Then
-      If .Mutables.mutarray(PointUP) > 0 Then PointMutation robn
+      If .Mutables.mutarray(PointUP) > 0 Then
+        If rates > .Mutables.mutarray(PointUP) Then rates = .Mutables.mutarray(PointUP)
+        PointMutation robn
+      End If
       If .Mutables.mutarray(DeltaUP) > 0 Then DeltaMut robn
     Else
-      If .Mutables.mutarray(CopyErrorUP) > 0 Then CopyError robn
-      If .Mutables.mutarray(InsertionUP) > 0 Then Insertion robn
-      If .Mutables.mutarray(ReversalUP) > 0 Then Reversal robn
+      If .Mutables.mutarray(CopyErrorUP) > 0 Then
+        If rates > .Mutables.mutarray(CopyErrorUP) Then rates = .Mutables.mutarray(CopyErrorUP)
+        CopyError robn
+      End If
+      If .Mutables.mutarray(InsertionUP) > 0 Then
+        If rates > .Mutables.mutarray(InsertionUP) Then rates = .Mutables.mutarray(InsertionUP)
+        Insertion robn
+      End If
+      If .Mutables.mutarray(ReversalUP) > 0 Then
+        If rates > .Mutables.mutarray(ReversalUP) Then rates = .Mutables.mutarray(ReversalUP)
+        Reversal robn
+      End If
       'If .Mutables.mutarray(TranslocationUP) > 0 Then Translocation robn 'disabled for now for being buggy
       'If .Mutables.mutarray(AmplificationUP) > 0 Then Amplification robn
-      If .Mutables.mutarray(MajorDeletionUP) > 0 Then MajorDeletion robn
-      If .Mutables.mutarray(MinorDeletionUP) > 0 Then MinorDeletion robn
+      If .Mutables.mutarray(MajorDeletionUP) > 0 Then
+        If rates > .Mutables.mutarray(MajorDeletionUP) Then rates = .Mutables.mutarray(MajorDeletionUP)
+        MajorDeletion robn
+      End If
+      If .Mutables.mutarray(MinorDeletionUP) > 0 Then
+        If rates > .Mutables.mutarray(MinorDeletionUP) Then rates = .Mutables.mutarray(MinorDeletionUP)
+        MinorDeletion robn
+      End If
     End If
     ismutating = False 'Botsareus 2/2/2013 Tells the parseor to ignore debugint and debugbool while the robot is mutating
     
+
+        
     delta = CLng(.LastMut) - delta 'Botsareus 9/4/2012 Moved delta check before overflow reset to fix an error where robot info is not being updated
     
     If .Mutations > 32000 Then .Mutations = 32000  'Botsareus 5/31/2012 Prevents mutations overflow
     If .LastMut > 32000 Then .LastMut = 32000
   
     If (delta > 0) Then  'The bot has mutated.
+    
+      If GDVisible Then
+       rates = 5000 / rates
+       .GenMut = .GenMut - .LastMut / rates
+       If .GenMut < 0 Then .GenMut = 0
+      End If
+      
       mutatecolors robn, delta
       .SubSpecies = NewSubSpecies(robn)
       .genenum = CountGenes(rob(robn).DNA())
