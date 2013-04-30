@@ -1254,7 +1254,7 @@ Public Sub LoadSysVars()
  
 End Sub
 
-Public Function DetokenizeDNA(n As Integer, forHash As Boolean, Optional position As Integer) As String
+Public Function DetokenizeDNA(n As Integer, forHash As Boolean, Optional Position As Integer) As String
   Dim temp As String, t As Long
   Dim tempint As Integer
   Dim converttosysvar As Boolean
@@ -1332,7 +1332,7 @@ Public Function DetokenizeDNA(n As Integer, forHash As Boolean, Optional positio
       GeneEnd = False
     End If
     
-    If position > 0 And t = position Then DetokenizeDNA = DetokenizeDNA & " '[<POSITION MARKER]" & Chr(13) & Chr(10) 'Botsareus 2/25/2013 Makes the program easy to debug
+    If Position > 0 And t = Position Then DetokenizeDNA = DetokenizeDNA & " '[<POSITION MARKER]" & Chr(13) & Chr(10) 'Botsareus 2/25/2013 Makes the program easy to debug
     t = t + 1
   Wend
    If Not (rob(n).DNA(t - 1).tipo = 9 And rob(n).DNA(t - 1).value = 4) And coding Then ' End of DNA without a stop.

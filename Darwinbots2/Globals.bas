@@ -5,6 +5,8 @@ Option Explicit
 
 'G L O B A L  S E T T I N G S Botsareus 3/15/2013
 Public screenratiofix As Boolean
+Public bodyfix As Integer
+Public reprofix As Boolean
 
 
 ' var structure, to store the correspondance name<->value
@@ -27,6 +29,7 @@ Public Const DYNAMICCOSTS_GRAPH As Integer = 10
 Public Const SPECIESDIVERSITY_GRAPH As Integer = 11
 Public Const GENETIC_DIST_GRAPH As Integer = 12
 Public Const GENERATION_DIST_GRAPH As Integer = 13
+Public Const GENETIC_SIMPLE_GRAPH As Integer = 14
 
 Public TotalEnergy As Long     ' total energy in the sim
 Public totnvegs As Integer          ' total non vegs in sim
@@ -296,7 +299,12 @@ Public Sub aggiungirob(r As Integer, x As Single, y As Single)
     rob(a).Vtimer = 0
     rob(a).virusshot = 0
     rob(a).genenum = CountGenes(rob(a).DNA)
+    
+    
     rob(a).DnaLen = DnaLen(rob(a).DNA())
+    rob(a).GenMut = rob(a).DnaLen / GeneticSensitivity 'Botsareus 4/9/2013 automatically apply genetic to inserted robots
+    
+    
     rob(a).mem(DnaLenSys) = rob(a).DnaLen
     rob(a).mem(GenesSys) = rob(a).genenum
     

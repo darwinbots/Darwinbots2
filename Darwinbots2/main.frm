@@ -35,6 +35,17 @@ Begin VB.Form Form1
       Left            =   1440
       Top             =   120
    End
+   Begin VB.Label GraphLab 
+      BackStyle       =   0  'Transparent
+      Caption         =   "Updating Graph: 0%"
+      ForeColor       =   &H0000FFFF&
+      Height          =   255
+      Left            =   600
+      TabIndex        =   3
+      Top             =   4200
+      Visible         =   0   'False
+      Width           =   1935
+   End
    Begin VB.Label BoyLabl 
       BackStyle       =   0  'Transparent
       Caption         =   $"main.frx":08CA
@@ -207,6 +218,7 @@ Option Explicit
 'Botsareus 5/19/2012 removed old teleporter pics that are no longer in use
 'Botsareus 5/19/2012 removed 'smilymode' pics that are no longer in use
 'Botsareus 3/15/2013 got rid of screen save code (was broken)
+'Botsareus 4/9/2013 New graph label to keep track of graph update progress
 
 Public camfix As Boolean 'Botsareus 2/23/2013 normalizes screen
 Public pausefix As Boolean 'Botsareus 3/6/2013 Figure out if simulation must start paused
@@ -1047,7 +1059,7 @@ Private Sub Timer2_Timer()
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As file
+          Dim fileToDelete As File
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1065,7 +1077,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As file
+          Dim fileToDelete2 As File
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -1090,6 +1102,19 @@ MDIForm1.menuupdate
   Else
     Randomize Timer
   End If
+  
+    'Botsareus 4/27/2013 Create Simulation's skin
+    Dim tmphsl As H_S_L
+    tmphsl.h = Int(Rnd * 240)
+    tmphsl.s = Int(Rnd * 60) + 180
+    tmphsl.l = 222 + Int(Rnd * 2) * 6
+    Dim tmprgb As R_G_B
+    tmprgb = hsltorgb(tmphsl)
+    chartcolor = RGB(tmprgb.r, tmprgb.g, tmprgb.b)
+    tmphsl.l = tmphsl.l - 195
+    tmprgb = hsltorgb(tmphsl)
+    backgcolor = RGB(tmprgb.r, tmprgb.g, tmprgb.b)
+  
   SimOpts.SimGUID = CLng(Rnd)
   Over = False
   
@@ -1116,6 +1141,7 @@ MDIForm1.menuupdate
   
   MDIForm1.DontDecayNrgShots.Checked = SimOpts.NoShotDecay
   MDIForm1.DisableTies.Checked = SimOpts.DisableTies
+  MDIForm1.DisableArep.Checked = SimOpts.DisableTypArepro
   
   
   
@@ -1224,6 +1250,18 @@ Sub startloaded()
     Randomize Timer
   End If
   
+    'Botsareus 4/27/2013 Create Simulation's skin
+    Dim tmphsl As H_S_L
+    tmphsl.h = Int(Rnd * 240)
+    tmphsl.s = Int(Rnd * 60) + 180
+    tmphsl.l = 222 + Int(Rnd * 2) * 6
+    Dim tmprgb As R_G_B
+    tmprgb = hsltorgb(tmphsl)
+    chartcolor = RGB(tmprgb.r, tmprgb.g, tmprgb.b)
+    tmphsl.l = tmphsl.l - 195
+    tmprgb = hsltorgb(tmphsl)
+    backgcolor = RGB(tmprgb.r, tmprgb.g, tmprgb.b)
+  
   Init_Buckets
   
   If BackPic <> "" Then 'Botsareus 3/15/2013 No more screensaver code (was broken)
@@ -1288,6 +1326,7 @@ Sub startloaded()
     
   MDIForm1.DontDecayNrgShots.Checked = SimOpts.NoShotDecay
   MDIForm1.DisableTies.Checked = SimOpts.DisableTies
+  MDIForm1.DisableArep.Checked = SimOpts.DisableTypArepro
     
   Timer2.Enabled = True
   SecTimer.Enabled = True
@@ -1366,7 +1405,10 @@ Private Sub loadrobs()
       rob(a).virusshot = 0
       rob(a).Vtimer = 0
       rob(a).genenum = CountGenes(rob(a).DNA)
+      
       rob(a).DnaLen = DnaLen(rob(a).DNA())
+      rob(a).GenMut = rob(a).DnaLen / GeneticSensitivity 'Botsareus 4/9/2013 automatically apply genetic to inserted robots
+      
       rob(a).mem(DnaLenSys) = rob(a).DnaLen
       rob(a).mem(GenesSys) = rob(a).genenum
     Next t
@@ -1780,11 +1822,15 @@ Private Sub main()
       End If
       
       ' feeds graphs with data:
+      GDVisible = False
+      If Not Charts(GENETIC_DIST_GRAPH).graf Is Nothing Then '4/12/2013 calculate if genetic graph visible
+       If Charts(GENETIC_DIST_GRAPH).graf.Visible Then GDVisible = True
+      End If
       If SimOpts.TotRunCycle Mod SimOpts.chartingInterval = 0 Then
         For i = 1 To NUMGRAPHS
           If Not (Charts(i).graf Is Nothing) Then
            If Charts(i).graf.Visible Then  'Botsareus 2/23/2013 Do not update chart if invisable
-            FeedGraph (i)
+            FeedGraph i
            End If
           End If
         Next i
@@ -1978,7 +2024,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
       With rob(t)
       'If Not .wall And .exist Then
       If .exist Then
-        P = Flex.position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
         dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
         dati(P, MUTATIONS_GRAPH) = dati(P, MUTATIONS_GRAPH) + .LastMut + .Mutations
         dati(P, AVGAGE_GRAPH) = dati(P, AVGAGE_GRAPH) + (.age / 100) ' EricL 4/7/2006 Graph age in 100's of cycles
@@ -2011,18 +2057,6 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
           'Botsareus 8/3/2012 Generational Distance Graph
            ll = FindGenerationalDistance(t)
            If ll > dati(P, GENERATION_DIST_GRAPH) Then dati(P, GENERATION_DIST_GRAPH) = ll
-           
-'          For X = t + 1 To MaxRobs
-'            If rob(X).exist And rob(X).FName = .FName And Not rob(X).Corpse Then ' Must exist and be of same species
-'              'closestAncestor = FindClosestCommonAncestor(t, X, sim)
-'              'If closestAncestor <> 0 Then
-'              '  l = FindGeneticDistance(t, X, closestAncestor, sim)
-'              '  If l > dati(P, GENETIC_DIST_GRAPH) Then dati(P, GENETIC_DIST_GRAPH) = l
-'              '  ll = FindGenerationalDistance(t, X, closestAncestor, sim)
-'              '  If ll > dati(P, GENERATION_DIST_GRAPH) Then dati(P, GENERATION_DIST_GRAPH) = ll
-'              'End If
-'            End If
-'          Next X
                     
         End If
       End If
@@ -2066,7 +2100,7 @@ getout2:
       With rob(t)
      ' If Not .wall And .exist Then
       If .exist Then
-        P = Flex.position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
         dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
       End If
       End With
@@ -2078,7 +2112,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
   '    numbots = numbots + 1
-        P = Flex.position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
         dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
         dati(P, MUTATIONS_GRAPH) = dati(P, MUTATIONS_GRAPH) + .LastMut + .Mutations
       End If
@@ -2096,7 +2130,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
   '      numbots = numbots + 1
-        P = Flex.position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
         dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
         dati(P, AVGAGE_GRAPH) = dati(P, AVGAGE_GRAPH) + (.age / 100) ' EricL 4/7/2006 Graph age in 100's of cycles
       End If
@@ -2113,7 +2147,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        P = Flex.position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
         dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
         dati(P, OFFSPRING_GRAPH) = dati(P, OFFSPRING_GRAPH) + .SonNumber
       End If
@@ -2131,7 +2165,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        P = Flex.position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
         dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
         dati(P, ENERGY_GRAPH) = dati(P, ENERGY_GRAPH) + .nrg
       End If
@@ -2149,7 +2183,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        P = Flex.position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
         dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
         dati(P, DNALENGTH_GRAPH) = dati(P, DNALENGTH_GRAPH) + .DnaLen
       End If
@@ -2167,7 +2201,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
       '  numbots = numbots + 1
-        P = Flex.position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
         dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
         dati(P, DNACOND_GRAPH) = dati(P, DNACOND_GRAPH) + .condnum
       End If
@@ -2185,7 +2219,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        P = Flex.position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
         dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
         dati(P, MUT_DNALENGTH_GRAPH) = dati(P, MUT_DNALENGTH_GRAPH) + (.LastMut + .Mutations) / .DnaLen
       End If
@@ -2203,7 +2237,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        P = Flex.position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
         dati(P, ENERGY_SPECIES_GRAPH) = dati(P, ENERGY_SPECIES_GRAPH) + (.nrg + .body * 10) * 0.001
       End If
       End With
@@ -2231,7 +2265,7 @@ getout2:
     For t = 1 To MaxRobs
       With rob(t)
       If .exist Then
-        P = Flex.position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
         
         'Look through the subspecies we have seen so far and see if this bot has the same as any of them
         i = 0
@@ -2252,29 +2286,65 @@ getout2:
 getout3:
     
    Case GENETIC_DIST_GRAPH
-    t = Flex.last(nomi)
+    'Botsareus 4/9/2013 Genetic Distance Graph uses the new GenMut and OldGD variables
     
+
+    t = Flex.last(nomi)
     For P = 1 To t
       dati(P, GENETIC_DIST_GRAPH) = 0
     Next P
-    
+
+    'show the graph update label and set value to zero
+    GraphLab.Caption = "Updating Graph: 0%"
+    GraphLab.Visible = True
+
     For t = 1 To MaxRobs
       With rob(t)
       If .exist And Not .Corpse Then
-        P = Flex.position(rob(t).FName, nomi)
-        For x = t + 1 To MaxRobs
-          If rob(x).exist And Not rob(x).Corpse And rob(x).FName = .FName Then ' Must exist and be of same species
-            'closestAncestor = FindClosestCommonAncestor(t, X, sim)
-            'If closestAncestor <> 0 Then
-            '  l = FindGeneticDistance(t, X, closestAncestor, sim)
-            '  If l > dati(P, GENETIC_DIST_GRAPH) Then dati(P, GENETIC_DIST_GRAPH) = l
-            'End If
-          End If
-        Next x
+
+        P = Flex.Position(rob(t).FName, nomi)
+
+        If .GenMut > 0 Then 'If there is not enough mutations for a graph check, skip it
+
+            l = .OldGD
+            If l > dati(P, GENETIC_DIST_GRAPH) Then dati(P, GENETIC_DIST_GRAPH) = l
+
+        Else
+
+            .GenMut = .DnaLen / GeneticSensitivity 'we have enough mutations, reset counter
+
+            Dim copyl As Single
+            copyl = 0
+
+            For x = t + 1 To MaxRobs 'search trough all robots and figure out genetic distance for the once that have enough mutations
+            If rob(x).exist And Not rob(x).Corpse And rob(x).FName = .FName And rob(x).GenMut = 0 Then  ' Must exist, have enugh mutations, and be of same species
+                l = DoGeneticDistance(t, x) * 1000
+                If l > copyl Then copyl = l 'here we store the max generational distance for a given robot
+
+                'update the graph label
+                GraphLab.Caption = "Updating Graph: " & Int(t / MaxRobs * 100) & "." & Int(x / MaxRobs * 99) & "%"
+                DoEvents
+            End If
+
+            If x = UBound(rob) Then Exit For
+            Next x
+
+            If copyl > dati(P, GENETIC_DIST_GRAPH) Then dati(P, GENETIC_DIST_GRAPH) = copyl 'now we write this max distance
+            .OldGD = copyl 'since this robot will not checked for a while, we need to store it's genetic distance to be used later
+            DoEvents
+
+        End If
+
+
       End If
       End With
+
+    If t = UBound(rob) Then Exit For
     Next t
-    
+
+    'hide the graph update label
+    GraphLab.Visible = False
+   
    Case GENERATION_DIST_GRAPH
     t = Flex.last(nomi)
     
@@ -2285,13 +2355,43 @@ getout3:
     For t = 1 To MaxRobs
       With rob(t)
       If .exist And Not .Corpse Then
-        P = Flex.position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
            'Botsareus 8/3/2012 Generational Distance Graph
            ll = FindGenerationalDistance(t)
            If ll > dati(P, GENERATION_DIST_GRAPH) Then dati(P, GENERATION_DIST_GRAPH) = ll
       End If
       End With
     Next t
+    
+    Case GENETIC_SIMPLE_GRAPH
+    
+    'show the graph update label and set value to zero
+    GraphLab.Caption = "Updating Graph: 0%"
+    GraphLab.Visible = True
+    
+    t = Flex.last(nomi)
+    For P = 1 To t
+      dati(P, GENETIC_SIMPLE_GRAPH) = 0
+    Next P
+
+    For t = 1 To MaxRobs
+      With rob(t)
+      If .exist And Not .Corpse Then
+        P = Flex.Position(rob(t).FName, nomi)
+            For x = t + 1 To MaxRobs
+            If rob(x).exist And Not rob(x).Corpse And rob(x).FName = .FName Then  ' Must exist, and be of same species
+                l = DoGeneticDistanceSimple(t, x) * 1000
+                If l > dati(P, GENETIC_SIMPLE_GRAPH) Then dati(P, GENETIC_SIMPLE_GRAPH) = l 'here we store the max generational distance for a given robot
+            End If
+            Next x
+        GraphLab.Caption = "Updating Graph: " & Int(t / MaxRobs * 100) & "%"
+        DoEvents
+      End If
+      End With
+    Next t
+    
+    'hide the graph update label
+    GraphLab.Visible = False
 
   End Select
 End Sub

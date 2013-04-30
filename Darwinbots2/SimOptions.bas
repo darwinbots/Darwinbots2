@@ -63,6 +63,7 @@ Public Type SimOptions
   KillDistVegs As Boolean
   BlockedVegs As Boolean
   DisableTies As Boolean
+  DisableTypArepro As Boolean
   PopLimMethod As Integer
   
   'toroidal is updnconnected = dxsxconected = true
