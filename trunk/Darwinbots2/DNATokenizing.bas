@@ -637,6 +637,8 @@ End Function
 ' embryo of a new feature, should allow recording
 ' in dna files info such robot colour, generation, mutations etc
 Private Sub getvals(n As Integer, ByVal a As String, hold As String)
+'Botsareus 4/30/2013 Do not need to grab FName since we are no longer displaying a message
+
  Dim r As Integer
  Dim g As Integer
  Dim b As Integer
@@ -658,10 +660,10 @@ Private Sub getvals(n As Integer, ByVal a As String, hold As String)
  ' depending on the parameter's name
  ' we record it in the rob structure or, if we want to wait
  ' to check the hash before, in a temporary static variable
- If Name = "name" Then
-   FName = value
-   rob(n).FName = FName
- End If
+' If Name = "name" Then
+'   FName = value
+'   rob(n).FName = FName
+' End If
  If Name = "generation" Then
    generation = val(value)
  End If
@@ -680,11 +682,11 @@ Private Sub getvals(n As Integer, ByVal a As String, hold As String)
  If Name = "hash" Then
    hold = Left(hold, InStr(hold, "'#hash:") - 1)
    If Hash(hold, 20) = value Then
-     rob(n).FName = FName
+     'rob(n).FName = FName
      rob(n).generation = generation
      rob(n).Mutations = Mutations
-   Else
-     MsgBox FName + "'s dna hashing incorrect - ignoring parameters", vbExclamation
+   'Else
+     'MsgBox rob(n).FName + "'s dna hashing incorrect - ignoring parameters", vbExclamation
    End If
  End If
  

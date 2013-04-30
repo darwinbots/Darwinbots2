@@ -64,6 +64,7 @@ Module=Teleport; Teleport.bas
 Form=MagLens.frm
 Module=IntOpts; provvisorio.bas
 Form=frmGset.frm
+Module=stuffcolors; colors.bas
 ResFile32="DARWINE.RES"
 IconForm="MDIForm1"
 Startup="MDIForm1"
