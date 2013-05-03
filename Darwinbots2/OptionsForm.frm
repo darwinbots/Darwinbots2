@@ -30,7 +30,7 @@ Begin VB.Form optionsform
          Caption         =   "Global settings"
          Height          =   330
          Left            =   4440
-         TabIndex        =   261
+         TabIndex        =   260
          Top             =   225
          Width           =   1305
       End
@@ -110,46 +110,47 @@ Begin VB.Form optionsform
       TabPicture(1)   =   "OptionsForm.frx":001C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "GenPropFrame"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Frame21"
-      Tab(2).Control(1)=   "Frame20"
+      Tab(2).Control(0)=   "Frame20"
+      Tab(2).Control(1)=   "Frame21"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Mutations"
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "Frame15"
-      Tab(3).Control(1)=   "Frame13"
-      Tab(3).Control(2)=   "Frame14"
-      Tab(3).Control(3)=   "DisableMutationsCheck"
+      Tab(3).Control(0)=   "DisableMutationsCheck"
+      Tab(3).Control(1)=   "Frame14"
+      Tab(3).Control(2)=   "Frame13"
+      Tab(3).Control(3)=   "Frame15"
       Tab(3).ControlCount=   4
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame7"
+      Tab(4).Control(0)=   "Frame8"
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(2)=   "Frame8"
+      Tab(4).Control(2)=   "Frame7"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Label41"
+      Tab(5).Control(0)=   "Simulazione"
       Tab(5).Control(1)=   "Label42"
-      Tab(5).Control(2)=   "Simulazione"
+      Tab(5).Control(2)=   "Label41"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "Frame4"
-      Tab(6).Control(1)=   "Frame10"
+      Tab(6).Control(0)=   "Frame10"
+      Tab(6).Control(1)=   "Frame4"
       Tab(6).ControlCount=   2
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "List Non-Native Species "
          Height          =   375
          Left            =   1440
-         TabIndex        =   250
+         TabIndex        =   249
          Tag             =   "0"
          ToolTipText     =   "Add a new robot type to the simulation"
          Top             =   3240
@@ -159,7 +160,7 @@ Begin VB.Form optionsform
          Caption         =   "Disable All Mutations"
          Height          =   375
          Left            =   -73680
-         TabIndex        =   249
+         TabIndex        =   248
          Top             =   600
          Width           =   6375
       End
@@ -167,14 +168,14 @@ Begin VB.Form optionsform
          Caption         =   "Physics"
          Height          =   5235
          Left            =   -74820
-         TabIndex        =   209
+         TabIndex        =   208
          Top             =   420
          Width           =   4635
          Begin VB.CommandButton ToPhysics 
             Caption         =   "Custom Physics"
             Height          =   375
             Left            =   1800
-            TabIndex        =   217
+            TabIndex        =   216
             Top             =   1680
             Width           =   1950
          End
@@ -183,7 +184,7 @@ Begin VB.Form optionsform
             ItemData        =   "OptionsForm.frx":00C4
             Left            =   2880
             List            =   "OptionsForm.frx":00D1
-            TabIndex        =   216
+            TabIndex        =   215
             Text            =   "Set Efficiency"
             Top             =   2400
             Width           =   1395
@@ -192,7 +193,7 @@ Begin VB.Form optionsform
             Caption         =   "The Big Blue Screen Acts Like A "
             Height          =   1935
             Left            =   120
-            TabIndex        =   213
+            TabIndex        =   212
             Top             =   300
             Width           =   4395
             Begin VB.OptionButton FluidSolidRadio 
@@ -200,7 +201,7 @@ Begin VB.Form optionsform
                Height          =   195
                Index           =   2
                Left            =   360
-               TabIndex        =   227
+               TabIndex        =   226
                Top             =   1440
                Width           =   3015
             End
@@ -209,7 +210,7 @@ Begin VB.Form optionsform
                Height          =   195
                Index           =   1
                Left            =   360
-               TabIndex        =   226
+               TabIndex        =   225
                Top             =   960
                Width           =   975
             End
@@ -218,7 +219,7 @@ Begin VB.Form optionsform
                Height          =   195
                Index           =   0
                Left            =   360
-               TabIndex        =   225
+               TabIndex        =   224
                Top             =   480
                Width           =   975
             End
@@ -228,7 +229,7 @@ Begin VB.Form optionsform
                ItemData        =   "OptionsForm.frx":00F4
                Left            =   1680
                List            =   "OptionsForm.frx":0104
-               TabIndex        =   215
+               TabIndex        =   214
                Text            =   "Set Drag"
                Top             =   360
                Width           =   1995
@@ -239,7 +240,7 @@ Begin VB.Form optionsform
                ItemData        =   "OptionsForm.frx":0142
                Left            =   1680
                List            =   "OptionsForm.frx":0152
-               TabIndex        =   214
+               TabIndex        =   213
                Text            =   "Set Friction"
                Top             =   840
                Width           =   1995
@@ -250,7 +251,7 @@ Begin VB.Form optionsform
             ItemData        =   "OptionsForm.frx":0185
             Left            =   2880
             List            =   "OptionsForm.frx":018F
-            TabIndex        =   212
+            TabIndex        =   211
             Text            =   "Set Brownian"
             Top             =   2760
             Width           =   1395
@@ -260,7 +261,7 @@ Begin VB.Form optionsform
             ItemData        =   "OptionsForm.frx":01A5
             Left            =   2880
             List            =   "OptionsForm.frx":01B2
-            TabIndex        =   211
+            TabIndex        =   210
             Text            =   "Set Gravity"
             Top             =   3120
             Width           =   1395
@@ -268,7 +269,7 @@ Begin VB.Form optionsform
          Begin MSComctlLib.Slider MaxVelSlider 
             Height          =   495
             Left            =   240
-            TabIndex        =   210
+            TabIndex        =   209
             ToolTipText     =   "Maximum bot velocity"
             Top             =   3840
             Width           =   4215
@@ -284,7 +285,7 @@ Begin VB.Form optionsform
          Begin MSComctlLib.Slider Elasticity 
             Height          =   495
             Left            =   240
-            TabIndex        =   231
+            TabIndex        =   230
             ToolTipText     =   "Controls how elastic bots act during collisions."
             Top             =   4680
             Width           =   4215
@@ -299,7 +300,7 @@ Begin VB.Form optionsform
             Caption         =   "Fast"
             Height          =   255
             Left            =   4080
-            TabIndex        =   237
+            TabIndex        =   236
             Top             =   3600
             Width           =   375
          End
@@ -307,7 +308,7 @@ Begin VB.Form optionsform
             Caption         =   "Slow"
             Height          =   255
             Left            =   240
-            TabIndex        =   236
+            TabIndex        =   235
             Top             =   3600
             Width           =   615
          End
@@ -315,7 +316,7 @@ Begin VB.Form optionsform
             Caption         =   "Marbles"
             Height          =   255
             Left            =   3840
-            TabIndex        =   235
+            TabIndex        =   234
             Top             =   4440
             Width           =   615
          End
@@ -323,7 +324,7 @@ Begin VB.Form optionsform
             Caption         =   "Ghosts"
             Height          =   255
             Left            =   240
-            TabIndex        =   233
+            TabIndex        =   232
             Top             =   4440
             Width           =   615
          End
@@ -331,7 +332,7 @@ Begin VB.Form optionsform
             Caption         =   "Collision Elasticity"
             Height          =   255
             Left            =   1440
-            TabIndex        =   232
+            TabIndex        =   231
             Top             =   4440
             Width           =   1335
          End
@@ -340,7 +341,7 @@ Begin VB.Form optionsform
             Height          =   255
             Index           =   1
             Left            =   480
-            TabIndex        =   221
+            TabIndex        =   220
             Top             =   2400
             Width           =   1875
          End
@@ -349,7 +350,7 @@ Begin VB.Form optionsform
             Height          =   255
             Index           =   2
             Left            =   480
-            TabIndex        =   220
+            TabIndex        =   219
             Top             =   2760
             Width           =   1875
          End
@@ -358,7 +359,7 @@ Begin VB.Form optionsform
             Height          =   255
             Index           =   3
             Left            =   480
-            TabIndex        =   219
+            TabIndex        =   218
             Top             =   3120
             Width           =   1875
          End
@@ -366,7 +367,7 @@ Begin VB.Form optionsform
             Caption         =   "Max Velocity"
             Height          =   255
             Left            =   1920
-            TabIndex        =   218
+            TabIndex        =   217
             Top             =   3600
             Width           =   975
          End
@@ -383,7 +384,7 @@ Begin VB.Form optionsform
             Caption         =   "Wrap Around"
             Height          =   1275
             Left            =   120
-            TabIndex        =   204
+            TabIndex        =   203
             Top             =   2160
             Width           =   2055
             Begin VB.CheckBox ToroidCheck 
@@ -391,7 +392,7 @@ Begin VB.Form optionsform
                Caption         =   "Torroidal"
                Height          =   255
                Left            =   120
-               TabIndex        =   207
+               TabIndex        =   206
                Tag             =   "2302"
                Top             =   240
                Width           =   1605
@@ -401,7 +402,7 @@ Begin VB.Form optionsform
                Caption         =   "Top / Down Wrap"
                Height          =   255
                Left            =   120
-               TabIndex        =   206
+               TabIndex        =   205
                Top             =   540
                Width           =   1605
             End
@@ -410,7 +411,7 @@ Begin VB.Form optionsform
                Caption         =   "Left / Right Wrap"
                Height          =   255
                Left            =   120
-               TabIndex        =   205
+               TabIndex        =   204
                Top             =   840
                Width           =   1605
             End
@@ -419,7 +420,7 @@ Begin VB.Form optionsform
             Caption         =   "Misc. Controls"
             Height          =   975
             Left            =   120
-            TabIndex        =   203
+            TabIndex        =   202
             Top             =   4200
             Width           =   2055
             Begin VB.CheckBox FixBotRadius 
@@ -427,7 +428,7 @@ Begin VB.Form optionsform
                Caption         =   "Fix bot radii"
                Height          =   255
                Left            =   120
-               TabIndex        =   241
+               TabIndex        =   240
                ToolTipText     =   "Shots will live forever unitl they impact a bot."
                Top             =   360
                Width           =   1695
@@ -437,13 +438,13 @@ Begin VB.Form optionsform
             Caption         =   "Field Controls"
             Height          =   795
             Left            =   120
-            TabIndex        =   196
+            TabIndex        =   195
             Top             =   240
             Width           =   4035
             Begin MSComctlLib.Slider FieldSizeSlide 
                Height          =   210
                Left            =   60
-               TabIndex        =   197
+               TabIndex        =   196
                Top             =   480
                Width           =   2415
                _ExtentX        =   4260
@@ -460,7 +461,7 @@ Begin VB.Form optionsform
                Height          =   240
                Index           =   0
                Left            =   2640
-               TabIndex        =   202
+               TabIndex        =   201
                Tag             =   "0"
                Top             =   240
                Width           =   495
@@ -469,7 +470,7 @@ Begin VB.Form optionsform
                Caption         =   "Height:"
                Height          =   240
                Left            =   2640
-               TabIndex        =   201
+               TabIndex        =   200
                Tag             =   "0"
                Top             =   480
                Width           =   525
@@ -478,7 +479,7 @@ Begin VB.Form optionsform
                Caption         =   "XXXX"
                Height          =   195
                Left            =   3270
-               TabIndex        =   200
+               TabIndex        =   199
                Top             =   240
                Width           =   690
             End
@@ -486,7 +487,7 @@ Begin VB.Form optionsform
                Caption         =   "XXXX"
                Height          =   240
                Left            =   3270
-               TabIndex        =   199
+               TabIndex        =   198
                Top             =   480
                Width           =   690
             End
@@ -494,7 +495,7 @@ Begin VB.Form optionsform
                Caption         =   "Size"
                Height          =   255
                Left            =   1080
-               TabIndex        =   198
+               TabIndex        =   197
                Tag             =   "0"
                Top             =   240
                Width           =   615
@@ -504,13 +505,13 @@ Begin VB.Form optionsform
             Caption         =   "Waste"
             Height          =   615
             Left            =   120
-            TabIndex        =   192
+            TabIndex        =   191
             Top             =   3480
             Width           =   2055
             Begin VB.TextBox CustomWaste 
                Height          =   285
                Left            =   1020
-               TabIndex        =   194
+               TabIndex        =   193
                Text            =   "400"
                Top             =   240
                Width           =   555
@@ -518,7 +519,7 @@ Begin VB.Form optionsform
             Begin ComCtl2.UpDown WasteThresholdUpDown 
                Height          =   285
                Left            =   1680
-               TabIndex        =   193
+               TabIndex        =   192
                Top             =   240
                Width           =   255
                _ExtentX        =   450
@@ -540,7 +541,7 @@ Begin VB.Form optionsform
                Caption         =   "Threshold"
                Height          =   195
                Left            =   180
-               TabIndex        =   195
+               TabIndex        =   194
                Top             =   300
                Width           =   735
             End
@@ -552,29 +553,27 @@ Begin VB.Form optionsform
             TabIndex        =   188
             Top             =   1200
             Width           =   2055
+            Begin VB.CommandButton Newseed 
+               Caption         =   "Change seed"
+               Height          =   255
+               Left            =   120
+               TabIndex        =   261
+               Top             =   240
+               Width           =   1815
+            End
             Begin VB.TextBox UserSeedText 
                Height          =   285
                Left            =   1140
-               TabIndex        =   190
+               TabIndex        =   189
                Text            =   "1234"
                Top             =   540
-               Width           =   675
-            End
-            Begin VB.CheckBox UserSeed 
-               Alignment       =   1  'Right Justify
-               Caption         =   "Enable User Seed"
-               Height          =   315
-               Left            =   120
-               TabIndex        =   189
-               ToolTipText     =   $"OptionsForm.frx":01C9
-               Top             =   240
-               Width           =   1695
+               Width           =   795
             End
             Begin VB.Label Label58 
                Caption         =   "Seed Value"
                Height          =   195
                Left            =   165
-               TabIndex        =   191
+               TabIndex        =   190
                Top             =   600
                Width           =   915
             End
@@ -598,7 +597,7 @@ Begin VB.Form optionsform
                   Caption         =   "All Pond Mode Settings"
                   Height          =   330
                   Left            =   120
-                  TabIndex        =   259
+                  TabIndex        =   258
                   ToolTipText     =   "Configures all settings for a Pond Mode Simulation"
                   Top             =   1080
                   Width           =   1935
@@ -827,7 +826,7 @@ Begin VB.Form optionsform
                   Height          =   255
                   Left            =   60
                   TabIndex        =   177
-                  ToolTipText     =   $"OptionsForm.frx":02C6
+                  ToolTipText     =   $"OptionsForm.frx":01C9
                   Top             =   240
                   Width           =   1980
                End
@@ -948,8 +947,8 @@ Begin VB.Form optionsform
                   Caption         =   "Force robots to sustain their own chloroplasts"
                   Height          =   375
                   Left            =   120
-                  TabIndex        =   258
-                  ToolTipText     =   $"OptionsForm.frx":035A
+                  TabIndex        =   257
+                  ToolTipText     =   $"OptionsForm.frx":025D
                   Top             =   1720
                   Visible         =   0   'False
                   Width           =   3135
@@ -977,7 +976,7 @@ Begin VB.Form optionsform
                   Left            =   120
                   TabIndex        =   161
                   Text            =   "10"
-                  ToolTipText     =   $"OptionsForm.frx":0424
+                  ToolTipText     =   $"OptionsForm.frx":0327
                   Top             =   660
                   Width           =   495
                End
@@ -1125,7 +1124,7 @@ Begin VB.Form optionsform
                   Caption         =   "Energy Management"
                   Height          =   330
                   Left            =   120
-                  TabIndex        =   238
+                  TabIndex        =   237
                   Top             =   2040
                   Width           =   1695
                End
@@ -1172,7 +1171,7 @@ Begin VB.Form optionsform
                   Left            =   60
                   MultiLine       =   -1  'True
                   TabIndex        =   153
-                  Text            =   "OptionsForm.frx":04B9
+                  Text            =   "OptionsForm.frx":03BC
                   Top             =   2760
                   Width           =   1695
                End
@@ -1398,7 +1397,7 @@ Begin VB.Form optionsform
             Caption         =   "Energy per veggie per cycle"
             Height          =   210
             Left            =   1260
-            TabIndex        =   208
+            TabIndex        =   207
             Tag             =   "2201"
             Top             =   360
             Visible         =   0   'False
@@ -1417,9 +1416,9 @@ Begin VB.Form optionsform
       End
       Begin VB.ListBox SpecList 
          Height          =   2400
-         ItemData        =   "OptionsForm.frx":04E2
+         ItemData        =   "OptionsForm.frx":03E5
          Left            =   240
-         List            =   "OptionsForm.frx":04E4
+         List            =   "OptionsForm.frx":03E7
          TabIndex        =   129
          Top             =   720
          Width           =   3465
@@ -1574,7 +1573,7 @@ Begin VB.Form optionsform
          End
          Begin VB.Label Label31 
             BorderStyle     =   1  'Fixed Single
-            Caption         =   $"OptionsForm.frx":04E6
+            Caption         =   $"OptionsForm.frx":03E9
             Height          =   975
             Left            =   300
             TabIndex        =   90
@@ -1653,9 +1652,9 @@ Begin VB.Form optionsform
          Width           =   9315
          Begin VB.ListBox Scripts 
             Height          =   840
-            ItemData        =   "OptionsForm.frx":05A1
+            ItemData        =   "OptionsForm.frx":04A4
             Left            =   180
-            List            =   "OptionsForm.frx":05A3
+            List            =   "OptionsForm.frx":04A6
             TabIndex        =   81
             Top             =   1320
             Width           =   9015
@@ -1678,9 +1677,9 @@ Begin VB.Form optionsform
          End
          Begin VB.ComboBox Action 
             Height          =   315
-            ItemData        =   "OptionsForm.frx":05A5
+            ItemData        =   "OptionsForm.frx":04A8
             Left            =   4020
-            List            =   "OptionsForm.frx":05A7
+            List            =   "OptionsForm.frx":04AA
             TabIndex        =   78
             Text            =   "Action"
             Top             =   900
@@ -2110,21 +2109,21 @@ Begin VB.Form optionsform
          Begin VB.TextBox IntName 
             Height          =   285
             Left            =   240
-            TabIndex        =   256
+            TabIndex        =   255
             Top             =   2400
             Width           =   3015
          End
          Begin VB.TextBox outboundPathText 
             Height          =   285
             Left            =   240
-            TabIndex        =   254
+            TabIndex        =   253
             Top             =   1560
             Width           =   3135
          End
          Begin VB.TextBox inboundPathText 
             Height          =   285
             Left            =   240
-            TabIndex        =   251
+            TabIndex        =   250
             Top             =   720
             Width           =   3135
          End
@@ -2132,7 +2131,7 @@ Begin VB.Form optionsform
             Caption         =   "User Name"
             Height          =   255
             Left            =   240
-            TabIndex        =   255
+            TabIndex        =   254
             Top             =   2040
             Width           =   1095
          End
@@ -2140,7 +2139,7 @@ Begin VB.Form optionsform
             Caption         =   "Outbound Path"
             Height          =   255
             Left            =   240
-            TabIndex        =   253
+            TabIndex        =   252
             Top             =   1200
             Width           =   1215
          End
@@ -2148,7 +2147,7 @@ Begin VB.Form optionsform
             Caption         =   "Inbound Path"
             Height          =   255
             Left            =   240
-            TabIndex        =   252
+            TabIndex        =   251
             Top             =   360
             Width           =   1455
          End
@@ -2245,7 +2244,7 @@ Begin VB.Form optionsform
                Height          =   495
                Index           =   2
                Left            =   600
-               TabIndex        =   230
+               TabIndex        =   229
                Top             =   1200
                Width           =   1215
             End
@@ -2254,7 +2253,7 @@ Begin VB.Form optionsform
                Height          =   495
                Index           =   1
                Left            =   600
-               TabIndex        =   229
+               TabIndex        =   228
                Top             =   720
                Width           =   1215
             End
@@ -2263,7 +2262,7 @@ Begin VB.Form optionsform
                Height          =   495
                Index           =   0
                Left            =   600
-               TabIndex        =   228
+               TabIndex        =   227
                Top             =   240
                Width           =   1215
             End
@@ -2278,7 +2277,7 @@ Begin VB.Form optionsform
          End
          Begin VB.Label Label8 
             BorderStyle     =   1  'Fixed Single
-            Caption         =   $"OptionsForm.frx":05A9
+            Caption         =   $"OptionsForm.frx":04AC
             Height          =   945
             Left            =   225
             TabIndex        =   17
@@ -2314,7 +2313,7 @@ Begin VB.Form optionsform
          _Version        =   393217
          ReadOnly        =   -1  'True
          ScrollBars      =   2
-         TextRTF         =   $"OptionsForm.frx":066E
+         TextRTF         =   $"OptionsForm.frx":0571
       End
       Begin VB.Frame Frame1 
          Caption         =   "Species Properties"
@@ -2329,7 +2328,7 @@ Begin VB.Form optionsform
             Caption         =   "Disable Mutations"
             Height          =   330
             Left            =   3360
-            TabIndex        =   248
+            TabIndex        =   247
             ToolTipText     =   "Disables voluntary movement for this species"
             Top             =   4080
             Width           =   2430
@@ -2339,7 +2338,7 @@ Begin VB.Form optionsform
             Caption         =   "Virus Immune"
             Height          =   330
             Left            =   3360
-            TabIndex        =   247
+            TabIndex        =   246
             ToolTipText     =   "Disables voluntary movement for this species"
             Top             =   3840
             Width           =   2430
@@ -2349,7 +2348,7 @@ Begin VB.Form optionsform
             Caption         =   "Disable Reproduction"
             Height          =   330
             Left            =   3360
-            TabIndex        =   246
+            TabIndex        =   245
             ToolTipText     =   "Disables voluntary movement for this species"
             Top             =   3600
             Width           =   2430
@@ -2359,7 +2358,7 @@ Begin VB.Form optionsform
             Caption         =   "Disable Voluntary Movement"
             Height          =   330
             Left            =   3360
-            TabIndex        =   245
+            TabIndex        =   244
             ToolTipText     =   "Disables voluntary movement for this species"
             Top             =   3360
             Width           =   2430
@@ -2369,7 +2368,7 @@ Begin VB.Form optionsform
             Caption         =   "Disable DNA Execution"
             Height          =   330
             Left            =   3360
-            TabIndex        =   244
+            TabIndex        =   243
             ToolTipText     =   "Speeds up the simulation by turning off DNA execution for this species"
             Top             =   3120
             Width           =   2430
@@ -2379,7 +2378,7 @@ Begin VB.Form optionsform
             Caption         =   "Disable Vision"
             Height          =   330
             Left            =   3360
-            TabIndex        =   243
+            TabIndex        =   242
             ToolTipText     =   "Speeds up the simulation by turning off vision for this species"
             Top             =   2880
             Width           =   2430
@@ -2468,9 +2467,9 @@ Begin VB.Form optionsform
          End
          Begin VB.ComboBox SpecCol 
             Height          =   315
-            ItemData        =   "OptionsForm.frx":06F0
+            ItemData        =   "OptionsForm.frx":05F3
             Left            =   1350
-            List            =   "OptionsForm.frx":0712
+            List            =   "OptionsForm.frx":0615
             Style           =   2  'Dropdown List
             TabIndex        =   108
             ToolTipText     =   "Initial colour"
@@ -2735,7 +2734,7 @@ Begin VB.Form optionsform
             Caption         =   "Keep only the last 10 bots    (Avoid filling up your hard drive)"
             Height          =   255
             Left            =   1200
-            TabIndex        =   242
+            TabIndex        =   241
             Top             =   2760
             Width           =   5535
          End
@@ -2743,7 +2742,7 @@ Begin VB.Form optionsform
             Caption         =   "Keep only the last 10 saves    (Avoid filling up your hard drive!)"
             Height          =   255
             Left            =   1200
-            TabIndex        =   240
+            TabIndex        =   239
             Top             =   1160
             Width           =   5535
          End
@@ -2751,7 +2750,7 @@ Begin VB.Form optionsform
             Caption         =   "Reduce file size by saving without Mutation Details"
             Height          =   255
             Left            =   1200
-            TabIndex        =   239
+            TabIndex        =   238
             Top             =   1440
             Width           =   5535
          End
@@ -2924,7 +2923,7 @@ Begin VB.Form optionsform
          End
          Begin VB.Label Label26 
             BorderStyle     =   1  'Fixed Single
-            Caption         =   $"OptionsForm.frx":075C
+            Caption         =   $"OptionsForm.frx":065F
             Height          =   1470
             Left            =   7080
             TabIndex        =   65
@@ -2934,18 +2933,18 @@ Begin VB.Form optionsform
          End
       End
       Begin VB.Label Label42 
-         Caption         =   $"OptionsForm.frx":07FD
+         Caption         =   $"OptionsForm.frx":0700
          Height          =   975
          Left            =   -70560
-         TabIndex        =   260
+         TabIndex        =   259
          Top             =   1560
          Width           =   5655
       End
       Begin VB.Label Label41 
-         Caption         =   $"OptionsForm.frx":0932
+         Caption         =   $"OptionsForm.frx":0835
          Height          =   735
          Left            =   -70560
-         TabIndex        =   257
+         TabIndex        =   256
          Top             =   600
          Width           =   5775
       End
@@ -2953,7 +2952,7 @@ Begin VB.Form optionsform
          Caption         =   "Commenti sulla specie:"
          Height          =   255
          Left            =   240
-         TabIndex        =   223
+         TabIndex        =   222
          Tag             =   "2100"
          Top             =   4440
          Width           =   2055
@@ -2962,7 +2961,7 @@ Begin VB.Form optionsform
          Caption         =   "Native Species:"
          Height          =   255
          Left            =   240
-         TabIndex        =   222
+         TabIndex        =   221
          Tag             =   "0"
          Top             =   480
          Width           =   3375
@@ -2972,7 +2971,7 @@ Begin VB.Form optionsform
       Caption         =   "Soft"
       Height          =   255
       Left            =   0
-      TabIndex        =   234
+      TabIndex        =   233
       Top             =   0
       Width           =   615
    End
@@ -2980,7 +2979,7 @@ Begin VB.Form optionsform
       Caption         =   "Label13"
       Height          =   495
       Left            =   4440
-      TabIndex        =   224
+      TabIndex        =   223
       Top             =   3000
       Width           =   1215
    End
@@ -3232,6 +3231,10 @@ For i = 0 To SimOpts.SpeciesNum - 1
 Next i
 MSG = MSG & vbCrLf & vbCrLf & "Save a snapshot and use snapshotsearch.exe to extract DNA. Press CTRL+C to copy this message."
 If found Then MsgBox MSG Else MsgBox "There are no non-native species."
+End Sub
+
+Private Sub Newseed_Click()
+    UserSeedText = Timer * 100
 End Sub
 
 Private Sub RenameButton_Click()
@@ -4348,13 +4351,14 @@ End Sub
 
 '''''Start Seeded Random Control
 
-Private Sub UserSeed_Click()
-  TmpOpts.UserSeedToggle = UserSeed.value * True
-  UserSeedText.Enabled = UserSeed.value * True
-End Sub
+'Private Sub UserSeed_Click() 'Botsareus 5/3/2013 replaced by safemode
+'  TmpOpts.UserSeedToggle = UserSeed.value * True
+'  UserSeedText.Enabled = UserSeed.value * True
+'End Sub
 
 Private Sub UserSeedText_Change()
   TmpOpts.UserSeedNumber = val(UserSeedText.text)
+  SimOpts.UserSeedNumber = val(UserSeedText.text)
 End Sub
 
 ''''''End Seeded Random Control
@@ -4977,6 +4981,12 @@ Private Sub RestartSimCheck_Click()
 End Sub
 
 Public Sub StartNew_Click() 'startnew
+If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 Change seed on start new
+
+
+ savesett MDIForm1.MainDir + "\settings\lastran.set" 'Botsareus 5/3/2013 Save the lastran settings
+
+
   Dim i As Integer
   Dim k As Integer
   Dim t As Integer
@@ -5175,6 +5185,11 @@ Public Sub StartNew_Click() 'startnew
 End Sub
 
 Private Sub DispSettings()
+'Botsareus 5/3/2013 No need to change seed if it is fully randomized in any condition
+If chseedloadsim And chseedstartnew Then
+    Newseed.Enabled = False
+    UserSeedText.Enabled = False
+End If
 
   Dim t As Integer
   
@@ -5235,8 +5250,9 @@ Private Sub DispSettings()
 '  DNCycleUpDn.Enabled = TmpOpts.DayNight * True
 '  DNCheck.value = TmpOpts.DayNight * True
   
-  UserSeed.value = TmpOpts.UserSeedToggle * True
-  UserSeedText.Enabled = TmpOpts.UserSeedToggle * True
+'Botsareus 5/3/2013 Replaced by safe mode
+'  UserSeed.value = TmpOpts.UserSeedToggle * True
+'  UserSeedText.Enabled = TmpOpts.UserSeedToggle * True
   
   FrequencyText.text = TmpOpts.Decaydelay
   
@@ -5585,7 +5601,7 @@ skipthisspecie:
   Write #1, TmpOpts.RepopCooldown
   
   Write #1, TmpOpts.ZeroMomentum
-  Write #1, TmpOpts.UserSeedToggle
+  Write #1, True 'Botsareus 5/3/2013 Replaced by safemode
   Write #1, TmpOpts.UserSeedNumber
   
   For t = 0 To TmpOpts.SpeciesNum - 1
@@ -5850,7 +5866,7 @@ Public Sub ReadSettFromFile()
   If Not EOF(1) Then Input #1, TmpOpts.RepopAmount
   If Not EOF(1) Then Input #1, TmpOpts.RepopCooldown
   If Not EOF(1) Then Input #1, TmpOpts.ZeroMomentum
-  If Not EOF(1) Then Input #1, TmpOpts.UserSeedToggle
+  If Not EOF(1) Then Input #1, check 'Botsareus 5/3/2013 Replaced by safemode
   If Not EOF(1) Then Input #1, TmpOpts.UserSeedNumber
   
   For t = 0 To maxsp

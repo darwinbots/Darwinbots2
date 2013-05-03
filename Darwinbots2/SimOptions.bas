@@ -91,7 +91,7 @@ Public Type SimOptions
   League As Boolean
   Restart As Boolean
   
-  UserSeedToggle As Boolean
+  'UserSeedToggle As Boolean 'Botsareus 5/3/2013 Replaced by safemode
   UserSeedNumber As Long
   
   MaxEnergy As Long
