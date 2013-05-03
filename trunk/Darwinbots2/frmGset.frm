@@ -43,14 +43,40 @@ Begin VB.Form frmGset
       Tabs            =   1
       TabHeight       =   520
       BackColor       =   12632256
-      TabCaption(0)   =   "UI / Cheating"
+      TabCaption(0)   =   "Main settings"
       TabPicture(0)   =   "frmGset.frx":0000
       Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "ffmUI"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "ffmCheatin"
       Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).ControlCount=   2
+      Tab(0).Control(2)=   "Frame1"
+      Tab(0).Control(2).Enabled=   0   'False
+      Tab(0).ControlCount=   3
+      Begin VB.Frame Frame1 
+         Caption         =   "Randomization"
+         Height          =   1455
+         Left            =   120
+         TabIndex        =   9
+         Top             =   3240
+         Width           =   4695
+         Begin VB.CheckBox chkchseedloadsim 
+            Caption         =   "Generate new seed when you click 'Load Simulation'"
+            Height          =   375
+            Left            =   240
+            TabIndex        =   11
+            Top             =   720
+            Width           =   4275
+         End
+         Begin VB.CheckBox chkchseedstartnew 
+            Caption         =   "Generate new seed when you click 'Start new'"
+            Height          =   375
+            Left            =   240
+            TabIndex        =   10
+            Top             =   360
+            Width           =   4275
+         End
+      End
       Begin VB.Frame ffmCheatin 
          Caption         =   "Cheating Prevention"
          Height          =   1575
@@ -89,7 +115,7 @@ Begin VB.Form frmGset
          Left            =   120
          TabIndex        =   3
          Top             =   480
-         Width           =   3495
+         Width           =   4695
          Begin VB.CheckBox chkScreenRatio 
             Caption         =   "Fix Screen Ratio when simulation starts"
             Height          =   375
@@ -122,6 +148,8 @@ MsgBox "Global settings will take effect when you restart DarwinBots.", vbInform
       Write #1, chkScreenRatio = 1
       Write #1, val(txtBodyFix)
       Write #1, chkGreedy = 1
+      Write #1, chkchseedstartnew = 1
+      Write #1, chkchseedloadsim = 1
     Close #1
 'unload
 Unload Me
@@ -130,8 +158,10 @@ End Sub
 Private Sub Form_Load()
 'load all global settings into controls
 chkScreenRatio.value = IIf(screenratiofix, 1, 0)
-txtBodyFix = BodyFix
+txtBodyFix = bodyfix
 chkGreedy = IIf(reprofix, 1, 0)
+chkchseedstartnew.value = IIf(chseedstartnew, 1, 0)
+chkchseedloadsim.value = IIf(chseedloadsim, 1, 0)
 End Sub
 
 Private Sub txtBodyFix_LostFocus()
