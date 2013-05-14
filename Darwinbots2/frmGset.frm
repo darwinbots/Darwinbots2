@@ -6,18 +6,18 @@ Begin VB.Form frmGset
    ClientHeight    =   5490
    ClientLeft      =   45
    ClientTop       =   315
-   ClientWidth     =   5040
+   ClientWidth     =   10770
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   5490
-   ScaleWidth      =   5040
+   ScaleWidth      =   10770
    ShowInTaskbar   =   0   'False
    StartUpPosition =   3  'Windows Default
    Begin VB.CommandButton btnOK 
       Caption         =   "OK"
       Height          =   375
-      Left            =   2400
+      Left            =   8160
       TabIndex        =   2
       Top             =   5040
       Width           =   1215
@@ -25,7 +25,7 @@ Begin VB.Form frmGset
    Begin VB.CommandButton btnCancel 
       Caption         =   "Cancel"
       Height          =   375
-      Left            =   3720
+      Left            =   9480
       TabIndex        =   1
       Top             =   5040
       Width           =   1215
@@ -35,8 +35,8 @@ Begin VB.Form frmGset
       Left            =   0
       TabIndex        =   0
       Top             =   0
-      Width           =   4995
-      _ExtentX        =   8811
+      Width           =   10755
+      _ExtentX        =   18971
       _ExtentY        =   8705
       _Version        =   393216
       Style           =   1
@@ -52,7 +52,43 @@ Begin VB.Form frmGset
       Tab(0).Control(1).Enabled=   0   'False
       Tab(0).Control(2)=   "Frame1"
       Tab(0).Control(2).Enabled=   0   'False
-      Tab(0).ControlCount=   3
+      Tab(0).Control(3)=   "ffmMainDir"
+      Tab(0).Control(3).Enabled=   0   'False
+      Tab(0).Control(4)=   "chkSafeMode"
+      Tab(0).Control(4).Enabled=   0   'False
+      Tab(0).ControlCount=   5
+      Begin VB.CheckBox chkSafeMode 
+         Caption         =   "Use Safe Mode"
+         Height          =   255
+         Left            =   6720
+         TabIndex        =   15
+         Top             =   1920
+         Width           =   1935
+      End
+      Begin VB.Frame ffmMainDir 
+         Caption         =   "Main Directory"
+         Height          =   1215
+         Left            =   4920
+         TabIndex        =   12
+         Top             =   480
+         Width           =   5655
+         Begin VB.TextBox txtCD 
+            Height          =   375
+            Left            =   120
+            TabIndex        =   14
+            Text            =   "Text1"
+            Top             =   720
+            Width           =   5415
+         End
+         Begin VB.CheckBox chkUseCD 
+            Caption         =   "Change Directory"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   13
+            Top             =   360
+            Width           =   1575
+         End
+      End
       Begin VB.Frame Frame1 
          Caption         =   "Randomization"
          Height          =   1455
@@ -141,19 +177,53 @@ End Sub
 
 
 Private Sub btnOK_Click()
+'Botsareus 5/10/2013 Make sure txtCD points to a valid directory
+If Not FolderExists(txtCD.text) And chkUseCD.value = 1 Then
+ MsgBox "Please use a valid directory for the main directory.", vbCritical
+ Exit Sub
+End If
+
+If chkUseCD.value = 0 Then
+ 'delete the maindir setting if no longer used
+ If dir(App.path & "\Maindir.gset") <> "" Then Kill (App.path & "\Maindir.gset")
+Else
+ 'write current path to setting
+     Open App.path & "\Maindir.gset" For Output As #1
+      Write #1, txtCD.text
+     Close #1
+End If
+
 'prompt that settings will take place when you restart db
 MsgBox "Global settings will take effect when you restart DarwinBots.", vbInformation
 'save all settings
-    Open App.path & "\Global.gset" For Output As #1
+    Open MDIForm1.MainDir & "\Global.gset" For Output As #1
       Write #1, chkScreenRatio = 1
       Write #1, val(txtBodyFix)
       Write #1, chkGreedy = 1
       Write #1, chkchseedstartnew = 1
       Write #1, chkchseedloadsim = 1
+      Write #1, chkSafeMode = 1
     Close #1
 'unload
 Unload Me
 End Sub
+
+Private Function FolderExists(sFullPath As String) As Boolean
+Dim myFSO As Object
+Set myFSO = CreateObject("Scripting.FileSystemObject")
+FolderExists = myFSO.FolderExists(sFullPath)
+End Function
+
+
+Private Sub chkUseCD_Click()
+If chkUseCD.value = 1 Then
+ If Visible Then MsgBox "If you are running parallel simulations on a single computer, make sure you disable this setting or make the path is unique for each instance. Also, don't forget to have each Darwin.exe in a separate directory"
+ txtCD.Enabled = True
+Else
+ txtCD.Enabled = False
+End If
+End Sub
+
 
 Private Sub Form_Load()
 'load all global settings into controls
@@ -162,6 +232,17 @@ txtBodyFix = bodyfix
 chkGreedy = IIf(reprofix, 1, 0)
 chkchseedstartnew.value = IIf(chseedstartnew, 1, 0)
 chkchseedloadsim.value = IIf(chseedloadsim, 1, 0)
+txtCD = MDIForm1.MainDir
+'only eanable txtCD and chkUseCD if maindir.gset exisits
+If dir(App.path & "\Maindir.gset") <> "" Then
+chkUseCD.value = 1
+txtCD.Enabled = True
+Else
+chkUseCD.value = 0
+txtCD.Enabled = False
+End If
+'are we using safemode
+chkSafeMode = IIf(UseSafeMode, 1, 0)
 End Sub
 
 Private Sub txtBodyFix_LostFocus()

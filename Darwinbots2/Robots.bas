@@ -791,9 +791,9 @@ Public Sub UpdatePosition(ByVal n As Integer)
   .mem(dirsx) = 0
   
   .mem(velscalar) = iceil(Sqr(vt))
-  .mem(vel) = iceil(Cos(.aim) * .vel.x + Sin(.aim) * .vel.y * -1)
+  .mem(vel) = iceil(Cos(.aim) * .vel.X + Sin(.aim) * .vel.Y * -1)
   .mem(veldn) = .mem(vel) * -1
-  .mem(veldx) = iceil(Sin(.aim) * .vel.x + Cos(.aim) * .vel.y)
+  .mem(veldx) = iceil(Sin(.aim) * .vel.X + Cos(.aim) * .vel.Y)
   .mem(velsx) = .mem(veldx) * -1
   
   .mem(masssys) = .mass
@@ -801,15 +801,15 @@ Public Sub UpdatePosition(ByVal n As Integer)
   End With
 End Sub
 
-Private Function iceil(x As Single) As Integer
-    If (Abs(x) > 32000) Then x = Sgn(x) * 32000
-    iceil = x
+Private Function iceil(X As Single) As Integer
+    If (Abs(X) > 32000) Then X = Sgn(X) * 32000
+    iceil = X
 End Function
 
 Private Sub makeshell(n)
 Dim oldshell As Single
 Dim Cost As Single
-Dim delta As Single
+Dim Delta As Single
 Dim shellNrgConvRate As Single
 
   shellNrgConvRate = 0.1 ' Make 10 shell for 1 nrg
@@ -821,19 +821,19 @@ Dim shellNrgConvRate As Single
     If .mem(822) > 32000 Then .mem(822) = 32000
     If .mem(822) < -32000 Then .mem(822) = -32000
     
-    delta = .mem(822) ' This is what the bot wants to do to his shell, up or down
+    Delta = .mem(822) ' This is what the bot wants to do to his shell, up or down
     
-    If Abs(delta) > .nrg / shellNrgConvRate Then delta = Sgn(delta) * .nrg / shellNrgConvRate  ' Can't make or unmake more shell than you have nrg
+    If Abs(Delta) > .nrg / shellNrgConvRate Then Delta = Sgn(Delta) * .nrg / shellNrgConvRate  ' Can't make or unmake more shell than you have nrg
     
-    If Abs(delta) > 100 Then delta = Sgn(delta) * 100      ' Can't make or unmake more than 100 shell at a time
-    If .shell + delta > 32000 Then delta = 32000 - .shell  ' shell can't go above 32000
-    If .shell + delta < 0 Then delta = -.shell             ' shell can't go below 0
+    If Abs(Delta) > 100 Then Delta = Sgn(Delta) * 100      ' Can't make or unmake more than 100 shell at a time
+    If .shell + Delta > 32000 Then Delta = 32000 - .shell  ' shell can't go above 32000
+    If .shell + Delta < 0 Then Delta = -.shell             ' shell can't go below 0
     
-    .shell = .shell + delta                                ' Make the change in shell
-    .nrg = .nrg - (Abs(delta) * shellNrgConvRate)          ' Making or unmaking shell takes nrg
+    .shell = .shell + Delta                                ' Make the change in shell
+    .nrg = .nrg - (Abs(Delta) * shellNrgConvRate)          ' Making or unmaking shell takes nrg
     
     'This is the transaction cost
-    Cost = Abs(delta) * SimOpts.Costs(SHELLCOST) * SimOpts.Costs(COSTMULTIPLIER)
+    Cost = Abs(Delta) * SimOpts.Costs(SHELLCOST) * SimOpts.Costs(COSTMULTIPLIER)
     
     If .Multibot Then
       .nrg = .nrg - Cost / (.numties + 1)  'lower cost for multibot
@@ -852,7 +852,7 @@ End Sub
 Private Sub makeslime(n)
 Dim oldslime As Single
 Dim Cost As Single
-Dim delta As Single
+Dim Delta As Single
 Dim slimeNrgConvRate As Single
 
   slimeNrgConvRate = 0.1 ' Make 10 slime for 1 nrg
@@ -864,19 +864,19 @@ Dim slimeNrgConvRate As Single
     If .mem(820) > 32000 Then .mem(820) = 32000
     If .mem(820) < -32000 Then .mem(820) = -32000
     
-    delta = .mem(820) ' This is what the bot wants to do to his slime, up or down
+    Delta = .mem(820) ' This is what the bot wants to do to his slime, up or down
     
-    If Abs(delta) > .nrg / slimeNrgConvRate Then delta = Sgn(delta) * .nrg / slimeNrgConvRate  ' Can't make or unmake more slime than you have nrg
+    If Abs(Delta) > .nrg / slimeNrgConvRate Then Delta = Sgn(Delta) * .nrg / slimeNrgConvRate  ' Can't make or unmake more slime than you have nrg
     
-    If Abs(delta) > 100 Then delta = Sgn(delta) * 100      ' Can't make or unmake more than 100 slime at a time
-    If .Slime + delta > 32000 Then delta = 32000 - .Slime  ' Slime can't go above 32000
-    If .Slime + delta < 0 Then delta = -.Slime             ' Slime can't go below 0
+    If Abs(Delta) > 100 Then Delta = Sgn(Delta) * 100      ' Can't make or unmake more than 100 slime at a time
+    If .Slime + Delta > 32000 Then Delta = 32000 - .Slime  ' Slime can't go above 32000
+    If .Slime + Delta < 0 Then Delta = -.Slime             ' Slime can't go below 0
     
-    .Slime = .Slime + delta                                ' Make the change in slime
-    .nrg = .nrg - (Abs(delta) * slimeNrgConvRate)          ' Making or unmaking slime takes nrg
+    .Slime = .Slime + Delta                                ' Make the change in slime
+    .nrg = .nrg - (Abs(Delta) * slimeNrgConvRate)          ' Making or unmaking slime takes nrg
     
     'This is the transaction cost
-    Cost = Abs(delta) * SimOpts.Costs(SLIMECOST) * SimOpts.Costs(COSTMULTIPLIER)
+    Cost = Abs(Delta) * SimOpts.Costs(SLIMECOST) * SimOpts.Costs(COSTMULTIPLIER)
     
     If .Multibot Then
       .nrg = .nrg - Cost / (.numties + 1) 'lower cost for multibot
@@ -1276,11 +1276,11 @@ Private Sub FireTies(n As Integer)
 End Sub
 
 Private Sub DeleteSpecies(i As Integer)
-  Dim x As Integer
+  Dim X As Integer
   
-  For x = i To SimOpts.SpeciesNum - 1
-    SimOpts.Specie(x) = SimOpts.Specie(x + 1)
-  Next x
+  For X = i To SimOpts.SpeciesNum - 1
+    SimOpts.Specie(X) = SimOpts.Specie(X + 1)
+  Next X
   SimOpts.Specie(SimOpts.SpeciesNum - 1).Native = False ' Do this just in case
   SimOpts.SpeciesNum = SimOpts.SpeciesNum - 1
    
@@ -1310,7 +1310,7 @@ Public Sub UpdateBots()
   Dim z As Integer
   Dim q As Integer
   Dim ti As Single
-  Dim x As Integer
+  Dim X As Integer
   Dim staticV As vector
     
   rp = 1
@@ -1795,7 +1795,7 @@ End Sub
 'Robot n converts some of his energy to venom
 Public Sub storevenom(n As Integer)
   Dim Cost As Single
-  Dim delta As Single
+  Dim Delta As Single
   Dim venomNrgConvRate As Single
 
   venomNrgConvRate = 1 ' Make 1 venom for 1 nrg
@@ -1806,19 +1806,19 @@ Public Sub storevenom(n As Integer)
     If .mem(824) > 32000 Then .mem(824) = 32000
     If .mem(824) < -32000 Then .mem(824) = -32000
     
-    delta = .mem(824) ' This is what the bot wants to do to his venom, up or down
+    Delta = .mem(824) ' This is what the bot wants to do to his venom, up or down
     
-    If Abs(delta) > .nrg / venomNrgConvRate Then delta = Sgn(delta) * .nrg / venomNrgConvRate  ' Can't make or unmake more venom than you have nrg
+    If Abs(Delta) > .nrg / venomNrgConvRate Then Delta = Sgn(Delta) * .nrg / venomNrgConvRate  ' Can't make or unmake more venom than you have nrg
     
-    If Abs(delta) > 100 Then delta = Sgn(delta) * 100      ' Can't make or unmake more than 100 venom at a time
-    If .venom + delta > 32000 Then delta = 32000 - .venom  ' venom can't go above 32000
-    If .venom + delta < 0 Then delta = -.venom             ' venom can't go below 0
+    If Abs(Delta) > 100 Then Delta = Sgn(Delta) * 100      ' Can't make or unmake more than 100 venom at a time
+    If .venom + Delta > 32000 Then Delta = 32000 - .venom  ' venom can't go above 32000
+    If .venom + Delta < 0 Then Delta = -.venom             ' venom can't go below 0
     
-    .venom = .venom + delta                                ' Make the change in venom
-    .nrg = .nrg - (Abs(delta) * venomNrgConvRate)          ' Making or unmaking venom takes nrg
+    .venom = .venom + Delta                                ' Make the change in venom
+    .nrg = .nrg - (Abs(Delta) * venomNrgConvRate)          ' Making or unmaking venom takes nrg
     
     'This is the transaction cost
-    Cost = Abs(delta) * SimOpts.Costs(VENOMCOST) * SimOpts.Costs(COSTMULTIPLIER)
+    Cost = Abs(Delta) * SimOpts.Costs(VENOMCOST) * SimOpts.Costs(COSTMULTIPLIER)
    
     .nrg = .nrg - Cost
     
@@ -1832,7 +1832,7 @@ End Sub
 ' Robot n converts some of his energy to poison
 Public Sub storepoison(n As Integer)
   Dim Cost As Single
-  Dim delta As Single
+  Dim Delta As Single
   Dim poisonNrgConvRate As Single
 
   poisonNrgConvRate = 1 ' Make 1 poison for 1 nrg
@@ -1843,19 +1843,19 @@ Public Sub storepoison(n As Integer)
     If .mem(826) > 32000 Then .mem(826) = 32000
     If .mem(826) < -32000 Then .mem(826) = -32000
     
-    delta = .mem(826) ' This is what the bot wants to do to his poison, up or down
+    Delta = .mem(826) ' This is what the bot wants to do to his poison, up or down
     
-    If Abs(delta) > .nrg / poisonNrgConvRate Then delta = Sgn(delta) * .nrg / poisonNrgConvRate  ' Can't make or unmake more poison than you have nrg
+    If Abs(Delta) > .nrg / poisonNrgConvRate Then Delta = Sgn(Delta) * .nrg / poisonNrgConvRate  ' Can't make or unmake more poison than you have nrg
     
-    If Abs(delta) > 100 Then delta = Sgn(delta) * 100        ' Can't make or unmake more than 100 poison at a time
-    If .poison + delta > 32000 Then delta = 32000 - .poison  ' poison can't go above 32000
-    If .poison + delta < 0 Then delta = -.poison             ' poison can't go below 0
+    If Abs(Delta) > 100 Then Delta = Sgn(Delta) * 100        ' Can't make or unmake more than 100 poison at a time
+    If .poison + Delta > 32000 Then Delta = 32000 - .poison  ' poison can't go above 32000
+    If .poison + Delta < 0 Then Delta = -.poison             ' poison can't go below 0
     
-    .poison = .poison + delta                                ' Make the change in poison
-    .nrg = .nrg - (Abs(delta) * poisonNrgConvRate)           ' Making or unmaking poison takes nrg
+    .poison = .poison + Delta                                ' Make the change in poison
+    .nrg = .nrg - (Abs(Delta) * poisonNrgConvRate)           ' Making or unmaking poison takes nrg
     
     'This is the transaction cost
-    Cost = Abs(delta) * SimOpts.Costs(POISONCOST) * SimOpts.Costs(COSTMULTIPLIER)
+    Cost = Abs(Delta) * SimOpts.Costs(POISONCOST) * SimOpts.Costs(COSTMULTIPLIER)
    
     .nrg = .nrg - Cost
     
@@ -1918,8 +1918,8 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
   
   tempnrg = rob(n).nrg
   If tempnrg > 0 Then
-    nx = rob(n).pos.x + absx(rob(n).aim, sondist, 0, 0, 0)
-    ny = rob(n).pos.y + absy(rob(n).aim, sondist, 0, 0, 0)
+    nx = rob(n).pos.X + absx(rob(n).aim, sondist, 0, 0, 0)
+    ny = rob(n).pos.Y + absy(rob(n).aim, sondist, 0, 0, 0)
     tests = tests Or simplecoll(nx, ny, n)
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
     If Not tests Then
@@ -1951,11 +1951,11 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       Erase rob(nuovo).mem
       Erase rob(nuovo).Ties
       
-      rob(nuovo).pos.x = rob(n).pos.x + absx(rob(n).aim, sondist, 0, 0, 0)
-      rob(nuovo).pos.y = rob(n).pos.y + absy(rob(n).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.X = rob(n).pos.X + absx(rob(n).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.Y = rob(n).pos.Y + absy(rob(n).aim, sondist, 0, 0, 0)
       rob(nuovo).exist = True
-      rob(nuovo).BucketPos.x = -2
-      rob(nuovo).BucketPos.y = -2
+      rob(nuovo).BucketPos.X = -2
+      rob(nuovo).BucketPos.Y = -2
       UpdateBotBucket nuovo
       rob(nuovo).vel = rob(n).vel
       rob(nuovo).color = rob(n).color
@@ -2125,8 +2125,8 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
   
   tempnrg = rob(female).nrg
   If tempnrg > 0 Then
-    nx = rob(female).pos.x + absx(rob(female).aim, sondist, 0, 0, 0)
-    ny = rob(female).pos.y + absy(rob(female).aim, sondist, 0, 0, 0)
+    nx = rob(female).pos.X + absx(rob(female).aim, sondist, 0, 0, 0)
+    ny = rob(female).pos.Y + absy(rob(female).aim, sondist, 0, 0, 0)
     tests = tests Or simplecoll(nx, ny, female)
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
     If Not tests Then
@@ -2150,46 +2150,10 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
        dna2(t).value = rob(female).spermDNA(t).value
       Next
       
-      'Step2 Find longest sequance and optionaly save to file -Botsareusnotdone remove optionaly save to file
+      'Step2 Find longest sequance
       iinc = 0
       FindLongestSequences dna1, dna2, 0, UBound(dna1), 0, UBound(dna2)
-      
-      'Botsareus 4/17/2013 Temporary (Beta only) debug
-      Dim debugonly As Single
-      debugonly = GeneticDistance(dna1, dna2)
-      
-      If debugonly > 0.6 Then Exit Function 'If robot is too unsimiler then do not reproduce
-      
-      If MDIForm1.BetaDebug.Checked = False Then debugonly = 0
-      
-      If debugonly > 0 Then debugonly = Int(Rnd * 15) - 13
-      
-      If debugonly > 0 Then
-        Dim converttosysvar As Boolean
-        Dim tmr As Long
-        Dim holdcmd As String
-        tmr = Timer * 100
-        MkDir App.path & "\" & tmr & "-" & female
-        Open App.path & "\" & tmr & "-" & female & "\Mama.txt" For Output As #1
-        For t = 0 To UBound(dna1)
-            holdcmd = ""
-            converttosysvar = False
-            If t <> UBound(dna1) Then converttosysvar = IIf(rob(female).DNA(t + 1).tipo = 7, True, False)
-            Parse holdcmd, rob(female).DNA(t), , converttosysvar
-            Print #1, holdcmd & vbTab & vbTab & dna1(t).match
-        Next
-        Close #1
-        Open App.path & "\" & tmr & "-" & female & "\Papa.txt" For Output As #1
-        For t = 0 To UBound(dna2)
-            holdcmd = ""
-            converttosysvar = False
-            If t <> UBound(dna2) Then converttosysvar = IIf(rob(female).spermDNA(t + 1).tipo = 7, True, False)
-            Parse holdcmd, rob(female).spermDNA(t), , converttosysvar
-            Print #1, holdcmd & vbTab & vbTab & dna2(t).match
-        Next
-        Close #1
-      End If
-        
+      If GeneticDistance(dna1, dna2) > 0.6 Then Exit Function 'If robot is too unsimiler then do not reproduce
       'Step3 do crossover and optionaly save to file -Botsareusnotdone remove optionaly save to file
     
       Dim Outdna() As block
@@ -2202,18 +2166,6 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
          Outdna(t - 1) = Outdna(t)
         Next
         ReDim Preserve Outdna(UBound(Outdna) - 1)
-      End If
-      
-      If debugonly > 0 Then
-        Open App.path & "\" & tmr & "-" & female & "\Kid.txt" For Output As #1
-        For t = 0 To UBound(Outdna)
-            holdcmd = ""
-            converttosysvar = False
-            If t <> UBound(Outdna) Then converttosysvar = IIf(Outdna(t + 1).tipo = 7, True, False)
-            Parse holdcmd, Outdna(t), , converttosysvar
-            Print #1, holdcmd
-        Next
-        Close #1
       End If
     
       nuovo = posto()
@@ -2248,11 +2200,11 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       Erase rob(nuovo).mem
       Erase rob(nuovo).Ties
       
-      rob(nuovo).pos.x = rob(female).pos.x + absx(rob(female).aim, sondist, 0, 0, 0)
-      rob(nuovo).pos.y = rob(female).pos.y + absy(rob(female).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.X = rob(female).pos.X + absx(rob(female).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.Y = rob(female).pos.Y + absy(rob(female).aim, sondist, 0, 0, 0)
       rob(nuovo).exist = True
-      rob(nuovo).BucketPos.x = -2
-      rob(nuovo).BucketPos.y = -2
+      rob(nuovo).BucketPos.X = -2
+      rob(nuovo).BucketPos.Y = -2
       UpdateBotBucket nuovo
       
       rob(nuovo).vel = rob(female).vel
@@ -2555,7 +2507,7 @@ Public Function DoGeneticMemory(t As Integer)
 End Function
 
 ' verifies rapidly if a field position is already occupied
-Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
+Public Function simplecoll(X As Long, Y As Long, k As Integer) As Boolean
   Dim t As Integer
   Dim radius As Long
   
@@ -2563,8 +2515,8 @@ Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
   
   For t = 1 To MaxRobs
     If rob(t).exist Then
-      If Abs(rob(t).pos.x - x) < rob(t).radius + rob(k).radius And _
-        Abs(rob(t).pos.y - y) < rob(t).radius + rob(k).radius Then
+      If Abs(rob(t).pos.X - X) < rob(t).radius + rob(k).radius And _
+        Abs(rob(t).pos.Y - Y) < rob(t).radius + rob(k).radius Then
         If k <> t Then
           simplecoll = True
           GoTo getout
@@ -2575,21 +2527,21 @@ Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
   
   'EricL Can't reproduce into or across a shape
   For t = 1 To numObstacles
-    If Not ((Obstacles.Obstacles(t).pos.x > Max(rob(k).pos.x, x)) Or _
-           (Obstacles.Obstacles(t).pos.x + Obstacles.Obstacles(t).Width < Min(rob(k).pos.x, x)) Or _
-           (Obstacles.Obstacles(t).pos.y > Max(rob(k).pos.y, y)) Or _
-           (Obstacles.Obstacles(t).pos.y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.y, y))) Then
+    If Not ((Obstacles.Obstacles(t).pos.X > Max(rob(k).pos.X, X)) Or _
+           (Obstacles.Obstacles(t).pos.X + Obstacles.Obstacles(t).Width < Min(rob(k).pos.X, X)) Or _
+           (Obstacles.Obstacles(t).pos.Y > Max(rob(k).pos.Y, Y)) Or _
+           (Obstacles.Obstacles(t).pos.Y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.Y, Y))) Then
        simplecoll = True
        GoTo getout
     End If
   Next t
   
   If SimOpts.Dxsxconnected = False Then
-    If x < rob(k).radius + smudgefactor Or x + rob(k).radius + smudgefactor > SimOpts.FieldWidth Then simplecoll = True
+    If X < rob(k).radius + smudgefactor Or X + rob(k).radius + smudgefactor > SimOpts.FieldWidth Then simplecoll = True
   End If
   
   If SimOpts.Updnconnected = False Then
-    If y < rob(k).radius + smudgefactor Or y + rob(k).radius + smudgefactor > SimOpts.FieldHeight Then simplecoll = True
+    If Y < rob(k).radius + smudgefactor Or Y + rob(k).radius + smudgefactor > SimOpts.FieldHeight Then simplecoll = True
   End If
 getout:
 End Function
@@ -2599,7 +2551,7 @@ Public Function posto() As Integer
   Dim newsize As Long
   Dim t As Integer
   Dim foundone As Boolean
-  Dim x As Long
+  Dim X As Long
   
   t = 1
   foundone = False
@@ -2659,7 +2611,7 @@ End Function
 ' Kill Bill
 Public Sub KillRobot(n As Integer)
  Dim newsize As Long
- Dim x As Long
+ Dim X As Long
  
   If n = -1 Then n = robfocus
   

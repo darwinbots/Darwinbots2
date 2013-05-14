@@ -35,6 +35,26 @@ Begin VB.Form Form1
       Left            =   1440
       Top             =   120
    End
+   Begin VB.Label lblSafeMode 
+      BackStyle       =   0  'Transparent
+      Caption         =   "Safe Mode"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   24
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H0000FFFF&
+      Height          =   615
+      Left            =   600
+      TabIndex        =   4
+      Top             =   4680
+      Visible         =   0   'False
+      Width           =   3255
+   End
    Begin VB.Label GraphLab 
       BackStyle       =   0  'Transparent
       Caption         =   "Updating Graph: 0%"
@@ -1059,7 +1079,7 @@ Private Sub Timer2_Timer()
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As file
+          Dim fileToDelete As File
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1077,7 +1097,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As file
+          Dim fileToDelete2 As File
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -1091,6 +1111,14 @@ End Sub
 
 ' initializes a simulation.
 Sub StartSimul()
+   'Botsareus 5/8/2013 save the safemode for 'start new'
+   optionsform.savesett MDIForm1.MainDir + "\settings\lastran.set" 'Botsareus 5/3/2013 Save the lastran setting
+
+  'lets reset the autosafe data
+    Open App.path & "\autosaved.gset" For Output As #1
+      Write #1, False
+    Close #1
+
 Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is normailized
 
 MDIForm1.visualize = True 'Botsareus 8/31/2012 reset vedio tuggle button
@@ -1102,6 +1130,12 @@ MDIForm1.menuupdate
 '  Else
 '    Randomize Timer
 '  End If
+
+    'Botsareus 5/5/2013 Update the system that the sim is running
+  
+    Open App.path & "\Safemode.gset" For Output As #1
+      Write #1, True
+    Close #1
   
     'Botsareus 4/27/2013 Create Simulation's skin
     Dim tmphsl As H_S_L
@@ -1246,14 +1280,28 @@ Sub startloaded()
   If tmpseed <> 0 Then
    SimOpts.UserSeedNumber = tmpseed
    TmpOpts.UserSeedNumber = tmpseed
+   'Botsareus 5/8/2013 save the safemode for 'load sim'
+   optionsform.savesett MDIForm1.MainDir + "\settings\lastran.set" 'Botsareus 5/3/2013 Save the lastran setting
   End If
   
+    'lets reset the autosafe data
+    Open App.path & "\autosaved.gset" For Output As #1
+      Write #1, False
+    Close #1
+  
+    
   'If SimOpts.UserSeedToggle = True Then 'Botsareus 5/3/2013 Replaced by safemode
     Rnd -1
     Randomize SimOpts.UserSeedNumber / 100
   'Else
   '  Randomize Timer
   'End If
+  
+    'Botsareus 5/5/2013 Update the system that the sim is running
+  
+    Open App.path & "\Safemode.gset" For Output As #1
+      Write #1, True
+    Close #1
   
     'Botsareus 4/27/2013 Create Simulation's skin
     Dim tmphsl As H_S_L
@@ -1532,6 +1580,8 @@ End Sub
 ' outside of a Form event. So I've used the event to switch
 ' on and off some global vars
 Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+If lblSafeMode.Visible Then Exit Sub 'Botsareus 5/13/2013 Safemode restrictions
+  
   MouseClicked = False
   MousePointer = 0
   ZoomFlag = False ' EricL - stop zooming in!
@@ -1549,6 +1599,8 @@ End Sub
 ' double clicking on a rob pops up the info window
 ' elsewhere closes it
 Private Sub Form_DblClick()
+'elcrasho = 50 'Botsareudnotdone debug only
+
   Dim n As Integer
   Dim m As Integer
   n = whichrob(CSng(MouseClickX), CSng(MouseClickY))
@@ -1577,6 +1629,8 @@ End Sub
 ' clicking outside robots closes info window
 ' mind the walls tool
 Private Sub Form_Click()
+If lblSafeMode.Visible Then Exit Sub 'Botsareus 5/13/2013 Safemode restrictions
+
   Dim n As Integer
   Dim m As Integer
    
@@ -1612,6 +1666,8 @@ End Sub
 ' clicking outside can add a robot if we're in robot insertion
 ' mode.
 Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+If lblSafeMode.Visible Then Exit Sub 'Botsareus 5/13/2013 Safemode restrictions
+
   Dim n As Integer
   Dim k As Integer
   Dim m As Integer

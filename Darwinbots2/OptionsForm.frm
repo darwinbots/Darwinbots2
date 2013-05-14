@@ -110,28 +110,27 @@ Begin VB.Form optionsform
       TabPicture(1)   =   "OptionsForm.frx":001C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "GenPropFrame"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Frame20"
-      Tab(2).Control(1)=   "Frame21"
+      Tab(2).Control(0)=   "Frame21"
+      Tab(2).Control(1)=   "Frame20"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Mutations"
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "DisableMutationsCheck"
-      Tab(3).Control(1)=   "Frame14"
-      Tab(3).Control(2)=   "Frame13"
-      Tab(3).Control(3)=   "Frame15"
+      Tab(3).Control(0)=   "Frame15"
+      Tab(3).Control(1)=   "Frame13"
+      Tab(3).Control(2)=   "Frame14"
+      Tab(3).Control(3)=   "DisableMutationsCheck"
       Tab(3).ControlCount=   4
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame8"
+      Tab(4).Control(0)=   "Frame7"
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(2)=   "Frame7"
+      Tab(4).Control(2)=   "Frame8"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
@@ -143,8 +142,8 @@ Begin VB.Form optionsform
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "Frame10"
-      Tab(6).Control(1)=   "Frame4"
+      Tab(6).Control(0)=   "Frame4"
+      Tab(6).Control(1)=   "Frame10"
       Tab(6).ControlCount=   2
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "List Non-Native Species "
@@ -2311,6 +2310,7 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0571
@@ -4892,6 +4892,14 @@ Private Sub LightText_lostfocus()
 End Sub
 
 Private Sub OKButton_Click()
+'Botsareus 5/13/2013 Safemode restrictions
+If Form1.lblSafeMode.Visible Then
+    MsgBox "Can not change settings during safemode"
+    Exit Sub
+End If
+
+savesett MDIForm1.MainDir + "\settings\lastran.set"
+
 Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is normailized
 
   Dim i As Integer
@@ -4981,23 +4989,29 @@ Private Sub RestartSimCheck_Click()
 End Sub
 
 Public Sub StartNew_Click() 'startnew
+
+  If Form1.Visible Then
+    If MsgBox("Are you sure?", vbYesNo, "About to start a new simulation") = vbNo Then
+        Exit Sub
+    End If
+  End If
+
 If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 Change seed on start new
 
-
- savesett MDIForm1.MainDir + "\settings\lastran.set" 'Botsareus 5/3/2013 Save the lastran settings
-
+  'Botsareus 5/7/2013 Safemode component
+  Form1.lblSafeMode.Visible = False
+  MDIForm1.Objects.Enabled = True
+  MDIForm1.inssp.Enabled = True
+  MDIForm1.DisableArep.Enabled = True
+  
+  If dir(MDIForm1.MainDir + "\saves\localcopy.sim") <> "" Then Kill (MDIForm1.MainDir + "\saves\localcopy.sim")
+  If dir(MDIForm1.MainDir + "\saves\lastautosave.sim") <> "" Then Kill (MDIForm1.MainDir + "\saves\lastautosave.sim")
 
   Dim i As Integer
   Dim k As Integer
   Dim t As Integer
   
   DragEnd
-  
-  If Form1.Visible Then
-    If MsgBox("Are you sure?", vbYesNo, "About to start a new simulation") = vbNo Then
-        Exit Sub
-    End If
-  End If
   
   Contests = 0
   ReStarts = 0
@@ -5673,7 +5687,7 @@ skipthisspecie4:
   Write #1, TmpOpts.DisableTypArepro
   
   'Botsareus 4/27/2013 Rest of species data
-  For t = 0 To TmpOpts.SpeciesNum - 1
+  For t = 0 To numSpecies - 1
     Write #1, TmpOpts.Specie(t).CantSee
     Write #1, TmpOpts.Specie(t).DisableDNA
     Write #1, TmpOpts.Specie(t).DisableMovementSysvars
@@ -5965,7 +5979,7 @@ Public Sub ReadSettFromFile()
   If Not EOF(1) Then Input #1, TmpOpts.DisableTypArepro
   
   'Botsareus 4/37/2013 Rest of species data
-  For t = 0 To TmpOpts.SpeciesNum - 1
+  For t = 0 To maxsp
     If Not EOF(1) Then Input #1, TmpOpts.Specie(t).CantSee
     If Not EOF(1) Then Input #1, TmpOpts.Specie(t).DisableDNA
     If Not EOF(1) Then Input #1, TmpOpts.Specie(t).DisableMovementSysvars

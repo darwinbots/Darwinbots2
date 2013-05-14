@@ -593,9 +593,6 @@ Begin VB.MDIForm MDIForm1
       Begin VB.Menu DisableArep 
          Caption         =   "Disable asexual reproduction for un-repopulating robots"
       End
-      Begin VB.Menu BetaDebug 
-         Caption         =   "Auto-save a sex-reproduction every ~15 reproductions"
-      End
    End
    Begin VB.Menu Backgrounds 
       Caption         =   "View"
@@ -905,7 +902,7 @@ Option Explicit
 'Botsareus 4/17/2013 Added a bunch of new components
 
 Public zoomval As Integer
-Public startdir As String
+'Public startdir As String 'Botsareus 5/10/2013 startdir does not look like it is ever used, disabeling
 Public MainDir As String
 Public BaseCaption As String
 Public insrob As Boolean
@@ -955,9 +952,9 @@ Private Sub AutoSpeciationMenu_Click()
 End Sub
 
 'Botsareus 4/17/2013 Temporary (Beta only) debug
-Private Sub BetaDebug_Click()
-BetaDebug.Checked = Not BetaDebug.Checked
-End Sub
+'Private Sub BetaDebug_Click()
+'BetaDebug.Checked = Not BetaDebug.Checked
+'End Sub
 
 Private Sub DeleteAllShapes_Click()
   DeleteAllObstacles
@@ -1045,6 +1042,11 @@ Dim i As Integer
 End Sub
 
 Public Sub F1Internet_Click()
+If Form1.lblSafeMode.Visible Then
+    MsgBox "Can not enable Internet during safemode."
+    Exit Sub
+End If
+
   Dim i As Integer
   Dim b As Integer
   Dim l As Long
@@ -1702,12 +1704,22 @@ Private Sub simload(Optional path As String)
     Else
       path2 = CommonDialog1.FileName
     End If
+    'Botsareus 5/14/2013 Create our local copy
+    If path2 <> (MDIForm1.MainDir + "\saves\localcopy.sim") Then FileCopy path2, MDIForm1.MainDir + "\saves\localcopy.sim"
   Else
     path2 = path
-    If MsgBox("Would you like to connect to Internet Mode?", vbYesNo + vbExclamation, MBwarning) = vbYes Then
-        StartInInternetMode = True
+    'Botsareus 5/13/2013 Show the safemode lab. and no internet
+    If autosaved Then
+        Form1.lblSafeMode.Visible = True
+        MDIForm1.Objects.Enabled = False
+        MDIForm1.inssp.Enabled = False
+        MDIForm1.DisableArep.Enabled = False
     Else
-       StartInInternetMode = False
+        If MsgBox("Would you like to connect to Internet Mode?", vbYesNo + vbExclamation, MBwarning) = vbYes Then
+            StartInInternetMode = True
+        Else
+           StartInInternetMode = False
+        End If
     End If
   End If
   
@@ -1816,7 +1828,25 @@ MsgBox "Saving sim failed.  " + Err.Description, vbOKOnly
 End Sub
 
 Private Sub MDIForm_Load()
+'Botsareus 5/8/2013 Safemode strings are declared here (sorry, no Italian version)
+Dim strMsgSendData As String
+Dim strMsgEnterDiagMode As String
+
 LoadGlobalSettings 'Botsareus 3/15/2013 lets try to load global settings first
+
+'Botsareus 5/8/2013 If program did crash and no autosave then it is time to give all data to the user
+strMsgSendData = "Please go to " & MDIForm1.MainDir & " and give the administrator the following files:" & vbCrLf & vbCrLf & _
+"Global.gset" & vbCrLf & _
+"settings\lastran.set" & vbCrLf & _
+"saves\localcopy.sim" & vbCrLf & _
+"saves\lastautosave.sim" & vbCrLf & vbCrLf & _
+"If you don't see any or all of these file(s) let the administrator know they are missing."
+'Botsareus 5/8/2013 If the program didcrash and autosave prompt to enter safemode
+strMsgEnterDiagMode = "Warning: Diagnostic mode does not check for errors by user generated events. If the error happened immediacy after you manipulated the simulation. Please press NO and tell what you did to the administrator. Otherwise, it is recommended that you run diagnostic mode." & vbCrLf & vbCrLf & _
+"Do you want to run diagnostic mode?"
+
+
+If simalreadyrunning And Not autosaved Then MsgBox strMsgSendData
 
 Dim path As String
 Dim fso As New FileSystemObject
@@ -1832,20 +1862,21 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   MDIForm1.BaseCaption = "DarwinBots " + CStr(App.Major) + "." + CStr(App.Minor) + "." + Format(App.revision, "00")
   MDIForm1.Caption = MDIForm1.BaseCaption
   
-  startdir = App.path
-  MainDir = App.path
+  'startdir = App.path 'Botsareus 5/10/2013 startdir does not look like it is ever used, disabeling
   
-    'this little snippet insures that Prsn828 can run his code alright
-  If Left(MDIForm1.MainDir, 51) = "C:\Repositories\DarwinbotsVB\trunk" Then _
-    MDIForm1.MainDir = "C:\Program Files\DarwinBotsII"
-    
-    'Numsgil code
-  If Left(MDIForm1.MainDir, 15) = "C:\darwinsource" Then _
-    MDIForm1.MainDir = "C:\DarwinbotsII"
-    
-  ' Here's another hack like the above so that EricL can run in VB
-  If Left(MDIForm1.MainDir, 51) = "C:\Documents and Settings\Eric\Desktop\DB VB Source" Then _
-    MDIForm1.MainDir = "C:\Program Files\DarwinBotsII"
+'Botsareus 5/10/2013 It is up to the user to select there main dir from now on.
+'  MainDir = App.path
+'    'this little snippet insures that Prsn828 can run his code alright
+'  If Left(MDIForm1.MainDir, 51) = "C:\Repositories\DarwinbotsVB\trunk" Then _
+'    MDIForm1.MainDir = "C:\Program Files\DarwinBotsII"
+'
+'    'Numsgil code
+'  If Left(MDIForm1.MainDir, 15) = "C:\darwinsource" Then _
+'    MDIForm1.MainDir = "C:\DarwinbotsII"
+'
+'  ' Here's another hack like the above so that EricL can run in VB
+'  If Left(MDIForm1.MainDir, 51) = "C:\Documents and Settings\Eric\Desktop\DB VB Source" Then _
+'    MDIForm1.MainDir = "C:\Program Files\DarwinBotsII"
   
   disablesim
   'SimOpts.FieldWidth = Me.Width
@@ -1917,7 +1948,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   
   EnableRobotsMenu
     
-  optionsform.ReadSett MDIForm1.MainDir + "\settings\lastexit.set"
+  optionsform.ReadSett MDIForm1.MainDir + IIf(simalreadyrunning, "\settings\lastran.set", "\settings\lastexit.set")
   optionsform.IntSettLoad
 
   If exitDB Then
@@ -1937,10 +1968,11 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   If path = "" Then
  
     On Error GoTo bypass
-    Set lastSim = fso.GetFile(MDIForm1.MainDir + "\Saves\lastexit.sim")
+    Set lastSim = fso.GetFile(MDIForm1.MainDir + IIf(autosaved, "\Saves\lastautosave.sim", "\Saves\lastexit.sim"))
     If lastSim.size > 0 Then
-      If MsgBox("Continue the last simulation?", vbYesNo + vbExclamation, MBwarning) = vbYes Then
-         simload MDIForm1.MainDir + "\saves\lastexit.sim"
+      'Botsareus 5/8/2013 Change of message for diag mode
+      If MsgBox(IIf(autosaved, strMsgEnterDiagMode, "Continue the last simulation?"), vbYesNo + vbExclamation, MBwarning) = vbYes Then
+         simload MDIForm1.MainDir + IIf(autosaved, "\Saves\lastautosave.sim", "\Saves\lastexit.sim")
       End If
     Else
       InfoForm.Show
@@ -1998,16 +2030,51 @@ Public Function DisableRobotsMenu()
        
 End Function
 
-
-
 Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+'Botsareus 5/5/2013 Replaced MBsure with a better message. (Sorry, no Italian version)
+'Botsareus 5/10/2013 Only prompt to overwrite setting if lastexit.set already exisits.
+If dir(MDIForm1.MainDir + "\settings\lastexit.set") <> "" Then
+
+  Select Case MsgBox("Would you like to save changes to the settings? Press CANCEL to return to the program.", vbYesNoCancel + vbExclamation, MBwarning)
+  Case vbYes
+    Form1.Form_Unload 0
+    datirob.Form_Unload 1
+          
+        'moved savesett here
+        If optionsform.Visible = False Then
+          TmpOpts = SimOpts
+        End If
+        optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
+        
+    Form1.Form_Unload 0
+    datirob.Form_Unload 1
+    MDIForm_Unload 0
+  Case vbNo
+    Form1.Form_Unload 0
+    datirob.Form_Unload 1
+    MDIForm_Unload 0
+  Case vbCancel
+    Cancel = 1
+  End Select
+  
+Else
+
   If MsgBox(MBsure, vbYesNo + vbExclamation, MBwarning) = vbYes Then
+  
+        'copyed savesett here
+        If optionsform.Visible = False Then
+          TmpOpts = SimOpts
+        End If
+        optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
+  
     Form1.Form_Unload 0
     datirob.Form_Unload 1
     MDIForm_Unload 0
   Else
     Cancel = 1
   End If
+
+End If
 End Sub
 
 
@@ -2017,11 +2084,15 @@ Private Sub MDIForm_Resize()
 End Sub
 Private Sub MDIForm_Unload(Cancel As Integer)
    
-  If optionsform.Visible = False Then
-    TmpOpts = SimOpts
-  End If
-  optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
+  
+   
   SaveSimulation MDIForm1.MainDir + "\saves\lastexit.sim" 'save last settings
+  
+  'Botsareus 5/5/2013 Update the system that the program closed
+  
+    Open App.path & "\Safemode.gset" For Output As #1
+      Write #1, False
+    Close #1
   
   End
 End Sub

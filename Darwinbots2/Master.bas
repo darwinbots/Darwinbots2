@@ -23,6 +23,10 @@ Public Sub UpdateSim()
   End If
   
   SimOpts.TotRunCycle = SimOpts.TotRunCycle + 1
+  'elcrasho = elcrasho - 1 'Botsareusnotdone debug only
+  'If elcrasho = 0 Then MsgBox 1 / 0 'Botsareusnotdone debug only
+  
+  
   Form1.MutCyc = Form1.MutCyc + 1
 
   TotalSimEnergyDisplayed = TotalSimEnergy(CurrentEnergyCycle)
@@ -33,6 +37,8 @@ Public Sub UpdateSim()
   If SimOpts.Costs(DYNAMICCOSTINCLUDEPLANTS) <> 0 Then
     CurrentPopulation = CurrentPopulation + totvegsDisplayed      'Include Plants in target population
   End If
+  
+  'If (SimOpts.TotRunCycle + 200) Mod 2000 = 0 Then MsgBox "sup" & SimOpts.TotRunCycle 'debug only
   
   If SimOpts.TotRunCycle Mod 10 = 0 Then
     For i = 10 To 2 Step -1
@@ -117,6 +123,18 @@ Public Sub UpdateSim()
   If SimOpts.EnableAutoSpeciation Then
     'If SimOpts.TotRunCycle Mod SimOpts.SpeciationForkInterval = 0 Then ForkSpecies SimOpts.SpeciationGeneticDistance, SimOpts.SpeciationGenerationalDistance, SimOpts.SpeciationMinimumPopulation
     
+  End If
+  
+  'Botsareus 5/6/2013 The safemode system
+  If UseSafeMode Then
+    If SimOpts.TotRunCycle Mod 2000 = 0 And SimOpts.TotRunCycle > 0 Then
+     SaveSimulation MDIForm1.MainDir + "\saves\lastautosave.sim"
+     'Botsareus 5/13/2013 delete local copy
+     If dir(MDIForm1.MainDir + "\saves\localcopy.sim") <> "" Then Kill (MDIForm1.MainDir + "\saves\localcopy.sim")
+         Open App.path & "\autosaved.gset" For Output As #1
+          Write #1, True
+         Close #1
+    End If
   End If
      
 End Sub
