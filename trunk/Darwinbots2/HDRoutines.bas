@@ -76,7 +76,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As file
+  Dim robotFile As File
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -278,7 +278,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As file
+  Dim fileToDelete As File
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -618,18 +618,54 @@ Public Sub LoadGlobalSettings()
 bodyfix = 32100
 chseedstartnew = True
 chseedloadsim = True
+MDIForm1.MainDir = App.path
+UseSafeMode = True
+
+Dim holdmaindir As String
+
+'see if maindir overwrite exisits
+If dir(App.path & "\Maindir.gset") <> "" Then
+    'load the new maindir
+    Open App.path & "\Maindir.gset" For Input As #1
+      Input #1, holdmaindir
+    Close #1
+    MDIForm1.MainDir = holdmaindir
+End If
 
 'see if settings exsist
-If dir(App.path & "\Global.gset") <> "" Then
+If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
     'load all settings
-    Open App.path & "\Global.gset" For Input As #1
+    Open MDIForm1.MainDir & "\Global.gset" For Input As #1
       Input #1, screenratiofix
       If Not EOF(1) Then Input #1, bodyfix
       If Not EOF(1) Then Input #1, reprofix
       If Not EOF(1) Then Input #1, chseedstartnew
       If Not EOF(1) Then Input #1, chseedloadsim
+      If Not EOF(1) Then Input #1, UseSafeMode
     Close #1
 End If
+
+'see if safemode settings exisit
+If dir(App.path & "\Safemode.gset") <> "" Then
+    'load all settings
+    Open App.path & "\Safemode.gset" For Input As #1
+      Input #1, simalreadyrunning
+    Close #1
+End If
+
+
+'see if autosaved file exisit
+If dir(App.path & "\autosaved.gset") <> "" Then
+    'load all settings
+    Open App.path & "\autosaved.gset" For Input As #1
+      Input #1, autosaved
+    Close #1
+End If
+
+'If we are not using safe mode assume simulation is not runnin'
+If UseSafeMode = False Then simalreadyrunning = False
+
+If simalreadyrunning = False Then autosaved = False
 End Sub
 
 

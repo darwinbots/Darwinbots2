@@ -9,8 +9,14 @@ Public bodyfix As Integer
 Public reprofix As Boolean
 Public chseedstartnew As Boolean
 Public chseedloadsim As Boolean
+Public UseSafeMode As Boolean
 
 Public tmpseed As Long 'used only by "load simulation"
+'Public elcrasho As Long  'Botsareusnotdone temporary way to crash program
+Public simalreadyrunning As Boolean
+Public autosaved As Boolean
+
+
 
 ' var structure, to store the correspondance name<->value
 Public Type var
