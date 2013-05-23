@@ -57,13 +57,7 @@ Public Sub Snapshot()
   On Error GoTo fine
   SnapBrowse
   Open SnapName For Output As 3
-  Print #3, "Rob id,Parent id,Founder name,Generation,Birth cycle,Age,Mutations,New mutations,Dna length,Offspring number,Total pop,Vegs pop,Robs pop,kills";
-
-  For t = 1 To 100
-    Print #3, ",gene" & t;
-  Next t
-
-  Print #3, "end "
+  Print #3, "Rob id,Parent id,Founder name,Generation,Birth cycle,Age,Mutations,New mutations,Dna length,Offspring number,kills,Fitness,Chloroplasts" & vbCrLf;
   v = ","
 
   For rn = 1 To MaxRobs
@@ -75,12 +69,21 @@ Public Sub Snapshot()
 
     If rob(rn).exist And OK Then
       With rob(rn)
-        Print #3, sstr(.AbsNum); v; sstr(.parent); v; .FName; v; sstr(.generation); v; sstr(.BirthCycle); v; sstr(.age); v; sstr(.Mutations); v;
-        Print #3, sstr(.LastMut); v; sstr(.DnaLen); v; sstr(.SonNumber); v; sstr(TotalRobots); v; sstr(totvegs); v; sstr(totnvegs); v; sstr(.Kills); v;
-        
+        Print #3, CStr(.AbsNum); v; CStr(.parent); v; .FName; v; CStr(.generation); v; CStr(.BirthCycle); v; CStr(.age); v; CStr(.Mutations); v;
+        Print #3, CStr(.LastMut); v; CStr(.DnaLen); v; CStr(.SonNumber); v; CStr(.Kills); v;
+        'lets figureout fitness
+        Dim sPopulation As Double
+        Dim sEnergy As Double
+        Dim s As Double
+        sEnergy = (IIf(intFindBestV2 > 100, 100, intFindBestV2)) / 100
+        sPopulation = (IIf(intFindBestV2 < 100, 100, 200 - intFindBestV2)) / 100
+        Form1.TotalOffspring = 1
+        s = Form1.score(rn, 1, 10, 0) + rob(rn).nrg + rob(rn).body * 10 'Botsareus 5/22/2013 Advanced fit test
+        s = (Form1.TotalOffspring ^ sPopulation) * (s ^ sEnergy)
+        Print #3, CStr(s); v; CStr(0);
         d = ""
         d = DetokenizeDNA(rn, False)
-        Print #3, d; v
+        Print #3, d;
       End With
     End If
   Next rn
