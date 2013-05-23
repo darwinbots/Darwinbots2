@@ -1,4 +1,5 @@
 VERSION 5.00
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmGset 
    BorderStyle     =   4  'Fixed ToolWindow
@@ -56,7 +57,48 @@ Begin VB.Form frmGset
       Tab(0).Control(3).Enabled=   0   'False
       Tab(0).Control(4)=   "chkSafeMode"
       Tab(0).Control(4).Enabled=   0   'False
-      Tab(0).ControlCount=   5
+      Tab(0).Control(5)=   "ffmFBSBO"
+      Tab(0).Control(5).Enabled=   0   'False
+      Tab(0).ControlCount=   6
+      Begin VB.Frame ffmFBSBO 
+         Caption         =   "Find Best Settings base on:"
+         Height          =   915
+         Left            =   4920
+         TabIndex        =   16
+         Top             =   2280
+         Width           =   5655
+         Begin MSComctlLib.Slider sldFindBest 
+            Height          =   570
+            Left            =   1320
+            TabIndex        =   17
+            TabStop         =   0   'False
+            Top             =   240
+            Width           =   2955
+            _ExtentX        =   5212
+            _ExtentY        =   1005
+            _Version        =   393216
+            LargeChange     =   40
+            Max             =   200
+            TickStyle       =   2
+            TickFrequency   =   10
+         End
+         Begin VB.Label lblTP 
+            Caption         =   "Total Population"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   19
+            Top             =   420
+            Width           =   1215
+         End
+         Begin VB.Label lblIE 
+            Caption         =   "Invested Energy"
+            Height          =   195
+            Left            =   4300
+            TabIndex        =   18
+            Top             =   420
+            Width           =   1200
+         End
+      End
       Begin VB.CheckBox chkSafeMode 
          Caption         =   "Use Safe Mode"
          Height          =   255
@@ -203,6 +245,7 @@ MsgBox "Global settings will take effect when you restart DarwinBots.", vbInform
       Write #1, chkchseedstartnew = 1
       Write #1, chkchseedloadsim = 1
       Write #1, chkSafeMode = 1
+      Write #1, sldFindBest.value
     Close #1
 'unload
 Unload Me
@@ -243,6 +286,8 @@ txtCD.Enabled = False
 End If
 'are we using safemode
 chkSafeMode = IIf(UseSafeMode, 1, 0)
+'find best
+sldFindBest.value = intFindBestV2
 End Sub
 
 Private Sub txtBodyFix_LostFocus()
