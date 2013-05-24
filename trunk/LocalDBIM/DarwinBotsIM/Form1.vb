@@ -34,6 +34,7 @@ Public Class Form1
         infolder = sp(1)
         outfolder = sp(3)
         Randomize()
+        Application.DoEvents()
         Timer1.Enabled = True
     End Sub
 
