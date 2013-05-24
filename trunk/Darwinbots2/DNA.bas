@@ -330,7 +330,7 @@ Private Sub findang()
   Dim e As Single  'angle to target
   b = PopIntStack ' * Form1.yDivisor
   a = PopIntStack ' * Form1.xDivisor
-  c = rob(currbot).pos.X / Form1.xDivisor
+  c = rob(currbot).pos.x / Form1.xDivisor
   d = rob(currbot).pos.Y / Form1.yDivisor
   e = angnorm(angle(c, d, a, b)) * 200
   PushIntStack e
@@ -344,7 +344,7 @@ Private Sub finddist()
   Dim e As Single  'distance to target
   b = PopIntStack * Form1.yDivisor
   a = PopIntStack * Form1.xDivisor
-  c = rob(currbot).pos.X
+  c = rob(currbot).pos.x
   d = rob(currbot).pos.Y
   e = Sqr(((c - a) ^ 2 + (d - b) ^ 2))
   If Abs(e) > 2000000000# Then
@@ -402,7 +402,7 @@ Private Sub DNApow()
     
     If Abs(b) > 10 Then b = 10 * Sgn(b)
     
-    Dim Index As Long
+    'Dim Index As Long
     
     If a = 0 Then
       c = 0
