@@ -40,6 +40,13 @@ Public Const SPECIESDIVERSITY_GRAPH As Integer = 11
 Public Const GENETIC_DIST_GRAPH As Integer = 12
 Public Const GENERATION_DIST_GRAPH As Integer = 13
 Public Const GENETIC_SIMPLE_GRAPH As Integer = 14
+'Botsareus 5/24/2013 Customizable graphs
+Public Const CUSTOM_1_GRAPH As Integer = 15
+Public Const CUSTOM_2_GRAPH As Integer = 16
+Public Const CUSTOM_3_GRAPH As Integer = 17
+Public strGraphQuery1 As String
+Public strGraphQuery2 As String
+Public strGraphQuery3 As String
 
 Public TotalEnergy As Long     ' total energy in the sim
 Public totnvegs As Integer          ' total non vegs in sim

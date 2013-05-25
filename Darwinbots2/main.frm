@@ -240,6 +240,13 @@ Option Explicit
 'Botsareus 3/15/2013 got rid of screen save code (was broken)
 'Botsareus 4/9/2013 New graph label to keep track of graph update progress
 
+'Botsareus 5/25/2013 onrounded math for custom graphs
+Private Type Stack
+  val(100) As Double
+  pos As Integer
+End Type
+Private QStack As Stack
+
 Public camfix As Boolean 'Botsareus 2/23/2013 normalizes screen
 Public pausefix As Boolean 'Botsareus 3/6/2013 Figure out if simulation must start paused
 Public TotalOffspring As Long 'Botsareus 5/22/2013 For find best
@@ -250,7 +257,7 @@ Public BackPic As String
 
 Dim edat(10) As Single
 
-Const NUMGRAPHS = 15
+Const NUMGRAPHS = 17 'Botsareus 5/25/2013 Two more graphs
 Const PIOVER4 = PI / 4
 
 ' for graphs
@@ -1884,10 +1891,6 @@ Private Sub main()
       End If
             
       ' feeds graphs with data:
-      GDVisible = False
-      If Not Charts(GENETIC_DIST_GRAPH).graf Is Nothing Then '4/12/2013 calculate if genetic graph visible
-       If Charts(GENETIC_DIST_GRAPH).graf.Visible Then GDVisible = True
-      End If
       If SimOpts.TotRunCycle Mod SimOpts.chartingInterval = 0 Then
         For i = 1 To NUMGRAPHS
           If Not (Charts(i).graf Is Nothing) Then
@@ -2056,6 +2059,111 @@ Public Sub FeedGraph(GraphNumber As Integer)
   Next k
 End Sub
 
+
+'Botsareus 5/25/2013 onrounded math for custom graphs
+'our stack manipulations
+Private Sub PushQStack(ByVal value As Double)
+  Dim a As Integer
+  
+  If QStack.pos >= 101 Then 'next push will overfill
+    For a = 0 To 99
+      QStack.val(a) = QStack.val(a + 1)
+    Next a
+    QStack.val(100) = 0
+    QStack.pos = 100
+  End If
+  
+  QStack.val(QStack.pos) = value
+  QStack.pos = QStack.pos + 1
+End Sub
+
+Private Function PopQStack() As Double
+  QStack.pos = QStack.pos - 1
+      
+  If QStack.pos = -1 Then
+    QStack.pos = 0
+    QStack.val(0) = 0
+  End If
+  
+  PopQStack = QStack.val(QStack.pos)
+End Function
+
+Private Sub ClearQStack()
+  QStack.pos = 0
+  QStack.val(0) = 0
+End Sub
+Private Sub Qadd()
+  Dim a As Double
+  Dim b As Double
+  Dim c As Double
+  b = PopQStack
+  a = PopQStack
+  
+  a = a Mod 2000000000
+  b = b Mod 2000000000
+  
+  c = a + b
+  
+  If Abs(c) > 2000000000 Then c = c - Sgn(c) * 2000000000
+  PushQStack c
+End Sub
+
+Private Sub QSub() 'Botsareus 5/20/2012 new code to stop overflow
+  Dim a As Double
+  Dim b As Double
+  Dim c As Double
+  b = PopQStack
+  a = PopQStack
+  
+  
+  a = a Mod 2000000000
+  b = b Mod 2000000000
+  
+  c = a - b
+  
+  If Abs(c) > 2000000000 Then c = c - Sgn(c) * 2000000000
+  PushQStack c
+End Sub
+
+Private Sub Qmult()
+  Dim a As Double
+  Dim b As Double
+  Dim c As Double
+  b = PopQStack
+  a = PopQStack
+  c = CDbl(a) * CDbl(b)
+  If Abs(c) > 2000000000 Then c = Sgn(c) * 2000000000
+  PushQStack CDbl(c)
+End Sub
+
+Private Sub Qdiv()
+  Dim a As Double
+  Dim b As Double
+  b = PopQStack
+  a = PopQStack
+  If b <> 0 Then
+    PushQStack a / b
+  Else
+    PushQStack 0
+  End If
+End Sub
+Private Sub Qpow()
+    Dim a As Double
+    Dim b As Double
+    Dim c As Double
+    b = PopQStack
+    a = PopQStack
+    
+    If Abs(b) > 10 Then b = 10 * Sgn(b)
+    
+    If a = 0 Then
+      c = 0
+    Else
+      c = a ^ b
+    End If
+    If Abs(c) > 2000000000 Then c = Sgn(c) * 2000000000
+    PushQStack c
+End Sub
 ' calculates data for the different graph types
 Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/3/2012 use names for graph id mod
   Dim P As Integer, t As Integer, i As Integer, x As Integer
@@ -2079,7 +2187,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
   'EricL - Modified in 2.42.5 to handle each graph separatly for perf reasons
  ' numbots = 0
   Select Case graphNum
-  Case 0 ' Do all the graphs
+  Case 0, CUSTOM_1_GRAPH, CUSTOM_2_GRAPH, CUSTOM_3_GRAPH     ' Do all the graphs
   
 '    t = Flex.last(nomi)
     For t = 1 To MaxRobs
@@ -2155,6 +2263,131 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
       dati(5, DYNAMICCOSTS_GRAPH) = SimOpts.Costs(BOTNOCOSTLEVEL) / SimOpts.Costs(DYNAMICCOSTTARGET)
       dati(6, DYNAMICCOSTS_GRAPH) = SimOpts.Costs(COSTXREINSTATEMENTLEVEL) / SimOpts.Costs(DYNAMICCOSTTARGET)
     End If
+    
+    'Botsareus 5/25/2013 Logic for custom graph
+    Dim myquery As String
+    Select Case graphNum
+        Case CUSTOM_1_GRAPH
+            myquery = strGraphQuery1
+        Case CUSTOM_2_GRAPH
+            myquery = strGraphQuery2
+        Case CUSTOM_3_GRAPH
+            myquery = strGraphQuery3
+    End Select
+    
+    'Botsareus 5/25/2013 Very simple genetic distance is calculated when necessary
+    If myquery Like "*verysimpgenetic*" Then
+    
+        t = Flex.last(nomi)
+        For P = 1 To t
+          dati(P, GENETIC_DIST_GRAPH) = 0
+        Next P
+        
+        For t = 1 To MaxRobs
+          With rob(t)
+          If .exist And Not .Corpse Then
+    
+            P = Flex.Position(rob(t).FName, nomi)
+    
+            If .GenMut > 0 Then 'If there is not enough mutations for a graph check, skip it
+    
+                l = .OldGD
+                If l > dati(P, GENETIC_DIST_GRAPH) Then dati(P, GENETIC_DIST_GRAPH) = l
+    
+            Else
+    
+                .GenMut = .DnaLen / GeneticSensitivity 'we have enough mutations, reset counter
+    
+                Dim copyl As Single
+                copyl = 0
+    
+                For x = t + 1 To MaxRobs 'search trough all robots and figure out genetic distance for the once that have enough mutations
+                If rob(x).exist And Not rob(x).Corpse And rob(x).FName = .FName And rob(x).GenMut = 0 Then  ' Must exist, have enugh mutations, and be of same species
+                    l = DoGeneticDistanceSimple(t, x) * 1000
+                    If l > copyl Then copyl = l 'here we store the max genetic distance for a given robot
+                End If
+    
+                If x = UBound(rob) Then Exit For
+                Next x
+    
+                If copyl > dati(P, GENETIC_DIST_GRAPH) Then dati(P, GENETIC_DIST_GRAPH) = copyl 'now we write this max distance
+                .OldGD = copyl 'since this robot will not checked for a while, we need to store it's genetic distance to be used later
+    
+            End If
+    
+    
+          End If
+          End With
+    
+        If t = UBound(rob) Then Exit For
+        Next t
+    End If
+    
+    If graphNum > 0 Then
+      For P = 1 To t
+        'calculate query
+        ClearQStack
+        'query logic
+        Dim splt() As String
+        splt = Split(myquery, " ")
+        Dim q As Integer
+        For q = 0 To UBound(splt)
+        'make sure data is lower case
+        splt(q) = LCase(splt(q))
+        'loop trough each element and compute it as nessisary
+            If splt(q) = CStr(val(splt(q))) Then
+                'push ze number
+                PushQStack (val(splt(q)))
+            Else
+                Select Case splt(q)
+                Case "pop"
+                    PushQStack dati(P, POPULATION_GRAPH)
+                Case "avgmut"
+                    PushQStack dati(P, MUTATIONS_GRAPH)
+                Case "avgage"
+                    PushQStack dati(P, AVGAGE_GRAPH)
+                Case "avgsons"
+                    PushQStack dati(P, OFFSPRING_GRAPH)
+                Case "avgnrg"
+                    PushQStack dati(P, ENERGY_GRAPH)
+                Case "avglen"
+                    PushQStack dati(P, DNALENGTH_GRAPH)
+                Case "avgcond"
+                    PushQStack dati(P, DNACOND_GRAPH)
+                Case "avgmutlen"
+                    PushQStack dati(P, MUT_DNALENGTH_GRAPH)
+                Case "simnrg"
+                    PushQStack dati(P, ENERGY_SPECIES_GRAPH)
+                Case "specidiv"
+                    PushQStack dati(P, SPECIESDIVERSITY_GRAPH)
+                Case "maxgd"
+                    PushQStack dati(P, GENERATION_DIST_GRAPH)
+                Case "verysimpgenetic"
+                    PushQStack dati(P, GENETIC_DIST_GRAPH)
+                Case "add"
+                     Qadd
+                Case "sub"
+                    QSub
+                Case "mult"
+                    Qmult
+                Case "div"
+                    Qdiv
+                Case "pow"
+                    Qpow
+                End Select
+            End If
+        Next
+        'end query logic
+        
+        'make sure graph is greater then zero
+        Dim holdqstack As Double
+        holdqstack = PopQStack
+        If holdqstack < 0 Then holdqstack = 0
+        
+        dati(P, graphNum) = holdqstack
+      Next
+    End If
+    
 getout2:
     
   Case POPULATION_GRAPH
@@ -2375,13 +2608,13 @@ getout3:
 
             .GenMut = .DnaLen / GeneticSensitivity 'we have enough mutations, reset counter
 
-            Dim copyl As Single
+            'Dim copyl As Single
             copyl = 0
 
             For x = t + 1 To MaxRobs 'search trough all robots and figure out genetic distance for the once that have enough mutations
             If rob(x).exist And Not rob(x).Corpse And rob(x).FName = .FName And rob(x).GenMut = 0 Then  ' Must exist, have enugh mutations, and be of same species
                 l = DoGeneticDistance(t, x) * 1000
-                If l > copyl Then copyl = l 'here we store the max generational distance for a given robot
+                If l > copyl Then copyl = l 'here we store the max genetic distance for a given robot
 
                 'update the graph label
                 GraphLab.Caption = "Updating Graph: " & Int(t / MaxRobs * 100) & "." & Int(x / MaxRobs * 99) & "%"
@@ -2454,7 +2687,6 @@ getout3:
     
     'hide the graph update label
     GraphLab.Visible = False
-
   End Select
 End Sub
 
