@@ -50,18 +50,18 @@ inizio:
     'Replace any tabs with spaces
     a = Replace(a, vbTab, " ")
     a = Trim(a)
-       
+       'Botsareus 5/24/2013 No more use and shp
     If (Left(a, 1) <> "'" And Left(a, 1) <> "/") And a <> "" Then
         If Left(a, 3) = "shp" Or Left(a, 3) = "def" Or Left(a, 3) = "use" Then
-          If Left(a, 3) = "shp" Then  'inserts robot shape
-            rob(n).Shape = val(Right(a, 1))
-          End If
+'          If Left(a, 3) = "shp" Then  'inserts robot shape
+'            rob(n).Shape = val(Right(a, 1))
+'          End If
           If Left(a, 3) = "def" Then  'inserts user defined labels as sysvars
             insertvar n, a
           End If
-          If Left(a, 3) = "use" Then
-            interpretUSE n, a
-          End If
+'          If Left(a, 3) = "use" Then
+'            interpretUSE n, a
+'          End If
         Else
           pos = InStr(a, " ")
           While pos <> 0

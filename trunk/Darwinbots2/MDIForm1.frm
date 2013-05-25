@@ -212,7 +212,7 @@ Begin VB.MDIForm MDIForm1
             ImageIndex      =   11
             Style           =   5
             BeginProperty ButtonMenus {66833FEC-8583-11D1-B16A-00C0F0283628} 
-               NumButtonMenus  =   17
+               NumButtonMenus  =   21
                BeginProperty ButtonMenu1 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "pop"
                   Text            =   "Population graph"
@@ -278,6 +278,21 @@ Begin VB.MDIForm MDIForm1
                   Text            =   "-"
                EndProperty
                BeginProperty ButtonMenu17 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "CG1"
+                  Text            =   "Customizable Graph 1"
+               EndProperty
+               BeginProperty ButtonMenu18 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "CG2"
+                  Text            =   "Customizable Graph 2"
+               EndProperty
+               BeginProperty ButtonMenu19 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "CG3"
+                  Text            =   "Customizable Graph 3"
+               EndProperty
+               BeginProperty ButtonMenu20 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Text            =   "-"
+               EndProperty
+               BeginProperty ButtonMenu21 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "resgraph"
                   Text            =   "Reset all graphs"
                EndProperty
@@ -1488,6 +1503,24 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
 End Sub
 
 Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu) 'Botsareus 8/3/2012 graph id mod, looks a little better now
+  Dim queryhold As String
+  Dim queryhelp As String
+  queryhelp = vbCrLf & vbCrLf & _
+  "Supported variables:" & vbCrLf & _
+  "pop= Populations" & vbCrLf & _
+  "avgmut= Average Mutations" & vbCrLf & _
+  "avgage= Average Age" & vbCrLf & _
+  "avgsons= Average Offspring" & vbCrLf & _
+  "avgnrg= Average Energy" & vbCrLf & _
+  "avglen= Average DNA length" & vbCrLf & _
+  "avgcond= Average DNA Cond statements" & vbCrLf & _
+  "avgmutlen= Average Mutations per DNA length" & vbCrLf & _
+  "simnrg= Total Energy_per Species" & vbCrLf & _
+  "specidiv= Species Diversity" & vbCrLf & _
+  "maxgd= Max Generational Distance" & vbCrLf & _
+  "verysimpgenetic= Genetic Distance" & vbCrLf & vbCrLf & _
+  "Supported operators: add sub div mult pow" & vbCrLf & "Please use reverse polish notation."
+
   Select Case ButtonMenu.key
     Case "pop"
       Form1.NewGraph POPULATION_GRAPH, "Populations"
@@ -1512,12 +1545,29 @@ Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
     Case "speciesdiversity"
       Form1.NewGraph SPECIESDIVERSITY_GRAPH, "Species_Diversity"
     Case "maxgeneticdistance"
-      'Botsareus 4/9/2013 added a proper warning
       Form1.NewGraph GENETIC_DIST_GRAPH, "Genetic_Distance_x1000-"
     Case "maxgenerationaldistance"
       Form1.NewGraph GENERATION_DIST_GRAPH, "Max_Generational_Distance"
     Case "simplegeneticdistance"
       Form1.NewGraph GENETIC_SIMPLE_GRAPH, "Simple_Genetic_Distance_x1000-"
+    Case "CG1"
+      queryhold = InputBox("Enter query for Customizable Graph 1:" & queryhelp, , strGraphQuery1)
+      If queryhold <> "" Then
+        strGraphQuery1 = queryhold
+        Form1.NewGraph CUSTOM_1_GRAPH, "Customizable_Graph_1-"
+      End If
+    Case "CG2"
+      queryhold = InputBox("Enter query for Customizable Graph 1:" & queryhelp, , strGraphQuery1)
+      If queryhold <> "" Then
+        strGraphQuery2 = queryhold
+        Form1.NewGraph CUSTOM_2_GRAPH, "Customizable_Graph_2-"
+      End If
+    Case "CG3"
+      queryhold = InputBox("Enter query for Customizable Graph 1:" & queryhelp, , strGraphQuery1)
+      If queryhold <> "" Then
+        strGraphQuery3 = queryhold
+        Form1.NewGraph CUSTOM_3_GRAPH, "Customizable_Graph_3-"
+      End If
     Case "resgraph"
       If MsgBox("Are you sure you want to reset all graphs?", vbOKCancel) = vbOK Then
         Form1.ResetGraphs (0)
@@ -1552,19 +1602,19 @@ Private Sub costi_Click()
   optionsform.Show vbModal
 End Sub
 
-Private Sub czin_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czin_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
   AspettaFlag = True
   ZoomInPremuto
 End Sub
 
-Private Sub czin_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czin_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
   AspettaFlag = False
 End Sub
 
 Public Sub ZoomIn()
   If Form1.visiblew > RobSize * 4 Then
     If robfocus > 0 Then
-      xc = rob(robfocus).pos.X
+      xc = rob(robfocus).pos.x
       yc = rob(robfocus).pos.Y
     Else
       xc = Form1.visiblew / 2 + Form1.ScaleLeft
@@ -1594,7 +1644,7 @@ Private Sub ZoomOutPremuto()
   Wend
 End Sub
 
-Private Sub czo_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czo_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
   AspettaFlag = True
   ZoomOutPremuto
 End Sub
@@ -1644,7 +1694,7 @@ Public Sub ZoomOut()
   Form1.Redraw
 End Sub
 
-Private Sub czo_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czo_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
  AspettaFlag = False
 End Sub
 
@@ -1850,7 +1900,7 @@ If simalreadyrunning And Not autosaved Then MsgBox strMsgSendData
 
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As file
+Dim lastSim As File
 Dim revision As String
 
 Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause initial simulation

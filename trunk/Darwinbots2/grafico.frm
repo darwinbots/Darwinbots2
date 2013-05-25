@@ -4103,6 +4103,12 @@ Private Function WhichGraphAmI() As Integer 'Botsareus 8/3/2012 use names for gr
       chartNumber = GENERATION_DIST_GRAPH
     Case "Simple_Genetic_Distance_x1000-"
       chartNumber = GENETIC_SIMPLE_GRAPH
+    Case "Customizable_Graph_1-"
+      chartNumber = CUSTOM_1_GRAPH
+    Case "Customizable_Graph_2-"
+      chartNumber = CUSTOM_2_GRAPH
+    Case "Customizable_Graph_3-"
+      chartNumber = CUSTOM_3_GRAPH
   End Select
   
   WhichGraphAmI = chartNumber
