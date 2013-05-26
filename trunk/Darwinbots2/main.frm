@@ -2099,8 +2099,8 @@ Private Sub Qadd()
   b = PopQStack
   a = PopQStack
   
-  a = a Mod 2000000000
-  b = b Mod 2000000000
+  If a > 2000000000 Then a = a Mod 2000000000
+  If b > 2000000000 Then b = b Mod 2000000000
   
   c = a + b
   
@@ -2116,8 +2116,8 @@ Private Sub QSub() 'Botsareus 5/20/2012 new code to stop overflow
   a = PopQStack
   
   
-  a = a Mod 2000000000
-  b = b Mod 2000000000
+  If a > 2000000000 Then a = a Mod 2000000000
+  If b > 2000000000 Then b = b Mod 2000000000
   
   c = a - b
   
@@ -2202,7 +2202,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
         dati(P, ENERGY_GRAPH) = dati(P, ENERGY_GRAPH) + .nrg
         dati(P, DNALENGTH_GRAPH) = dati(P, DNALENGTH_GRAPH) + .DnaLen
         dati(P, DNACOND_GRAPH) = dati(P, DNACOND_GRAPH) + .condnum
-        dati(P, MUT_DNALENGTH_GRAPH) = dati(P, MUT_DNALENGTH_GRAPH) + (.LastMut + .Mutations) / .DnaLen
+        dati(P, MUT_DNALENGTH_GRAPH) = dati(P, MUT_DNALENGTH_GRAPH) + (.LastMut + .Mutations) / .DnaLen * 1000
         dati(P, ENERGY_SPECIES_GRAPH) = Round(dati(P, ENERGY_SPECIES_GRAPH) + (.nrg + .body * 10) * 0.001, 2)
         
         
@@ -2354,8 +2354,6 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
                     PushQStack dati(P, DNALENGTH_GRAPH)
                 Case "avgcond"
                     PushQStack dati(P, DNACOND_GRAPH)
-                Case "avgmutlen"
-                    PushQStack dati(P, MUT_DNALENGTH_GRAPH)
                 Case "simnrg"
                     PushQStack dati(P, ENERGY_SPECIES_GRAPH)
                 Case "specidiv"
@@ -2516,7 +2514,7 @@ getout2:
        ' numbots = numbots + 1
         P = Flex.Position(rob(t).FName, nomi)
         dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
-        dati(P, MUT_DNALENGTH_GRAPH) = dati(P, MUT_DNALENGTH_GRAPH) + (.LastMut + .Mutations) / .DnaLen
+        dati(P, MUT_DNALENGTH_GRAPH) = dati(P, MUT_DNALENGTH_GRAPH) + (.LastMut + .Mutations) / .DnaLen * 1000
       End If
       End With
     Next t
