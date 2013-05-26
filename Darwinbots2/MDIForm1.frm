@@ -1503,6 +1503,7 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
 End Sub
 
 Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu) 'Botsareus 8/3/2012 graph id mod, looks a little better now
+'Botsareus 5/26/2013 We now support customizable graphs
   Dim queryhold As String
   Dim queryhelp As String
   queryhelp = vbCrLf & vbCrLf & _
@@ -1514,7 +1515,6 @@ Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
   "avgnrg= Average Energy" & vbCrLf & _
   "avglen= Average DNA length" & vbCrLf & _
   "avgcond= Average DNA Cond statements" & vbCrLf & _
-  "avgmutlen= Average Mutations per DNA length" & vbCrLf & _
   "simnrg= Total Energy_per Species" & vbCrLf & _
   "specidiv= Species Diversity" & vbCrLf & _
   "maxgd= Max Generational Distance" & vbCrLf & _
@@ -1537,7 +1537,7 @@ Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
     Case "avgcond"
       Form1.NewGraph DNACOND_GRAPH, "Average_DNA_Cond_statements"
     Case "avgmutlen"
-      Form1.NewGraph MUT_DNALENGTH_GRAPH, "Average_Mutations_per_DNA_length"
+      Form1.NewGraph MUT_DNALENGTH_GRAPH, "Average_Mutations_per_DNA_length_x1000-"
     Case "simnrg"
       Form1.NewGraph ENERGY_SPECIES_GRAPH, "Total_Energy_per_Species_x1000-"
     Case "autocost"
@@ -1557,13 +1557,13 @@ Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
         Form1.NewGraph CUSTOM_1_GRAPH, "Customizable_Graph_1-"
       End If
     Case "CG2"
-      queryhold = InputBox("Enter query for Customizable Graph 1:" & queryhelp, , strGraphQuery1)
+      queryhold = InputBox("Enter query for Customizable Graph 2:" & queryhelp, , strGraphQuery2)
       If queryhold <> "" Then
         strGraphQuery2 = queryhold
         Form1.NewGraph CUSTOM_2_GRAPH, "Customizable_Graph_2-"
       End If
     Case "CG3"
-      queryhold = InputBox("Enter query for Customizable Graph 1:" & queryhelp, , strGraphQuery1)
+      queryhold = InputBox("Enter query for Customizable Graph 3:" & queryhelp, , strGraphQuery3)
       If queryhold <> "" Then
         strGraphQuery3 = queryhold
         Form1.NewGraph CUSTOM_3_GRAPH, "Customizable_Graph_3-"

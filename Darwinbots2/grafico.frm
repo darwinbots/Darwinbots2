@@ -4089,7 +4089,7 @@ Private Function WhichGraphAmI() As Integer 'Botsareus 8/3/2012 use names for gr
       chartNumber = DNALENGTH_GRAPH
     Case "Average_DNA_Cond_statements"
       chartNumber = DNACOND_GRAPH
-    Case "Average_Mutations_per_DNA_length"
+    Case "Average_Mutations_per_DNA_length_x1000-"
       chartNumber = MUT_DNALENGTH_GRAPH
     Case "Total_Energy_per_Species_x1000-"
       chartNumber = ENERGY_SPECIES_GRAPH
