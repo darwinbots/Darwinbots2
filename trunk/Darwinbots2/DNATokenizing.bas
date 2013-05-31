@@ -1305,13 +1305,17 @@ Public Function DetokenizeDNA(n As Integer, forHash As Boolean, Optional Positio
       End If
     End With
        
-    If gene <> lastgene And Not forHash Then
-      temp = temp + vbCrLf
-      temp = temp + "''''''''''''''''''''''''  "
-      temp = temp + "Gene: " + Str(gene)
-      temp = temp + " Begins at position " + Str(t)
-      temp = temp + "  '''''''''''''''''''''''"
-      temp = temp + vbCrLf
+    If gene <> lastgene And Not forHash Then 'Botsareus 5/28/2013 Small bug fix: '0' no longer on top of dna
+      If gene > 1 Then
+        temp = temp + vbCrLf
+        temp = temp + "''''''''''''''''''''''''  "
+        temp = temp + "Gene: " + Str(gene)
+        temp = temp + " Begins at position " + Str(t)
+        temp = temp + "  '''''''''''''''''''''''"
+        temp = temp + vbCrLf
+      Else
+        temp = temp + vbCrLf
+      End If
       DetokenizeDNA = DetokenizeDNA + temp
       temp = ""
       lastgene = gene
