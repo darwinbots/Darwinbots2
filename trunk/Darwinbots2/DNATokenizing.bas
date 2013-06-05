@@ -51,14 +51,17 @@ inizio:
     a = Replace(a, vbTab, " ")
     a = Trim(a)
        'Botsareus 5/24/2013 No more use and shp
+       'Botsareus leading zero correction when using defs
+       Dim useref As Boolean
     If (Left(a, 1) <> "'" And Left(a, 1) <> "/") And a <> "" Then
-        If Left(a, 3) = "shp" Or Left(a, 3) = "def" Or Left(a, 3) = "use" Then
+        If Left(a, 3) = "def" Then
 '          If Left(a, 3) = "shp" Then  'inserts robot shape
 '            rob(n).Shape = val(Right(a, 1))
 '          End If
-          If Left(a, 3) = "def" Then  'inserts user defined labels as sysvars
+'          If Left(a, 3) = "def" Then  'inserts user defined labels as sysvars
             insertvar n, a
-          End If
+            useref = True
+'          End If
 '          If Left(a, 3) = "use" Then
 '            interpretUSE n, a
 '          End If
@@ -109,6 +112,15 @@ here:
   rob(n).DNA(DNApos).value = 1
   'ReDim Preserve rob(n).DNA(DnaLen(rob(n).DNA())) ' EricL commented out March 15, 2006
   ReDim Preserve rob(n).DNA(DNApos)  'EricL - Added March 15, 2006
+  'Botsareus 6/5/2013 Bug fix to do with leading zero on def
+  If useref Then
+    If rob(n).DNA(0).tipo = 0 And rob(n).DNA(0).value = 0 Then
+        For DNApos = 0 To UBound(rob(n).DNA) - 1
+            rob(n).DNA(DNApos) = rob(n).DNA(DNApos + 1)
+        Next
+        ReDim Preserve rob(n).DNA(UBound(rob(n).DNA) - 1)
+    End If
+  End If
   Exit Function
   
 fine:

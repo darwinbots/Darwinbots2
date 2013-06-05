@@ -76,7 +76,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As file
+  Dim robotFile As File
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -278,7 +278,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As file
+  Dim fileToDelete As File
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -607,6 +607,26 @@ Public Sub SaveSimulation(path As String)
    
    'Botsareus 4/17/2013
    Put #1, , SimOpts.DisableTypArepro
+       
+   'Botsareus 5/31/2013 Save all graph data
+   'strings
+   Put #1, , Len(strGraphQuery1)
+   Put #1, , strGraphQuery1
+   Put #1, , Len(strGraphQuery2)
+   Put #1, , strGraphQuery2
+   Put #1, , Len(strGraphQuery3)
+   Put #1, , strGraphQuery3
+   Put #1, , Len(strSimStart)
+   Put #1, , strSimStart
+
+   'the graphs themselfs
+   For k = 1 To NUMGRAPHS
+     Put #1, , graphfilecounter(k)
+     Put #1, , graphvisible(k)
+     Put #1, , graphleft(k)
+     Put #1, , graphtop(k)
+     Put #1, , graphsave(k)
+   Next k
        
   Close 1
   Form1.MousePointer = vbArrow
@@ -1062,6 +1082,63 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
     'Botsareus 4/17/2013
     SimOpts.DisableTypArepro = False
     If Not EOF(1) Then Get #1, , SimOpts.DisableTypArepro
+    
+    'Botsareus 5/31/2013 Load all graph data
+    'strings
+    If Not EOF(1) Then Get #1, , j: strGraphQuery1 = Space(j)
+    If Not EOF(1) Then Get #1, , strGraphQuery1
+    If Not EOF(1) Then Get #1, , j: strGraphQuery2 = Space(j)
+    If Not EOF(1) Then Get #1, , strGraphQuery2
+    If Not EOF(1) Then Get #1, , j: strGraphQuery3 = Space(j)
+    If Not EOF(1) Then Get #1, , strGraphQuery3
+    If Not EOF(1) Then Get #1, , j: strSimStart = Space(j)
+    If Not EOF(1) Then Get #1, , strSimStart
+    'the graphs themselfs
+    For k = 1 To NUMGRAPHS
+     If Not EOF(1) Then Get #1, , graphfilecounter(k)
+     If Not EOF(1) Then Get #1, , graphvisible(k)
+     If Not EOF(1) Then Get #1, , graphleft(k)
+     If Not EOF(1) Then Get #1, , graphtop(k)
+     If Not EOF(1) Then Get #1, , graphsave(k)
+     If graphvisible(k) Then
+       Select Case k
+        Case 1
+          Form1.NewGraph POPULATION_GRAPH, "Populations"
+        Case 2
+          Form1.NewGraph MUTATIONS_GRAPH, "Average_Mutations"
+        Case 3
+          Form1.NewGraph AVGAGE_GRAPH, "Average_Age"
+        Case 4
+          Form1.NewGraph OFFSPRING_GRAPH, "Average_Offspring"
+        Case 5
+          Form1.NewGraph ENERGY_GRAPH, "Average_Energy"
+        Case 6
+          Form1.NewGraph DNALENGTH_GRAPH, "Average_DNA_length"
+        Case 7
+          Form1.NewGraph DNACOND_GRAPH, "Average_DNA_Cond_statements"
+        Case 8
+          Form1.NewGraph MUT_DNALENGTH_GRAPH, "Average_Mutations_per_DNA_length_x1000-"
+        Case 9
+          Form1.NewGraph ENERGY_SPECIES_GRAPH, "Total_Energy_per_Species_x1000-"
+        Case 10
+          Form1.NewGraph DYNAMICCOSTS_GRAPH, "Dynamic_Costs"
+        Case 11
+          Form1.NewGraph SPECIESDIVERSITY_GRAPH, "Species_Diversity"
+        Case 12
+          Form1.NewGraph GENETIC_DIST_GRAPH, "Genetic_Distance_x1000-"
+        Case 13
+          Form1.NewGraph GENERATION_DIST_GRAPH, "Max_Generational_Distance"
+        Case 14
+          Form1.NewGraph GENETIC_SIMPLE_GRAPH, "Simple_Genetic_Distance_x1000-"
+        Case 15
+            Form1.NewGraph CUSTOM_1_GRAPH, "Customizable_Graph_1-"
+        Case 16
+            Form1.NewGraph CUSTOM_2_GRAPH, "Customizable_Graph_2-"
+        Case 17
+            Form1.NewGraph CUSTOM_3_GRAPH, "Customizable_Graph_3-"
+      End Select
+     End If
+    Next k
     
   Close 1
   

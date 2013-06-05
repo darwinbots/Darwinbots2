@@ -47,6 +47,14 @@ Public Const CUSTOM_3_GRAPH As Integer = 17
 Public strGraphQuery1 As String
 Public strGraphQuery2 As String
 Public strGraphQuery3 As String
+'Botsareus 5/31/2013 Special graph info
+Public strSimStart As String
+Public Const NUMGRAPHS = 17 'Botsareus 5/25/2013 Two more graphs, moved to globals
+Public graphfilecounter(NUMGRAPHS) As Long
+Public graphleft(NUMGRAPHS) As Long
+Public graphtop(NUMGRAPHS) As Long
+Public graphvisible(NUMGRAPHS) As Boolean
+Public graphsave(NUMGRAPHS) As Boolean
 
 Public TotalEnergy As Long     ' total energy in the sim
 Public totnvegs As Integer          ' total non vegs in sim

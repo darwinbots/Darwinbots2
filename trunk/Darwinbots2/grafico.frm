@@ -3850,8 +3850,7 @@ Dim t As Integer
 End Sub
 
 Private Sub chk_GDsave_Click() 'Botsareus 8/3/2012 temporary message
-MsgBox "Sorry, this feature is still under development"
-chk_GDsave.value = False
+graphsave(WhichGraphAmI) = chk_GDsave.value = 1
 End Sub
 
 Private Sub Form_Activate()
@@ -3874,6 +3873,10 @@ Private Sub Form_Activate()
       Shape3(t).FillColor = SerCol(t)
     End If
   Next t
+  
+  'Botsareus 5/31/2013 Special graph info
+  graphvisible(WhichGraphAmI) = True
+  
   'If grafico.WindowState = 0 Then
   '  Me.Top = FTop
   '  Me.left = FLeft
@@ -3900,6 +3903,11 @@ Dim t As Integer
   Me.Height = FHeight
   Me.Width = FWidth
   XLabel.Caption = Str(SimOpts.chartingInterval) + " cycles per data point"
+End Sub
+
+Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+'Botsareus 5/31/2013 Special graph info
+graphvisible(WhichGraphAmI) = False
 End Sub
 
 Private Sub Form_Resize()
@@ -3963,6 +3971,9 @@ End Sub
 
 Public Sub RedrawGraph()
 BackColor = chartcolor 'Botsareus 4/37/2013 Set Chart Skin
+'Botsareus 5/31/2013 Special graph info
+graphleft(WhichGraphAmI) = Left
+graphtop(WhichGraphAmI) = Top
   
   Dim k, P As Integer
   Dim t, x As Integer
@@ -4033,6 +4044,46 @@ BackColor = chartcolor 'Botsareus 4/37/2013 Set Chart Skin
   End If
     
   maxy = maxv
+  
+  'Botsareus 6/1/2013 Graph saves
+  Dim whatgraph As Byte
+  Dim strCGraph As String
+  If k = 999 Then
+    If chk_GDsave.value = 1 Then
+       'figure out what graph am I
+       whatgraph = WhichGraphAmI
+       'figure out string od custom graph
+       strCGraph = "normal"
+       If whatgraph = CUSTOM_1_GRAPH Then strCGraph = strGraphQuery1
+       If whatgraph = CUSTOM_2_GRAPH Then strCGraph = strGraphQuery2
+       If whatgraph = CUSTOM_3_GRAPH Then strCGraph = strGraphQuery3
+       'update counter
+       graphfilecounter(whatgraph) = graphfilecounter(whatgraph) + 1
+       'write folder if non exisits
+       RecursiveMkDir (MDIForm1.MainDir & "\" & strSimStart)
+       'write data
+       Open MDIForm1.MainDir & "\" & strSimStart & "\" & Caption & graphfilecounter(whatgraph) & ".gsave" For Output As #100
+        'write custom graph data
+        Print #100, strCGraph
+        'write headers
+        strCGraph = ""
+        For x = 0 To MaxSeries - 1
+            strCGraph = strCGraph & Shape3(x).FillColor & ":" & Label1(x).Caption & ","
+        Next
+        Print #100, strCGraph
+        Dim k2, t2 As Integer
+        For k2 = 0 To 998
+            strCGraph = ""
+            For t2 = 0 To MaxSeries - 1
+                strCGraph = strCGraph & data(k2, t2) & vbTab
+            Next t2
+            Print #100, strCGraph
+        Next
+       Close #100
+    End If
+  End If
+  
+  
   XLabel.Caption = Str(SimOpts.chartingInterval) + " cycles per data point. " + Str(k) + " data points."
 
 bypass:

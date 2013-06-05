@@ -2310,6 +2310,7 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0571
@@ -3651,7 +3652,7 @@ End Sub
 '  Next i
 'End Sub
 
-Private Sub AssignSkin(k As Integer, path As String) 'The new skin engine requires path
+Sub AssignSkin(k As Integer, path As String) 'The new skin engine requires path
 'Botsareus 4/27/2013 The new skin engine
 
 
