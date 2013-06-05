@@ -235,6 +235,7 @@ Attribute VB_Exposed = False
 
 
 Option Explicit
+
 'Botsareus 5/19/2012 removed old teleporter pics that are no longer in use
 'Botsareus 5/19/2012 removed 'smilymode' pics that are no longer in use
 'Botsareus 3/15/2013 got rid of screen save code (was broken)
@@ -257,7 +258,6 @@ Public BackPic As String
 
 Dim edat(10) As Single
 
-Const NUMGRAPHS = 17 'Botsareus 5/25/2013 Two more graphs
 Const PIOVER4 = PI / 4
 
 ' for graphs
@@ -313,7 +313,7 @@ BoyLabl.Visible = False
 End Sub
 
 Private Sub Form_Load()
-  Dim i As Integer
+  Dim I As Integer
    
   strings Me
   Set Consoleform.evnt = New cevent
@@ -882,7 +882,7 @@ Public Sub DrawAllRobs()
   Dim low As Single
   Dim highest As Single
   Dim hi As Single
-  Dim length As Single
+  Dim Length As Single
   Dim a As Integer
   Dim r As Single
   
@@ -912,7 +912,7 @@ Public Sub DrawAllRobs()
   
   If robfocus > 0 And MDIForm1.showVisionGridToggle Then
     
-    length = RobSize * 12
+    Length = RobSize * 12
     highest = rob(robfocus).aim + PI / 4
          
     For a = 0 To 8
@@ -933,19 +933,19 @@ Public Sub DrawAllRobs()
         DrawMode = vbNotMergePen
         'length = (RobSize * 100) / rob(robfocus).mem(EyeStart + a + 1) - RobSize + rob(robfocus).radius + rob(robfocus).radius + 1
   
-        length = (1 / Sqr(rob(robfocus).mem(EyeStart + a + 1))) * (EyeSightDistance(AbsoluteEyeWidth(rob(robfocus).mem(EYE1WIDTH + a)), robfocus) + rob(robfocus).radius) + rob(robfocus).radius ' + rob(robfocus).radius
+        Length = (1 / Sqr(rob(robfocus).mem(EyeStart + a + 1))) * (EyeSightDistance(AbsoluteEyeWidth(rob(robfocus).mem(EYE1WIDTH + a)), robfocus) + rob(robfocus).radius) + rob(robfocus).radius ' + rob(robfocus).radius
  '       length = Buckets_Module.eyeDistance(a + 1)
   '      Buckets_Module.eyeDistance(a + 1) = 0
-        If length < 0 Then length = 0
+        If Length < 0 Then Length = 0
       Else
         DrawMode = vbCopyPen
-        length = EyeSightDistance(AbsoluteEyeWidth(rob(robfocus).mem(EYE1WIDTH + a)), robfocus) + rob(robfocus).radius + rob(robfocus).radius
+        Length = EyeSightDistance(AbsoluteEyeWidth(rob(robfocus).mem(EYE1WIDTH + a)), robfocus) + rob(robfocus).radius + rob(robfocus).radius
       End If
             
-      Circle (rob(robfocus).pos.x, rob(robfocus).pos.Y), length, vbCyan, -low, -hi
+      Circle (rob(robfocus).pos.x, rob(robfocus).pos.Y), Length, vbCyan, -low, -hi
       
       If (a = Abs(rob(robfocus).mem(FOCUSEYE) + 4) Mod 9) Then
-        Circle (rob(robfocus).pos.x, rob(robfocus).pos.Y), length, vbRed, low, hi
+        Circle (rob(robfocus).pos.x, rob(robfocus).pos.Y), Length, vbRed, low, hi
       End If
        
     Next a
@@ -1039,17 +1039,17 @@ Public Sub DrawAllTies()
 End Sub
 
 Public Function DrawEgrid()
-Dim i As Long
+Dim I As Long
 
 'Draw Vertical Lines
-For i = 0 To SimOpts.FieldWidth Step SimOpts.EGridWidth
-  Line (i, 0)-(i, SimOpts.FieldHeight), vbBlack
-Next i
+For I = 0 To SimOpts.FieldWidth Step SimOpts.EGridWidth
+  Line (I, 0)-(I, SimOpts.FieldHeight), vbBlack
+Next I
   
 'Draw Horizontal Lines
-For i = 0 To SimOpts.FieldHeight Step SimOpts.EGridWidth
-  Line (0, i)-(SimOpts.FieldWidth, i), vbBlack
-Next i
+For I = 0 To SimOpts.FieldHeight Step SimOpts.EGridWidth
+  Line (0, I)-(SimOpts.FieldWidth, I), vbBlack
+Next I
 
 End Function
 
@@ -1277,6 +1277,9 @@ MDIForm1.menuupdate
     End If
   End If
  ' MDIForm1.ZoomOut
+ 
+  strSimStart = Replace(Replace(Now, ":", "-"), "/", "-")
+ 
   main
   
 End Sub
@@ -1415,7 +1418,7 @@ End Sub
 Private Sub loadrobs()
   Dim k As Integer
   Dim a As Integer
-  Dim i As Integer
+  Dim I As Integer
   Dim cc As Integer, t As Integer
   k = 0
   For cc = 1 To SimOpts.SpeciesNum
@@ -1452,9 +1455,9 @@ Private Sub loadrobs()
             
       rob(a).Mutables = SimOpts.Specie(k).Mutables
       
-      For i = 0 To 7 'Botsareus 5/20/2012 fix for skin engine
-        rob(a).Skin(i) = SimOpts.Specie(k).Skin(i)
-      Next i
+      For I = 0 To 7 'Botsareus 5/20/2012 fix for skin engine
+        rob(a).Skin(I) = SimOpts.Specie(k).Skin(I)
+      Next I
       
       rob(a).color = SimOpts.Specie(k).color
       rob(a).mem(timersys) = Random(-32000, 32000)
@@ -1788,6 +1791,9 @@ End Sub
 ' expecially for internet transfers
 ' tricky!
 Private Sub SecTimer_Timer()
+
+
+
   Static TenSecondsAgo(10) As Long
   'Static SumOfLastTenSeconds As Long
 '  Static SecondLastCycle As Long
@@ -1797,33 +1803,33 @@ Private Sub SecTimer_Timer()
   Static LastShuffle As Long
   Dim TitLog As String
   Dim t As Integer
-  Dim i As Integer
+  Dim I As Integer
   
   SimOpts.TotRunTime = SimOpts.TotRunTime + 1
 
   ' reset counters if simulation restarted
   If SimOpts.TotRunTime = 1 Then
-    For i = 0 To 9
-      TenSecondsAgo(i) = SimOpts.TotRunCycle
-    Next i
+    For I = 0 To 9
+      TenSecondsAgo(I) = SimOpts.TotRunCycle
+    Next I
     ' reset the counter for horiz/vertical shuffle
     LastShuffle = 0
   End If
   
   ' same as above, but checking totruncycle<lastcycle instead
   If SimOpts.TotRunCycle < TenSecondsAgo((SimOpts.TotRunTime + 9) Mod 10) Then
-    For i = 0 To 9
-      TenSecondsAgo(i) = SimOpts.TotRunCycle
-    Next i
+    For I = 0 To 9
+      TenSecondsAgo(I) = SimOpts.TotRunCycle
+    Next I
     LastShuffle = 0
   End If
   
   ' if we've had 5000 cycles in a second, probably we've
   ' loaded a saved sim. So we need to reset some counters
   If SimOpts.TotRunCycle - TenSecondsAgo((SimOpts.TotRunTime + 9) Mod 10) > 5000 Then
-    For i = 0 To 9
-      TenSecondsAgo(i) = SimOpts.TotRunCycle
-    Next i
+    For I = 0 To 9
+      TenSecondsAgo(I) = SimOpts.TotRunCycle
+    Next I
     ' facciamo avvenire uno shuffle fra 50000 cicli
     LastShuffle = SimOpts.TotRunCycle - 50000
   End If
@@ -1832,7 +1838,40 @@ Private Sub SecTimer_Timer()
   
   TenSecondsAgo(SimOpts.TotRunTime Mod 10) = SimOpts.TotRunCycle
   SimOpts.CycSec = CSng(CSng(CSng(SimOpts.TotRunCycle) - CSng(TenSecondsAgo((SimOpts.TotRunTime + 1) Mod 10))) * 0.1)
-     
+  
+  'Botsareus 6/5/2013 pipe code work in progress
+  If InternetMode.Visible = True Then
+        
+        If PipeRPCClientForm.cmdOpenPipe.Enabled Then PipeRPCClientForm.cmdOpenPipe_Click
+        
+        If Not PipeRPCClientForm.cmdOpenPipe.Enabled Then
+        
+            PipeRPCClientForm.txtCbBytes = "-1"
+            PipeRPCClientForm.cmdPipeCall_Click
+        
+            PipeRPCClientForm.txtCbBytes = CStr(TotalRobotsDisplayed)
+            PipeRPCClientForm.cmdPipeCall_Click
+            
+            PipeRPCClientForm.txtCbBytes = CStr(SimOpts.CycSec)
+            PipeRPCClientForm.cmdPipeCall_Click
+            
+            PipeRPCClientForm.txtCbBytes = CStr(SimOpts.FieldHeight * SimOpts.FieldWidth)
+            PipeRPCClientForm.cmdPipeCall_Click
+            
+            PipeRPCClientForm.txtCbBytes = CStr(SimOpts.MutCurrMult)
+            PipeRPCClientForm.cmdPipeCall_Click
+        
+        End If
+        
+  
+    'MsgBox TotalRobotsDisplayed & " " & SimOpts.CycSec & " " & SimOpts.FieldHeight * SimOpts.FieldWidth & " " & SimOpts.MutCurrMult
+  
+  Else
+  
+        If Not PipeRPCClientForm.cmdOpenPipe.Enabled Then PipeRPCClientForm.cmdClosePipe_Click
+  
+  End If
+  
   cyccaption SimOpts.CycSec
 
   ' provides the mutation rates oscillation
@@ -1855,7 +1894,7 @@ End Sub
 ' main procedure. Oh yes!
 Private Sub main()
   Dim clocks As Long
-  Dim i As Integer
+  Dim I As Integer
   Dim b As Integer
   
   'clocks = GetTickCount
@@ -1892,13 +1931,13 @@ Private Sub main()
             
       ' feeds graphs with data:
       If SimOpts.TotRunCycle Mod SimOpts.chartingInterval = 0 Then
-        For i = 1 To NUMGRAPHS
-          If Not (Charts(i).graf Is Nothing) Then
-           If Charts(i).graf.Visible Then  'Botsareus 2/23/2013 Do not update chart if invisable
-            FeedGraph i
+        For I = 1 To NUMGRAPHS
+          If Not (Charts(I).graf Is Nothing) Then
+           If Charts(I).graf.Visible Then  'Botsareus 2/23/2013 Do not update chart if invisable
+            FeedGraph I
            End If
           End If
-        Next i
+        Next I
       End If
     End If
     DoEvents
@@ -1967,6 +2006,9 @@ Public Sub NewGraph(n As Integer, YLab As String)
     Dim k As New grafico
     Set Charts(n).graf = k
     Charts(n).graf.ResetGraph
+    Charts(n).graf.Left = graphleft(n)
+    Charts(n).graf.Top = graphtop(n)
+
   '  Charts(n).graf.SetYLabel YLab ' EricL - Don't need this line - dup of line below
   Else
     'Botsareus 1/5/2013 reposition graph
@@ -1974,6 +2016,7 @@ Public Sub NewGraph(n As Integer, YLab As String)
     Charts(n).graf.Left = 0
   End If
   
+   Charts(n).graf.chk_GDsave.value = IIf(graphsave(n), 1, 0)
   'Charts(n).graf.SetYLabel YLab ' EricL 4/7/2006 Commented out - just no longer need to call SetYLabel
   
   'EricL 4/7/2006 Just set the caption directly now without adding "/ Cycles..." to teh end of the caption
@@ -1994,12 +2037,12 @@ Public Sub CloseGraph(n As Integer)
 End Sub
 
 ' resets all graphs
-Public Sub ResetGraphs(i As Integer)
+Public Sub ResetGraphs(I As Integer)
   Dim k As Integer
   
-  If i > 0 Then
-    If Not (Charts(i).graf Is Nothing) Then
-      Charts(i).graf.ResetGraph
+  If I > 0 Then
+    If Not (Charts(I).graf Is Nothing) Then
+      Charts(I).graf.ResetGraph
     End If
   Else
     For k = 1 To NUMGRAPHS
@@ -2015,7 +2058,7 @@ End Sub
 Public Sub FeedGraph(GraphNumber As Integer)
   Dim nomi(MAXSPECIES) As String
   Dim dati(MAXSPECIES, NUMGRAPHS) As Single
-  Dim t As Integer, k As Integer, P As Integer, i As Integer
+  Dim t As Integer, k As Integer, P As Integer, I As Integer
   Dim startingChart As Integer, endingChart As Integer
   
   ' This should never be the case.
@@ -2166,7 +2209,7 @@ Private Sub Qpow()
 End Sub
 ' calculates data for the different graph types
 Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/3/2012 use names for graph id mod
-  Dim P As Integer, t As Integer, i As Integer, x As Integer
+  Dim P As Integer, t As Integer, I As Integer, x As Integer
   Dim n As node
   Dim population As Integer
   Dim ListOSubSpecies(500, 10000) As Integer
@@ -2207,13 +2250,13 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
         
         
         'Look through the subspecies we have seen so far and see if this bot has the same as any of them
-        i = 0
-        While i < speciesListIndex(P) And .SubSpecies <> ListOSubSpecies(P, i)
-          i = i + 1
+        I = 0
+        While I < speciesListIndex(P) And .SubSpecies <> ListOSubSpecies(P, I)
+          I = I + 1
         Wend
                                 
-        If i = speciesListIndex(P) Then ' New sub species
-           ListOSubSpecies(P, i) = .SubSpecies
+        If I = speciesListIndex(P) Then ' New sub species
+           ListOSubSpecies(P, I) = .SubSpecies
            speciesListIndex(P) = speciesListIndex(P) + 1
            dati(P, SPECIESDIVERSITY_GRAPH) = dati(P, SPECIESDIVERSITY_GRAPH) + 1
         End If
@@ -2561,13 +2604,13 @@ getout2:
         P = Flex.Position(rob(t).FName, nomi)
         
         'Look through the subspecies we have seen so far and see if this bot has the same as any of them
-        i = 0
-        While i < speciesListIndex(P) And .SubSpecies <> ListOSubSpecies(P, i)
-          i = i + 1
+        I = 0
+        While I < speciesListIndex(P) And .SubSpecies <> ListOSubSpecies(P, I)
+          I = I + 1
         Wend
                                 
-        If i = speciesListIndex(P) Then ' New sub species
-           ListOSubSpecies(P, i) = .SubSpecies
+        If I = speciesListIndex(P) Then ' New sub species
+           ListOSubSpecies(P, I) = .SubSpecies
            speciesListIndex(P) = speciesListIndex(P) + 1
            dati(P, SPECIESDIVERSITY_GRAPH) = dati(P, SPECIESDIVERSITY_GRAPH) + 1
         End If

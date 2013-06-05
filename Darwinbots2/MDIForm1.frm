@@ -1045,13 +1045,13 @@ End Sub
 
 
 Private Sub EditIntTeleporter_Click()
-Dim i As Integer
-    For i = 1 To numTeleporters
-     If Teleporters(i).exist And Teleporters(i).Internet Then
-       Teleport.teleporterFocus = i
+Dim I As Integer
+    For I = 1 To numTeleporters
+     If Teleporters(I).exist And Teleporters(I).Internet Then
+       Teleport.teleporterFocus = I
        Exit For
      End If
-    Next i
+    Next I
     TeleportForm.teleporterFormMode = 1
     TeleportForm.Show
 End Sub
@@ -1062,7 +1062,7 @@ If Form1.lblSafeMode.Visible Then
     Exit Sub
 End If
 
-  Dim i As Integer
+  Dim I As Integer
   Dim b As Integer
   Dim l As Long
   Dim s As String
@@ -1089,16 +1089,16 @@ Top:
     End If
 tryagain:
     'This section create our new Internet Mode Teleporter
-    i = NewTeleporter(False, False, SimOpts.FieldHeight / 20, True)  'Botsareus 5/12/2012 Changed the startup size of teleporter for better robot flow
+    I = NewTeleporter(False, False, SimOpts.FieldHeight / 20, True)  'Botsareus 5/12/2012 Changed the startup size of teleporter for better robot flow
     
-    Teleporters(i).vel = VectorSet(0, 0)
-    Teleporters(i).teleportVeggies = True
-    Teleporters(i).teleportCorpses = False
-    Teleporters(i).teleportHeterotrophs = True
-    Teleporters(i).RespectShapes = False
-    Teleporters(i).InboundPollCycles = 10
-    Teleporters(i).BotsPerPoll = 10
-    Teleporters(i).PollCountDown = 10
+    Teleporters(I).vel = VectorSet(0, 0)
+    Teleporters(I).teleportVeggies = True
+    Teleporters(I).teleportCorpses = False
+    Teleporters(I).teleportHeterotrophs = True
+    Teleporters(I).RespectShapes = False
+    Teleporters(I).InboundPollCycles = 10
+    Teleporters(I).BotsPerPoll = 10
+    Teleporters(I).PollCountDown = 10
     
     MDIForm1.F1InternetButton.DownPicture = Form1.ServerGood
     MDIForm1.F1InternetButton.value = 1 ' checked
@@ -1112,8 +1112,8 @@ tryagain:
     'Start up DarwinbotsIM
     'Aparently VB6 doest allow you to add numbers to strings, thus the Str(Num)
     'Chr(34) = "
-    iq = Chr(34) & Teleporters(i).intInPath & Chr(34)
-    oq = Chr(34) & Teleporters(i).intOutPath & Chr(34)
+    iq = Chr(34) & Teleporters(I).intInPath & Chr(34)
+    oq = Chr(34) & Teleporters(I).intOutPath & Chr(34)
      s = App.path & "\DarwinbotsIM.exe" _
      & " -in " & iq _
      & " -out " & oq _
@@ -1133,12 +1133,12 @@ tryagain:
     MDIForm1.F1InternetButton.value = 0 ' checked
     MDIForm1.EditIntTeleporter.Enabled = False
     
-    For i = 1 To MAXTELEPORTERS
-      If Teleporters(i).Internet And Teleporters(i).exist Then
-        DeleteTeleporter (i)
-        i = i - 1
+    For I = 1 To MAXTELEPORTERS
+      If Teleporters(I).Internet And Teleporters(I).exist Then
+        DeleteTeleporter (I)
+        I = I - 1
       End If
-    Next i
+    Next I
     Form1.InternetMode.Visible = False
    
    If Right(MDIForm1.Caption, 17) = "    Internet Mode" Then
@@ -1239,7 +1239,7 @@ Private Sub makenewspecies_Click()
 End Sub
 
 Public Function MakeNewSpeciesFromBot(n As Integer)
-Dim i As Integer
+Dim I As Integer
 Dim OldSpeciesName As String
 
   If Not rob(n).exist Or rob(n).Corpse Then Exit Function
@@ -1732,7 +1732,7 @@ simload
 End Sub
 
 Private Sub simload(Optional path As String)
-  Dim i As Integer
+  Dim I As Integer
   Dim path2 As String
    
   On Error GoTo fine ' Uncomment this line in compiled version error.sim
@@ -1780,13 +1780,13 @@ Private Sub simload(Optional path As String)
   If StartInInternetMode Then MDIForm1.F1Internet_Click
     
  'Populate the Add Species dropdown combo when sims loaded
-  For i = 0 To SimOpts.SpeciesNum - 1
-    If i > MAXNATIVESPECIES Then
+  For I = 0 To SimOpts.SpeciesNum - 1
+    If I > MAXNATIVESPECIES Then
       MsgBox "Exceeded number of native species."
     Else
-      If SimOpts.Specie(i).Native Then MDIForm1.Combo1.additem SimOpts.Specie(i).Name
+      If SimOpts.Specie(I).Native Then MDIForm1.Combo1.additem SimOpts.Specie(I).Name
     End If
-  Next i
+  Next I
   
   DisplayActivations = False ' EricL - Initialize the flag that controls displaying activations in the console
   
@@ -1878,6 +1878,9 @@ MsgBox "Saving sim failed.  " + Err.Description, vbOKOnly
 End Sub
 
 Private Sub MDIForm_Load()
+'Botsareus 6/5/2013 Special pipe data
+PipeRPCClientForm.Show
+PipeRPCClientForm.Visible = False
 'Botsareus 5/8/2013 Safemode strings are declared here (sorry, no Italian version)
 Dim strMsgSendData As String
 Dim strMsgEnterDiagMode As String
@@ -2000,6 +2003,15 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
     
   optionsform.ReadSett MDIForm1.MainDir + IIf(simalreadyrunning, "\settings\lastran.set", "\settings\lastexit.set")
   optionsform.IntSettLoad
+  
+  'Botsareus debug -Botsareusnotdone to be used later by league and evo modes
+'    Dim k As Integer
+'    For k = 0 To TmpOpts.SpeciesNum - 1
+'        optionsform.AssignSkin k, TmpOpts.Specie(k).path & "\" & TmpOpts.Specie(k).Name
+'    Next
+'    SimOpts = TmpOpts
+'    Form1.StartSimul
+  'end debug
 
   If exitDB Then
     MDIForm_Unload (1)
@@ -2144,6 +2156,8 @@ Private Sub MDIForm_Unload(Cancel As Integer)
       Write #1, False
     Close #1
   
+  If Not PipeRPCClientForm.cmdOpenPipe.Enabled Then PipeRPCClientForm.cmdClosePipe_Click
+  
   End
 End Sub
 
@@ -2151,7 +2165,7 @@ Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Integer, br
   Dim sec As Long
   Dim Min As Long
   Dim h As Long
-  Dim i As Integer
+  Dim I As Integer
   Dim k As Integer
  ' Dim AvgSimEnergyLastHundredCycles As Long
   Dim AvgSimEnergyLastTenCycles As Long
