@@ -18,6 +18,13 @@ Begin VB.Form Form1
    MinButton       =   0   'False
    ScaleHeight     =   8445
    ScaleWidth      =   12045
+   Begin DarwinBots.PipeRPC PipeRPC1 
+      Left            =   840
+      Top             =   5640
+      _ExtentX        =   847
+      _ExtentY        =   847
+      PipeName        =   "Calc Server Pipe"
+   End
    Begin VB.Timer SecTimer 
       Interval        =   1000
       Left            =   2040
@@ -313,7 +320,7 @@ BoyLabl.Visible = False
 End Sub
 
 Private Sub Form_Load()
-  Dim I As Integer
+  Dim i As Integer
    
   strings Me
   Set Consoleform.evnt = New cevent
@@ -1039,17 +1046,17 @@ Public Sub DrawAllTies()
 End Sub
 
 Public Function DrawEgrid()
-Dim I As Long
+Dim i As Long
 
 'Draw Vertical Lines
-For I = 0 To SimOpts.FieldWidth Step SimOpts.EGridWidth
-  Line (I, 0)-(I, SimOpts.FieldHeight), vbBlack
-Next I
+For i = 0 To SimOpts.FieldWidth Step SimOpts.EGridWidth
+  Line (i, 0)-(i, SimOpts.FieldHeight), vbBlack
+Next i
   
 'Draw Horizontal Lines
-For I = 0 To SimOpts.FieldHeight Step SimOpts.EGridWidth
-  Line (0, I)-(SimOpts.FieldWidth, I), vbBlack
-Next I
+For i = 0 To SimOpts.FieldHeight Step SimOpts.EGridWidth
+  Line (0, i)-(SimOpts.FieldWidth, i), vbBlack
+Next i
 
 End Function
 
@@ -1418,7 +1425,7 @@ End Sub
 Private Sub loadrobs()
   Dim k As Integer
   Dim a As Integer
-  Dim I As Integer
+  Dim i As Integer
   Dim cc As Integer, t As Integer
   k = 0
   For cc = 1 To SimOpts.SpeciesNum
@@ -1455,9 +1462,9 @@ Private Sub loadrobs()
             
       rob(a).Mutables = SimOpts.Specie(k).Mutables
       
-      For I = 0 To 7 'Botsareus 5/20/2012 fix for skin engine
-        rob(a).Skin(I) = SimOpts.Specie(k).Skin(I)
-      Next I
+      For i = 0 To 7 'Botsareus 5/20/2012 fix for skin engine
+        rob(a).Skin(i) = SimOpts.Specie(k).Skin(i)
+      Next i
       
       rob(a).color = SimOpts.Specie(k).color
       rob(a).mem(timersys) = Random(-32000, 32000)
@@ -1803,33 +1810,33 @@ Private Sub SecTimer_Timer()
   Static LastShuffle As Long
   Dim TitLog As String
   Dim t As Integer
-  Dim I As Integer
+  Dim i As Integer
   
   SimOpts.TotRunTime = SimOpts.TotRunTime + 1
 
   ' reset counters if simulation restarted
   If SimOpts.TotRunTime = 1 Then
-    For I = 0 To 9
-      TenSecondsAgo(I) = SimOpts.TotRunCycle
-    Next I
+    For i = 0 To 9
+      TenSecondsAgo(i) = SimOpts.TotRunCycle
+    Next i
     ' reset the counter for horiz/vertical shuffle
     LastShuffle = 0
   End If
   
   ' same as above, but checking totruncycle<lastcycle instead
   If SimOpts.TotRunCycle < TenSecondsAgo((SimOpts.TotRunTime + 9) Mod 10) Then
-    For I = 0 To 9
-      TenSecondsAgo(I) = SimOpts.TotRunCycle
-    Next I
+    For i = 0 To 9
+      TenSecondsAgo(i) = SimOpts.TotRunCycle
+    Next i
     LastShuffle = 0
   End If
   
   ' if we've had 5000 cycles in a second, probably we've
   ' loaded a saved sim. So we need to reset some counters
   If SimOpts.TotRunCycle - TenSecondsAgo((SimOpts.TotRunTime + 9) Mod 10) > 5000 Then
-    For I = 0 To 9
-      TenSecondsAgo(I) = SimOpts.TotRunCycle
-    Next I
+    For i = 0 To 9
+      TenSecondsAgo(i) = SimOpts.TotRunCycle
+    Next i
     ' facciamo avvenire uno shuffle fra 50000 cicli
     LastShuffle = SimOpts.TotRunCycle - 50000
   End If
@@ -1841,35 +1848,11 @@ Private Sub SecTimer_Timer()
   
   'Botsareus 6/5/2013 pipe code work in progress
   If InternetMode.Visible = True Then
-        
-        If PipeRPCClientForm.cmdOpenPipe.Enabled Then PipeRPCClientForm.cmdOpenPipe_Click
-        
-        If Not PipeRPCClientForm.cmdOpenPipe.Enabled Then
-        
-            PipeRPCClientForm.txtCbBytes = "-1"
-            PipeRPCClientForm.cmdPipeCall_Click
-        
-            PipeRPCClientForm.txtCbBytes = CStr(TotalRobotsDisplayed)
-            PipeRPCClientForm.cmdPipeCall_Click
-            
-            PipeRPCClientForm.txtCbBytes = CStr(SimOpts.CycSec)
-            PipeRPCClientForm.cmdPipeCall_Click
-            
-            PipeRPCClientForm.txtCbBytes = CStr(SimOpts.FieldHeight * SimOpts.FieldWidth)
-            PipeRPCClientForm.cmdPipeCall_Click
-            
-            PipeRPCClientForm.txtCbBytes = CStr(SimOpts.MutCurrMult)
-            PipeRPCClientForm.cmdPipeCall_Click
-        
-        End If
-        
-  
-    'MsgBox TotalRobotsDisplayed & " " & SimOpts.CycSec & " " & SimOpts.FieldHeight * SimOpts.FieldWidth & " " & SimOpts.MutCurrMult
-  
-  Else
-  
-        If Not PipeRPCClientForm.cmdOpenPipe.Enabled Then PipeRPCClientForm.cmdClosePipe_Click
-  
+    Dim Request() As Byte
+    Dim Response() As Byte
+    Request = "{Population:" & CStr(TotalRobotsDisplayed) & " CyclesPerSecond:" & CStr(SimOpts.CycSec) & " Size:" & CStr(SimOpts.FieldHeight * SimOpts.FieldWidth) & " MutationRate:" & CStr(SimOpts.MutCurrMult) & "}"
+    ReDim Response(0)
+    PipeRPC1.PipeCall Request, Response
   End If
   
   cyccaption SimOpts.CycSec
@@ -1894,7 +1877,7 @@ End Sub
 ' main procedure. Oh yes!
 Private Sub main()
   Dim clocks As Long
-  Dim I As Integer
+  Dim i As Integer
   Dim b As Integer
   
   'clocks = GetTickCount
@@ -1931,13 +1914,13 @@ Private Sub main()
             
       ' feeds graphs with data:
       If SimOpts.TotRunCycle Mod SimOpts.chartingInterval = 0 Then
-        For I = 1 To NUMGRAPHS
-          If Not (Charts(I).graf Is Nothing) Then
-           If Charts(I).graf.Visible Then  'Botsareus 2/23/2013 Do not update chart if invisable
-            FeedGraph I
+        For i = 1 To NUMGRAPHS
+          If Not (Charts(i).graf Is Nothing) Then
+           If Charts(i).graf.Visible Then  'Botsareus 2/23/2013 Do not update chart if invisable
+            FeedGraph i
            End If
           End If
-        Next I
+        Next i
       End If
     End If
     DoEvents
@@ -2037,12 +2020,12 @@ Public Sub CloseGraph(n As Integer)
 End Sub
 
 ' resets all graphs
-Public Sub ResetGraphs(I As Integer)
+Public Sub ResetGraphs(i As Integer)
   Dim k As Integer
   
-  If I > 0 Then
-    If Not (Charts(I).graf Is Nothing) Then
-      Charts(I).graf.ResetGraph
+  If i > 0 Then
+    If Not (Charts(i).graf Is Nothing) Then
+      Charts(i).graf.ResetGraph
     End If
   Else
     For k = 1 To NUMGRAPHS
@@ -2058,7 +2041,7 @@ End Sub
 Public Sub FeedGraph(GraphNumber As Integer)
   Dim nomi(MAXSPECIES) As String
   Dim dati(MAXSPECIES, NUMGRAPHS) As Single
-  Dim t As Integer, k As Integer, P As Integer, I As Integer
+  Dim t As Integer, k As Integer, P As Integer, i As Integer
   Dim startingChart As Integer, endingChart As Integer
   
   ' This should never be the case.
@@ -2209,7 +2192,7 @@ Private Sub Qpow()
 End Sub
 ' calculates data for the different graph types
 Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/3/2012 use names for graph id mod
-  Dim P As Integer, t As Integer, I As Integer, x As Integer
+  Dim P As Integer, t As Integer, i As Integer, x As Integer
   Dim n As node
   Dim population As Integer
   Dim ListOSubSpecies(500, 10000) As Integer
@@ -2250,13 +2233,13 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
         
         
         'Look through the subspecies we have seen so far and see if this bot has the same as any of them
-        I = 0
-        While I < speciesListIndex(P) And .SubSpecies <> ListOSubSpecies(P, I)
-          I = I + 1
+        i = 0
+        While i < speciesListIndex(P) And .SubSpecies <> ListOSubSpecies(P, i)
+          i = i + 1
         Wend
                                 
-        If I = speciesListIndex(P) Then ' New sub species
-           ListOSubSpecies(P, I) = .SubSpecies
+        If i = speciesListIndex(P) Then ' New sub species
+           ListOSubSpecies(P, i) = .SubSpecies
            speciesListIndex(P) = speciesListIndex(P) + 1
            dati(P, SPECIESDIVERSITY_GRAPH) = dati(P, SPECIESDIVERSITY_GRAPH) + 1
         End If
@@ -2604,13 +2587,13 @@ getout2:
         P = Flex.Position(rob(t).FName, nomi)
         
         'Look through the subspecies we have seen so far and see if this bot has the same as any of them
-        I = 0
-        While I < speciesListIndex(P) And .SubSpecies <> ListOSubSpecies(P, I)
-          I = I + 1
+        i = 0
+        While i < speciesListIndex(P) And .SubSpecies <> ListOSubSpecies(P, i)
+          i = i + 1
         Wend
                                 
-        If I = speciesListIndex(P) Then ' New sub species
-           ListOSubSpecies(P, I) = .SubSpecies
+        If i = speciesListIndex(P) Then ' New sub species
+           ListOSubSpecies(P, i) = .SubSpecies
            speciesListIndex(P) = speciesListIndex(P) + 1
            dati(P, SPECIESDIVERSITY_GRAPH) = dati(P, SPECIESDIVERSITY_GRAPH) + 1
         End If
