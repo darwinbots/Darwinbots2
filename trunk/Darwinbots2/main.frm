@@ -1850,7 +1850,7 @@ Private Sub SecTimer_Timer()
   If InternetMode.Visible = True Then
     Dim Request() As Byte
     Dim Response() As Byte
-    Request = "{Population:" & CStr(TotalRobotsDisplayed) & " CyclesPerSecond:" & CStr(SimOpts.CycSec) & " Size:" & CStr(SimOpts.FieldHeight * SimOpts.FieldWidth) & " MutationRate:" & CStr(SimOpts.MutCurrMult) & "}"
+    Request = "{ ""Population"":""" & CStr(TotalRobotsDisplayed) & """, ""CyclesPerSecond"":""" & CStr(SimOpts.CycSec) & ","" ""Size"":""" & CStr(SimOpts.FieldHeight * SimOpts.FieldWidth) & """, ""MutationRate"":""" & CStr(SimOpts.MutCurrMult) & """ }"
     ReDim Response(0)
     PipeRPC1.PipeCall Request, Response
   End If
