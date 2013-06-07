@@ -101,7 +101,7 @@ Private Sub btnExtract_Click()
 Dim myQuery As String
 
 myOpen.FileName = ""
-myOpen.Filter = "Snapshot file(*.set)|*.snp|All files(*.*)|*.*"
+myOpen.Filter = "Snapshot file(*.snp)|*.snp|All files(*.*)|*.*"
 myOpen.ShowOpen
 If myOpen.FileName <> "" Then
     myQuery = LCase(InputBox("Enter the search query:"))
