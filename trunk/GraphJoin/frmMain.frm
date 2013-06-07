@@ -350,6 +350,7 @@ With myOpen
     .FileName = ""
     .Filter = "First graph save(*.gsave)|*.gsave|All files(*.*)|*.*"
     .ShowOpen
+    If .FileName = "" Then Exit Sub
     'we need to figure out name of first element
     Dim strPath As String
     strPath = Left(.FileName, Len(.FileName) - Len(.FileTitle))

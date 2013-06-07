@@ -650,7 +650,9 @@ If dir(App.path & "\Maindir.gset") <> "" Then
     Open App.path & "\Maindir.gset" For Input As #1
       Input #1, holdmaindir
     Close #1
-    MDIForm1.MainDir = holdmaindir
+    If dir(holdmaindir & "\") <> "" Then
+        MDIForm1.MainDir = holdmaindir 'small bug fix to do with no longer finding a main directory
+    End If
 End If
 
 'see if settings exsist
@@ -1708,7 +1710,7 @@ Public Function Load_League_File(Leaguename As String) As Integer
   Dim currpos As Long
   Dim robotname As String
   Dim robotcomment As String
-  Dim length As Long
+  Dim Length As Long
  
   FileName = MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt"
   
@@ -1772,10 +1774,10 @@ endloop:
     FileName = MDIForm1.MainDir + "\Leagues\" + Leaguename + "league\" 'directory of league robots
     Line = Line + "'"
     
-    length = InStr(Line, "'") - 1
-    If Right(Left(Line, length), 1) = " " Then length = length - 1
-    robotname = Left(Line, length)
-    robotcomment = Right(Line, Len(Line) - length)
+    Length = InStr(Line, "'") - 1
+    If Right(Left(Line, Length), 1) = " " Then Length = Length - 1
+    robotname = Left(Line, Length)
+    robotcomment = Right(Line, Len(Line) - Length)
     robotcomment = Left(robotcomment, Len(robotcomment) - 1)
     robotname = Right(robotname, Len(robotname) - 4) 'takes everything besides teh "1 - " at start of line and " 'blah..." at end of line
     If robotname = "EMPTY" Or robotname = "" Then
@@ -1859,7 +1861,7 @@ Public Function Save_League_File(FName As String) As Integer
   Dim singlecharacter As String
   Dim currpos As Long
   Dim robotname As String
-  Dim length As Long
+  Dim Length As Long
   Dim loopdone As Boolean
   Dim originalleague As Boolean
  
