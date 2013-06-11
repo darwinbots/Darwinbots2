@@ -249,4 +249,12 @@ Private Sub Form_Load()
   strings Me
   SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
   InfoForm.Show
+  'Botsareus 6/11/2013 Play music
+  mciSendString "Open " & Chr(34) & App.path & "\DB THEME GOLD.mp3" & Chr(34) & " Alias Mellow", "", 0, 0
+ mciSendString "play Mellow from 1 to 60000", "", 0, 0
+End Sub
+
+Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+  'Botsareus 6/11/2013 Stop playing music
+  mciSendString "close Mellow", "", 0, 0
 End Sub

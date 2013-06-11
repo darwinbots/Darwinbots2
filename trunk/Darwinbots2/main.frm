@@ -1163,6 +1163,11 @@ MDIForm1.menuupdate
     tmphsl.l = tmphsl.l - 195
     tmprgb = hsltorgb(tmphsl)
     backgcolor = RGB(tmprgb.r, tmprgb.g, tmprgb.b)
+    'Botsareus 6/8/2013 Overwrite skin as nessisary
+    If UseOldColor Then
+        chartcolor = vbWhite
+        backgcolor = &H400000
+    End If
   
   SimOpts.SimGUID = CLng(Rnd)
   Over = False
@@ -1332,6 +1337,11 @@ Sub startloaded()
     tmphsl.l = tmphsl.l - 195
     tmprgb = hsltorgb(tmphsl)
     backgcolor = RGB(tmprgb.r, tmprgb.g, tmprgb.b)
+    'Botsareus 6/8/2013 Overwrite skin as nessisary
+    If UseOldColor Then
+        chartcolor = vbWhite
+        backgcolor = &H400000
+    End If
   
   Init_Buckets
   

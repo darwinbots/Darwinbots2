@@ -4,14 +4,14 @@ Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmGset 
    BorderStyle     =   4  'Fixed ToolWindow
    Caption         =   "Global Settings"
-   ClientHeight    =   5490
+   ClientHeight    =   5700
    ClientLeft      =   45
    ClientTop       =   315
    ClientWidth     =   10770
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   5490
+   ScaleHeight     =   5700
    ScaleWidth      =   10770
    ShowInTaskbar   =   0   'False
    StartUpPosition =   3  'Windows Default
@@ -20,7 +20,7 @@ Begin VB.Form frmGset
       Height          =   375
       Left            =   8160
       TabIndex        =   2
-      Top             =   5040
+      Top             =   5280
       Width           =   1215
    End
    Begin VB.CommandButton btnCancel 
@@ -28,17 +28,17 @@ Begin VB.Form frmGset
       Height          =   375
       Left            =   9480
       TabIndex        =   1
-      Top             =   5040
+      Top             =   5280
       Width           =   1215
    End
    Begin TabDlg.SSTab tb 
-      Height          =   4935
+      Height          =   5175
       Left            =   0
       TabIndex        =   0
       Top             =   0
       Width           =   10755
       _ExtentX        =   18971
-      _ExtentY        =   8705
+      _ExtentY        =   9128
       _Version        =   393216
       Style           =   1
       Tabs            =   1
@@ -136,7 +136,7 @@ Begin VB.Form frmGset
          Height          =   1455
          Left            =   120
          TabIndex        =   9
-         Top             =   3240
+         Top             =   3600
          Width           =   4695
          Begin VB.CheckBox chkchseedloadsim 
             Caption         =   "Generate new seed when you click 'Load Simulation'"
@@ -160,7 +160,7 @@ Begin VB.Form frmGset
          Height          =   1575
          Left            =   120
          TabIndex        =   5
-         Top             =   1560
+         Top             =   1920
          Width           =   4695
          Begin VB.CheckBox chkGreedy 
             Caption         =   "Nearly kill robots that are excessively to there kids, using them to dump there energy."
@@ -189,11 +189,19 @@ Begin VB.Form frmGset
       End
       Begin VB.Frame ffmUI 
          Caption         =   "UI Settings"
-         Height          =   975
+         Height          =   1335
          Left            =   120
          TabIndex        =   3
          Top             =   480
          Width           =   4695
+         Begin VB.CheckBox chkOldColor 
+            Caption         =   "Use old simulation colors"
+            Height          =   375
+            Left            =   240
+            TabIndex        =   20
+            Top             =   720
+            Width           =   3075
+         End
          Begin VB.CheckBox chkScreenRatio 
             Caption         =   "Fix Screen Ratio when simulation starts"
             Height          =   375
@@ -246,6 +254,7 @@ MsgBox "Global settings will take effect when you restart DarwinBots.", vbInform
       Write #1, chkchseedloadsim = 1
       Write #1, chkSafeMode = 1
       Write #1, sldFindBest.value
+      Write #1, chkOldColor = 1
     Close #1
 'unload
 Unload Me
@@ -288,6 +297,8 @@ End If
 chkSafeMode = IIf(UseSafeMode, 1, 0)
 'find best
 sldFindBest.value = intFindBestV2
+'use old color
+chkOldColor = IIf(UseOldColor, 1, 0)
 End Sub
 
 Private Sub txtBodyFix_LostFocus()

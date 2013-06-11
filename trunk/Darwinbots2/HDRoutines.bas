@@ -641,6 +641,7 @@ chseedloadsim = True
 MDIForm1.MainDir = App.path
 UseSafeMode = True
 intFindBestV2 = 100
+UseOldColor = True
 
 Dim holdmaindir As String
 
@@ -650,8 +651,8 @@ If dir(App.path & "\Maindir.gset") <> "" Then
     Open App.path & "\Maindir.gset" For Input As #1
       Input #1, holdmaindir
     Close #1
-    If dir(holdmaindir & "\") <> "" Then
-        MDIForm1.MainDir = holdmaindir 'small bug fix to do with no longer finding a main directory
+    If dir(holdmaindir & "\", vbDirectory) <> "" Then 'Botsareus 6/11/2013 small bug fix to do with no longer finding a main directory
+        MDIForm1.MainDir = holdmaindir
     End If
 End If
 
@@ -666,6 +667,7 @@ If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
       If Not EOF(1) Then Input #1, chseedloadsim
       If Not EOF(1) Then Input #1, UseSafeMode
       If Not EOF(1) Then Input #1, intFindBestV2
+      If Not EOF(1) Then Input #1, UseOldColor
     Close #1
 End If
 

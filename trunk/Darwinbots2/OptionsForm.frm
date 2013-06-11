@@ -129,8 +129,11 @@ Begin VB.Form optionsform
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "Frame8"
+      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "Restart"
+      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).Control(2)=   "Frame7"
+      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
@@ -2310,7 +2313,6 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0571
@@ -3528,7 +3530,7 @@ Sub additem(path As String)
   TmpOpts.Specie(k).VirusImmune = False
     
   Randomize 'Botsareus 4/27/2013 Added randomize here so we have interesting colors
-  TmpOpts.Specie(k).color = RGB(Rnd * 255, Rnd * 255, Rnd * 255)
+  TmpOpts.Specie(k).color = RGB(Rnd * 255, Rnd * 255, IIf(UseOldColor, 0, Rnd * 255))
   Cerchio.FillColor = TmpOpts.Specie(k).color 'Botsareus 4/27/2013 Update ze color on load speicies
   Cerchio.BorderColor = TmpOpts.Specie(k).color
   Line7.BorderColor = TmpOpts.Specie(k).color
@@ -3894,7 +3896,7 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
       Randomize
       r = Rnd * 255
       g = Rnd * 255
-      b = Rnd * 255
+      b = IIf(UseOldColor, 0, Rnd * 255)
     Case "Custom"
       col = TmpOpts.Specie(k).color
       MakeColor col
@@ -4786,7 +4788,7 @@ Private Sub Form_Activate()
 'Botsareus 12/12/2012 Hide always on top forms for easy readability
 datirob.Visible = False
 ActivForm.Visible = False
-
+Shape2.FillColor = IIf(UseOldColor, &H511206, vbBlack)
 End Sub
 
 Private Sub Form_Load()
@@ -5191,6 +5193,7 @@ If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 
   StartAnotherRound = True ' Set true for first simulation.  Will get set true if running leagues or using auto-restart mode
   While StartAnotherRound
     StartAnotherRound = False
+    SimOpts.UserSeedNumber = Timer * 100 'Botsareus 6/11/2013 Randomize seed on restart
     Form1.StartSimul
   Wend
   
