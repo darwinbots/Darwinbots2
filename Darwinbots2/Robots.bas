@@ -957,7 +957,7 @@ Public Function genelength(n As Integer, P As Integer) As Long
 End Function
 
 Private Sub BotDNAManipulation(n As Integer)
-Dim length As Long
+Dim Length As Long
 
   With rob(n)
   
@@ -972,9 +972,9 @@ Dim length As Long
    
     'make the virus
     If MakeVirus(n, .mem(mkvirus)) Then
-       length = genelength(n, .mem(mkvirus)) * 2
-       If length < 32000 Then
-         .Vtimer = length
+       Length = genelength(n, .mem(mkvirus)) * 2
+       If Length < 32000 Then
+         .Vtimer = Length
        Else
          .Vtimer = 32000
        End If
@@ -1176,6 +1176,7 @@ Private Sub ManageDeath(n As Integer)
         .Bouyancy = 0 'Botsareus 2/2/2013 dead robot no bouy.
       End If
     End If
+    If .body < 0.5 Then .Dead = True 'Botsareus 6/9/2013 Small bug fix to kill robots with zero body
   ElseIf (.nrg < 0.5 Or .body < 0.5) Then .Dead = True
   End If
   
@@ -1240,7 +1241,7 @@ Private Sub ManageReproduction(n As Integer)
 End Sub
 
 Private Sub FireTies(n As Integer)
-  Dim length As Single, maxLength As Single
+  Dim Length As Single, maxLength As Single
   Dim resetlastopp As Boolean 'Botsareus 8/26/2012 only if lastopp is zero, this will reset it back to zero
   
   With rob(n)
@@ -1258,10 +1259,10 @@ Private Sub FireTies(n As Integer)
     If .lastopp > 0 And Not SimOpts.DisableTies And (.lastopptype = 0) Then
       
       '2 robot lengths
-      length = VectorMagnitude(VectorSub(rob(.lastopp).pos, .pos))
+      Length = VectorMagnitude(VectorSub(rob(.lastopp).pos, .pos))
       maxLength = RobSize * 4# + rob(n).radius + rob(rob(n).lastopp).radius
       
-      If length <= maxLength Then
+      If Length <= maxLength Then
         'maketie auto deletes existing ties for you
         maketie n, rob(n).lastopp, rob(n).radius + rob(rob(n).lastopp).radius + RobSize * 2, -20, rob(n).mem(mtie)
       End If
@@ -1463,7 +1464,7 @@ Public Sub UpdateBots()
   
   'Restart
   'Leaguemode handles restarts differently so only restart here if not in leaguemode
-  If totnvegs = 0 And RestartMode And Not LeagueMode Then
+  If totnvegs = 0 And SimOpts.Restart And Not LeagueMode Then 'Botsareus 6/11/2013 Using SimOpts instead of raw RestartMode
   ' totnvegs = 1
   ' Contests = Contests + 1
     ReStarts = ReStarts + 1

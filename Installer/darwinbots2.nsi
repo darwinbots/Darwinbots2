@@ -84,9 +84,12 @@
 		CreateDirectory "$INSTDIR\Autosave"
 		CreateDirectory "$INSTDIR\Robots"
 		CreateDirectory "$INSTDIR\settings"
-		File Darwin2.45.01.exe
+		File Darwin2.45.03B.exe
 		File DBLaunch.exe
 		File DarwinbotsIM.exe
+		File "DB THEME GOLD.mp3"
+		File "Graph Join.exe"
+		File "Snapshot Search.exe"
 		File License.rtf
 		SetOutPath "$INSTDIR\Robots"
 		File bots\*.txt
@@ -103,6 +106,9 @@
 			CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
 			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Darwinbots 2.lnk" "$INSTDIR\DBLaunch.exe"
 			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Graph Join.lnk" "$INSTDIR\Graph Join.exe"
+			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Snapshot search.lnk" "$INSTDIR\Snapshot Search.exe"
+
 		!insertmacro MUI_STARTMENU_WRITE_END
 	SectionEnd
 	
@@ -129,8 +135,12 @@
 		RMDir /r "$INSTDIR\Robots"
 		RMDir /r "$INSTDIR\settings"
 		Delete $INSTDIR\Darwin2*.exe
+		Delete $INSTDIR\*.gset
 		Delete $INSTDIR\DBLaunch.exe
 		Delete $INSTDIR\DarwinbotsIM.exe
+		Delete "$INSTDIR\DB THEME GOLD.mp3"
+		Delete "$INSTDIR\Graph Join.exe"
+		Delete "$INSTDIR\Snapshot Search.exe"
 		Delete $INSTDIR\intsett.ini
 		Delete $INSTDIR\License.rtf
 		Delete $INSTDIR\Uninstall.exe

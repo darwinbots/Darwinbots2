@@ -11,6 +11,7 @@ Public chseedstartnew As Boolean
 Public chseedloadsim As Boolean
 Public UseSafeMode As Boolean
 Public intFindBestV2 As Integer
+Public UseOldColor As Boolean
 
 Public tmpseed As Long 'used only by "load simulation"
 'Public elcrasho As Long  'Botsareusnotdone temporary way to crash program
@@ -67,6 +68,12 @@ Public NoDeaths As Boolean     'Attempt to stop robots dying during the first cy
 Public maxfieldsize As Long
 
 Public ismutating As Boolean 'Botsareus 2/2/2013 Tells the parseor to ignore debugint and debugbool while the robot is mutating
+
+'Botsareus 6/11/2013 For music
+Declare Function mciSendString Lib "winmm" Alias "mciSendStringA" (ByVal _
+    lpstrCommand As String, ByVal lpstrReturnString As String, _
+    ByVal uReturnLength As Long, ByVal hwndCallback As Long) As Long
+
 
 Declare Function CallWindowProc Lib "user32" Alias "CallWindowProcA" _
            (ByVal lpPrevWndFunc As Long, _

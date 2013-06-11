@@ -1755,6 +1755,8 @@ Private Sub simload(Optional path As String)
       path2 = CommonDialog1.FileName
     End If
     'Botsareus 5/14/2013 Create our local copy
+    'Botsareus 6/9/2013 Make saves dir if not found
+    RecursiveMkDir MDIForm1.MainDir + "\saves\"
     If path2 <> (MDIForm1.MainDir + "\saves\localcopy.sim") Then FileCopy path2, MDIForm1.MainDir + "\saves\localcopy.sim"
   Else
     path2 = path
@@ -1791,6 +1793,14 @@ Private Sub simload(Optional path As String)
   DisplayActivations = False ' EricL - Initialize the flag that controls displaying activations in the console
   
   Form1.startloaded
+  
+  'Botsareus 6/11/2013 Restart loaded simulation
+  While StartAnotherRound
+    StartAnotherRound = False
+    SimOpts.UserSeedNumber = Timer * 100 'Botsareus 6/11/2013 Randomize seed on restart
+    Form1.StartSimul
+  Wend
+
 fine:
 
   If Err.Number <> 32755 Then
