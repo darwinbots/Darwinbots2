@@ -65,7 +65,7 @@ Begin VB.Form parentele
          TabIndex        =   2
          Top             =   270
          Width           =   240
-         _ExtentX        =   423
+         _ExtentX        =   450
          _ExtentY        =   476
          _Version        =   327681
          Value           =   1
@@ -205,12 +205,14 @@ Sub mostra()
   parentele.Show vbModal
 End Sub
 
-Private Sub calcolo()
+Private Sub calcolo() 'Botsareus 6/22/2013 Fix for TotOffspring
   Dim maxrec As Integer
   If UpDown1.value > 0 Then
     maxrec = UpDown1.value
   Else
     maxrec = 1000
   End If
-  Label3 = Str$(Form1.score(robfocus, 1, maxrec, 0))
+  Form1.TotalOffspring = 0
+  Form1.score robfocus, 1, maxrec, 0
+  Label3 = Form1.TotalOffspring
 End Sub

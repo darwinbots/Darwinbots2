@@ -691,8 +691,9 @@ Public Function absy(aim As Single, ByVal up As Integer, ByVal dn As Integer, By
   absy = -Sin(aim) * upTotal + Cos(aim) * sxTotal
 End Function
 
-Private Function SetAimFunc(t As Integer) As Single
+Private Function SetAimFunc(t As Integer) As Single 'Botsareus 6/29/2013 Turn costs and ma more accurate
   Dim diff As Single
+  Dim diff2 As Single
   Dim newaim As Single
   With rob(t)
   
@@ -704,14 +705,12 @@ Private Function SetAimFunc(t As Integer) As Single
   Else
     ' .setaim overrides .aimsx and .aimdx
     SetAimFunc = .mem(SetAim)          ' this is where .aim needs to be
-    diff = (.aim * 200) + .mem(SetAim) ' this is the diff to get there
+    diff = -AngDiff(.aim, CSng(.mem(SetAim) / 200)) * 200  ' this is the diff to get there
+    diff2 = Abs(Round((.aim * 200 - .mem(SetAim)) / 1256, 0) * 1256) * Sgn(diff) ' this is how much we add to momentum
   End If
-    
-  'diff is now the amount, positive or negative to turn.  Could be multiple turns, round and round.
-  .nrg = .nrg - Abs((Round((diff / 200), 3) * SimOpts.Costs(TURNCOST) * SimOpts.Costs(COSTMULTIPLIER)))
   
-        
-  'Well, we have no way currently to spin round and round.  So we just return the new aim independent of turn direction
+  'diff + diff2 is now the amount, positive or negative to turn.
+  .nrg = .nrg - Abs((Round((diff / 200 + diff2 / 200), 3) * SimOpts.Costs(TURNCOST) * SimOpts.Costs(COSTMULTIPLIER)))
       
   SetAimFunc = SetAimFunc Mod (1256)
   If SetAimFunc < 0 Then SetAimFunc = SetAimFunc + 1256
@@ -723,17 +722,18 @@ Private Function SetAimFunc(t As Integer) As Single
     
   .aim = SetAimFunc + .ma  ' Add in the angular momentum
   
-  'Voluntary rotation can reduce angular momentum but for the time being, does not add to it.
-  '.setaim doesn't impact angular momentum presently - should fix this
+  
+
+  'Voluntary rotation can reduce angular momentum but does not add to it.
   If .ma > 0 And diff < 0 Then
-    .ma = .ma + diff
+    .ma = .ma + diff + diff2
     If .ma < 0 Then .ma = 0
   End If
   If .ma < 0 And diff > 0 Then
-    .ma = .ma + diff
+    .ma = .ma + diff + diff2
     If .ma > 0 Then .ma = 0
   End If
-  '.ma = .ma + (.mem(aimsx) Mod 1256) - (.mem(aimdx) Mod 1256) ' Can't do this yet without changing whole rotation paradym
+  
   .aimvector = VectorSet(Cos(.aim), Sin(.aim))
   
   .mem(aimsx) = 0

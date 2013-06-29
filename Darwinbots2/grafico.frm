@@ -44,6 +44,14 @@ Begin VB.Form grafico
       Top             =   5520
       Width           =   1095
    End
+   Begin VB.Label secret_exit 
+      BackStyle       =   0  'Transparent
+      Height          =   375
+      Left            =   0
+      TabIndex        =   140
+      Top             =   0
+      Width           =   375
+   End
    Begin VB.Label popnum 
       BackStyle       =   0  'Transparent
       Caption         =   "10"
@@ -3626,6 +3634,8 @@ Dim FWidth As Long
 Dim FHeight As Long
 Dim maxy As Single
 
+Dim secretunloadoverwrite As Boolean 'Botsareus 6/29/2013
+
 ' EricL 4/7/2006
 'Public Sub SetYLabel(a As String)
 '  Dim b As String
@@ -3906,11 +3916,28 @@ Dim t As Integer
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
-'Botsareus 5/31/2013 Special graph info
-graphvisible(WhichGraphAmI) = False
+'Botsareus 6/14/2013 Fix to keep updating graph
+Visible = False
+If secretunloadoverwrite Then 'Botsareus 6/29/2013
+    Visible = True
+    graphvisible(WhichGraphAmI) = False
+    secretunloadoverwrite = False
+Else
+    If MsgBox("Would you like to keep updating this graph?", vbYesNo + vbQuestion) = vbYes Then
+        Cancel = True
+        Left = Screen.Width
+        Top = Screen.Height
+        Visible = True
+    Else
+        'Botsareus 5/31/2013 Special graph info
+        Visible = True
+        graphvisible(WhichGraphAmI) = False
+    End If
+End If
 End Sub
 
 Private Sub Form_Resize()
+
   Dim t As Integer
   
   If Me.Height > 900 And Me.Width > 3000 Then
@@ -4113,6 +4140,11 @@ End Sub
 
 Private Sub ResetBUtton_Click()
   Form1.ResetGraphs (WhichGraphAmI)
+End Sub
+
+Private Sub secret_exit_Click() 'Botsareus 6/29/2013
+secretunloadoverwrite = True
+Unload Me
 End Sub
 
 Private Sub UpdateNow_Click()

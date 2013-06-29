@@ -4,7 +4,7 @@
 
 # Settings
 	Name "Darwinbots 2"
-	OutFile "Darwinbots-2-Setup.exe"
+	OutFile "Darwinbots-2-45-03-Setup.exe"
 	SetCompress auto
 	SetCompressor lzma
 	
@@ -148,6 +148,8 @@
 		
 		!insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
 		Delete "$SMPROGRAMS\$StartMenuFolder\Darwinbots 2.lnk"
+		Delete "$SMPROGRAMS\$StartMenuFolder\Snapshot search.lnk"
+		Delete "$SMPROGRAMS\$StartMenuFolder\Graph Join.lnk"
 		Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
 		RMDir "$SMPROGRAMS\$StartMenuFolder"
 

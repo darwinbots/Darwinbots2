@@ -2798,6 +2798,7 @@ End Function
 ' altered from the bot with the most generations
 ' to the bot with the most invested energy in itself and children
 Function fittest() As Integer
+
 'Botsareus 5/22/2013 Lets figure out what we are searching for
 Dim sPopulation As Double
 Dim sEnergy As Double
