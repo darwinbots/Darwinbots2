@@ -20,14 +20,14 @@ Begin VB.Form CostsForm
       Caption         =   "Cost Overrides"
       Height          =   4095
       Left            =   120
-      TabIndex        =   106
+      TabIndex        =   70
       Top             =   5400
       Width           =   5655
       Begin VB.CheckBox AllowNegativeCostXCheck 
          Caption         =   "Allow Multiplier to go Negative"
          Height          =   255
          Left            =   3000
-         TabIndex        =   137
+         TabIndex        =   101
          Top             =   360
          Width           =   2535
       End
@@ -35,7 +35,7 @@ Begin VB.Form CostsForm
          Caption         =   "Include all robots"
          Height          =   255
          Left            =   240
-         TabIndex        =   136
+         TabIndex        =   100
          Top             =   1800
          Width           =   1695
       End
@@ -51,7 +51,7 @@ Begin VB.Form CostsForm
          EndProperty
          Height          =   285
          Left            =   1560
-         TabIndex        =   134
+         TabIndex        =   98
          Text            =   "1.0"
          ToolTipText     =   "This value is applied to the costs to determine the actual costs per cycle"
          Top             =   360
@@ -60,7 +60,7 @@ Begin VB.Form CostsForm
       Begin VB.TextBox CostReinstate 
          Height          =   285
          Left            =   4320
-         TabIndex        =   128
+         TabIndex        =   92
          Text            =   "0"
          ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
          Top             =   1440
@@ -70,13 +70,13 @@ Begin VB.Form CostsForm
          Caption         =   "Dynamic Cost Adjustment"
          Height          =   1815
          Left            =   120
-         TabIndex        =   110
+         TabIndex        =   74
          Top             =   2160
          Width           =   5415
          Begin VB.TextBox DynamicCostsRangeL 
             Height          =   285
             Left            =   4440
-            TabIndex        =   123
+            TabIndex        =   87
             Text            =   "100"
             ToolTipText     =   "Target bot population ignores corpses, walls, veggies"
             Top             =   1080
@@ -85,7 +85,7 @@ Begin VB.Form CostsForm
          Begin VB.TextBox DynamicCostsRangeU 
             Height          =   285
             Left            =   4440
-            TabIndex        =   119
+            TabIndex        =   83
             Text            =   "100"
             ToolTipText     =   "Target bot population ignores corpses, walls, veggies"
             Top             =   720
@@ -94,7 +94,7 @@ Begin VB.Form CostsForm
          Begin VB.TextBox DynamicCostTargetPopulation 
             Height          =   285
             Left            =   4320
-            TabIndex        =   116
+            TabIndex        =   80
             Text            =   "5000"
             ToolTipText     =   "Target bot population ignores corpses, walls, veggies"
             Top             =   360
@@ -104,14 +104,14 @@ Begin VB.Form CostsForm
             Caption         =   "Enable Dynamic Costs"
             Height          =   255
             Left            =   240
-            TabIndex        =   115
+            TabIndex        =   79
             Top             =   240
             Width           =   1935
          End
          Begin MSComctlLib.Slider DynamicCostSensitivitySlider 
             Height          =   555
             Left            =   120
-            TabIndex        =   111
+            TabIndex        =   75
             Top             =   840
             Width           =   2175
             _ExtentX        =   3836
@@ -128,7 +128,7 @@ Begin VB.Form CostsForm
          Begin ComCtl2.UpDown DynamicCostsUpDown 
             Height          =   285
             Left            =   4800
-            TabIndex        =   117
+            TabIndex        =   81
             ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
             Top             =   360
             Width           =   255
@@ -151,7 +151,7 @@ Begin VB.Form CostsForm
          Begin ComCtl2.UpDown UpDown1 
             Height          =   285
             Left            =   4800
-            TabIndex        =   120
+            TabIndex        =   84
             ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
             Top             =   720
             Width           =   255
@@ -174,7 +174,7 @@ Begin VB.Form CostsForm
          Begin ComCtl2.UpDown UpDown3 
             Height          =   285
             Left            =   4800
-            TabIndex        =   124
+            TabIndex        =   88
             ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
             Top             =   1080
             Width           =   255
@@ -198,7 +198,7 @@ Begin VB.Form CostsForm
             Caption         =   "%"
             Height          =   255
             Left            =   5160
-            TabIndex        =   126
+            TabIndex        =   90
             ToolTipText     =   "Target includes only extant hetertrophs"
             Top             =   1155
             Width           =   135
@@ -207,7 +207,7 @@ Begin VB.Form CostsForm
             Caption         =   "Lower Range: Target -"
             Height          =   255
             Left            =   2640
-            TabIndex        =   125
+            TabIndex        =   89
             ToolTipText     =   "Target includes only extant hetertrophs"
             Top             =   1080
             Width           =   1695
@@ -216,7 +216,7 @@ Begin VB.Form CostsForm
             Caption         =   "%"
             Height          =   255
             Left            =   5160
-            TabIndex        =   122
+            TabIndex        =   86
             ToolTipText     =   "Target includes only extant hetertrophs"
             Top             =   795
             Width           =   135
@@ -225,7 +225,7 @@ Begin VB.Form CostsForm
             Caption         =   "Upper Range: Target +"
             Height          =   255
             Left            =   2640
-            TabIndex        =   121
+            TabIndex        =   85
             ToolTipText     =   "Target includes only extant hetertrophs"
             Top             =   720
             Width           =   1695
@@ -234,7 +234,7 @@ Begin VB.Form CostsForm
             Caption         =   "Target Population"
             Height          =   255
             Left            =   2640
-            TabIndex        =   118
+            TabIndex        =   82
             ToolTipText     =   "Target includes only extant hetertrophs"
             Top             =   360
             Width           =   1455
@@ -243,7 +243,7 @@ Begin VB.Form CostsForm
             Caption         =   "Sensitivity"
             Height          =   255
             Left            =   840
-            TabIndex        =   114
+            TabIndex        =   78
             Top             =   600
             Width           =   855
          End
@@ -251,7 +251,7 @@ Begin VB.Form CostsForm
             Caption         =   "Low"
             Height          =   255
             Left            =   240
-            TabIndex        =   113
+            TabIndex        =   77
             Top             =   1440
             Width           =   495
          End
@@ -259,7 +259,7 @@ Begin VB.Form CostsForm
             Caption         =   "High"
             Height          =   255
             Left            =   1800
-            TabIndex        =   112
+            TabIndex        =   76
             Top             =   1440
             Width           =   375
          End
@@ -267,7 +267,7 @@ Begin VB.Form CostsForm
       Begin VB.TextBox BotNoCostThreshold 
          Height          =   285
          Left            =   4320
-         TabIndex        =   107
+         TabIndex        =   71
          Text            =   "0"
          ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
          Top             =   1080
@@ -276,7 +276,7 @@ Begin VB.Form CostsForm
       Begin ComCtl2.UpDown UpDown2 
          Height          =   285
          Left            =   5280
-         TabIndex        =   108
+         TabIndex        =   72
          ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
          Top             =   1080
          Width           =   255
@@ -300,7 +300,7 @@ Begin VB.Form CostsForm
       Begin ComCtl2.UpDown UpDown4 
          Height          =   285
          Left            =   5280
-         TabIndex        =   129
+         TabIndex        =   93
          ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
          Top             =   1440
          Width           =   255
@@ -325,7 +325,7 @@ Begin VB.Form CostsForm
          Caption         =   "Cost Multiplier:"
          Height          =   195
          Left            =   240
-         TabIndex        =   135
+         TabIndex        =   99
          ToolTipText     =   "Target includes only extant hetertrophs"
          Top             =   375
          Width           =   1095
@@ -334,7 +334,7 @@ Begin VB.Form CostsForm
          Caption         =   "Reinstate Costs when population above"
          Height          =   255
          Left            =   1320
-         TabIndex        =   127
+         TabIndex        =   91
          Top             =   1440
          Width           =   3015
       End
@@ -342,7 +342,7 @@ Begin VB.Form CostsForm
          Caption         =   "Zero Costs when population falls below"
          Height          =   255
          Left            =   1320
-         TabIndex        =   109
+         TabIndex        =   73
          Top             =   1080
          Width           =   2895
       End
@@ -351,14 +351,14 @@ Begin VB.Form CostsForm
       Caption         =   "Aging"
       Height          =   2535
       Left            =   5880
-      TabIndex        =   98
+      TabIndex        =   62
       Top             =   5400
       Width           =   4095
       Begin VB.TextBox Costs 
          Height          =   285
          Index           =   33
          Left            =   1920
-         TabIndex        =   131
+         TabIndex        =   95
          Text            =   "0.0001"
          ToolTipText     =   "Increase Age cost this amount per cycle once it begins"
          Top             =   1680
@@ -368,7 +368,7 @@ Begin VB.Form CostsForm
          Caption         =   "Increase by"
          Height          =   255
          Left            =   600
-         TabIndex        =   130
+         TabIndex        =   94
          Top             =   1680
          Width           =   1215
       End
@@ -376,7 +376,7 @@ Begin VB.Form CostsForm
          Caption         =   "Increase log(bot age - cost start age)"
          Height          =   375
          Left            =   600
-         TabIndex        =   105
+         TabIndex        =   69
          Top             =   2040
          Width           =   3255
       End
@@ -384,7 +384,7 @@ Begin VB.Form CostsForm
          Height          =   315
          Index           =   32
          Left            =   1860
-         TabIndex        =   103
+         TabIndex        =   67
          Text            =   "Text1"
          ToolTipText     =   "Don't begin charging the Age Cost until the bot reaches this age"
          Top             =   840
@@ -394,7 +394,7 @@ Begin VB.Form CostsForm
          Height          =   315
          Index           =   31
          Left            =   1860
-         TabIndex        =   100
+         TabIndex        =   64
          Text            =   "Text1"
          ToolTipText     =   "The cost per cycle in nrg which will be multiplied times log(age) and charged to the bot"
          Top             =   360
@@ -404,7 +404,7 @@ Begin VB.Form CostsForm
          Caption         =   "Once cost begins being applied:"
          Height          =   255
          Left            =   120
-         TabIndex        =   133
+         TabIndex        =   97
          Top             =   1320
          Width           =   3405
       End
@@ -412,7 +412,7 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per cycle"
          Height          =   255
          Left            =   2760
-         TabIndex        =   132
+         TabIndex        =   96
          Top             =   1680
          Width           =   1215
       End
@@ -420,7 +420,7 @@ Begin VB.Form CostsForm
          Caption         =   "cycles old"
          Height          =   255
          Left            =   2940
-         TabIndex        =   104
+         TabIndex        =   68
          Top             =   840
          Width           =   735
       End
@@ -428,7 +428,7 @@ Begin VB.Form CostsForm
          Caption         =   "Begins upon reaching"
          Height          =   255
          Left            =   120
-         TabIndex        =   102
+         TabIndex        =   66
          Top             =   840
          Width           =   2535
       End
@@ -436,7 +436,7 @@ Begin VB.Form CostsForm
          Caption         =   "Age Cost"
          Height          =   255
          Left            =   120
-         TabIndex        =   101
+         TabIndex        =   65
          Top             =   360
          Width           =   1725
       End
@@ -444,7 +444,7 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per cycle"
          Height          =   255
          Left            =   2940
-         TabIndex        =   99
+         TabIndex        =   63
          Top             =   360
          Width           =   975
       End
@@ -453,7 +453,7 @@ Begin VB.Form CostsForm
       Caption         =   "F1 Default"
       Height          =   375
       Left            =   6120
-      TabIndex        =   97
+      TabIndex        =   61
       Top             =   8640
       Width           =   1575
    End
@@ -461,7 +461,7 @@ Begin VB.Form CostsForm
       Caption         =   "Okay"
       Height          =   375
       Left            =   8160
-      TabIndex        =   90
+      TabIndex        =   54
       Top             =   8640
       Width           =   1575
    End
@@ -470,14 +470,14 @@ Begin VB.Form CostsForm
       Height          =   5235
       Index           =   2
       Left            =   5040
-      TabIndex        =   59
+      TabIndex        =   25
       Top             =   120
       Width           =   4935
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   30
          Left            =   1920
-         TabIndex        =   91
+         TabIndex        =   55
          Text            =   "Text1"
          Top             =   4740
          Width           =   975
@@ -486,7 +486,7 @@ Begin VB.Form CostsForm
          Height          =   315
          Index           =   29
          Left            =   1920
-         TabIndex        =   69
+         TabIndex        =   34
          Text            =   "Text1"
          Top             =   4260
          Width           =   975
@@ -495,7 +495,7 @@ Begin VB.Form CostsForm
          Height          =   315
          Index           =   28
          Left            =   1920
-         TabIndex        =   68
+         TabIndex        =   33
          Text            =   "Text1"
          Top             =   3750
          Width           =   975
@@ -504,7 +504,7 @@ Begin VB.Form CostsForm
          Height          =   315
          Index           =   27
          Left            =   1920
-         TabIndex        =   67
+         TabIndex        =   32
          Text            =   "Text1"
          Top             =   3285
          Width           =   975
@@ -513,26 +513,16 @@ Begin VB.Form CostsForm
          Height          =   315
          Index           =   26
          Left            =   1920
-         TabIndex        =   66
+         TabIndex        =   31
          Text            =   "Text1"
          Top             =   2790
          Width           =   975
       End
       Begin VB.TextBox Costs 
          Height          =   315
-         Index           =   25
-         Left            =   4200
-         TabIndex        =   65
-         Text            =   "Text1"
-         Top             =   840
-         Visible         =   0   'False
-         Width           =   975
-      End
-      Begin VB.TextBox Costs 
-         Height          =   315
          Index           =   24
          Left            =   1920
-         TabIndex        =   64
+         TabIndex        =   30
          Text            =   "Text1"
          Top             =   2310
          Width           =   975
@@ -541,7 +531,7 @@ Begin VB.Form CostsForm
          Height          =   315
          Index           =   23
          Left            =   1920
-         TabIndex        =   63
+         TabIndex        =   29
          Text            =   "Text1"
          Top             =   1815
          Width           =   975
@@ -550,7 +540,7 @@ Begin VB.Form CostsForm
          Height          =   315
          Index           =   22
          Left            =   1920
-         TabIndex        =   62
+         TabIndex        =   28
          Text            =   "Text1"
          Top             =   1335
          Width           =   975
@@ -559,7 +549,7 @@ Begin VB.Form CostsForm
          Height          =   315
          Index           =   21
          Left            =   1920
-         TabIndex        =   61
+         TabIndex        =   27
          Text            =   "Text1"
          Top             =   840
          Width           =   975
@@ -568,7 +558,7 @@ Begin VB.Form CostsForm
          Height          =   315
          Index           =   20
          Left            =   1920
-         TabIndex        =   60
+         TabIndex        =   26
          Text            =   "Text1"
          Top             =   360
          Width           =   975
@@ -578,7 +568,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   30
          Left            =   3000
-         TabIndex        =   93
+         TabIndex        =   57
          Top             =   4800
          Width           =   1695
       End
@@ -587,7 +577,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   30
          Left            =   180
-         TabIndex        =   92
+         TabIndex        =   56
          Top             =   4800
          Width           =   1095
       End
@@ -596,7 +586,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   29
          Left            =   180
-         TabIndex        =   89
+         TabIndex        =   53
          Top             =   420
          Width           =   1815
       End
@@ -605,7 +595,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   28
          Left            =   180
-         TabIndex        =   88
+         TabIndex        =   52
          Top             =   900
          Width           =   1635
       End
@@ -614,7 +604,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   27
          Left            =   180
-         TabIndex        =   87
+         TabIndex        =   51
          Top             =   4320
          Width           =   1095
       End
@@ -623,7 +613,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   26
          Left            =   180
-         TabIndex        =   86
+         TabIndex        =   50
          Top             =   1395
          Width           =   1335
       End
@@ -632,7 +622,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   25
          Left            =   180
-         TabIndex        =   85
+         TabIndex        =   49
          Top             =   1875
          Width           =   1875
       End
@@ -641,26 +631,16 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   24
          Left            =   180
-         TabIndex        =   84
+         TabIndex        =   48
          Top             =   2370
          Width           =   1275
-      End
-      Begin VB.Label Label1 
-         Caption         =   "DNA Copy Cost"
-         Height          =   255
-         Index           =   23
-         Left            =   4200
-         TabIndex        =   83
-         Top             =   480
-         Visible         =   0   'False
-         Width           =   1575
       End
       Begin VB.Label Label1 
          Caption         =   "Venom Cost"
          Height          =   255
          Index           =   22
          Left            =   180
-         TabIndex        =   82
+         TabIndex        =   47
          Top             =   2850
          Width           =   1095
       End
@@ -669,7 +649,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   21
          Left            =   180
-         TabIndex        =   81
+         TabIndex        =   46
          Top             =   3345
          Width           =   1095
       End
@@ -678,7 +658,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   20
          Left            =   180
-         TabIndex        =   80
+         TabIndex        =   45
          Top             =   3825
          Width           =   1095
       End
@@ -687,7 +667,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   29
          Left            =   3000
-         TabIndex        =   79
+         TabIndex        =   44
          Top             =   420
          Width           =   1215
       End
@@ -696,7 +676,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   28
          Left            =   3000
-         TabIndex        =   78
+         TabIndex        =   43
          Top             =   840
          Width           =   1215
       End
@@ -705,7 +685,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   27
          Left            =   3000
-         TabIndex        =   77
+         TabIndex        =   42
          Top             =   1395
          Width           =   1215
       End
@@ -714,7 +694,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   26
          Left            =   3000
-         TabIndex        =   76
+         TabIndex        =   41
          Top             =   1860
          Width           =   1335
       End
@@ -723,7 +703,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   25
          Left            =   3000
-         TabIndex        =   75
+         TabIndex        =   40
          Top             =   2340
          Width           =   1515
       End
@@ -732,7 +712,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   24
          Left            =   5280
-         TabIndex        =   74
+         TabIndex        =   39
          Top             =   840
          Visible         =   0   'False
          Width           =   1215
@@ -742,7 +722,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   23
          Left            =   3000
-         TabIndex        =   73
+         TabIndex        =   38
          Top             =   2850
          Width           =   1695
       End
@@ -751,7 +731,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   22
          Left            =   3000
-         TabIndex        =   72
+         TabIndex        =   37
          Top             =   3345
          Width           =   1695
       End
@@ -760,7 +740,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   21
          Left            =   3000
-         TabIndex        =   71
+         TabIndex        =   36
          Top             =   3825
          Width           =   1695
       End
@@ -769,24 +749,24 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   20
          Left            =   3000
-         TabIndex        =   70
+         TabIndex        =   35
          Top             =   4320
          Width           =   1695
       End
    End
    Begin VB.Frame Frame1 
       Caption         =   "DNA Command Costs"
-      Height          =   5235
+      Height          =   4755
       Index           =   0
       Left            =   120
       TabIndex        =   0
-      Top             =   120
+      Top             =   240
       Width           =   4815
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   3
          Left            =   1965
-         TabIndex        =   96
+         TabIndex        =   60
          Text            =   "Text1"
          Top             =   1800
          Width           =   975
@@ -795,7 +775,7 @@ Begin VB.Form CostsForm
          Height          =   315
          Index           =   0
          Left            =   1965
-         TabIndex        =   95
+         TabIndex        =   59
          Text            =   "Text1"
          Top             =   360
          Width           =   975
@@ -804,19 +784,9 @@ Begin VB.Form CostsForm
          Height          =   315
          Index           =   9
          Left            =   1965
-         TabIndex        =   94
+         TabIndex        =   58
          Text            =   "Text1"
          Top             =   4260
-         Width           =   975
-      End
-      Begin VB.TextBox Costs 
-         Height          =   315
-         Index           =   8
-         Left            =   1965
-         TabIndex        =   7
-         Text            =   "Text1"
-         Top             =   4765
-         Visible         =   0   'False
          Width           =   975
       End
       Begin VB.TextBox Costs 
@@ -878,18 +848,8 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   9
          Left            =   3120
-         TabIndex        =   27
+         TabIndex        =   24
          Top             =   4320
-         Width           =   1215
-      End
-      Begin VB.Label Label2 
-         Caption         =   "nrg per instance"
-         Height          =   255
-         Index           =   8
-         Left            =   3120
-         TabIndex        =   26
-         Top             =   4800
-         Visible         =   0   'False
          Width           =   1215
       End
       Begin VB.Label Label2 
@@ -897,7 +857,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   7
          Left            =   3120
-         TabIndex        =   25
+         TabIndex        =   23
          Top             =   3825
          Width           =   1215
       End
@@ -906,7 +866,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   6
          Left            =   3120
-         TabIndex        =   24
+         TabIndex        =   22
          Top             =   3330
          Width           =   1215
       End
@@ -915,7 +875,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   5
          Left            =   3120
-         TabIndex        =   23
+         TabIndex        =   21
          Top             =   2850
          Width           =   1215
       End
@@ -924,7 +884,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   4
          Left            =   3120
-         TabIndex        =   22
+         TabIndex        =   20
          Top             =   2370
          Width           =   1215
       End
@@ -933,7 +893,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   3
          Left            =   3120
-         TabIndex        =   21
+         TabIndex        =   19
          Top             =   1875
          Width           =   1215
       End
@@ -942,7 +902,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   2
          Left            =   3120
-         TabIndex        =   20
+         TabIndex        =   18
          Top             =   1395
          Width           =   1215
       End
@@ -951,7 +911,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   1
          Left            =   3120
-         TabIndex        =   19
+         TabIndex        =   17
          Top             =   900
          Width           =   1215
       End
@@ -960,26 +920,16 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   0
          Left            =   3120
-         TabIndex        =   18
+         TabIndex        =   16
          Top             =   420
          Width           =   1215
-      End
-      Begin VB.Label Label1 
-         Caption         =   "number"
-         Height          =   255
-         Index           =   9
-         Left            =   240
-         TabIndex        =   17
-         Top             =   4800
-         Visible         =   0   'False
-         Width           =   1095
       End
       Begin VB.Label Label1 
          Caption         =   "Stores"
          Height          =   255
          Index           =   8
          Left            =   180
-         TabIndex        =   16
+         TabIndex        =   15
          Top             =   3780
          Width           =   1095
       End
@@ -988,7 +938,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   7
          Left            =   180
-         TabIndex        =   15
+         TabIndex        =   14
          Top             =   3300
          Width           =   1095
       End
@@ -997,7 +947,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   6
          Left            =   180
-         TabIndex        =   14
+         TabIndex        =   13
          Top             =   2820
          Width           =   1095
       End
@@ -1006,7 +956,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   5
          Left            =   180
-         TabIndex        =   13
+         TabIndex        =   12
          Top             =   2340
          Width           =   1275
       End
@@ -1015,7 +965,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   4
          Left            =   180
-         TabIndex        =   12
+         TabIndex        =   11
          Top             =   1860
          Width           =   1875
       End
@@ -1024,7 +974,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   3
          Left            =   180
-         TabIndex        =   11
+         TabIndex        =   10
          Top             =   1380
          Width           =   1335
       End
@@ -1033,7 +983,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   2
          Left            =   180
-         TabIndex        =   10
+         TabIndex        =   9
          Top             =   4320
          Width           =   1095
       End
@@ -1042,7 +992,7 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   1
          Left            =   180
-         TabIndex        =   9
+         TabIndex        =   8
          Top             =   900
          Width           =   1095
       End
@@ -1051,291 +1001,9 @@ Begin VB.Form CostsForm
          Height          =   255
          Index           =   0
          Left            =   180
-         TabIndex        =   8
+         TabIndex        =   7
          Top             =   420
          Width           =   1095
-      End
-   End
-   Begin VB.Frame Frame1 
-      Caption         =   "Future DNA Commands"
-      Height          =   5235
-      Index           =   1
-      Left            =   120
-      TabIndex        =   28
-      Top             =   9120
-      Visible         =   0   'False
-      Width           =   4575
-      Begin VB.TextBox Costs 
-         Height          =   315
-         Index           =   19
-         Left            =   2200
-         TabIndex        =   38
-         Text            =   "Text1"
-         Top             =   360
-         Width           =   975
-      End
-      Begin VB.TextBox Costs 
-         Height          =   315
-         Index           =   18
-         Left            =   2200
-         TabIndex        =   37
-         Text            =   "Text1"
-         Top             =   840
-         Width           =   975
-      End
-      Begin VB.TextBox Costs 
-         Height          =   315
-         Index           =   17
-         Left            =   2200
-         TabIndex        =   36
-         Text            =   "Text1"
-         Top             =   1335
-         Width           =   975
-      End
-      Begin VB.TextBox Costs 
-         Height          =   315
-         Index           =   16
-         Left            =   2200
-         TabIndex        =   35
-         Text            =   "Text1"
-         Top             =   2310
-         Width           =   975
-      End
-      Begin VB.TextBox Costs 
-         Height          =   315
-         Index           =   15
-         Left            =   2200
-         TabIndex        =   34
-         Text            =   "Text1"
-         Top             =   1815
-         Width           =   975
-      End
-      Begin VB.TextBox Costs 
-         Height          =   315
-         Index           =   14
-         Left            =   2200
-         TabIndex        =   33
-         Text            =   "Text1"
-         Top             =   2790
-         Width           =   975
-      End
-      Begin VB.TextBox Costs 
-         Height          =   315
-         Index           =   13
-         Left            =   2200
-         TabIndex        =   32
-         Text            =   "Text1"
-         Top             =   3270
-         Width           =   975
-      End
-      Begin VB.TextBox Costs 
-         Height          =   315
-         Index           =   12
-         Left            =   2200
-         TabIndex        =   31
-         Text            =   "Text1"
-         Top             =   3765
-         Width           =   975
-      End
-      Begin VB.TextBox Costs 
-         Height          =   315
-         Index           =   11
-         Left            =   2200
-         TabIndex        =   30
-         Text            =   "Text1"
-         Top             =   4245
-         Visible         =   0   'False
-         Width           =   975
-      End
-      Begin VB.TextBox Costs 
-         Height          =   315
-         Index           =   10
-         Left            =   2220
-         TabIndex        =   29
-         Text            =   "Text1"
-         Top             =   4740
-         Width           =   975
-      End
-      Begin VB.Label Label1 
-         Caption         =   "number"
-         Height          =   255
-         Index           =   19
-         Left            =   180
-         TabIndex        =   58
-         Top             =   420
-         Width           =   1095
-      End
-      Begin VB.Label Label1 
-         Caption         =   "*number"
-         Height          =   255
-         Index           =   18
-         Left            =   180
-         TabIndex        =   57
-         Top             =   900
-         Width           =   1095
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Flow Command"
-         Height          =   255
-         Index           =   17
-         Left            =   180
-         TabIndex        =   56
-         Top             =   4740
-         Width           =   1095
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Basic Command"
-         Height          =   255
-         Index           =   16
-         Left            =   180
-         TabIndex        =   55
-         Top             =   1380
-         Width           =   1335
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Advanced Command"
-         Height          =   255
-         Index           =   15
-         Left            =   180
-         TabIndex        =   54
-         Top             =   1860
-         Width           =   1875
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Bitwise Command"
-         Height          =   255
-         Index           =   14
-         Left            =   180
-         TabIndex        =   53
-         Top             =   2340
-         Width           =   1275
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Condition"
-         Height          =   255
-         Index           =   13
-         Left            =   180
-         TabIndex        =   52
-         Top             =   2820
-         Width           =   1095
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Logic"
-         Height          =   255
-         Index           =   12
-         Left            =   180
-         TabIndex        =   51
-         Top             =   3300
-         Width           =   1095
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Stores"
-         Height          =   255
-         Index           =   11
-         Left            =   180
-         TabIndex        =   50
-         Top             =   3780
-         Width           =   1095
-      End
-      Begin VB.Label Label1 
-         Caption         =   "number"
-         Height          =   255
-         Index           =   10
-         Left            =   180
-         TabIndex        =   49
-         Top             =   4260
-         Visible         =   0   'False
-         Width           =   1095
-      End
-      Begin VB.Label Label2 
-         Caption         =   "nrg per instance"
-         Height          =   255
-         Index           =   19
-         Left            =   3300
-         TabIndex        =   48
-         Top             =   420
-         Width           =   1215
-      End
-      Begin VB.Label Label2 
-         Caption         =   "nrg per instance"
-         Height          =   255
-         Index           =   18
-         Left            =   3300
-         TabIndex        =   47
-         Top             =   906
-         Width           =   1215
-      End
-      Begin VB.Label Label2 
-         Caption         =   "nrg per instance"
-         Height          =   255
-         Index           =   17
-         Left            =   3300
-         TabIndex        =   46
-         Top             =   1392
-         Width           =   1215
-      End
-      Begin VB.Label Label2 
-         Caption         =   "nrg per instance"
-         Height          =   255
-         Index           =   16
-         Left            =   3300
-         TabIndex        =   45
-         Top             =   1878
-         Width           =   1215
-      End
-      Begin VB.Label Label2 
-         Caption         =   "nrg per instance"
-         Height          =   255
-         Index           =   15
-         Left            =   3300
-         TabIndex        =   44
-         Top             =   2364
-         Width           =   1215
-      End
-      Begin VB.Label Label2 
-         Caption         =   "nrg per instance"
-         Height          =   255
-         Index           =   14
-         Left            =   3300
-         TabIndex        =   43
-         Top             =   2850
-         Width           =   1215
-      End
-      Begin VB.Label Label2 
-         Caption         =   "nrg per instance"
-         Height          =   255
-         Index           =   13
-         Left            =   3300
-         TabIndex        =   42
-         Top             =   3336
-         Width           =   1215
-      End
-      Begin VB.Label Label2 
-         Caption         =   "nrg per instance"
-         Height          =   255
-         Index           =   12
-         Left            =   3300
-         TabIndex        =   41
-         Top             =   3822
-         Width           =   1215
-      End
-      Begin VB.Label Label2 
-         Caption         =   "nrg per instance"
-         Height          =   255
-         Index           =   11
-         Left            =   3300
-         TabIndex        =   40
-         Top             =   4308
-         Width           =   1215
-      End
-      Begin VB.Label Label2 
-         Caption         =   "nrg per instance"
-         Height          =   255
-         Index           =   10
-         Left            =   3300
-         TabIndex        =   39
-         Top             =   4800
-         Width           =   1215
       End
    End
 End
@@ -1457,7 +1125,10 @@ Private Sub Form_Load()
   Dim counter As Integer
   
   For counter = 0 To 33 'add up to 50 as new costs are added
+  If counter = 8 Or counter = 25 Then GoTo fine 'Botsareus 6/22/2013 Removed the fields physically we need to skip them here
+  If counter > 9 And counter < 20 Then GoTo fine
     Costs(counter).text = TmpOpts.Costs(counter)
+fine:
   Next counter
   
   'EricL 4/12/2006 Set the value of the checkboxes.  Do this way to guard against weird values

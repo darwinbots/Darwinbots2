@@ -1,6 +1,13 @@
 Attribute VB_Name = "SimOptModule"
-Public Const COSTSTORE As Integer = 7
+Public Const NUMCOST As Integer = 0
+Public Const DOTNUMCOST As Integer = 1
+Public Const BCCMDCOST As Integer = 2
+Public Const ADCMDCOST As Integer = 3
+Public Const BTCMDCOST As Integer = 4
 Public Const CONDCOST As Integer = 5
+Public Const LOGICCOST As Integer = 6
+Public Const COSTSTORE As Integer = 7
+Public Const FLOWCOST As Integer = 9
 
 Public Const MOVECOST As Integer = 20
 Public Const TURNCOST As Integer = 21

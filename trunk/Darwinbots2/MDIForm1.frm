@@ -212,7 +212,7 @@ Begin VB.MDIForm MDIForm1
             ImageIndex      =   11
             Style           =   5
             BeginProperty ButtonMenus {66833FEC-8583-11D1-B16A-00C0F0283628} 
-               NumButtonMenus  =   21
+               NumButtonMenus  =   22
                BeginProperty ButtonMenu1 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "pop"
                   Text            =   "Population graph"
@@ -295,6 +295,10 @@ Begin VB.MDIForm MDIForm1
                BeginProperty ButtonMenu21 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "resgraph"
                   Text            =   "Reset all graphs"
+               EndProperty
+               BeginProperty ButtonMenu22 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "listgraphs"
+                  Text            =   "List all running graphs"
                EndProperty
             EndProperty
          EndProperty
@@ -1573,6 +1577,51 @@ Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
         Form1.ResetGraphs (0)
         Form1.FeedGraph (0) ' EricL 4/7/2006 Update the graphs right now instead of waiting until the next update
       End If
+    Case "listgraphs"
+        Dim lg As String
+        lg = "List of all running graphs:" & vbCrLf
+        Dim i As Byte
+        For i = 1 To NUMGRAPHS
+            If graphvisible(i) Then
+                Select Case i
+                Case POPULATION_GRAPH
+                    lg = lg & vbCrLf & "Populations"
+                Case MUTATIONS_GRAPH
+                    lg = lg & vbCrLf & "Average_Mutations"
+                Case AVGAGE_GRAPH
+                    lg = lg & vbCrLf & "Average_Age"
+                Case OFFSPRING_GRAPH
+                    lg = lg & vbCrLf & "Average_Offspring"
+                Case ENERGY_GRAPH
+                    lg = lg & vbCrLf & "Average_Energy"
+                Case DNALENGTH_GRAPH
+                    lg = lg & vbCrLf & "Average_DNA_length"
+                Case DNACOND_GRAPH
+                    lg = lg & vbCrLf & "Average_DNA_Cond_statements"
+                Case MUT_DNALENGTH_GRAPH
+                    lg = lg & vbCrLf & "Average_Mutations_per_DNA_length_x1000"
+                Case ENERGY_SPECIES_GRAPH
+                    lg = lg & vbCrLf & "Total_Energy_per_Species_x1000"
+                Case DYNAMICCOSTS_GRAPH
+                    lg = lg & vbCrLf & "Dynamic_Costs"
+                Case SPECIESDIVERSITY_GRAPH
+                    lg = lg & vbCrLf & "Species_Diversity"
+                Case GENETIC_DIST_GRAPH
+                    lg = lg & vbCrLf & "Genetic_Distance_x1000"
+                Case GENERATION_DIST_GRAPH
+                    lg = lg & vbCrLf & "Max_Generational_Distance"
+                Case GENETIC_SIMPLE_GRAPH
+                    lg = lg & vbCrLf & "Simple_Genetic_Distance_x1000"
+                Case CUSTOM_1_GRAPH
+                    lg = lg & vbCrLf & "Customizable_Graph_1"
+                Case CUSTOM_2_GRAPH
+                    lg = lg & vbCrLf & "Customizable_Graph_2"
+                Case CUSTOM_3_GRAPH
+                    lg = lg & vbCrLf & "Customizable_Graph_3"
+                End Select
+            End If
+        Next i
+        MsgBox lg, vbInformation
   End Select
 End Sub
 
@@ -1910,7 +1959,7 @@ If simalreadyrunning And Not autosaved Then MsgBox strMsgSendData
 
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
 Dim revision As String
 
 Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause initial simulation
