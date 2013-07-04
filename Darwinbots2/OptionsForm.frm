@@ -129,11 +129,8 @@ Begin VB.Form optionsform
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "Frame8"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).Control(2)=   "Frame7"
-      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
@@ -2313,6 +2310,7 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0571
@@ -3033,7 +3031,7 @@ Private Declare Function Rectangle Lib "gdi32" (ByVal hdc As Long, ByVal x1 As L
 
 Private Type POINTAPI
     x As Long
-    Y As Long
+    y As Long
 End Type
 
 Private Type RECT
@@ -3083,7 +3081,7 @@ Private Sub BoyAll_Click()
  DispSettings
 End Sub
 
-Private Sub CorpseCheck_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub CorpseCheck_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
 If CorpseCheck.value = 1 Then 'Botsareus 1/17/2013 set default values
     TmpOpts.DecayType = 3
     TmpOpts.Decay = 75
@@ -3530,7 +3528,8 @@ Sub additem(path As String)
   TmpOpts.Specie(k).VirusImmune = False
     
   Randomize 'Botsareus 4/27/2013 Added randomize here so we have interesting colors
-  TmpOpts.Specie(k).color = RGB(Rnd * 255, Rnd * 255, IIf(UseOldColor, 0, Rnd * 255))
+  TmpOpts.Specie(k).color = IIf(UseOldColor, RGB(Rnd * 200 + 55, Rnd * 200 + 55, Rnd * 255), RGB(Rnd * 255, Rnd * 255, Rnd * 255))
+  
   Cerchio.FillColor = TmpOpts.Specie(k).color 'Botsareus 4/27/2013 Update ze color on load speicies
   Cerchio.BorderColor = TmpOpts.Specie(k).color
   Line7.BorderColor = TmpOpts.Specie(k).color
@@ -3603,24 +3602,24 @@ End Sub
 Private Sub ShowSkin(k As Integer)
   Dim t As Integer
   Dim x As Long
-  Dim Y As Long
+  Dim y As Long
   x = Cerchio.Left + Cerchio.Width / 2
-  Y = Cerchio.Top + Cerchio.Height / 2
+  y = Cerchio.Top + Cerchio.Height / 2
   multx = Cerchio.Width / 120
   multy = Cerchio.Height / 120
   Me.AutoRedraw = True
   Line7.x1 = TmpOpts.Specie(k).Skin(0) * multx * Cos(TmpOpts.Specie(k).Skin(1) / 100) + x
-  Line7.y1 = TmpOpts.Specie(k).Skin(0) * multy * Sin(TmpOpts.Specie(k).Skin(1) / 100) + Y
+  Line7.y1 = TmpOpts.Specie(k).Skin(0) * multy * Sin(TmpOpts.Specie(k).Skin(1) / 100) + y
   Line7.x2 = TmpOpts.Specie(k).Skin(2) * multx * Cos(TmpOpts.Specie(k).Skin(3) / 100) + x
-  Line7.y2 = TmpOpts.Specie(k).Skin(2) * multy * Sin(TmpOpts.Specie(k).Skin(3) / 100) + Y
+  Line7.y2 = TmpOpts.Specie(k).Skin(2) * multy * Sin(TmpOpts.Specie(k).Skin(3) / 100) + y
   Line8.x1 = Line7.x2
   Line8.y1 = Line7.y2
   Line8.x2 = TmpOpts.Specie(k).Skin(4) * multx * Cos(TmpOpts.Specie(k).Skin(5) / 100) + x
-  Line8.y2 = TmpOpts.Specie(k).Skin(4) * multy * Sin(TmpOpts.Specie(k).Skin(5) / 100) + Y
+  Line8.y2 = TmpOpts.Specie(k).Skin(4) * multy * Sin(TmpOpts.Specie(k).Skin(5) / 100) + y
   Line9.x1 = Line8.x2
   Line9.y1 = Line8.y2
   Line9.x2 = TmpOpts.Specie(k).Skin(6) * multx * Cos(TmpOpts.Specie(k).Skin(7) / 100) + x
-  Line9.y2 = TmpOpts.Specie(k).Skin(6) * multy * Sin(TmpOpts.Specie(k).Skin(7) / 100) + Y
+  Line9.y2 = TmpOpts.Specie(k).Skin(6) * multy * Sin(TmpOpts.Specie(k).Skin(7) / 100) + y
 End Sub
 
 'Botsareus 4/37/2013 Do not need this one also
@@ -3894,9 +3893,9 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
       b = 228
     Case "Random" 'Botsareus 4/27/2013 This was very broken
       Randomize
-      r = Rnd * 255
-      g = Rnd * 255
-      b = IIf(UseOldColor, 0, Rnd * 255)
+      r = IIf(UseOldColor, Rnd * 200 + 55, Rnd * 255)
+      g = IIf(UseOldColor, Rnd * 200 + 55, Rnd * 255)
+      b = Rnd * 255
     Case "Custom"
       col = TmpOpts.Specie(k).color
       MakeColor col
@@ -3952,13 +3951,13 @@ Private Sub PosReset_Click()
 
 End Sub
 
-Private Sub Initial_Position_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub Initial_Position_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   If Button = vbLeftButton Then
     DragBegin Initial_Position
   End If
 End Sub
 
-Private Sub IPB_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub IPB_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   If Button = vbLeftButton Then
     DragBegin Initial_Position
   End If
@@ -4029,7 +4028,7 @@ Public Sub DragBegin(ctl As Control)
     
     'Make initial mouse position relative to control
     m_DragPoint.x = m_DragPoint.x - m_DragRect.Left
-    m_DragPoint.Y = m_DragPoint.Y - m_DragRect.Top
+    m_DragPoint.y = m_DragPoint.y - m_DragRect.Top
     
     'Force redraw of form without sizing handles
     'before drawing dragging rectangle
@@ -4061,7 +4060,7 @@ End Sub
 
 'To handle all mouse message anywhere on the form, we set the mouse
 'capture to the form. Mouse movement is processed here
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
 If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selected
 
     Dim nWidth As Single, nHeight As Single
@@ -4077,7 +4076,7 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
         DrawDragRect
         'Update drag rectangle coordinates
         m_DragRect.Left = pt.x - m_DragPoint.x
-        m_DragRect.Top = pt.Y - m_DragPoint.Y
+        m_DragRect.Top = pt.y - m_DragPoint.y
         m_DragRect.Right = m_DragRect.Left + nWidth
         m_DragRect.Bottom = m_DragRect.Top + nHeight
         'Draw new rectangle
@@ -4091,20 +4090,20 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
         Select Case m_DragHandle
             Case 0
                 m_DragRect.Left = pt.x
-                m_DragRect.Top = pt.Y
+                m_DragRect.Top = pt.y
             Case 2
                 m_DragRect.Right = pt.x
-                m_DragRect.Top = pt.Y
+                m_DragRect.Top = pt.y
             Case 4
                 m_DragRect.Right = pt.x
-                m_DragRect.Bottom = pt.Y
+                m_DragRect.Bottom = pt.y
             Case 6
                 m_DragRect.Left = pt.x
-                m_DragRect.Bottom = pt.Y
+                m_DragRect.Bottom = pt.y
             Case 9
-                m_DragRect.Top = pt.Y
+                m_DragRect.Top = pt.y
             Case 10
-                m_DragRect.Bottom = pt.Y
+                m_DragRect.Bottom = pt.y
             Case 11
                 m_DragRect.Left = pt.x
             Case 12
@@ -4117,7 +4116,7 @@ End Sub
 
 'To handle all mouse message anywhere on the form, we set the mouse
 'capture to the form. Mouse up is processed here
-Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
 If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selected
 
     If Button = vbLeftButton Then
@@ -4162,7 +4161,7 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
 End Sub
 
 'Process MouseDown over handles
-Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
     Dim i As Integer
     Dim rc As RECT
 
@@ -4192,7 +4191,7 @@ Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As In
     ClipCursor rc
 End Sub
 
-Private Sub Robplacline_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub Robplacline_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
     Dim i As Integer
     Dim rc As RECT
 
