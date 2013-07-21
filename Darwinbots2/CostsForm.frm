@@ -4,24 +4,24 @@ Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form CostsForm 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Costs"
-   ClientHeight    =   9510
+   ClientHeight    =   9255
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   10035
+   ClientWidth     =   10920
    Icon            =   "CostsForm.frx":0000
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   1.411
+   ScaleHeight     =   1.373
    ScaleMode       =   0  'User
-   ScaleWidth      =   0.894
+   ScaleWidth      =   0.973
    StartUpPosition =   1  'CenterOwner
    Begin VB.Frame Frame2 
       Caption         =   "Cost Overrides"
       Height          =   4095
       Left            =   120
       TabIndex        =   70
-      Top             =   5400
+      Top             =   4920
       Width           =   5655
       Begin VB.CheckBox AllowNegativeCostXCheck 
          Caption         =   "Allow Multiplier to go Negative"
@@ -352,7 +352,7 @@ Begin VB.Form CostsForm
       Height          =   2535
       Left            =   5880
       TabIndex        =   62
-      Top             =   5400
+      Top             =   5880
       Width           =   4095
       Begin VB.TextBox Costs 
          Height          =   285
@@ -452,27 +452,36 @@ Begin VB.Form CostsForm
    Begin VB.CommandButton Default 
       Caption         =   "F1 Default"
       Height          =   375
-      Left            =   6120
+      Left            =   7200
       TabIndex        =   61
-      Top             =   8640
+      Top             =   8760
       Width           =   1575
    End
    Begin VB.CommandButton ExitButton 
       Caption         =   "Okay"
       Height          =   375
-      Left            =   8160
+      Left            =   9120
       TabIndex        =   54
-      Top             =   8640
+      Top             =   8760
       Width           =   1575
    End
    Begin VB.Frame Frame1 
       Caption         =   "Morphological Costs"
-      Height          =   5235
+      Height          =   5715
       Index           =   2
-      Left            =   5040
+      Left            =   5880
       TabIndex        =   25
       Top             =   120
       Width           =   4935
+      Begin VB.TextBox Costs 
+         Height          =   315
+         Index           =   25
+         Left            =   1920
+         TabIndex        =   102
+         Text            =   "Text1"
+         Top             =   5220
+         Width           =   975
+      End
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   30
@@ -562,6 +571,24 @@ Begin VB.Form CostsForm
          Text            =   "Text1"
          Top             =   360
          Width           =   975
+      End
+      Begin VB.Label Label2 
+         Caption         =   "nrg per data per copy"
+         Height          =   255
+         Index           =   8
+         Left            =   3000
+         TabIndex        =   104
+         Top             =   5280
+         Width           =   1515
+      End
+      Begin VB.Label Label1 
+         Caption         =   "DNA Copy"
+         Height          =   255
+         Index           =   9
+         Left            =   180
+         TabIndex        =   103
+         Top             =   5280
+         Width           =   1275
       End
       Begin VB.Label Label2 
          Caption         =   "nrg per body per turn"
@@ -677,7 +704,7 @@ Begin VB.Form CostsForm
          Index           =   28
          Left            =   3000
          TabIndex        =   43
-         Top             =   840
+         Top             =   900
          Width           =   1215
       End
       Begin VB.Label Label2 
@@ -699,13 +726,13 @@ Begin VB.Form CostsForm
          Width           =   1335
       End
       Begin VB.Label Label2 
-         Caption         =   "nrg per bp per cycle"
+         Caption         =   "nrg per data per cycle"
          Height          =   255
          Index           =   25
          Left            =   3000
          TabIndex        =   40
          Top             =   2340
-         Width           =   1515
+         Width           =   1755
       End
       Begin VB.Label Label2 
          Caption         =   "nrg per bp per copy"
@@ -760,8 +787,8 @@ Begin VB.Form CostsForm
       Index           =   0
       Left            =   120
       TabIndex        =   0
-      Top             =   240
-      Width           =   4815
+      Top             =   120
+      Width           =   5655
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   3
@@ -1059,7 +1086,7 @@ Private Sub Default_Click()
   Costs(5).text = ".004"
   Costs(6).text = "0"
   Costs(7).text = ".04"
-  Costs(8).text = "0"
+  'Costs(8).text = "0"
   Costs(9).text = "0"
   
   Costs(20).text = ".05"
@@ -1125,7 +1152,7 @@ Private Sub Form_Load()
   Dim counter As Integer
   
   For counter = 0 To 33 'add up to 50 as new costs are added
-  If counter = 8 Or counter = 25 Then GoTo fine 'Botsareus 6/22/2013 Removed the fields physically we need to skip them here
+  If counter = 8 Then GoTo fine 'Botsareus 6/22/2013 Removed the fields physically we need to skip them here
   If counter > 9 And counter < 20 Then GoTo fine
     Costs(counter).text = TmpOpts.Costs(counter)
 fine:
