@@ -490,13 +490,11 @@ Begin VB.MDIForm MDIForm1
             AutoSize        =   2
             Object.Width           =   1402
             MinWidth        =   1411
-            Object.ToolTipText     =   "The number of shots in the sim this cycle"
          EndProperty
          BeginProperty Panel11 {8E3867AB-8586-11D1-B16A-00C0F0283628} 
             AutoSize        =   2
             Object.Width           =   1402
             MinWidth        =   1411
-            Object.ToolTipText     =   "The total energy present in the simulation"
          EndProperty
          BeginProperty Panel12 {8E3867AB-8586-11D1-B16A-00C0F0283628} 
             AutoSize        =   2
@@ -508,7 +506,6 @@ Begin VB.MDIForm MDIForm1
             AutoSize        =   2
             Object.Width           =   1773
             MinWidth        =   1764
-            Object.ToolTipText     =   "The multiple by which costs are multipled when using autocosting"
          EndProperty
       EndProperty
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -1651,19 +1648,19 @@ Private Sub costi_Click()
   optionsform.Show vbModal
 End Sub
 
-Private Sub czin_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub czin_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = True
   ZoomInPremuto
 End Sub
 
-Private Sub czin_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub czin_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = False
 End Sub
 
 Public Sub ZoomIn()
   If Form1.visiblew > RobSize * 4 Then
     If robfocus > 0 Then
-      xc = rob(robfocus).pos.x
+      xc = rob(robfocus).pos.X
       yc = rob(robfocus).pos.Y
     Else
       xc = Form1.visiblew / 2 + Form1.ScaleLeft
@@ -1693,7 +1690,7 @@ Private Sub ZoomOutPremuto()
   Wend
 End Sub
 
-Private Sub czo_MouseDown(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub czo_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = True
   ZoomOutPremuto
 End Sub
@@ -1743,7 +1740,7 @@ Public Sub ZoomOut()
   Form1.Redraw
 End Sub
 
-Private Sub czo_MouseUp(Button As Integer, Shift As Integer, x As Single, Y As Single)
+Private Sub czo_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
  AspettaFlag = False
 End Sub
 
@@ -1959,7 +1956,7 @@ If simalreadyrunning And Not autosaved Then MsgBox strMsgSendData
 
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As file
+Dim lastSim As File
 Dim revision As String
 
 Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause initial simulation
@@ -2149,6 +2146,8 @@ Public Function DisableRobotsMenu()
 End Function
 
 Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+Form1.hide_graphs
+
 'Botsareus 5/5/2013 Replaced MBsure with a better message. (Sorry, no Italian version)
 'Botsareus 5/10/2013 Only prompt to overwrite setting if lastexit.set already exisits.
 If dir(MDIForm1.MainDir + "\settings\lastexit.set") <> "" Then
@@ -2193,6 +2192,8 @@ Else
   End If
 
 End If
+
+Form1.show_graphs
 End Sub
 
 

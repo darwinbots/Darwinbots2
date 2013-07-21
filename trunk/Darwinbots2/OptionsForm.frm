@@ -114,36 +114,36 @@ Begin VB.Form optionsform
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Frame20"
-      Tab(2).Control(1)=   "Frame21"
+      Tab(2).Control(0)=   "Frame21"
+      Tab(2).Control(1)=   "Frame20"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Mutations"
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "DisableMutationsCheck"
-      Tab(3).Control(1)=   "Frame14"
-      Tab(3).Control(2)=   "Frame13"
-      Tab(3).Control(3)=   "Frame15"
+      Tab(3).Control(0)=   "Frame15"
+      Tab(3).Control(1)=   "Frame13"
+      Tab(3).Control(2)=   "Frame14"
+      Tab(3).Control(3)=   "DisableMutationsCheck"
       Tab(3).ControlCount=   4
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame8"
+      Tab(4).Control(0)=   "Frame7"
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(2)=   "Frame7"
+      Tab(4).Control(2)=   "Frame8"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Label41"
+      Tab(5).Control(0)=   "Simulazione"
       Tab(5).Control(1)=   "Label42"
-      Tab(5).Control(2)=   "Simulazione"
+      Tab(5).Control(2)=   "Label41"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "Frame10"
-      Tab(6).Control(1)=   "Frame4"
+      Tab(6).Control(0)=   "Frame4"
+      Tab(6).Control(1)=   "Frame10"
       Tab(6).ControlCount=   2
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "List Non-Native Species "
@@ -2310,7 +2310,6 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0571
@@ -3030,8 +3029,8 @@ Private Declare Function SetROP2 Lib "gdi32" (ByVal hdc As Long, ByVal nDrawMode
 Private Declare Function Rectangle Lib "gdi32" (ByVal hdc As Long, ByVal x1 As Long, ByVal y1 As Long, ByVal x2 As Long, ByVal y2 As Long) As Long
 
 Private Type POINTAPI
-    x As Long
-    y As Long
+    X As Long
+    Y As Long
 End Type
 
 Private Type RECT
@@ -3081,7 +3080,7 @@ Private Sub BoyAll_Click()
  DispSettings
 End Sub
 
-Private Sub CorpseCheck_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub CorpseCheck_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If CorpseCheck.value = 1 Then 'Botsareus 1/17/2013 set default values
     TmpOpts.DecayType = 3
     TmpOpts.Decay = 75
@@ -3147,6 +3146,7 @@ End Sub
 
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer) 'Botsareus 1/5/2013 moved cancel code here
+ Form1.show_graphs
   Form1.camfix = False 'Botsareus 2/23/2013 re-normalize screen
   Canc = True
 End Sub
@@ -3601,25 +3601,25 @@ End Sub
 
 Private Sub ShowSkin(k As Integer)
   Dim t As Integer
-  Dim x As Long
-  Dim y As Long
-  x = Cerchio.Left + Cerchio.Width / 2
-  y = Cerchio.Top + Cerchio.Height / 2
+  Dim X As Long
+  Dim Y As Long
+  X = Cerchio.Left + Cerchio.Width / 2
+  Y = Cerchio.Top + Cerchio.Height / 2
   multx = Cerchio.Width / 120
   multy = Cerchio.Height / 120
   Me.AutoRedraw = True
-  Line7.x1 = TmpOpts.Specie(k).Skin(0) * multx * Cos(TmpOpts.Specie(k).Skin(1) / 100) + x
-  Line7.y1 = TmpOpts.Specie(k).Skin(0) * multy * Sin(TmpOpts.Specie(k).Skin(1) / 100) + y
-  Line7.x2 = TmpOpts.Specie(k).Skin(2) * multx * Cos(TmpOpts.Specie(k).Skin(3) / 100) + x
-  Line7.y2 = TmpOpts.Specie(k).Skin(2) * multy * Sin(TmpOpts.Specie(k).Skin(3) / 100) + y
+  Line7.x1 = TmpOpts.Specie(k).Skin(0) * multx * Cos(TmpOpts.Specie(k).Skin(1) / 100) + X
+  Line7.y1 = TmpOpts.Specie(k).Skin(0) * multy * Sin(TmpOpts.Specie(k).Skin(1) / 100) + Y
+  Line7.x2 = TmpOpts.Specie(k).Skin(2) * multx * Cos(TmpOpts.Specie(k).Skin(3) / 100) + X
+  Line7.y2 = TmpOpts.Specie(k).Skin(2) * multy * Sin(TmpOpts.Specie(k).Skin(3) / 100) + Y
   Line8.x1 = Line7.x2
   Line8.y1 = Line7.y2
-  Line8.x2 = TmpOpts.Specie(k).Skin(4) * multx * Cos(TmpOpts.Specie(k).Skin(5) / 100) + x
-  Line8.y2 = TmpOpts.Specie(k).Skin(4) * multy * Sin(TmpOpts.Specie(k).Skin(5) / 100) + y
+  Line8.x2 = TmpOpts.Specie(k).Skin(4) * multx * Cos(TmpOpts.Specie(k).Skin(5) / 100) + X
+  Line8.y2 = TmpOpts.Specie(k).Skin(4) * multy * Sin(TmpOpts.Specie(k).Skin(5) / 100) + Y
   Line9.x1 = Line8.x2
   Line9.y1 = Line8.y2
-  Line9.x2 = TmpOpts.Specie(k).Skin(6) * multx * Cos(TmpOpts.Specie(k).Skin(7) / 100) + x
-  Line9.y2 = TmpOpts.Specie(k).Skin(6) * multy * Sin(TmpOpts.Specie(k).Skin(7) / 100) + y
+  Line9.x2 = TmpOpts.Specie(k).Skin(6) * multx * Cos(TmpOpts.Specie(k).Skin(7) / 100) + X
+  Line9.y2 = TmpOpts.Specie(k).Skin(6) * multy * Sin(TmpOpts.Specie(k).Skin(7) / 100) + Y
 End Sub
 
 'Botsareus 4/37/2013 Do not need this one also
@@ -3665,17 +3665,17 @@ robname = Replace(TmpOpts.Specie(k).Name, ".txt", "")
 Dim newR As Double
 Dim nextR As Double
 Dim nameR As Double
-Dim x As Long
+Dim X As Long
 
 Dim dbls() As Double
 
 ReDim dbls(Len(robname) - 1)
-For x = 1 To Len(robname)
-dbls(x - 1) = Rnd(-Asc(Mid(robname, x, 1)))
+For X = 1 To Len(robname)
+dbls(X - 1) = Rnd(-Asc(Mid(robname, X, 1)))
 Next 'pre seeds
 
-For x = 1 To Len(robname)
-newR = dbls(x - 1)
+For X = 1 To Len(robname)
+newR = dbls(X - 1)
 nextR = Rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
 Next 'randomize by name
 
@@ -3689,12 +3689,12 @@ nextR = 0
     Randomize 0
     
     ReDim dbls(UBound(rob(0).DNA))
-    For x = 0 To UBound(rob(0).DNA)
-    dbls(x) = Rnd(-(angle(0, 0, Rnd(-rob(0).DNA(x).value) - 0.5, Rnd(-rob(0).DNA(x).tipo) - 0.5)))
+    For X = 0 To UBound(rob(0).DNA)
+    dbls(X) = Rnd(-(angle(0, 0, Rnd(-rob(0).DNA(X).value) - 0.5, Rnd(-rob(0).DNA(X).tipo) - 0.5)))
     Next 'pre seeds
     
-    For x = 0 To UBound(rob(0).DNA)
-    newR = dbls(x)
+    For X = 0 To UBound(rob(0).DNA)
+    newR = dbls(X)
     nextR = Rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
     Next 'randomize by dna
     
@@ -3951,13 +3951,13 @@ Private Sub PosReset_Click()
 
 End Sub
 
-Private Sub Initial_Position_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Initial_Position_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   If Button = vbLeftButton Then
     DragBegin Initial_Position
   End If
 End Sub
 
-Private Sub IPB_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub IPB_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   If Button = vbLeftButton Then
     DragBegin Initial_Position
   End If
@@ -4027,8 +4027,8 @@ Public Sub DragBegin(ctl As Control)
     m_DragRect.TwipsToScreen m_CurrCtl
     
     'Make initial mouse position relative to control
-    m_DragPoint.x = m_DragPoint.x - m_DragRect.Left
-    m_DragPoint.y = m_DragPoint.y - m_DragRect.Top
+    m_DragPoint.X = m_DragPoint.X - m_DragRect.Left
+    m_DragPoint.Y = m_DragPoint.Y - m_DragRect.Top
     
     'Force redraw of form without sizing handles
     'before drawing dragging rectangle
@@ -4060,7 +4060,7 @@ End Sub
 
 'To handle all mouse message anywhere on the form, we set the mouse
 'capture to the form. Mouse movement is processed here
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selected
 
     Dim nWidth As Single, nHeight As Single
@@ -4075,8 +4075,8 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
         'Hide existing rectangle
         DrawDragRect
         'Update drag rectangle coordinates
-        m_DragRect.Left = pt.x - m_DragPoint.x
-        m_DragRect.Top = pt.y - m_DragPoint.y
+        m_DragRect.Left = pt.X - m_DragPoint.X
+        m_DragRect.Top = pt.Y - m_DragPoint.Y
         m_DragRect.Right = m_DragRect.Left + nWidth
         m_DragRect.Bottom = m_DragRect.Top + nHeight
         'Draw new rectangle
@@ -4089,25 +4089,25 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
         'Action depends on handle being dragged
         Select Case m_DragHandle
             Case 0
-                m_DragRect.Left = pt.x
-                m_DragRect.Top = pt.y
+                m_DragRect.Left = pt.X
+                m_DragRect.Top = pt.Y
             Case 2
-                m_DragRect.Right = pt.x
-                m_DragRect.Top = pt.y
+                m_DragRect.Right = pt.X
+                m_DragRect.Top = pt.Y
             Case 4
-                m_DragRect.Right = pt.x
-                m_DragRect.Bottom = pt.y
+                m_DragRect.Right = pt.X
+                m_DragRect.Bottom = pt.Y
             Case 6
-                m_DragRect.Left = pt.x
-                m_DragRect.Bottom = pt.y
+                m_DragRect.Left = pt.X
+                m_DragRect.Bottom = pt.Y
             Case 9
-                m_DragRect.Top = pt.y
+                m_DragRect.Top = pt.Y
             Case 10
-                m_DragRect.Bottom = pt.y
+                m_DragRect.Bottom = pt.Y
             Case 11
-                m_DragRect.Left = pt.x
+                m_DragRect.Left = pt.X
             Case 12
-                m_DragRect.Right = pt.x
+                m_DragRect.Right = pt.X
         End Select
         'Draw new rectangle
         DrawDragRect
@@ -4116,7 +4116,7 @@ End Sub
 
 'To handle all mouse message anywhere on the form, we set the mouse
 'capture to the form. Mouse up is processed here
-Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selected
 
     If Button = vbLeftButton Then
@@ -4161,7 +4161,7 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
 End Sub
 
 'Process MouseDown over handles
-Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
     Dim i As Integer
     Dim rc As RECT
 
@@ -4191,7 +4191,7 @@ Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As In
     ClipCursor rc
 End Sub
 
-Private Sub Robplacline_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Robplacline_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
     Dim i As Integer
     Dim rc As RECT
 
@@ -4773,6 +4773,7 @@ End Sub
 'End Sub
 
 Private Sub Form_Activate()
+Form1.hide_graphs
  ' Form1.SecTimer.Enabled = False
  ' TmpOpts = SimOpts
  ' Dim i As Long

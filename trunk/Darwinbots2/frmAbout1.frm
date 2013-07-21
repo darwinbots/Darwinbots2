@@ -365,7 +365,7 @@ help.text = ""
     help.text = help.text + "refshoot" + vbTab + "-----" + vbTab + "How many .shoot commands do you have in your DNA? Returns the number to me" + vbCrLf
     help.text = help.text + "refeye" + vbTab + "-----" + vbTab + "How many .eye commands do you have in your DNA? Returns the number to me" + vbCrLf
     help.text = help.text + vbTab + vbTab + "eye1, eye2, eye5, eye9? Any of them. I'm not fussy." + vbCrLf
-    help.text = help.text + "refnrg" + vbTab + "-----" + vbTab + "How energy do you have? Returns the number to me" + vbCrLf
+    help.text = help.text + "refnrg" + vbTab + "-----" + vbTab + "How much energy do you have? Returns the number to me" + vbCrLf
     help.text = help.text + "refage" + vbTab + "-----" + vbTab + "How old are you? Returns the number to me" + vbCrLf
     help.text = help.text + "refaim" + vbTab + "-----" + vbTab + "Which direction are you facing? Returns the number to me" + vbCrLf
     help.text = help.text + "reftie" + vbTab + "-----" + vbTab + "How many .tie commands do you have in your DNA? Returns the number to me" + vbCrLf
@@ -945,7 +945,7 @@ Private Sub Form_Load() ''Botsareus 8/7/2012 mod for new version
     help.text = help.text + "" + vbCrLf
     help.text = help.text + vbTab + "Here are some useful commands for combat and waste management." + vbCrLf
     help.text = help.text + "" + vbCrLf
-    help.text = help.text + "mkslime" + vbTab + "-----" + vbTab + "I can make a layer of slime on my body to protect me from your ties. Trouble is it slowly dissolves away." + vbCrLf
+    help.text = help.text + "mkslime" + vbTab + "-----" + vbTab + "I can make a layer of slime on my body to protect me from your ties and virus. Trouble is it slowly dissolves away." + vbCrLf
     help.text = help.text + "mkshell" + vbTab + "-----" + vbTab + "I can make a big, thick shell to protect my body from your shots. Trouble is it makes me heavy." + vbCrLf
     help.text = help.text + "slime" + vbTab + "-----" + vbTab + "This tells me how much slime I currently have so that I know when to replace it." + vbCrLf
     help.text = help.text + "shell" + vbTab + "-----" + vbTab + "This tells me how big my shell currently is. Perhaps I should make it smaller with a negative value in .mkshell." + vbCrLf
@@ -1002,10 +1002,10 @@ Private Sub Form_Load() ''Botsareus 8/7/2012 mod for new version
     
     help.text = help.text + "mkvirus" + vbTab + "-----" + vbTab + "Store to create self perpetuating viruses." + vbCrLf
     help.text = help.text + "thisgene" + vbTab + "-----" + vbTab + "Returns the current gene's number. Designed for: (*.thisgene .mkvirus store) " + vbCrLf
-    help.text = help.text + vbTab + vbTab + "Allowing a self reproducing virus." + vbCrLf
+    help.text = help.text + vbTab + vbTab + "Allowing a self reproducing virus. Note: The later in the dna the gene is the more power a virus has vs slime." + vbCrLf
     help.text = help.text + "dnalen" + vbTab + "-----" + vbTab + "Hmm.. What if I want to make a virus, but don't know my DNA length? Returns the number to me." + vbCrLf
     help.text = help.text + "vtimer" + vbTab + "-----" + vbTab + "A readonly value let me know how much time left before virus is ready to fire." + vbCrLf
-    help.text = help.text + "vshoot" + vbTab + "-----" + vbTab + "By placing a non-zero value here I can fire my virus." + vbCrLf
+    help.text = help.text + "vshoot" + vbTab + "-----" + vbTab + "By placing a non-zero value here I can fire my virus. The larger the value the further it travels." + vbCrLf
     help.text = help.text + "genes" + vbTab + "-----" + vbTab + "What if I want to know how much genes I have? Returns the number to me." + vbCrLf
     help.text = help.text + "delgene" + vbTab + "-----" + vbTab + "Allows me to delete a gene from my own genome. The number specified is the gene number to delete." + vbCrLf
     help.text = help.text + vbTab + vbTab + "Primary use is as an anti-viral defence for single gene bots." + vbCrLf

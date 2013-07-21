@@ -88,12 +88,14 @@ Private Sub ExecuteDNA(n As Integer)
       Case 0 'number
         If CurrentFlow <> CLEAR Then
           PushIntStack .DNA(a).value
+          rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(NUMCOST) * SimOpts.Costs(COSTMULTIPLIER))
         End If
       Case 1 '*number
         If CurrentFlow <> CLEAR Then 'And .DNA(a).value <= 1000 And .DNA(a).value > 0 Then
           b = Abs(.DNA(a).value) Mod MaxMem
           If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
           PushIntStack .mem(b)
+          rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(DOTNUMCOST) * SimOpts.Costs(COSTMULTIPLIER))
          ' If .DNA(a).value > EyeStart And .DNA(a).value <= EyeEnd Then ' Can mutations make robots blind?
          '    rob(n).View = True
          ' End If
@@ -157,6 +159,8 @@ Private Sub ExecuteBasicCommand(n As Integer)
 Dim i As Long
   '& denotes commands that can be constructed from other commands, but
   'are still basic enough to be listed here
+ 
+ rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(BCCMDCOST) * SimOpts.Costs(COSTMULTIPLIER))
   
   Select Case n
     Case 1 'add
@@ -300,6 +304,9 @@ End Sub
 '''''''''''''''''''''''''''''''''''''''''''''''''
 
 Private Sub ExecuteAdvancedCommand(n As Integer, robid As Integer, at_position As Integer)
+
+If n < 8 Then rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(ADCMDCOST) * SimOpts.Costs(COSTMULTIPLIER))
+
   Select Case n
     Case 1 'findang
       findang
@@ -316,7 +323,7 @@ Private Sub ExecuteAdvancedCommand(n As Integer, robid As Integer, at_position A
     Case 7 ' pyth
       DNApyth
     Case 8
-      DNAdebugint robid, at_position   'Botsareus 1/31/2013 the new debugint command
+      DNAdebugint robid, at_position    'Botsareus 1/31/2013 the new debugint command
     Case 9
       DNAdebugbool robid, at_position   'Botsareus 1/31/2013 the new debugbool command
   End Select
@@ -330,7 +337,7 @@ Private Sub findang()
   Dim e As Single  'angle to target
   b = PopIntStack ' * Form1.yDivisor
   a = PopIntStack ' * Form1.xDivisor
-  c = rob(currbot).pos.x / Form1.xDivisor
+  c = rob(currbot).pos.X / Form1.xDivisor
   d = rob(currbot).pos.Y / Form1.yDivisor
   e = angnorm(angle(c, d, a, b)) * 200
   PushIntStack e
@@ -344,7 +351,7 @@ Private Sub finddist()
   Dim e As Single  'distance to target
   b = PopIntStack * Form1.yDivisor
   a = PopIntStack * Form1.xDivisor
-  c = rob(currbot).pos.x
+  c = rob(currbot).pos.X
   d = rob(currbot).pos.Y
   e = Sqr(((c - a) ^ 2 + (d - b) ^ 2))
   If Abs(e) > 2000000000# Then
@@ -457,6 +464,9 @@ End Sub
 
 'unimplemented as yet
 Private Sub ExecuteBitwiseCommand(n As Integer)
+ 
+ rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(BTCMDCOST) * SimOpts.Costs(COSTMULTIPLIER))
+
   Select Case n
     Case 1 'Compliment ~ (tilde)
       DNABitwiseCompliment
@@ -684,6 +694,9 @@ End Function
 '''''''''''''''''''''''''''''''''''''''
 
 Private Sub ExecuteLogic(n As Integer)
+
+rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(LOGICCOST) * SimOpts.Costs(COSTMULTIPLIER))
+
   Dim a As Integer, b As Integer
 
     Select Case n
@@ -811,6 +824,9 @@ End Sub
 '''''''''''''''''''''''''''''''''''''''''''
 '''''''''''''''''''''''''''''''''''''''''''
 Private Function ExecuteFlowCommands(n As Integer, bot As Integer) As Boolean
+
+rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(FLOWCOST) * SimOpts.Costs(COSTMULTIPLIER))
+
 'returns true if a stop command was found (start, stop, or else)
 'returns false if cond was found
   ExecuteFlowCommands = False
