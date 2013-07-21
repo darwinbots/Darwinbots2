@@ -28,7 +28,7 @@ Begin VB.Form ServerForm
       _ExtentY        =   847
       MaxRequest      =   200
       MaxResponse     =   200
-      PipeName        =   "Calc Server Pipe"
+      PipeName        =   "CalcServerPipe"
    End
 End
 Attribute VB_Name = "ServerForm"
