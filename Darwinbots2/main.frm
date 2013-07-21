@@ -23,7 +23,7 @@ Begin VB.Form Form1
       Top             =   5640
       _ExtentX        =   847
       _ExtentY        =   847
-      PipeName        =   "Calc Server Pipe"
+      PipeName        =   "CalcServerPipe"
    End
    Begin VB.Timer SecTimer 
       Interval        =   1000
