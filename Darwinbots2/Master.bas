@@ -23,11 +23,20 @@ Public Sub UpdateSim()
   End If
   
   SimOpts.TotRunCycle = SimOpts.TotRunCycle + 1
-  'elcrasho = elcrasho - 1 'Botsareusnotdone debug only
-  'If elcrasho = 0 Then MsgBox 1 / 0 'Botsareusnotdone debug only
+  'provides the mutation rates oscillation Botsareus 8/3/2013 moved to UpdateSim)
+  If SimOpts.MutOscill Then
+   With SimOpts
+    'Botsareus 8/3/2013 a more frindly mut oscill
+    Dim fullrange As Integer
+    fullrange = .TotRunCycle Mod (.MutCycMax + .MutCycMin)
+    If fullrange < .MutCycMax Then
+     .MutCurrMult = 16 ^ Sin(fullrange / .MutCycMax * PI)
+    Else
+     .MutCurrMult = 16 ^ -Sin((fullrange - .MutCycMax) / .MutCycMin * PI)
+    End If
+   End With
+  End If
   
-  
-  Form1.MutCyc = Form1.MutCyc + 1
 
   TotalSimEnergyDisplayed = TotalSimEnergy(CurrentEnergyCycle)
   CurrentEnergyCycle = SimOpts.TotRunCycle Mod 100

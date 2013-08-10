@@ -120,10 +120,14 @@ Begin VB.Form optionsform
       TabCaption(3)   =   "Mutations"
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "Frame15"
-      Tab(3).Control(1)=   "Frame13"
-      Tab(3).Control(2)=   "Frame14"
-      Tab(3).Control(3)=   "DisableMutationsCheck"
+      Tab(3).Control(0)=   "DisableMutationsCheck"
+      Tab(3).Control(0).Enabled=   0   'False
+      Tab(3).Control(1)=   "Frame14"
+      Tab(3).Control(1).Enabled=   0   'False
+      Tab(3).Control(2)=   "Frame13"
+      Tab(3).Control(2).Enabled=   0   'False
+      Tab(3).Control(3)=   "Frame15"
+      Tab(3).Control(3).Enabled=   0   'False
       Tab(3).ControlCount=   4
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
@@ -158,10 +162,10 @@ Begin VB.Form optionsform
       Begin VB.CheckBox DisableMutationsCheck 
          Caption         =   "Disable All Mutations"
          Height          =   375
-         Left            =   -73680
+         Left            =   -74640
          TabIndex        =   247
-         Top             =   600
-         Width           =   6375
+         Top             =   840
+         Width           =   1815
       End
       Begin VB.Frame Frame20 
          Caption         =   "Physics"
