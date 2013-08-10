@@ -293,7 +293,6 @@ Private AutoSimNum As Integer       ' last autosaved sim index
 Public DNAMaxConds As Integer   ' max conditions per gene allowed by mutation
 Dim Charts(NUMGRAPHS) As Graph        ' array of graph pointers
 
-Public MutCyc As Long     ' for oscillating mutation rates
 Private GridRef As Integer
 Public PiccyMode As Boolean   'display that piccy or not?
 Public Newpic As Boolean      'IIs it a new picture?
@@ -371,7 +370,7 @@ Private Sub Form_Load()
   MDIForm1.F1Piccy.Visible = False
   ContestMode = False
   'SimOpts.chartingInterval = 200 ' EricL 3/28/2006 -Botsareus 8/3/2012 Commented out as it was overriding the saved settings
-  SimOpts.MutCurrMult = 1 ' EricL 4/1/2006
+  'SimOpts.MutCurrMult = 1 ' EricL 4/1/2006 Botsareus 8/3/2013 no longer nessisary
 End Sub
 
 '
@@ -1807,8 +1806,6 @@ End Sub
 ' tricky!
 Private Sub SecTimer_Timer()
 
-
-
   Static TenSecondsAgo(10) As Long
   'Static SumOfLastTenSeconds As Long
 '  Static SecondLastCycle As Long
@@ -1865,19 +1862,8 @@ Private Sub SecTimer_Timer()
   
   cyccaption SimOpts.CycSec
 
-  ' provides the mutation rates oscillation
-  If SimOpts.MutOscill Then
-    If MutPhase = 0 And MutCyc > SimOpts.MutCycMax Then
-      MutCyc = 0
-      MutPhase = 1
-      SimOpts.MutCurrMult = 1 / 16
-    End If
-    If MutPhase = 1 And MutCyc > SimOpts.MutCycMin Then
-      MutCyc = 0
-      MutPhase = 0
-      SimOpts.MutCurrMult = 16
-    End If
-  End If
+  '(provides the mutation rates oscillation Botsareus 8/3/2013 moved to UpdateSim)
+    
   'Botsareus 7/13/2012 calls update function for main icon menu
   MDIForm1.menuupdate
 End Sub
