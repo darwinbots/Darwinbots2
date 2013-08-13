@@ -156,6 +156,8 @@ Public Const in10 As Integer = 819
 Public Const poison As Integer = 827
 Public Const backshot As Integer = 900
 Public Const aimshoot As Integer = 901
+Public Const chlr As Integer = 902
+
 
 Private Type ancestorType
   num As Long ' unique ID of ancestor
@@ -203,6 +205,10 @@ Private Type robot
   occurr(20) As Integer     ' array with the ref* values
   nrg As Single             ' energy
   onrg As Single            ' old energy
+  
+  '''2013/08/11
+  chloroplasts As Single    ' number of chloroplasts
+  '''end
   
   body As Single            ' Body points. A corpse still has a body after all
   obody As Single           ' old body points, for use with pain pleas versions for body
@@ -1113,6 +1119,12 @@ Private Sub Shooting(n As Integer)
   rob(n).mem(shoot) = 0
 End Sub
 
+Private Sub ManageChlr(n As Integer)
+    If rob(n).mem(chlr) >= 0 Then rob(n).chloroplasts = rob(n).mem(chlr)
+    rob(n).mem(chlr) = rob(n).chloroplasts
+End Sub
+
+
 Private Sub ManageBody(n As Integer)
 
   'body management
@@ -1443,6 +1455,7 @@ Public Sub UpdateBots()
       MakeStuff t
       HandleWaste t
       Shooting t
+      ManageChlr t
       ManageBody t
       Shock t
       ManageBouyancy t
@@ -1984,6 +1997,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       rob(n).Pwaste = rob(n).Pwaste - npwaste
       rob(n).body = rob(n).body - nbody
       rob(n).radius = FindRadius(rob(n).body)
+      rob(nuovo).chloroplasts = rob(n).chloroplasts
       rob(nuovo).body = nbody
       rob(nuovo).radius = FindRadius(nbody)
       rob(nuovo).Waste = nwaste
@@ -2239,6 +2253,7 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       rob(female).Pwaste = rob(female).Pwaste - npwaste
       rob(female).body = rob(female).body - nbody
       rob(female).radius = FindRadius(rob(female).body)
+      rob(nuovo).chloroplasts = rob(female).chloroplasts
       rob(nuovo).body = nbody
       rob(nuovo).radius = FindRadius(nbody)
       rob(nuovo).Waste = nwaste

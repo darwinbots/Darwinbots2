@@ -11,6 +11,7 @@ Public Sub UpdateSim()
   Dim LowerRange As Single
   Dim CorrectionAmount As Single
   Dim CurrentPopulation As Integer
+  Dim AllChlr As Long
   Dim i As Integer
   Dim t As Integer
 
@@ -124,8 +125,13 @@ Public Sub UpdateSim()
   If numTeleporters > 0 Then UpdateTeleporters
    
   'If SimOpts.TotRunCycle Mod 200 = 0 And SimOpts.KillDistVegs Then KillDistVegs RobSize * 30
-  If totvegsDisplayed < SimOpts.MinVegs Then
-    If totvegsDisplayed <> -1 Then VegsRepopulate  'Will be -1 first cycle after loading a sim.  Prevents spikes.
+  
+  For t = 1 To MaxRobs
+    AllChlr = AllChlr + rob(t).chloroplasts
+  Next t
+  
+  If AllChlr < SimOpts.MinVegs Then
+    VegsRepopulate  'Will be -1 first cycle after loading a sim.  Prevents spikes.
   End If
   feedvegs SimOpts.MaxEnergy, totvegsDisplayed
   
