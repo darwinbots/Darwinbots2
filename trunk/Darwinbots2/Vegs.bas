@@ -48,6 +48,16 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
   Const Constant As Single = 0.00000005859375
   Dim temp As Single
   
+  Dim ScreenArea As Double
+  Dim TotalRobotArea As Single
+  
+  Dim AreaInverted As Single
+  Dim AreaCorrection As Single
+  Dim ChloroplastCorrection As Single
+  Dim AddEnergyRate As Single
+  Dim SubtractEnergyRate As Single
+  Dim acttok As Single
+  
   FeedThisCycle = SimOpts.Daytime 'Default is to feed if it is daytime, not feed if night
   OverrideDayNight = False
   
@@ -128,9 +138,26 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
   If Not FeedThisCycle Then GoTo getout
    
   If SimOpts.Daytime Then daymod = 1 Else daymod = 0
+   
+  'ScreenArea, TotalRobotArea, AreaInverted, AreaCorrection only have to be worked out once each cycle
+  
+  Dim ScreenWidth As Double
+  Dim ScreenHeight As Double
+  ScreenWidth = SimOptModule.SimOpts.FieldWidth
+  ScreenHeight = SimOptModule.SimOpts.FieldHeight
+  
+  ScreenArea = ScreenWidth * ScreenHeight
  
   For t = 1 To MaxRobs
-    If rob(t).Veg And rob(t).nrg > 0 And rob(t).exist Then
+    TotalRobotArea = rob(t).radius ^ 2 * PI
+  Next t
+
+  AreaInverted = TotalRobotArea / ScreenArea 'Area inverted for chloroplasts
+ 
+  AreaCorrection = (1 - AreaInverted) ^ 2 * 4 'corrected area for chloroplasts
+   
+  For t = 1 To MaxRobs
+    If rob(t).nrg > 0 And rob(t).exist Then
       If SimOpts.Pondmode Then
         depth = (rob(t).pos.Y / 2000) + 1
         If depth < 1 Then depth = 1
@@ -141,17 +168,23 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
       
       If tok < 0 Then tok = 0
       
+      ChloroplastCorrection = rob(t).chloroplasts / 16000
+      AddEnergyRate = AreaCorrection * ChloroplastCorrection * tok * 1.25
+      SubtractEnergyRate = (rob(t).chloroplasts / 32000) ^ 2 * tok
+      
+      acttok = AddEnergyRate - SubtractEnergyRate
+      
       Select Case SimOpts.VegFeedingMethod
       Case 0 'per veg
-        Energy = tok * (1 - SimOpts.VegFeedingToBody)
-        body = (tok * SimOpts.VegFeedingToBody) / 10
+        Energy = acttok * (1 - SimOpts.VegFeedingToBody)
+        body = (acttok * SimOpts.VegFeedingToBody) / 10
       Case 1 'per kilobody
-        Energy = tok * (1 - SimOpts.VegFeedingToBody) * rob(t).body / 1000
-        body = (tok * (SimOpts.VegFeedingToBody) * rob(t).body / 1000) / 10
+        Energy = acttok * (1 - SimOpts.VegFeedingToBody) * rob(t).body / 1000
+        body = (acttok * (SimOpts.VegFeedingToBody) * rob(t).body / 1000) / 10
       Case 2 'quadratically based on body.  Close to type 0 near 1000 body points, but quickly diverges at about 5K body points
-        tok = tok * ((rob(t).body ^ 2 * Constant) + (1 - Constant * 1000 * 1000))
-        Energy = tok * (1 - SimOpts.VegFeedingToBody)
-        body = (tok * SimOpts.VegFeedingToBody) / 10
+        acttok = acttok * ((rob(t).body ^ 2 * Constant) + (1 - Constant * 1000 * 1000))
+        Energy = acttok * (1 - SimOpts.VegFeedingToBody)
+        body = (acttok * SimOpts.VegFeedingToBody) / 10
       End Select
       rob(t).nrg = rob(t).nrg + Energy
       rob(t).body = rob(t).body + body

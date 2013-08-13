@@ -1265,6 +1265,8 @@ Public Sub LoadSysVars()
   sysvar(247).value = 429
   sysvar(248).Name = "pval"
   sysvar(248).value = 839
+  sysvar(249).Name = "chlr"
+  sysvar(249).value = 902
  
 End Sub
 

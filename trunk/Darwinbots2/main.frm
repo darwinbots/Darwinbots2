@@ -590,6 +590,12 @@ Private Sub DrawRobPer(n As Integer) 'Botsareusnotdone need to add chloroplasts 
         Circle (CentreX, CentreY), rob(n).radius * 0.6, vbCyan, 0, (Percent * PI * 2#)
       End If
       
+      If rob(n).chloroplasts > 0 Then
+        Percent = rob(n).chloroplasts / 32000
+        If Percent > 0.99 Then Percent = 0.99
+        Circle (CentreX, CentreY), rob(n).radius * 0.55, vbGreen, 0, (Percent * PI * 2#)
+      End If
+      
     End If
   
 End Sub

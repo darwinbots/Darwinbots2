@@ -27,7 +27,7 @@ Public Function NetForces(n As Integer)
   'The physics engine breaks apart if bot masses are less than about .1
   
 
-    If Abs(rob(n).vel.x) < 0.0000001 Then rob(n).vel.x = 0#  'Prevents underflow errors down the line
+    If Abs(rob(n).vel.X) < 0.0000001 Then rob(n).vel.X = 0#  'Prevents underflow errors down the line
     If Abs(rob(n).vel.Y) < 0.0000001 Then rob(n).vel.Y = 0#  'Prevents underflow erros down the line
     PlanetEaters n
     FrictionForces n
@@ -42,7 +42,7 @@ End Function
 
 Public Sub CalcMass(n As Integer)
   With rob(n)
-  .mass = (.body / 1000) + (.shell / 200) 'set value for mass
+  .mass = (.body / 1000) + (.shell / 200) + (.chloroplasts / 32000) ^ 2 * 31680 'set value for mass
   'If .mass < 0.1 Then .mass = 0.1 'stops the Euler integration from wigging out too badly.
   If .mass < 1 Then .mass = 1 'stops the Euler integration from wigging out too badly.
   If .mass > 32000 Then .mass = 32000
@@ -82,7 +82,7 @@ Public Sub FrictionForces(n As Integer)
   Else
     ZGrav = SimOpts.Zgravity
   End If
-  If .vel.x = 0 And .vel.Y = 0 Then 'is there a vector way to do this?
+  If .vel.X = 0 And .vel.Y = 0 Then 'is there a vector way to do this?
     .ImpulseStatic = CSng(.mass * ZGrav * SimOpts.CoefficientStatic) ' * 1 cycle (timestep = 1)
   Else
     Impulse = CSng(.mass * ZGrav * SimOpts.CoefficientKinetic) ' * 1 cycle (timestep = 1)
@@ -132,7 +132,7 @@ Public Sub SphereDragForces(n As Integer) 'for bots
   Dim mag As Single
   
   'No Drag if no velocity or no density
-  If (rob(n).vel.x = 0 And rob(n).vel.Y = 0) Or SimOpts.Density = 0 Then GoTo getout
+  If (rob(n).vel.X = 0 And rob(n).vel.Y = 0) Or SimOpts.Density = 0 Then GoTo getout
    
   'Here we calculate the reduction in angular momentum due to fluid density
   'I'm sure there there is a better calculation
@@ -192,7 +192,7 @@ Public Sub TieDrag3(n1 As Integer, N2 As Integer)
   
   'pretend Cd is always 1
   pos = VectorUnit(pos)
-  pos = VectorSet(-pos.Y, pos.x)
+  pos = VectorSet(-pos.Y, pos.X)
   rob(n1).ImpulseRes = VectorSub(rob(n1).ImpulseRes, VectorScalar(pos, Abs(c)))
   
 End Sub
@@ -234,7 +234,7 @@ Public Sub TieDrag2(ByVal n1 As Long, ByVal N2 As Long)
   'divide the above be either B or 1-B (depending on which robot we're
   'applying forces to) and multiply by the orthogonal unit component to pos
   pos = VectorScalar(pos, invlength)
-  pos = VectorSet(-pos.Y, pos.x)
+  pos = VectorSet(-pos.Y, pos.X)
   
   rob(n1).ImpulseRes = VectorAdd(rob(n1).ImpulseRes, _
     VectorScalar(pos, ForceScalar * 0.5 / BigB))
@@ -299,7 +299,7 @@ Public Sub TieDrag(n1 As Integer, N2 As Integer)
   Aconstant = radius * SimOpts.Density * 1
     
   DragScalar = Aconstant * Length * Length / 12 * c
-  Drag = VectorScalar(VectorSet(-u.Y, u.x), DragScalar * 0.5)
+  Drag = VectorScalar(VectorSet(-u.Y, u.X), DragScalar * 0.5)
   
   '5:  apply drag to bot
   'not working right :/
@@ -654,7 +654,7 @@ Public Sub TieTorque(t As Integer)
           While .Ties(j).pnt > 0
             If .Ties(j).angreg Then 'if angle is fixed.
               n = .Ties(j).pnt
-              anl = angle(.pos.x, .pos.Y, rob(n).pos.x, rob(n).pos.Y) 'angle of tie in euclidian space
+              anl = angle(.pos.X, .pos.Y, rob(n).pos.X, rob(n).pos.Y) 'angle of tie in euclidian space
               dlo = AngDiff(anl, .aim) 'difference of angle of tie and direction of robot
               mm = AngDiff(dlo, .Ties(j).ang + .Ties(j).bend) 'difference of actual angle and requested angle
              
@@ -664,7 +664,7 @@ Public Sub TieTorque(t As Integer)
                 numOfTorqueTies = numOfTorqueTies + 1
                 mm = (Abs(mm) - angleslack) * Sgn(mm)
                 m = mm * 0.1 ' Was .3
-                dx = rob(n).pos.x - .pos.x
+                dx = rob(n).pos.X - .pos.X
                 dy = .pos.Y - rob(n).pos.Y
                 dist = Sqr(dx ^ 2 + dy ^ 2)
                 nax = -Sin(anl) * m * dist / 10
@@ -769,7 +769,7 @@ Public Sub bordercolls(t As Integer, Optional whichside As Integer = 0, Optional
   Dim smudge As Single
   
   With rob(t)
-    If (.pos.x > .radius) And (.pos.x < SimOpts.FieldWidth - .radius) And (.pos.Y > .radius) And (.pos.Y < SimOpts.FieldHeight - .radius) Then GoTo getout
+    If (.pos.X > .radius) And (.pos.X < SimOpts.FieldWidth - .radius) And (.pos.Y > .radius) And (.pos.Y < SimOpts.FieldHeight - .radius) Then GoTo getout
   
     .mem(214) = 0
     
@@ -778,9 +778,9 @@ Public Sub bordercolls(t As Integer, Optional whichside As Integer = 0, Optional
     dif = VectorMin(VectorMax(.pos, VectorSet(smudge, smudge)), VectorSet(SimOpts.FieldWidth - smudge, SimOpts.FieldHeight - smudge))
     dist = VectorSub(dif, .pos)
   
-    If dist.x <> 0 Then
+    If dist.X <> 0 Then
       If SimOpts.Dxsxconnected = True Then
-        If dist.x < 0 Then
+        If dist.X < 0 Then
           ReSpawn t, smudge, .pos.Y
         Else
           ReSpawn t, SimOpts.FieldWidth - smudge, .pos.Y
@@ -790,18 +790,18 @@ Public Sub bordercolls(t As Integer, Optional whichside As Integer = 0, Optional
         'F-> = -k dist-> + v-> * b
       
        ' .ImpulseRes.x = .ImpulseRes.x + dist.x * -k
-         If .pos.x - .radius < 0 Then .pos.x = .radius
-         If .pos.x + .radius > SimOpts.FieldWidth Then .pos.x = CSng(SimOpts.FieldWidth) - .radius
-        .ImpulseRes.x = .ImpulseRes.x + .vel.x * b
+         If .pos.X - .radius < 0 Then .pos.X = .radius
+         If .pos.X + .radius > SimOpts.FieldWidth Then .pos.X = CSng(SimOpts.FieldWidth) - .radius
+        .ImpulseRes.X = .ImpulseRes.X + .vel.X * b
       End If
     End If
   
     If dist.Y <> 0 Then
       If SimOpts.Updnconnected Then
         If dist.Y < 0 Then
-          ReSpawn t, .pos.x, smudge
+          ReSpawn t, .pos.X, smudge
         Else
-          ReSpawn t, .pos.x, SimOpts.FieldHeight - smudge
+          ReSpawn t, .pos.X, SimOpts.FieldHeight - smudge
         End If
       Else
         rob(t).mem(214) = 1
@@ -1153,8 +1153,8 @@ Public Sub Repel3(rob1 As Integer, rob2 As Integer) 'Botsareusnotdone collision 
       
     
     'Update the touch senses
-    touch rob1, rob(rob2).pos.x, rob(rob2).pos.Y
-    touch rob2, rob(rob1).pos.x, rob(rob1).pos.Y
+    touch rob1, rob(rob2).pos.X, rob(rob2).pos.Y
+    touch rob2, rob(rob1).pos.X, rob(rob1).pos.Y
     
     'Update the refvars to reflect touching bots.
     lookoccurr rob1, rob2
