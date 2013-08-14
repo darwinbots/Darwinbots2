@@ -464,7 +464,7 @@ Private Sub DrawArena()
 End Sub
 
 ' draws rob perimeter
-Private Sub DrawRobPer(n As Integer) 'Botsareusnotdone need to add chloroplasts to robot view
+Private Sub DrawRobPer(n As Integer)
   Dim Sides As Integer
   Dim t As Single
   Dim Sdlen As Single
@@ -590,11 +590,12 @@ Private Sub DrawRobPer(n As Integer) 'Botsareusnotdone need to add chloroplasts 
         Circle (CentreX, CentreY), rob(n).radius * 0.6, vbCyan, 0, (Percent * PI * 2#)
       End If
       
-      If rob(n).chloroplasts > 0 Then
+      If rob(n).chloroplasts > 0 Then 'Panda 8/13/2013 Show how much chloroplasts a robot has
         Percent = rob(n).chloroplasts / 32000
         If Percent > 0.99 Then Percent = 0.99
         Circle (CentreX, CentreY), rob(n).radius * 0.55, vbGreen, 0, (Percent * PI * 2#)
       End If
+      
       
     End If
   

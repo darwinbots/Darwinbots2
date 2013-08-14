@@ -11,7 +11,7 @@ Public Sub UpdateSim()
   Dim LowerRange As Single
   Dim CorrectionAmount As Single
   Dim CurrentPopulation As Integer
-  Dim AllChlr As Long
+  Dim AllChlr As Long 'Panda 8/13/2013 The new way to figure out total number vegys
   Dim i As Integer
   Dim t As Integer
 
@@ -124,17 +124,16 @@ Public Sub UpdateSim()
   If numObstacles > 0 Then MoveObstacles
   If numTeleporters > 0 Then UpdateTeleporters
    
-  'If SimOpts.TotRunCycle Mod 200 = 0 And SimOpts.KillDistVegs Then KillDistVegs RobSize * 30
-  
-  For t = 1 To MaxRobs
+  For t = 1 To MaxRobs 'Panda 8/14/2013 to figure out how much vegys to repopulate across all robots
+   If rob(t).exist Then 'Botsareus 8/14/2013 We have to make sure the robot is alive first
     AllChlr = AllChlr + rob(t).chloroplasts
+   End If
   Next t
   
-  If AllChlr < SimOpts.MinVegs Then
-    VegsRepopulate  'Will be -1 first cycle after loading a sim.  Prevents spikes.
+  If totvegsDisplayed < SimOpts.MinVegs * 16000 Then 'Botsareus 8/14/2013 The user is still assuming we enter a veg value here, we have to normolize for 16K
+    If totvegsDisplayed <> -1 Then VegsRepopulate  'Will be -1 first cycle after loading a sim.  Prevents spikes.
   End If
   feedvegs SimOpts.MaxEnergy, totvegsDisplayed
-  
   If SimOpts.EnableAutoSpeciation Then
     'If SimOpts.TotRunCycle Mod SimOpts.SpeciationForkInterval = 0 Then ForkSpecies SimOpts.SpeciationGeneticDistance, SimOpts.SpeciationGenerationalDistance, SimOpts.SpeciationMinimumPopulation
     

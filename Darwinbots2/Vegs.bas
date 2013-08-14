@@ -14,6 +14,8 @@ Public CurrentEnergyCycle As Integer ' Index into he above array for calculating
 Public TotalSimEnergyDisplayed As Long
 Public PopulationLastCycle As Integer
 
+Public LightAval As Double 'Botsareus 8/14/2013 amount of avaialble light
+
 ' adds vegetables in random positions
 Public Sub VegsRepopulate()
   Dim n As node
@@ -44,19 +46,17 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
   Dim body As Single
   Dim FeedThisCycle As Boolean
   Dim OverrideDayNight As Boolean
-    
-  Const Constant As Single = 0.00000005859375
-  Dim temp As Single
   
   Dim ScreenArea As Double
   Dim TotalRobotArea As Single
-  
-  Dim AreaInverted As Single
   Dim AreaCorrection As Single
   Dim ChloroplastCorrection As Single
   Dim AddEnergyRate As Single
   Dim SubtractEnergyRate As Single
   Dim acttok As Single
+    
+  Const Constant As Single = 0.00000005859375
+  Dim temp As Single
   
   FeedThisCycle = SimOpts.Daytime 'Default is to feed if it is daytime, not feed if night
   OverrideDayNight = False
@@ -138,24 +138,19 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
   If Not FeedThisCycle Then GoTo getout
    
   If SimOpts.Daytime Then daymod = 1 Else daymod = 0
-   
-  'ScreenArea, TotalRobotArea, AreaInverted, AreaCorrection only have to be worked out once each cycle
   
-  Dim ScreenWidth As Double
-  Dim ScreenHeight As Double
-  ScreenWidth = SimOptModule.SimOpts.FieldWidth
-  ScreenHeight = SimOptModule.SimOpts.FieldHeight
+  ScreenArea = SimOptModule.SimOpts.FieldWidth * SimOptModule.SimOpts.FieldHeight 'Panda 8/14/2013 Figure out screen area
   
-  ScreenArea = ScreenWidth * ScreenHeight
- 
-  For t = 1 To MaxRobs
-    TotalRobotArea = rob(t).radius ^ 2 * PI
+  For t = 1 To MaxRobs 'Panda 8/14/2013 Figure out total robot area
+    If rob(t).exist Then 'Botsareus 8/14/2013 We have to make sure the robot is alive first
+        TotalRobotArea = rob(t).radius ^ 2 * PI
+    End If
   Next t
-
-  AreaInverted = TotalRobotArea / ScreenArea 'Area inverted for chloroplasts
+  
+  LightAval = TotalRobotArea / ScreenArea 'Panda 8/14/2013 Figure out AreaInverted a.k.a. available light
+  
+  AreaCorrection = (1 - LightAval) ^ 2 * 4
  
-  AreaCorrection = (1 - AreaInverted) ^ 2 * 4 'corrected area for chloroplasts
-   
   For t = 1 To MaxRobs
     If rob(t).nrg > 0 And rob(t).exist Then
       If SimOpts.Pondmode Then
@@ -168,6 +163,7 @@ Public Sub feedvegs(totnrg As Long, totv As Integer)
       
       If tok < 0 Then tok = 0
       
+      'Panda 8/14/2013 New chloroplast codez
       ChloroplastCorrection = rob(t).chloroplasts / 16000
       AddEnergyRate = AreaCorrection * ChloroplastCorrection * tok * 1.25
       SubtractEnergyRate = (rob(t).chloroplasts / 32000) ^ 2 * tok

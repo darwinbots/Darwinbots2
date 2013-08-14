@@ -42,7 +42,7 @@ End Function
 
 Public Sub CalcMass(n As Integer)
   With rob(n)
-  .mass = (.body / 1000) + (.shell / 200) + (.chloroplasts / 32000) ^ 2 * 31680 'set value for mass
+  .mass = (.body / 1000) + (.shell / 200) + (.chloroplasts / 32000) ^ 2 * 31680  'set value for mass Panda 8/14/2013
   'If .mass < 0.1 Then .mass = 0.1 'stops the Euler integration from wigging out too badly.
   If .mass < 1 Then .mass = 1 'stops the Euler integration from wigging out too badly.
   If .mass > 32000 Then .mass = 32000

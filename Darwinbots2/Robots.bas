@@ -156,8 +156,8 @@ Public Const in10 As Integer = 819
 Public Const poison As Integer = 827
 Public Const backshot As Integer = 900
 Public Const aimshoot As Integer = 901
-Public Const chlr As Integer = 902
-
+Public Const chlr As Integer = 920 'Panda 8/13/2013 The Chloroplast variable
+Public Const light As Integer = 921 'Botsareus 8/14/2013 A variable to let robots know how much light is available
 
 Private Type ancestorType
   num As Long ' unique ID of ancestor
@@ -206,9 +206,7 @@ Private Type robot
   nrg As Single             ' energy
   onrg As Single            ' old energy
   
-  '''2013/08/11
-  chloroplasts As Single    ' number of chloroplasts
-  '''end
+  chloroplasts As Single    'Panda 8/11/2013 number of chloroplasts
   
   body As Single            ' Body points. A corpse still has a body after all
   obody As Single           ' old body points, for use with pain pleas versions for body
@@ -1119,11 +1117,14 @@ Private Sub Shooting(n As Integer)
   rob(n).mem(shoot) = 0
 End Sub
 
-Private Sub ManageChlr(n As Integer)
+Private Sub ManageChlr(n As Integer) 'Botsareus 8/14/2013: Panda, I am a little conserned about what will happen if a robot wants to set its chloroplasts back to zero this cycle and not wait to reproduce.
     If rob(n).mem(chlr) >= 0 Then rob(n).chloroplasts = rob(n).mem(chlr)
     rob(n).mem(chlr) = rob(n).chloroplasts
+    'Botsareus: Panda, we need a way to charge for chloroplasts change here, think of something, I really like the method on the forum, add it to costs
+    'we also probebly use addchlr and rmchlr here
+    'I moved our sysvar data range from 900s to 920s too
+    rob(n).mem(light) = LightAval * 32000 'Botsareus 8/14/2013 Tells the robot how much light is aval.
 End Sub
-
 
 Private Sub ManageBody(n As Integer)
 
@@ -1997,7 +1998,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       rob(n).Pwaste = rob(n).Pwaste - npwaste
       rob(n).body = rob(n).body - nbody
       rob(n).radius = FindRadius(rob(n).body)
-      rob(nuovo).chloroplasts = rob(n).chloroplasts
+      rob(nuovo).chloroplasts = rob(n).chloroplasts 'Panda 8/13/2012 Copy parant chloroplasts to child
       rob(nuovo).body = nbody
       rob(nuovo).radius = FindRadius(nbody)
       rob(nuovo).Waste = nwaste
@@ -2253,7 +2254,7 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       rob(female).Pwaste = rob(female).Pwaste - npwaste
       rob(female).body = rob(female).body - nbody
       rob(female).radius = FindRadius(rob(female).body)
-      rob(nuovo).chloroplasts = rob(female).chloroplasts
+      rob(nuovo).chloroplasts = rob(female).chloroplasts 'Panda 8/13/2012 Copy parant chloroplasts to child
       rob(nuovo).body = nbody
       rob(nuovo).radius = FindRadius(nbody)
       rob(nuovo).Waste = nwaste
