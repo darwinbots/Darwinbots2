@@ -4,9 +4,6 @@ Option Explicit
 '
 '  V E G E T A B L E S   M A N A G E M E N T
 '
-
-Public totvegs As Integer           ' total vegs in sim
-Public totvegsDisplayed As Integer  ' Value to display so as to not get a half-updated value
 Public cooldown As Long
 
 Public TotalSimEnergy(100) As Long ' Any array of the total amount of sim energy over the past 100 cycles.
@@ -28,7 +25,6 @@ Public Sub VegsRepopulate()
     For t = 1 To SimOpts.RepopAmount
       'If Form1.Active Then 'Botsareus 3/20/2013 Bug fix to load vegs when cycle button pressed
         aggiungirob -1, Random(60, SimOpts.FieldWidth - 60), Random(60, SimOpts.FieldHeight - 60)
-        totvegs = totvegs + 1
       'End If
     Next t
     cooldown = cooldown - SimOpts.RepopCooldown
@@ -36,7 +32,7 @@ Public Sub VegsRepopulate()
 End Sub
 
 ' gives vegs their energy meal
-Public Sub feedvegs(totnrg As Long, totv As Integer)
+Public Sub feedvegs(totnrg As Long)
   Dim n As node
   Dim t As Integer
   Dim tok As Single
