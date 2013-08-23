@@ -59,7 +59,8 @@ Public graphsave(NUMGRAPHS) As Boolean
 
 Public TotalEnergy As Long     ' total energy in the sim
 Public totnvegs As Integer          ' total non vegs in sim
-Public totnvegsDisplayed As Integer   ' Toggle for display purposes, so the display doesn't catch half calculated value
+Public totnvegsDisplayed As Integer ' total non vegs in sim for display purposes
+Public TotalChlr As Long            ' total number of chlroroplasts
 Public totwalls As Integer          ' total walls count
 Public totcorpse As Integer         ' Total corpses
 
@@ -215,22 +216,22 @@ Public Sub makepoff(n As Integer)
   Dim vs As Integer
   Dim vx As Integer
   Dim vy As Integer
-  Dim x As Long
+  Dim X As Long
   Dim Y As Long
   Dim t As Byte
   For t = 1 To 20
     an = (640 / 20) * t
     vs = Random(RobSize / 40, RobSize / 30)
-    vx = rob(n).vel.x + absx(an / 100, vs, 0, 0, 0)
+    vx = rob(n).vel.X + absx(an / 100, vs, 0, 0, 0)
     vy = rob(n).vel.Y + absy(an / 100, vs, 0, 0, 0)
     With rob(n)
-    x = Random(.pos.x - .radius, .pos.x + .radius)
+    X = Random(.pos.X - .radius, .pos.X + .radius)
     Y = Random(.pos.Y - .radius, .pos.Y + .radius)
     End With
     If Random(1, 2) = 1 Then
-      createshot x, Y, vx, vy, -100, 0, 0, RobSize * 2, rob(n).color
+      createshot X, Y, vx, vy, -100, 0, 0, RobSize * 2, rob(n).color
     Else
-      createshot x, Y, vx, vy, -100, 0, 0, RobSize * 2, DBrite(rob(n).color)
+      createshot X, Y, vx, vy, -100, 0, 0, RobSize * 2, DBrite(rob(n).color)
     End If
   Next t
 End Sub
@@ -238,7 +239,7 @@ End Sub
 ' not sure where to put this function, so it's going here
 ' adds robots on the fly loading the script of specie(r)
 ' if r=-1 loads a vegetable (used for repopulation)
-Public Sub aggiungirob(r As Integer, x As Single, Y As Single)
+Public Sub aggiungirob(r As Integer, X As Single, Y As Single)
   Dim k As Integer
   Dim a As Integer
   Dim i As Integer
@@ -262,7 +263,7 @@ Public Sub aggiungirob(r As Integer, x As Single, Y As Single)
       GoTo getout
     End If
     
-    x = fRnd(SimOpts.Specie(r).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(r).Posrg * (SimOpts.FieldWidth - 60))
+    X = fRnd(SimOpts.Specie(r).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(r).Posrg * (SimOpts.FieldWidth - 60))
     Y = fRnd(SimOpts.Specie(r).Postp * (SimOpts.FieldHeight - 60), SimOpts.Specie(r).Posdn * (SimOpts.FieldHeight - 60))
   End If
   
@@ -313,7 +314,7 @@ Public Sub aggiungirob(r As Integer, x As Single, Y As Single)
       rob(a).Shape = Random(3, 5)
     End If
     If rob(a).Fixed Then rob(a).mem(216) = 1
-    rob(a).pos.x = x
+    rob(a).pos.X = X
     rob(a).pos.Y = Y
     
     

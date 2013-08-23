@@ -1268,8 +1268,12 @@ Public Sub LoadSysVars()
   'Botsareus 8/14/2013 New chloroplast code
   sysvar(249).Name = "chlr"
   sysvar(249).value = 920
-  sysvar(249).Name = "light"
-  sysvar(249).value = 921
+  sysvar(250).Name = "mkchlr"
+  sysvar(250).value = 921
+  sysvar(251).Name = "rmchlr"
+  sysvar(251).value = 922
+  sysvar(252).Name = "light"
+  sysvar(252).value = 923
 End Sub
 
 Public Function DetokenizeDNA(n As Integer, forHash As Boolean, Optional Position As Integer) As String

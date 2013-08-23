@@ -1956,7 +1956,7 @@ If simalreadyrunning And Not autosaved Then MsgBox strMsgSendData
 
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
 Dim revision As String
 
 Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause initial simulation
@@ -2216,7 +2216,7 @@ Private Sub MDIForm_Unload(Cancel As Integer)
   End
 End Sub
 
-Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Integer, brn As Long, totcyc As Long, tottim As Long)
+Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Long, brn As Long, totcyc As Long, tottim As Long)
   Dim sec As Long
   Dim Min As Long
   Dim h As Long

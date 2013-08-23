@@ -1100,7 +1100,7 @@ Private Sub Timer2_Timer()
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As File
+          Dim fileToDelete As file
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1118,7 +1118,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As File
+          Dim fileToDelete2 As file
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -1430,7 +1430,6 @@ Sub startloaded()
   'Vegs.cooldown = 0
   Vegs.cooldown = -SimOpts.RepopCooldown
   totnvegsDisplayed = -1 ' Just set this to -1 for the first cycle so the cost low water mark doesn't trigger.
-  totvegs = -1 ' Set to -1 to avoid veggy reproduction on first cycle
   totnvegs = SimOpts.Costs(DYNAMICCOSTTARGET) ' Just set this high for the first cycle so the cost low water mark doesn't trigger.
 '  MDIForm1.ZoomOut
 
@@ -1504,7 +1503,7 @@ End Sub
 
 ' calls main form status bar update
 Public Sub cyccaption(ByVal num As Single)
-  MDIForm1.infos num, TotalRobotsDisplayed, totnvegsDisplayed, totvegsDisplayed, SimOpts.TotBorn, SimOpts.TotRunCycle, SimOpts.TotRunTime
+  MDIForm1.infos num, TotalRobotsDisplayed, totnvegsDisplayed, Globals.TotalChlr, SimOpts.TotBorn, SimOpts.TotRunCycle, SimOpts.TotRunTime
 End Sub
 
 ' calculates the total number of robots

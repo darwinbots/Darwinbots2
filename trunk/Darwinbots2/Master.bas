@@ -45,7 +45,7 @@ Public Sub UpdateSim()
   
   CurrentPopulation = totnvegsDisplayed
   If SimOpts.Costs(DYNAMICCOSTINCLUDEPLANTS) <> 0 Then
-    CurrentPopulation = CurrentPopulation + totvegsDisplayed      'Include Plants in target population
+    CurrentPopulation = CurrentPopulation
   End If
   
   'If (SimOpts.TotRunCycle + 200) Mod 2000 = 0 Then MsgBox "sup" & SimOpts.TotRunCycle 'debug only
@@ -130,10 +130,12 @@ Public Sub UpdateSim()
    End If
   Next t
   
-  If totvegsDisplayed < SimOpts.MinVegs * 16000 Then 'Botsareus 8/14/2013 The user is still assuming we enter a veg value here, we have to normolize for 16K
-    If totvegsDisplayed <> -1 Then VegsRepopulate  'Will be -1 first cycle after loading a sim.  Prevents spikes.
+  TotalChlr = AllChlr / 16000
+  
+  If TotalChlr < CLng(SimOpts.MinVegs) Then 'Botsareus 8/14/2013 The user is still assuming we enter a veg value here, we have to normolize for 16K
+    If SimOpts.TotRunCycle > 1 Then VegsRepopulate  'Will be -1 first cycle after loading a sim.  Prevents spikes.
   End If
-  feedvegs SimOpts.MaxEnergy, totvegsDisplayed
+  feedvegs SimOpts.MaxEnergy
   If SimOpts.EnableAutoSpeciation Then
     'If SimOpts.TotRunCycle Mod SimOpts.SpeciationForkInterval = 0 Then ForkSpecies SimOpts.SpeciationGeneticDistance, SimOpts.SpeciationGenerationalDistance, SimOpts.SpeciationMinimumPopulation
     
