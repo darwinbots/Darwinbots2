@@ -352,7 +352,7 @@ Begin VB.Form CostsForm
       Height          =   2535
       Left            =   5880
       TabIndex        =   62
-      Top             =   5880
+      Top             =   6120
       Width           =   4095
       Begin VB.TextBox Costs 
          Height          =   285
@@ -467,7 +467,7 @@ Begin VB.Form CostsForm
    End
    Begin VB.Frame Frame1 
       Caption         =   "Morphological Costs"
-      Height          =   5715
+      Height          =   5955
       Index           =   2
       Left            =   5880
       TabIndex        =   25
@@ -475,263 +475,290 @@ Begin VB.Form CostsForm
       Width           =   4935
       Begin VB.TextBox Costs 
          Height          =   315
+         Index           =   8
+         Left            =   2040
+         TabIndex        =   105
+         Text            =   "Text1"
+         Top             =   5520
+         Width           =   975
+      End
+      Begin VB.TextBox Costs 
+         Height          =   315
          Index           =   25
-         Left            =   1920
+         Left            =   2040
          TabIndex        =   102
          Text            =   "Text1"
-         Top             =   5220
+         Top             =   5040
          Width           =   975
       End
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   30
-         Left            =   1920
+         Left            =   2040
          TabIndex        =   55
          Text            =   "Text1"
-         Top             =   4740
+         Top             =   4560
          Width           =   975
       End
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   29
-         Left            =   1920
+         Left            =   2040
          TabIndex        =   34
          Text            =   "Text1"
-         Top             =   4260
+         Top             =   4080
          Width           =   975
       End
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   28
-         Left            =   1920
+         Left            =   2040
          TabIndex        =   33
          Text            =   "Text1"
-         Top             =   3750
+         Top             =   3600
          Width           =   975
       End
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   27
-         Left            =   1920
+         Left            =   2040
          TabIndex        =   32
          Text            =   "Text1"
-         Top             =   3285
+         Top             =   3120
          Width           =   975
       End
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   26
-         Left            =   1920
+         Left            =   2040
          TabIndex        =   31
          Text            =   "Text1"
-         Top             =   2790
+         Top             =   2640
          Width           =   975
       End
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   24
-         Left            =   1920
+         Left            =   2040
          TabIndex        =   30
          Text            =   "Text1"
-         Top             =   2310
+         Top             =   2160
          Width           =   975
       End
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   23
-         Left            =   1920
+         Left            =   2040
          TabIndex        =   29
          Text            =   "Text1"
-         Top             =   1815
+         Top             =   1680
          Width           =   975
       End
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   22
-         Left            =   1920
+         Left            =   2040
          TabIndex        =   28
          Text            =   "Text1"
-         Top             =   1335
+         Top             =   1200
          Width           =   975
       End
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   21
-         Left            =   1920
+         Left            =   2040
          TabIndex        =   27
          Text            =   "Text1"
-         Top             =   840
+         Top             =   720
          Width           =   975
       End
       Begin VB.TextBox Costs 
          Height          =   315
          Index           =   20
-         Left            =   1920
+         Left            =   2040
          TabIndex        =   26
          Text            =   "Text1"
-         Top             =   360
+         Top             =   240
          Width           =   975
+      End
+      Begin VB.Label Label1 
+         Caption         =   "Chloroplast Cost"
+         Height          =   255
+         Index           =   10
+         Left            =   300
+         TabIndex        =   107
+         Top             =   5520
+         Width           =   1275
+      End
+      Begin VB.Label Label2 
+         Caption         =   "nrg per added chlr."
+         Height          =   255
+         Index           =   10
+         Left            =   3120
+         TabIndex        =   106
+         Top             =   5520
+         Width           =   1515
       End
       Begin VB.Label Label2 
          Caption         =   "nrg per data per copy"
          Height          =   255
          Index           =   8
-         Left            =   3000
+         Left            =   3120
          TabIndex        =   104
-         Top             =   5280
+         Top             =   5040
          Width           =   1515
       End
       Begin VB.Label Label1 
          Caption         =   "DNA Copy"
          Height          =   255
          Index           =   9
-         Left            =   180
+         Left            =   300
          TabIndex        =   103
-         Top             =   5280
+         Top             =   5040
          Width           =   1275
       End
       Begin VB.Label Label2 
          Caption         =   "nrg per body per turn"
          Height          =   255
          Index           =   30
-         Left            =   3000
+         Left            =   3120
          TabIndex        =   57
-         Top             =   4800
+         Top             =   4560
          Width           =   1695
       End
       Begin VB.Label Label1 
          Caption         =   "Body Upkeep"
          Height          =   255
          Index           =   30
-         Left            =   180
+         Left            =   300
          TabIndex        =   56
-         Top             =   4800
+         Top             =   4560
          Width           =   1095
       End
       Begin VB.Label Label1 
          Caption         =   "Voluntary Movement"
          Height          =   255
          Index           =   29
-         Left            =   180
+         Left            =   300
          TabIndex        =   53
-         Top             =   420
+         Top             =   240
          Width           =   1815
       End
       Begin VB.Label Label1 
          Caption         =   "Rotation"
          Height          =   255
          Index           =   28
-         Left            =   180
+         Left            =   300
          TabIndex        =   52
-         Top             =   900
+         Top             =   720
          Width           =   1635
       End
       Begin VB.Label Label1 
          Caption         =   "Shell Cost"
          Height          =   255
          Index           =   27
-         Left            =   180
+         Left            =   300
          TabIndex        =   51
-         Top             =   4320
+         Top             =   4080
          Width           =   1095
       End
       Begin VB.Label Label1 
          Caption         =   "Tie Formation"
          Height          =   255
          Index           =   26
-         Left            =   180
+         Left            =   300
          TabIndex        =   50
-         Top             =   1395
+         Top             =   1200
          Width           =   1335
       End
       Begin VB.Label Label1 
          Caption         =   "Shot Formation"
          Height          =   255
          Index           =   25
-         Left            =   180
+         Left            =   300
          TabIndex        =   49
-         Top             =   1875
+         Top             =   1680
          Width           =   1875
       End
       Begin VB.Label Label1 
          Caption         =   "DNA Upkeep"
          Height          =   255
          Index           =   24
-         Left            =   180
+         Left            =   300
          TabIndex        =   48
-         Top             =   2370
+         Top             =   2160
          Width           =   1275
       End
       Begin VB.Label Label1 
          Caption         =   "Venom Cost"
          Height          =   255
          Index           =   22
-         Left            =   180
+         Left            =   300
          TabIndex        =   47
-         Top             =   2850
+         Top             =   2640
          Width           =   1095
       End
       Begin VB.Label Label1 
          Caption         =   "Poison Cost"
          Height          =   255
          Index           =   21
-         Left            =   180
+         Left            =   300
          TabIndex        =   46
-         Top             =   3345
+         Top             =   3120
          Width           =   1095
       End
       Begin VB.Label Label1 
          Caption         =   "Slime Cost"
          Height          =   255
          Index           =   20
-         Left            =   180
+         Left            =   300
          TabIndex        =   45
-         Top             =   3825
+         Top             =   3600
          Width           =   1095
       End
       Begin VB.Label Label2 
          Caption         =   "nrg per bang"
          Height          =   255
          Index           =   29
-         Left            =   3000
+         Left            =   3120
          TabIndex        =   44
-         Top             =   420
+         Top             =   240
          Width           =   1215
       End
       Begin VB.Label Label2 
          Caption         =   "nrg per radian"
          Height          =   255
          Index           =   28
-         Left            =   3000
+         Left            =   3120
          TabIndex        =   43
-         Top             =   900
+         Top             =   720
          Width           =   1215
       End
       Begin VB.Label Label2 
          Caption         =   "nrg per firing"
          Height          =   255
          Index           =   27
-         Left            =   3000
+         Left            =   3120
          TabIndex        =   42
-         Top             =   1395
+         Top             =   1200
          Width           =   1215
       End
       Begin VB.Label Label2 
          Caption         =   "base nrg per shot"
          Height          =   255
          Index           =   26
-         Left            =   3000
+         Left            =   3120
          TabIndex        =   41
-         Top             =   1860
+         Top             =   1680
          Width           =   1335
       End
       Begin VB.Label Label2 
          Caption         =   "nrg per data per cycle"
          Height          =   255
          Index           =   25
-         Left            =   3000
+         Left            =   3120
          TabIndex        =   40
-         Top             =   2340
+         Top             =   2160
          Width           =   1755
       End
       Begin VB.Label Label2 
@@ -748,36 +775,36 @@ Begin VB.Form CostsForm
          Caption         =   "nrg per unit constructed"
          Height          =   255
          Index           =   23
-         Left            =   3000
+         Left            =   3120
          TabIndex        =   38
-         Top             =   2850
+         Top             =   2640
          Width           =   1695
       End
       Begin VB.Label Label2 
          Caption         =   "nrg per unit constructed"
          Height          =   255
          Index           =   22
-         Left            =   3000
+         Left            =   3120
          TabIndex        =   37
-         Top             =   3345
+         Top             =   3120
          Width           =   1695
       End
       Begin VB.Label Label2 
          Caption         =   "nrg per unit constructed"
          Height          =   255
          Index           =   21
-         Left            =   3000
+         Left            =   3120
          TabIndex        =   36
-         Top             =   3825
+         Top             =   3600
          Width           =   1695
       End
       Begin VB.Label Label2 
          Caption         =   "nrg per unit constructed"
          Height          =   255
          Index           =   20
-         Left            =   3000
+         Left            =   3120
          TabIndex        =   35
-         Top             =   4320
+         Top             =   4080
          Width           =   1695
       End
    End
@@ -1086,7 +1113,7 @@ Private Sub Default_Click()
   Costs(5).text = ".004"
   Costs(6).text = "0"
   Costs(7).text = ".04"
-  'Costs(8).text = "0"
+  Costs(8).text = "0"
   Costs(9).text = "0"
   
   Costs(20).text = ".05"
@@ -1152,7 +1179,6 @@ Private Sub Form_Load()
   Dim counter As Integer
   
   For counter = 0 To 33 'add up to 50 as new costs are added
-  If counter = 8 Then GoTo fine 'Botsareus 6/22/2013 Removed the fields physically we need to skip them here
   If counter > 9 And counter < 20 Then GoTo fine
     Costs(counter).text = TmpOpts.Costs(counter)
 fine:

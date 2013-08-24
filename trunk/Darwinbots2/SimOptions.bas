@@ -7,6 +7,7 @@ Public Const BTCMDCOST As Integer = 4
 Public Const CONDCOST As Integer = 5
 Public Const LOGICCOST As Integer = 6
 Public Const COSTSTORE As Integer = 7
+Public Const CHLRCOST As Integer = 8 'Botsareus 8/24/2013 The new chloroplast cost
 Public Const FLOWCOST As Integer = 9
 
 Public Const MOVECOST As Integer = 20

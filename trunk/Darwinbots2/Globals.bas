@@ -59,10 +59,11 @@ Public graphsave(NUMGRAPHS) As Boolean
 
 Public TotalEnergy As Long     ' total energy in the sim
 Public totnvegs As Integer          ' total non vegs in sim
-Public totnvegsDisplayed As Integer ' total non vegs in sim for display purposes
-Public TotalChlr As Long            ' total number of chlroroplasts
+Public totnvegsDisplayed As Integer   ' Toggle for display purposes, so the display doesn't catch half calculated value
 Public totwalls As Integer          ' total walls count
 Public totcorpse As Integer         ' Total corpses
+
+Public TotalChlr As Long 'Panda 8/24/2013 total number of chlroroplasts
 
 Public NoDeaths As Boolean     'Attempt to stop robots dying during the first cycle of a loaded sim
                                 'later used in conjunction with a routine to give robs a bit of energy back after loading up.
