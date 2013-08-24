@@ -662,7 +662,6 @@ Public Function FindRadius(ByVal bodypoints As Single) As Single
     FindRadius = (Log(bodypoints) * bodypoints * CubicTwipPerBody * 3 * 0.25 / PI) ^ (1 / 3)
     If FindRadius < 1 Then FindRadius = 1
   End If
-
 End Function
 
 ' returns an absolute acceleration, given up-down,
@@ -1061,8 +1060,10 @@ Dim i As Integer
     End If
     'Overflow protection.  Need to make sure teleported in species grow the species array correctly.
     If SimOpts.Specie(i).population > 32000 Then SimOpts.Specie(i).population = 32000
-    
-    If rob(n).Corpse Then
+       
+    If rob(n).Veg Then
+      totvegs = totvegs + 1
+    ElseIf rob(n).Corpse Then
       totcorpse = totcorpse + 1
       If rob(n).body > 0 Then
         Decay n
@@ -1117,8 +1118,7 @@ Private Sub Shooting(n As Integer)
   rob(n).mem(shoot) = 0
 End Sub
 
-Private Sub ManageChlr(n As Integer) 'Botsareus 8/14/2013: Panda, I am a little conserned about what will happen if a robot wants to set its chloroplasts back to zero this cycle and not wait to reproduce.
-
+Private Sub ManageChlr(n As Integer) 'Panda 8/15/2013 The new chloroplast function
     
     If rob(n).mem(mkchlr) > 0 Or rob(n).mem(rmchlr) > 0 Then ChangeChlr n
     
@@ -1126,9 +1126,32 @@ Private Sub ManageChlr(n As Integer) 'Botsareus 8/14/2013: Panda, I am a little 
     If rob(n).chloroplasts < 0 Then rob(n).body = 0
     
     rob(n).mem(chlr) = rob(n).chloroplasts
-    'Botsareus: Panda, we need a way to charge for chloroplasts change here, think of something, I really like the method on the forum, add it to costs
-    'we also probebly use addchlr and rmchlr here
-    'I moved our sysvar data range from 900s to 920s too
+    
+    rob(n).mem(light) = 32000 - (LightAval * 32000) 'Botsareus 8/24/2013 Tells the robot how much light is aval. (I want this here because it is chloroplast related)
+    
+End Sub
+
+
+Private Sub ChangeChlr(t As Integer) 'Panda 8/15/2013 change the number of chloroplasts
+
+With rob(t)
+  
+  Dim tmpchlr As Single 'Botsareus 8/24/2013 used to charge energy for adding chloroplasts
+  tmpchlr = .chloroplasts
+  
+  'add chloroplasts
+  .chloroplasts = .chloroplasts + .mem(mkchlr)
+  
+  'remove chloroplasts
+  .chloroplasts = .chloroplasts - .mem(rmchlr)
+  
+  If tmpchlr < .chloroplasts Then .nrg = .nrg - (.chloroplasts - tmpchlr) * SimOpts.Costs(CHLRCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 8/24/2013 only charge energy for adding chloroplasts to prevent robots from cheating by adding and subtracting there chlroplasts in 3 cycles
+  
+  rob(t).mem(mkchlr) = 0
+  rob(t).mem(rmchlr) = 0
+  
+End With
+  
 End Sub
 
 Private Sub ManageBody(n As Integer)
@@ -1336,7 +1359,6 @@ Public Sub UpdateBots()
   kil(1) = 0
   rep(1) = 0
   TotalEnergy = 0
-  
   totwalls = 0
   totcorpse = 0
   PopulationLastCycle = totnvegsDisplayed
@@ -1344,6 +1366,8 @@ Public Sub UpdateBots()
   TotalRobots = 0
   totnvegsDisplayed = totnvegs
   totnvegs = 0
+  totvegsDisplayed = totvegs
+  totvegs = 0
   
   If ContestMode Then
     F1count = F1count + 1
@@ -1365,8 +1389,6 @@ Public Sub UpdateBots()
     Next t
   End If
   
-  
-  
   'this loops is for pre update
   For t = 1 To MaxRobs
     If t Mod 250 = 0 Then DoEvents
@@ -1377,14 +1399,12 @@ Public Sub UpdateBots()
       CalcMass t
       If numObstacles > 0 Then DoObstacleCollisions t
       bordercolls t
-      
+     
       TieHooke t ' Handles tie lengths, tie hardening and compressive, elastic tie forces
       If Not rob(t).Corpse And Not rob(t).DisableDNA Then TieTorque t 'EricL 4/21/2006 Handles tie angles
       If Not rob(t).Fixed Then NetForces t 'calculate forces on all robots
       BucketsCollision t
       'Colls2 t
-      
-      rob(t).mem(light) = 32000 - (LightAval * 32000) 'Botsareus 8/14/2013 Tells the robot how much light is aval.
       
       If rob(t).ImpulseStatic > 0 Then
         staticV = VectorScalar(VectorUnit(rob(t).ImpulseInd), rob(t).ImpulseStatic)
@@ -1421,7 +1441,6 @@ Public Sub UpdateBots()
     If rob(t).exist Then
         Update_Ties t                    ' Carries out all tie routines
              
-        rob(t).mem(light) = LightAval * 32000 'Botsareus 8/14/2013 Tells the robot how much light is aval.
         'EricL Transfer genetic meomory locations for newborns through the birth tie during their first 15 cycles
         If rob(t).age < 15 Then DoGeneticMemory t
         
@@ -1533,24 +1552,6 @@ Private Sub ReproduceAndKill()
     KillRobot kil(t)
     t = t + 1
   Wend
-End Sub
-
-'Panda 15/08/2013: change the number of chloroplasts
-Private Sub ChangeChlr(t As Integer)
-  Dim Chlrcost As Integer
-  Chlrcost = 4 'temp value for chloroplasts
-  
-  'add chloroplasts
-  rob(t).nrg = rob(t).nrg - rob(t).mem(mkchlr)
-  rob(t).chloroplasts = rob(t).chloroplasts + rob(t).mem(mkchlr) / Chlrcost
-  
-  'remove chloroplasts
-  rob(t).nrg = rob(t).nrg + rob(t).mem(rmchlr)
-  rob(t).chloroplasts = rob(t).chloroplasts - rob(t).mem(rmchlr) / Chlrcost
-  
-  rob(t).mem(mkchlr) = 0
-  rob(t).mem(rmchlr) = 0
-  
 End Sub
 
 Private Sub storebody(t As Integer)
@@ -1924,7 +1925,7 @@ If reprofix Then If per < 3 Then rob(n).nrg = 3 'Botsareus 4/27/2013 hurt greedy
 If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
   Dim sondist As Long
   Dim nuovo As Integer
-  Dim nnrg As Single, nwaste As Single, npwaste As Single, nchloroplasts As Single
+  Dim nnrg As Single, nwaste As Single, npwaste As Single, nchloroplasts As Single  'Botsareus 8/24/2013 nchloroplasts
   Dim nbody As Integer
   Dim nx As Long
   Dim ny As Long
@@ -1940,14 +1941,14 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
   If rob(n).body <= 2 Or rob(n).CantReproduce Then GoTo getout 'bot is too small to reproduce
   
   'attempt to stop veg overpopulation but will it work?
-  If rob(n).Veg = True And (TotalChlr > SimOpts.MaxPopulation Or SimOpts.TotRunCycle <= 1) Then GoTo getout
+  If rob(n).Veg = True And (TotalChlr > SimOpts.MaxPopulation Or totvegsDisplayed < 0) Then GoTo getout 'Panda 8/23/2013 Based on TotalChlr now
  
   ' If we got here and it's a veg, then we are below the reproduction threshold.  Let a random 10% of the veggis reproduce
   ' so as to avoid all the veggies reproducing on the same cycle.  This adds some randomness
   ' so as to avoid giving preference to veggies with lower bot array numbers.  If the veggy population is below 90% of the threshold
   ' then let them all reproduce.
-  If rob(n).Veg = True And (Random(0, 10) <> 5) And (TotalChlr > (SimOpts.MaxPopulation * 0.9)) Then GoTo getout
-  If SimOpts.TotRunCycle <= 1 Then GoTo getout ' no veggies can reproduce on the first cycle after the sim is restarted.
+  If rob(n).Veg = True And (Random(0, 10) <> 5) And (TotalChlr > (SimOpts.MaxPopulation * 0.9)) Then GoTo getout 'Panda 8/23/2013 Based on TotalChlr now
+  If totvegsDisplayed = -1 Then GoTo getout ' no veggies can reproduce on the first cycle after the sim is restarted.
 
   per = per Mod 100 ' per should never be <=0 as this is checked in ManageReproduction()
   If per <= 0 Then GoTo getout
@@ -1968,6 +1969,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       nuovo = posto()
       
       SimOpts.TotBorn = SimOpts.TotBorn + 1
+      If rob(n).Veg Then totvegs = totvegs + 1
       ReDim rob(nuovo).DNA(UBound(rob(n).DNA))
       For t = 1 To UBound(rob(nuovo).DNA)
         rob(nuovo).DNA(t) = rob(n).DNA(t)
@@ -2016,23 +2018,22 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       rob(nuovo).vnum = 1
       
       nnrg = (rob(n).nrg / 100#) * CSng(per)
-      nwaste = (rob(n).Waste / 100#) * CSng(per)
-      npwaste = (rob(n).Pwaste / 100#) * CSng(per)
-      nchloroplasts = (rob(n).chloroplasts / 100#) * CSng(per)
+      nwaste = rob(n).Waste / 100# * CSng(per)
+      npwaste = rob(n).Pwaste / 100# * CSng(per)
+      nchloroplasts = (rob(n).chloroplasts / 100#) * CSng(per) 'Panda 8/23/2013 Distribute the chloroplasts
       
       rob(n).nrg = rob(n).nrg - nnrg - (nnrg * 0.001) ' Make reproduction cost 0.1% of nrg transfer
       rob(n).Waste = rob(n).Waste - nwaste
       rob(n).Pwaste = rob(n).Pwaste - npwaste
       rob(n).body = rob(n).body - nbody
       rob(n).radius = FindRadius(rob(n).body)
-      rob(n).chloroplasts = rob(n).chloroplasts - nchloroplasts
+      rob(n).chloroplasts = rob(n).chloroplasts - nchloroplasts 'Panda 8/23/2013 Distribute the chloroplasts
       
-      rob(nuovo).chloroplasts = nchloroplasts 'Panda 8/13/2012 Give percentage to child
+      rob(nuovo).chloroplasts = nchloroplasts 'Panda 8/23/2013 Distribute the chloroplasts
       rob(nuovo).body = nbody
       rob(nuovo).radius = FindRadius(nbody)
       rob(nuovo).Waste = nwaste
       rob(nuovo).Pwaste = npwaste
-      
       rob(n).mem(Energy) = CInt(rob(n).nrg)
       rob(n).mem(311) = rob(n).body
       rob(n).SonNumber = rob(n).SonNumber + 1
@@ -2129,7 +2130,7 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
 
   Dim sondist As Long
   Dim nuovo As Integer
-  Dim nnrg As Single, nwaste As Single, npwaste As Single, nchloroplasts As Single
+  Dim nnrg As Single, nwaste As Single, npwaste As Single, nchloroplasts As Single   'Botsareus 8/24/2013 nchloroplasts
   Dim nbody As Integer
   Dim nx As Long
   Dim ny As Long
@@ -2155,16 +2156,14 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
   'we let male veggies fertilize nonveggie females all they want since the offspring's "species" and thus vegginess
   'will be determined by their mother.  Perhaps a strategy will emerge where plants compete to reproduce
   'with nonveggies so as to bypass the popualtion limtis?  Who knows.
-  'attempt to stop veg overpopulation but will it work?
-  If rob(female).Veg = True And (TotalChlr > SimOpts.MaxPopulation Or SimOpts.TotRunCycle <= 1) Then GoTo getout
+  If rob(female).Veg = True And (TotalChlr > SimOpts.MaxPopulation Or totvegsDisplayed < 0) Then Exit Function  'Panda 8/23/2013 Based on TotalChlr now
  
-  ' If we got here and it's a veg, then we are below the reproduction threshold.  Let a random 10% of the veggis reproduce
+  ' If we got here and the female is a veg, then we are below the reproduction threshold.  Let a random 10% of the veggis reproduce
   ' so as to avoid all the veggies reproducing on the same cycle.  This adds some randomness
   ' so as to avoid giving preference to veggies with lower bot array numbers.  If the veggy population is below 90% of the threshold
   ' then let them all reproduce.
-  If rob(female).Veg = True And (Random(0, 10) <> 5) And (TotalChlr > (SimOpts.MaxPopulation * 0.9)) Then GoTo getout
-  If SimOpts.TotRunCycle <= 1 Then GoTo getout ' no veggies can reproduce on the first cycle after the sim is restarted.
-
+  If rob(female).Veg = True And (Random(0, 9) <> 5) And (TotalChlr > (SimOpts.MaxPopulation * 0.9)) Then Exit Function 'Panda 8/23/2013 Based on TotalChlr now
+  If totvegsDisplayed = -1 Then Exit Function ' no veggies can reproduce on the first cycle after the sim is restarted.
 
   per = per Mod 100 ' per should never be <=0 as this is checked in ManageReproduction()
   If per <= 0 Then Exit Function ' Can't give 100% or 0% of resources to offspring
@@ -2220,6 +2219,7 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
     
       nuovo = posto()
       SimOpts.TotBorn = SimOpts.TotBorn + 1
+      If rob(female).Veg Then totvegs = totvegs + 1
           
       'Step4 after robot is created store the dna
       
@@ -2277,7 +2277,7 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       nnrg = (rob(female).nrg / 100#) * CSng(per)
       nwaste = rob(female).Waste / 100# * CSng(per)
       npwaste = rob(female).Pwaste / 100# * CSng(per)
-      nchloroplasts = (rob(female).chloroplasts / 100#) * CSng(per)
+      nchloroplasts = (rob(female).chloroplasts / 100#) * CSng(per) 'Panda 8/23/2013 Distribute the chloroplasts
       
       rob(female).nrg = rob(female).nrg - nnrg - (nnrg * 0.001) ' Make reproduction cost 0.1% of nrg transfer for females
       'The male paid a cost to shoot the sperm but nothing more.
@@ -2286,10 +2286,9 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       rob(female).Pwaste = rob(female).Pwaste - npwaste
       rob(female).body = rob(female).body - nbody
       rob(female).radius = FindRadius(rob(female).body)
-      rob(female).chloroplasts = rob(n).chloroplasts - nchloroplasts
+      rob(female).chloroplasts = rob(female).chloroplasts - nchloroplasts 'Panda 8/23/2013 Distribute the chloroplasts
       
-      
-      rob(nuovo).chloroplasts = rob(n).chloroplasts - nchloroplasts
+      rob(nuovo).chloroplasts = nchloroplasts 'Botsareus 8/24/2013 Distribute the chloroplasts
       rob(nuovo).body = nbody
       rob(nuovo).radius = FindRadius(nbody)
       rob(nuovo).Waste = nwaste

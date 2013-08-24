@@ -4,6 +4,9 @@ Option Explicit
 '
 '  V E G E T A B L E S   M A N A G E M E N T
 '
+
+Public totvegs As Integer           ' total vegs in sim
+Public totvegsDisplayed As Integer  ' Value to display so as to not get a half-updated value
 Public cooldown As Long
 
 Public TotalSimEnergy(100) As Long ' Any array of the total amount of sim energy over the past 100 cycles.
@@ -25,6 +28,7 @@ Public Sub VegsRepopulate()
     For t = 1 To SimOpts.RepopAmount
       'If Form1.Active Then 'Botsareus 3/20/2013 Bug fix to load vegs when cycle button pressed
         aggiungirob -1, Random(60, SimOpts.FieldWidth - 60), Random(60, SimOpts.FieldHeight - 60)
+        totvegs = totvegs + 1
       'End If
     Next t
     cooldown = cooldown - SimOpts.RepopCooldown
@@ -32,7 +36,7 @@ Public Sub VegsRepopulate()
 End Sub
 
 ' gives vegs their energy meal
-Public Sub feedvegs(totnrg As Long)
+Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no longer needed
   Dim n As node
   Dim t As Integer
   Dim tok As Single
@@ -135,20 +139,22 @@ Public Sub feedvegs(totnrg As Long)
    
   If SimOpts.Daytime Then daymod = 1 Else daymod = 0
   
-  ScreenArea = SimOptModule.SimOpts.FieldWidth * SimOptModule.SimOpts.FieldHeight 'Panda 8/14/2013 Figure out screen area
+  ScreenArea = ((CDbl(SimOptModule.SimOpts.FieldWidth) * CDbl(SimOptModule.SimOpts.FieldHeight)) ^ 0.9) * 2.5   'Panda 8/14/2013 Figure out screen area 'Botsareus 8/24/2013 Area corrected to have less effect in larger simulations
   
   For t = 1 To MaxRobs 'Panda 8/14/2013 Figure out total robot area
     If rob(t).exist Then 'Botsareus 8/14/2013 We have to make sure the robot is alive first
-        TotalRobotArea = rob(t).radius ^ 2 * PI
+        TotalRobotArea = TotalRobotArea + rob(t).radius ^ 2 * PI
     End If
   Next t
   
   LightAval = TotalRobotArea / ScreenArea 'Panda 8/14/2013 Figure out AreaInverted a.k.a. available light
+  If LightAval > 1 Then LightAval = 1 'Botsareus make sure LighAval never goes negative
   
   AreaCorrection = (1 - LightAval) ^ 2 * 4
  
   For t = 1 To MaxRobs
     If rob(t).nrg > 0 And rob(t).exist Then
+    
       If SimOpts.Pondmode Then
         depth = (rob(t).pos.Y / 2000) + 1
         If depth < 1 Then depth = 1

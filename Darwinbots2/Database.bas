@@ -114,7 +114,6 @@ Public Sub AddRecord(rn As Integer)
   
   On Error GoTo fine
   v = ","
-  Dim totvegs As Integer
   With rob(rn)
   Print #2, sstr(.AbsNum); v; sstr(.parent); v; .FName; v; sstr(.generation); v; sstr(.BirthCycle); v; sstr(.age); v; sstr(.Mutations); v;
   Print #2, sstr(.LastMut); v; sstr(.DnaLen); v; sstr(.SonNumber); v; sstr(TotalRobots); v; sstr(totvegs); v; sstr(totnvegs); v; sstr(.Kills); v;
@@ -136,6 +135,6 @@ getout:
 End Sub
 
 ' when I wasn't aware of the existence of CStr()
-Private Function sstr(X) As String
-  sstr = Right(Str(X), Len(Str(X)) - 1)
+Private Function sstr(x) As String
+  sstr = Right(Str(x), Len(Str(x)) - 1)
 End Function
