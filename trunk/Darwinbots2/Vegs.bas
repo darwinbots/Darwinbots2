@@ -139,7 +139,7 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
    
   If SimOpts.Daytime Then daymod = 1 Else daymod = 0
   
-  ScreenArea = ((CDbl(SimOptModule.SimOpts.FieldWidth) * CDbl(SimOptModule.SimOpts.FieldHeight)) ^ 0.9) * 2.5   'Panda 8/14/2013 Figure out screen area 'Botsareus 8/24/2013 Area corrected to have less effect in larger simulations
+  ScreenArea = ((CDbl(SimOptModule.SimOpts.FieldWidth) * CDbl(SimOptModule.SimOpts.FieldHeight)) ^ 0.92) * 2.05   'Panda 8/14/2013 Figure out screen area 'Botsareus 8/24/2013 Area corrected to have less effect in larger simulations
   
   For t = 1 To MaxRobs 'Panda 8/14/2013 Figure out total robot area
     If rob(t).exist Then 'Botsareus 8/14/2013 We have to make sure the robot is alive first
@@ -203,12 +203,11 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
 getout:
 End Sub
 
-Public Sub feedveg2(t As Integer) 'gives veg an additional meal based on waste
+Public Sub feedveg2(t As Integer) 'gives veg an additional meal based on waste 'Botsareus 8/25/2013 Fix for all robots based on chloroplasts
   With rob(t)
-  If .nrg + (.Waste / 2) < 32000 Then
-    .nrg = .nrg + (.Waste / 2)
-    '.Waste = .Waste - (.Waste / 2)
-    .Waste = 0
+  If .nrg + (.Waste / 2) * (.chloroplasts / 32000) < 32000 Then
+    .nrg = .nrg + (.Waste / 2) * (.chloroplasts / 32000)
+    .Waste = .Waste - .Waste * (.chloroplasts / 32000)
   End If
   End With
 End Sub

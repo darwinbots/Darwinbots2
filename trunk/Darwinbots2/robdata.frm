@@ -55,6 +55,7 @@ Begin VB.Form datirob
          _ExtentX        =   11562
          _ExtentY        =   12250
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"robdata.frx":0E42
@@ -134,6 +135,29 @@ Begin VB.Form datirob
          TabIndex        =   41
          Top             =   7080
          Width           =   1425
+      End
+      Begin VB.Line Line1 
+         X1              =   240
+         X2              =   2760
+         Y1              =   5040
+         Y2              =   5040
+      End
+      Begin VB.Label Label11 
+         Caption         =   "Chloroplasts"
+         Height          =   195
+         Left            =   120
+         TabIndex        =   61
+         Top             =   4800
+         Width           =   1215
+      End
+      Begin VB.Label ChlrLabel 
+         Alignment       =   1  'Right Justify
+         Caption         =   "VTimer"
+         Height          =   195
+         Left            =   2100
+         TabIndex        =   60
+         Top             =   4800
+         Width           =   795
       End
       Begin VB.Label Label10 
          Caption         =   "Radius"
@@ -356,7 +380,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   23
-         Top             =   5400
+         Top             =   5520
          Width           =   795
       End
       Begin VB.Label totlen 
@@ -365,7 +389,7 @@ Begin VB.Form datirob
          Left            =   120
          TabIndex        =   22
          Tag             =   "15012"
-         Top             =   5400
+         Top             =   5520
          Width           =   1485
       End
       Begin VB.Label robgener 
@@ -392,7 +416,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   19
-         Top             =   5640
+         Top             =   5760
          Width           =   795
       End
       Begin VB.Label robover 
@@ -401,7 +425,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   18
-         Top             =   5160
+         Top             =   5280
          Width           =   795
       End
       Begin VB.Label rgenes 
@@ -410,7 +434,7 @@ Begin VB.Form datirob
          Left            =   105
          TabIndex        =   17
          Tag             =   "15008"
-         Top             =   5640
+         Top             =   5760
          Width           =   1485
       End
       Begin VB.Label roverall 
@@ -419,7 +443,7 @@ Begin VB.Form datirob
          Left            =   105
          TabIndex        =   16
          Tag             =   "15007"
-         Top             =   5160
+         Top             =   5280
          Width           =   1590
       End
       Begin VB.Label robmutations 
@@ -428,7 +452,7 @@ Begin VB.Form datirob
          Height          =   195
          Left            =   2100
          TabIndex        =   15
-         Top             =   4920
+         Top             =   5040
          Width           =   795
       End
       Begin VB.Label rmutation 
@@ -437,7 +461,7 @@ Begin VB.Form datirob
          Left            =   120
          TabIndex        =   14
          Tag             =   "15006"
-         Top             =   4920
+         Top             =   5040
          Width           =   2010
       End
       Begin VB.Label rfname 
@@ -709,7 +733,7 @@ End Sub
 Sub infoupdate(n As Integer, nrg As Single, par As Long, mut As Integer, age As Long, _
                 son As Integer, pmut As Single, FName As String, gn As Integer, mo As Integer, _
                 gennum As Integer, DnaLen As Integer, lastown As String, Waste As Single, body As Single, _
-                mass As Single, venom As Single, shell As Single, Slime As Single)
+                mass As Single, venom As Single, shell As Single, Slime As Single, ChlrVal As Single) 'Botsareus 8/25/2013 Mod to display chloroplast info.
   robnum.Caption = Str$(n)
   UniqueBotID.Caption = Str$(rob(n).AbsNum)
   robnrg.Caption = Str$(Round(nrg, 2))
@@ -729,6 +753,7 @@ Sub infoupdate(n As Integer, nrg As Single, par As Long, mut As Integer, age As 
   robover.Caption = Str$(mut)
   robgener.Caption = rob(n).generation
   totlenlab.Caption = Str$(DnaLen)
+  ChlrLabel.Caption = Str$(ChlrVal)
   wasteval.Caption = Str$(Round(Waste, 2))
   VelocityLabel.Caption = Str$(Round(VectorMagnitude(rob(n).vel), 2))
   RadiusLabel.Caption = Str$(Round(rob(n).radius, 2))

@@ -1086,8 +1086,7 @@ Private Sub MakeStuff(n As Integer)
 End Sub
 
 Private Sub HandleWaste(n As Integer)
-
-    If rob(n).Waste > 0 And rob(n).Veg Then feedveg2 n
+    If rob(n).Waste > 0 Then feedveg2 n 'Botsareus 8/25/2013 Mod to effect all robots
     If SimOpts.BadWastelevel = 0 Then SimOpts.BadWastelevel = 400
     If SimOpts.BadWastelevel > 0 And rob(n).Pwaste + rob(n).Waste > SimOpts.BadWastelevel Then altzheimer n
     If rob(n).Waste > 32000 Then defacate n

@@ -592,7 +592,7 @@ Private Sub DrawRobPer(n As Integer)
       
       If rob(n).chloroplasts > 0 Then 'Panda 8/13/2013 Show how much chloroplasts a robot has
         Percent = rob(n).chloroplasts / 32000
-        If Percent > 0.99 Then Percent = 0.99
+        If Percent > 0.98 Then Percent = 0.98
         Circle (CentreX, CentreY), rob(n).radius * 0.55, vbGreen, 0, (Percent * PI * 2#)
       End If
       
@@ -1504,7 +1504,7 @@ End Sub
 
 ' calls main form status bar update
 Public Sub cyccaption(ByVal num As Single)
-  MDIForm1.infos num, TotalRobotsDisplayed, totnvegsDisplayed, totvegsDisplayed, SimOpts.TotBorn, SimOpts.TotRunCycle, SimOpts.TotRunTime
+  MDIForm1.infos num, TotalRobotsDisplayed, totnvegsDisplayed, TotalChlr, SimOpts.TotBorn, SimOpts.TotRunCycle, SimOpts.TotRunTime  'Botsareus 8/25/2013 Mod to send TotalChlr
 End Sub
 
 ' calculates the total number of robots
@@ -1646,7 +1646,7 @@ Private Sub Form_DblClick()
     datirob.Visible = True
     datirob.RefreshDna
     datirob.ZOrder
-    datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime
+    datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime, rob(n).chloroplasts
   ElseIf m > 0 Then
     TeleportForm.teleporterFormMode = 1
     TeleportForm.Show
@@ -1932,7 +1932,7 @@ Private Sub main()
     
       If datirob.Visible And Not datirob.ShowMemoryEarlyCycle Then
         With rob(robfocus)
-          datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime
+          datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime, .chloroplasts
         End With
       End If
             

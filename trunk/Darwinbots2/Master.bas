@@ -107,7 +107,7 @@ Public Sub UpdateSim()
   ExecRobs
   If datirob.Visible And datirob.ShowMemoryEarlyCycle Then
     With rob(robfocus)
-      datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime
+      datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime, .chloroplasts
     End With
   End If
   
