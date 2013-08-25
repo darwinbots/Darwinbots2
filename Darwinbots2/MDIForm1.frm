@@ -1338,7 +1338,7 @@ Private Sub robinf_Click()
   Dim n As Integer
   n = robfocus
   datirob.Show
-  datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime
+  datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime, rob(n).chloroplasts
 End Sub
 Private Sub mdiform1_keydown(KeyCode As Integer)
   If KeyCode <> 0 Then
@@ -2216,7 +2216,7 @@ Private Sub MDIForm_Unload(Cancel As Integer)
   End
 End Sub
 
-Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Integer, brn As Long, totcyc As Long, tottim As Long)
+Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Long, brn As Long, totcyc As Long, tottim As Long)  'Botsareus 8/25/2013 Mod to except totalchlr
   Dim sec As Long
   Dim Min As Long
   Dim h As Long
@@ -2233,8 +2233,8 @@ Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Integer, br
   Me.TotalBots.Caption = "Tot " + Str$(tot)
   StatusBar1.Panels(3).text = "Bots " + Str$(tnv) + " "
   Me.NumberBots.Caption = "Bots " + Str$(tnv)
-  StatusBar1.Panels(4).text = "Vegs " + Str$(tv) + " "
-  Me.NumberVeg.Caption = "Vegs " + Str$(tv)
+  StatusBar1.Panels(4).text = "Chlr " + Str$(tv) + " "
+  Me.NumberVeg.Caption = "Chlr " + Str$(tv)
   StatusBar1.Panels(5).text = SBborn + Str$(brn) + " "
   Me.BotsBorn.Caption = SBborn + Str$(brn)
   StatusBar1.Panels(6).text = "Cycles" + Str$(totcyc) + " "

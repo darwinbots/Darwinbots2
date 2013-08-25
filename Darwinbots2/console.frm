@@ -23,7 +23,6 @@ Begin VB.Form Consoleform
       _ExtentX        =   8281
       _ExtentY        =   3572
       _Version        =   393217
-      Enabled         =   -1  'True
       ReadOnly        =   -1  'True
       ScrollBars      =   2
       TextRTF         =   $"console.frx":058A
@@ -381,7 +380,7 @@ Private Sub evnt_textentered(ind As Integer, text As String)
       datirob.Visible = True
       datirob.RefreshDna
       datirob.ZOrder
-      datirob.infoupdate ind, rob(ind).nrg, rob(ind).parent, rob(ind).Mutations, rob(ind).age, rob(ind).SonNumber, 1, rob(ind).FName, rob(ind).genenum, rob(ind).LastMut, rob(ind).generation, rob(ind).DnaLen, rob(ind).LastOwner, rob(ind).Waste, rob(ind).body, rob(ind).mass, rob(ind).venom, rob(ind).shell, rob(ind).Slime
+      datirob.infoupdate ind, rob(ind).nrg, rob(ind).parent, rob(ind).Mutations, rob(ind).age, rob(ind).SonNumber, 1, rob(ind).FName, rob(ind).genenum, rob(ind).LastMut, rob(ind).generation, rob(ind).DnaLen, rob(ind).LastOwner, rob(ind).Waste, rob(ind).body, rob(ind).mass, rob(ind).venom, rob(ind).shell, rob(ind).Slime, rob(ind).chloroplasts
       datirob.ShowDna
     Case "help"
       rob(ind).console.textout ""
@@ -468,7 +467,7 @@ Public Sub cycle(num As Integer)
       
       If datirob.Visible And Not datirob.ShowMemoryEarlyCycle Then
         With rob(robfocus)
-        datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime
+        datirob.infoupdate robfocus, .nrg, .parent, .Mutations, .age, .SonNumber, 1, .FName, .genenum, .LastMut, .generation, .DnaLen, .LastOwner, .Waste, .body, .mass, .venom, .shell, .Slime, .chloroplasts
         End With
       End If
       
