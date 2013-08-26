@@ -127,7 +127,7 @@ Public Sub Update_Ties(t As Integer)
   Dim k As Integer
   Dim l As Single
   Dim ptag As Single
-  Dim length As Long
+  Dim Length As Long
 
   With rob(t)
     tp = tieport1
@@ -153,8 +153,13 @@ Public Sub Update_Ties(t As Integer)
           End If
           If .mem(833) > 0 Then
             shareslime t, k
-            .Ties(k).sharing = True    'yellow ties
+            .Ties(k).sharing = True   'yellow ties
           End If
+          If .mem(sharechlr) > 0 Then
+            sharechlr t, k
+            .Ties(k).sharing = True   'yellow ties
+          End If
+          
         End If
         .vbody = .vbody + rob(.Ties(k).pnt).body
       End If
@@ -240,10 +245,10 @@ Public Sub Update_Ties(t As Integer)
           'TieLen Section
           If .mem(FIXLEN) <> 0 And .Ties(k).Port = tn Then 'fixes tie length
            'length = Abs(.mem(FIXLEN))
-            length = Abs(.mem(FIXLEN)) + .radius + rob(.Ties(k).pnt).radius ' include the radius of the tied bots in the length
-            If length > 32000 Then length = 32000 ' Can happen for very big bots with very long ties.
-            .Ties(k).NaturalLength = CInt(length) 'for first robot
-            rob(.Ties(k).pnt).Ties(srctie((.Ties(k).pnt), t)).NaturalLength = CInt(length) 'for second robot. What a messed up formula
+            Length = Abs(.mem(FIXLEN)) + .radius + rob(.Ties(k).pnt).radius ' include the radius of the tied bots in the length
+            If Length > 32000 Then Length = 32000 ' Can happen for very big bots with very long ties.
+            .Ties(k).NaturalLength = CInt(Length) 'for first robot
+            rob(.Ties(k).pnt).Ties(srctie((.Ties(k).pnt), t)).NaturalLength = CInt(Length) 'for second robot. What a messed up formula
           End If
     
           'EricL 5/7/2006 Added Stifftie section.  This never made it into the 2.4 code
@@ -273,10 +278,10 @@ Public Sub Update_Ties(t As Integer)
        If .Ties(k).pnt > 0 And .Ties(k).type = 3 Then
         'input
         If .TieLenOverwrite(k - 1) Then
-         length = .mem(483 + k) + .radius + rob(.Ties(k).pnt).radius ' include the radius of the tied bots in the length
-         If length > 32000 Then length = 32000 ' Can happen for very big bots with very long ties.
-         .Ties(k).NaturalLength = CInt(length) 'for first robot
-         rob(.Ties(k).pnt).Ties(srctie((.Ties(k).pnt), t)).NaturalLength = CInt(length) 'for second robot. What a messed up formula
+         Length = .mem(483 + k) + .radius + rob(.Ties(k).pnt).radius ' include the radius of the tied bots in the length
+         If Length > 32000 Then Length = 32000 ' Can happen for very big bots with very long ties.
+         .Ties(k).NaturalLength = CInt(Length) 'for first robot
+         rob(.Ties(k).pnt).Ties(srctie((.Ties(k).pnt), t)).NaturalLength = CInt(Length) 'for second robot. What a messed up formula
         End If
         If .TieAngOverwrite(k - 1) Then
          .Ties(k).ang = angnorm(.mem(479 + k) / 200)
@@ -781,7 +786,7 @@ Public Function maketie(ByVal a As Integer, ByVal b As Integer, c As Long, last 
   Dim OK As Boolean
   Dim Max As Integer
   Dim deflect As Integer
-  Dim length As Long
+  Dim Length As Long
   Dim deletedtie As Boolean
   
   maketie = False
@@ -794,9 +799,9 @@ Public Function maketie(ByVal a As Integer, ByVal b As Integer, c As Long, last 
   k = 1
   j = 1
   
-  length = VectorMagnitude(VectorSub(rob(a).pos, rob(b).pos))
+  Length = VectorMagnitude(VectorSub(rob(a).pos, rob(b).pos))
     
-  If length <= c * 1.5 Then 'And deflect > rob(b).slime Then
+  If Length <= c * 1.5 Then 'And deflect > rob(b).slime Then
     If deflect < rob(b).Slime Then OK = False  'should stop ties forming when slime is high
     
     If OK = True Then DeleteTie a, b
@@ -811,7 +816,7 @@ Public Function maketie(ByVal a As Integer, ByVal b As Integer, c As Long, last 
     If k < Max And j < Max And OK Then
       rob(a).Ties(k).pnt = b
       rob(a).Ties(k).ptt = j
-      rob(a).Ties(k).NaturalLength = length
+      rob(a).Ties(k).NaturalLength = Length
       rob(a).Ties(k).stat = False
       rob(a).Ties(k).last = last
       rob(a).Ties(k).Port = mem
@@ -828,7 +833,7 @@ Public Function maketie(ByVal a As Integer, ByVal b As Integer, c As Long, last 
           
       rob(b).Ties(j).pnt = a
       rob(b).Ties(j).ptt = k
-      rob(b).Ties(j).NaturalLength = length
+      rob(b).Ties(j).NaturalLength = Length
       rob(b).Ties(j).stat = False
       rob(b).Ties(j).last = last
       rob(b).Ties(j).back = True
