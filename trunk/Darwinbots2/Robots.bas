@@ -160,6 +160,8 @@ Public Const chlr As Integer = 920 'Panda 8/13/2013 The Chloroplast variable
 Public Const mkchlr As Integer = 921 'Panda 8/15/2013 The add chloroplast variable
 Public Const rmchlr As Integer = 922 'Panda 8/15/2013 The remove chloroplast variable
 Public Const light As Integer = 923 'Botsareus 8/14/2013 A variable to let robots know how much light is available
+Public Const sharechlr As Integer = 924 'Panda 08/26/2013 Share Chloroplasts between ties variable
+
 
 Private Type ancestorType
   num As Long ' unique ID of ancestor
@@ -1716,6 +1718,27 @@ Private Sub robshoot(n As Integer)
 CantShoot:
   rob(n).mem(shoot) = 0
   rob(n).mem(shootval) = 0
+End Sub
+
+Public Sub sharechloroplasts(t As Integer, k As Integer)
+  Dim totchlr As Single
+  With rob(t)
+    If .mem(sharechlr) > 99 Then .mem(sharechlr) = 99
+    If .mem(sharechlr) < 0 Then .mem(sharechlr) = 0
+    totchlr = .chloroplasts + rob(.Ties(k).pnt).chloroplasts
+    
+    If totchlr * (CSng(.mem(sharechlr)) / 100#) < 32000 Then
+      .chloroplasts = totchlr * (CSng(.mem(sharechlr)) / 100#)
+    Else
+      .chloroplasts = 32000
+    End If
+    
+    If totchlr * ((100# - CSng(.mem(sharechlr))) / 100#) < 32000 Then
+      rob(.Ties(k).pnt).chloroplasts = totchlr * ((100 - CSng(.mem(sharechlr))) / 100#)
+    Else
+      rob(.Ties(k).pnt).chloroplasts = 32000
+    End If
+  End With
 End Sub
 
 Public Sub shareslime(t As Integer, k As Integer) 'robot shares slime with others in the same multibot structure

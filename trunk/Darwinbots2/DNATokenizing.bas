@@ -1274,7 +1274,8 @@ Public Sub LoadSysVars()
   sysvar(251).value = 922
   sysvar(252).Name = "light"
   sysvar(252).value = 923
-
+  sysvar(253).Name = "sharechlr"
+  sysvar(253).value = 924
 End Sub
 
 Public Function DetokenizeDNA(n As Integer, forHash As Boolean, Optional Position As Integer) As String
