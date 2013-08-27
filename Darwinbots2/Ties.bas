@@ -156,7 +156,7 @@ Public Sub Update_Ties(t As Integer)
             .Ties(k).sharing = True   'yellow ties
           End If
           If .mem(sharechlr) > 0 Then
-            sharechlr t, k
+            sharechloroplasts t, k
             .Ties(k).sharing = True   'yellow ties
           End If
           
