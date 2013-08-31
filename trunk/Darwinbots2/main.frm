@@ -1897,6 +1897,19 @@ For i = 1 To NUMGRAPHS
 Next i
 End Sub
 
+Function calc_graphs() As String
+Dim lg As String
+Dim i As Byte
+For i = 1 To NUMGRAPHS
+  If Not (Charts(i).graf Is Nothing) Then
+   If Charts(i).graf.Visible Then
+    lg = lg & vbCrLf & Charts(i).graf.Caption
+   End If
+  End If
+Next i
+calc_graphs = lg
+End Function
+
 
 ' main procedure. Oh yes!
 Private Sub main()
@@ -2625,6 +2638,23 @@ getout2:
       End If
       End With
     Next t
+    
+  Case AVGCHLR_GRAPH 'Botsareus 8/31/2013 The new chloroplast graph
+    For t = 1 To MaxRobs
+      With rob(t)
+      'If Not .wall And .exist Then
+      If .exist Then
+       ' numbots = numbots + 1
+        P = Flex.Position(rob(t).FName, nomi)
+        dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
+        dati(P, AVGCHLR_GRAPH) = dati(P, AVGCHLR_GRAPH) + .chloroplasts
+      End If
+      End With
+    Next t
+    t = Flex.last(nomi)
+    For P = 1 To t
+      If dati(P, POPULATION_GRAPH) <> 0 Then dati(P, AVGCHLR_GRAPH) = Round(dati(P, AVGCHLR_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+    Next P
     
 getout3:
     

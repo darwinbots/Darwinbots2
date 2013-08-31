@@ -38,19 +38,20 @@ Public Const MUT_DNALENGTH_GRAPH As Integer = 8
 Public Const ENERGY_SPECIES_GRAPH As Integer = 9
 Public Const DYNAMICCOSTS_GRAPH As Integer = 10
 Public Const SPECIESDIVERSITY_GRAPH As Integer = 11
-Public Const GENETIC_DIST_GRAPH As Integer = 12
-Public Const GENERATION_DIST_GRAPH As Integer = 13
-Public Const GENETIC_SIMPLE_GRAPH As Integer = 14
+Public Const AVGCHLR_GRAPH As Integer = 12 'Botsareus 8/31/2013 Average chloroplasts graph
+Public Const GENETIC_DIST_GRAPH As Integer = 13
+Public Const GENERATION_DIST_GRAPH As Integer = 14
+Public Const GENETIC_SIMPLE_GRAPH As Integer = 15
 'Botsareus 5/24/2013 Customizable graphs
-Public Const CUSTOM_1_GRAPH As Integer = 15
-Public Const CUSTOM_2_GRAPH As Integer = 16
-Public Const CUSTOM_3_GRAPH As Integer = 17
+Public Const CUSTOM_1_GRAPH As Integer = 16
+Public Const CUSTOM_2_GRAPH As Integer = 17
+Public Const CUSTOM_3_GRAPH As Integer = 18
 Public strGraphQuery1 As String
 Public strGraphQuery2 As String
 Public strGraphQuery3 As String
 'Botsareus 5/31/2013 Special graph info
 Public strSimStart As String
-Public Const NUMGRAPHS = 17 'Botsareus 5/25/2013 Two more graphs, moved to globals
+Public Const NUMGRAPHS = 18 'Botsareus 5/25/2013 Two more graphs, moved to globals
 Public graphfilecounter(NUMGRAPHS) As Long
 Public graphleft(NUMGRAPHS) As Long
 Public graphtop(NUMGRAPHS) As Long

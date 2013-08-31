@@ -153,13 +153,12 @@ Public Sub Update_Ties(t As Integer)
           End If
           If .mem(833) > 0 Then
             shareslime t, k
-            .Ties(k).sharing = True   'yellow ties
+            .Ties(k).sharing = True    'yellow ties
           End If
-          If .mem(sharechlr) > 0 Then
+          If .mem(sharechlr) > 0 Then  'Panda 8/31/2013 code to share chloroplasts
             sharechloroplasts t, k
             .Ties(k).sharing = True   'yellow ties
           End If
-          
         End If
         .vbody = .vbody + rob(.Ties(k).pnt).body
       End If

@@ -251,6 +251,8 @@ Private Sub Form_Load()
   Text1.text = Text1.text + "" + vbCrLf 'Botsareus 3/24/2012 more info
   Text1.text = Text1.text + "Music by Testlund a.k.a. SoundStruggler" + vbCrLf 'Botsareus 6/11/2013 more info
   Text1.text = Text1.text + "" + vbCrLf 'Botsareus 6/11/2013 more info
+  Text1.text = Text1.text + "Chloroplasts by PANDA" + vbCrLf 'Botsareus 8/31/2013 more info
+  Text1.text = Text1.text + "" + vbCrLf 'Botsareus 8/31/2013 more info
   Text1.text = Text1.text + "All rights reserved. " + vbCrLf
   Text1.text = Text1.text + "" + vbCrLf
   Text1.text = Text1.text + "Redistribution and use in source and binary forms, with or without "

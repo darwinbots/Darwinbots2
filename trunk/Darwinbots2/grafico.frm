@@ -3800,12 +3800,12 @@ End Sub
 
 
 Public Function SwapSeries(i As Integer, t As Integer)
-Dim x As Integer
-  For x = 0 To MaxData
-     data(x, MaxItems) = data(x, i)
-     data(x, i) = data(x, t)
-     data(x, t) = data(x, MaxItems)
-  Next x
+Dim X As Integer
+  For X = 0 To MaxData
+     data(X, MaxItems) = data(X, i)
+     data(X, i) = data(X, t)
+     data(X, t) = data(X, MaxItems)
+  Next X
   Label1(MaxItems).Caption = Label1(i).Caption
   Shape3(MaxItems).FillColor = Shape3(i).FillColor
   popnum(MaxItems).Caption = popnum(i).Caption
@@ -3859,7 +3859,7 @@ Dim t As Integer
   MaxSeries = MaxSeries - 1
 End Sub
 
-Private Sub chk_GDsave_Click() 'Botsareus 8/3/2012 temporary message
+Private Sub chk_GDsave_Click()
 graphsave(WhichGraphAmI) = chk_GDsave.value = 1
 End Sub
 
@@ -4003,7 +4003,7 @@ graphleft(WhichGraphAmI) = Left
 graphtop(WhichGraphAmI) = Top
   
   Dim k, P As Integer
-  Dim t, x As Integer
+  Dim t, X As Integer
   Dim maxv As Single
   Dim xunit As Single, yunit As Single
   maxv = -1000
@@ -4052,22 +4052,22 @@ graphtop(WhichGraphAmI) = Top
   Wend
   
   If t > 10 Then
-    For x = (MaxSeries - 1) To 0 Step -1
-      If Sum(x) = 0 Then
-        DelSeries (x)
+    For X = (MaxSeries - 1) To 0 Step -1
+      If Sum(X) = 0 Then
+        DelSeries (X)
       End If
-    Next x
+    Next X
   End If
   
   P = Pivot - 1
   If P < 0 Then P = MaxData
   
   If t > 50 Then
-   For x = (MaxSeries - 1) To 0 Step -1
-      If data(P, x) = 0 Then
-        DelSeries (x)
+   For X = (MaxSeries - 1) To 0 Step -1
+      If data(P, X) = 0 Then
+        DelSeries (X)
       End If
-    Next x
+    Next X
   End If
     
   maxy = maxv
@@ -4094,8 +4094,8 @@ graphtop(WhichGraphAmI) = Top
         Print #100, strCGraph
         'write headers
         strCGraph = ""
-        For x = 0 To MaxSeries - 1
-            strCGraph = strCGraph & Shape3(x).FillColor & ":" & Label1(x).Caption & ","
+        For X = 0 To MaxSeries - 1
+            strCGraph = strCGraph & Shape3(X).FillColor & ":" & Label1(X).Caption & ","
         Next
         Print #100, strCGraph
         Dim k2, t2 As Integer
@@ -4180,6 +4180,8 @@ Private Function WhichGraphAmI() As Integer 'Botsareus 8/3/2012 use names for gr
       chartNumber = DYNAMICCOSTS_GRAPH
     Case "Species_Diversity"
       chartNumber = SPECIESDIVERSITY_GRAPH
+    Case "Average_Chloroplasts"
+      chartNumber = AVGCHLR_GRAPH
     Case "Genetic_Distance_x1000-"
       chartNumber = GENETIC_DIST_GRAPH
     Case "Max_Generational_Distance"
