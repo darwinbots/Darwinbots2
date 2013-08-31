@@ -1129,16 +1129,18 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
         Case 11
           Form1.NewGraph SPECIESDIVERSITY_GRAPH, "Species_Diversity"
         Case 12
-          Form1.NewGraph GENETIC_DIST_GRAPH, "Genetic_Distance_x1000-"
+          Form1.NewGraph AVGCHLR_GRAPH, "Average_Chloroplasts"
         Case 13
-          Form1.NewGraph GENERATION_DIST_GRAPH, "Max_Generational_Distance"
+          Form1.NewGraph GENETIC_DIST_GRAPH, "Genetic_Distance_x1000-"
         Case 14
-          Form1.NewGraph GENETIC_SIMPLE_GRAPH, "Simple_Genetic_Distance_x1000-"
+          Form1.NewGraph GENERATION_DIST_GRAPH, "Max_Generational_Distance"
         Case 15
-            Form1.NewGraph CUSTOM_1_GRAPH, "Customizable_Graph_1-"
+          Form1.NewGraph GENETIC_SIMPLE_GRAPH, "Simple_Genetic_Distance_x1000-"
         Case 16
-            Form1.NewGraph CUSTOM_2_GRAPH, "Customizable_Graph_2-"
+            Form1.NewGraph CUSTOM_1_GRAPH, "Customizable_Graph_1-"
         Case 17
+            Form1.NewGraph CUSTOM_2_GRAPH, "Customizable_Graph_2-"
+        Case 18
             Form1.NewGraph CUSTOM_3_GRAPH, "Customizable_Graph_3-"
       End Select
      End If

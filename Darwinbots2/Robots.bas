@@ -162,7 +162,6 @@ Public Const rmchlr As Integer = 922 'Panda 8/15/2013 The remove chloroplast var
 Public Const light As Integer = 923 'Botsareus 8/14/2013 A variable to let robots know how much light is available
 Public Const sharechlr As Integer = 924 'Panda 08/26/2013 Share Chloroplasts between ties variable
 
-
 Private Type ancestorType
   num As Long ' unique ID of ancestor
   mut As Long ' mutations this ancestor had at time next descendent was born
@@ -1720,7 +1719,7 @@ CantShoot:
   rob(n).mem(shootval) = 0
 End Sub
 
-Public Sub sharechloroplasts(t As Integer, k As Integer)
+Public Sub sharechloroplasts(t As Integer, k As Integer) 'Panda 8/31/2013 code to share chloroplasts
   Dim totchlr As Single
   With rob(t)
     If .mem(sharechlr) > 99 Then .mem(sharechlr) = 99

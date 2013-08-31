@@ -129,7 +129,6 @@ Begin VB.Form CostsForm
             Height          =   285
             Left            =   4800
             TabIndex        =   81
-            ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
             Top             =   360
             Width           =   255
             _ExtentX        =   450
@@ -152,7 +151,6 @@ Begin VB.Form CostsForm
             Height          =   285
             Left            =   4800
             TabIndex        =   84
-            ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
             Top             =   720
             Width           =   255
             _ExtentX        =   450
@@ -175,7 +173,6 @@ Begin VB.Form CostsForm
             Height          =   285
             Left            =   4800
             TabIndex        =   88
-            ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
             Top             =   1080
             Width           =   255
             _ExtentX        =   450
@@ -277,7 +274,6 @@ Begin VB.Form CostsForm
          Height          =   285
          Left            =   5280
          TabIndex        =   72
-         ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
          Top             =   1080
          Width           =   255
          _ExtentX        =   450
@@ -301,7 +297,6 @@ Begin VB.Form CostsForm
          Height          =   285
          Left            =   5280
          TabIndex        =   93
-         ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
          Top             =   1440
          Width           =   255
          _ExtentX        =   450

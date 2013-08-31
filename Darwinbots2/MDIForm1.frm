@@ -212,7 +212,7 @@ Begin VB.MDIForm MDIForm1
             ImageIndex      =   11
             Style           =   5
             BeginProperty ButtonMenus {66833FEC-8583-11D1-B16A-00C0F0283628} 
-               NumButtonMenus  =   22
+               NumButtonMenus  =   23
                BeginProperty ButtonMenu1 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "pop"
                   Text            =   "Population graph"
@@ -258,45 +258,49 @@ Begin VB.MDIForm MDIForm1
                   Text            =   "Species Diversity"
                EndProperty
                BeginProperty ButtonMenu12 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+                  Key             =   "avgchlr"
+                  Text            =   "Average Chloroplasts"
+               EndProperty
+               BeginProperty ButtonMenu13 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Enabled         =   0   'False
                   Text            =   "-"
                EndProperty
-               BeginProperty ButtonMenu13 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu14 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "maxgeneticdistance"
                   Text            =   "(Slow) Genetic Distance (Maximum)"
                EndProperty
-               BeginProperty ButtonMenu14 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu15 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "maxgenerationaldistance"
                   Text            =   "Generational Distance (Maximum)"
                EndProperty
-               BeginProperty ButtonMenu15 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu16 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "simplegeneticdistance"
                   Text            =   "(Slow) Simple Genetic Distance  (Maximum)"
                EndProperty
-               BeginProperty ButtonMenu16 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu17 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Enabled         =   0   'False
                   Text            =   "-"
                EndProperty
-               BeginProperty ButtonMenu17 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu18 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "CG1"
                   Text            =   "Customizable Graph 1"
                EndProperty
-               BeginProperty ButtonMenu18 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu19 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "CG2"
                   Text            =   "Customizable Graph 2"
                EndProperty
-               BeginProperty ButtonMenu19 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu20 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "CG3"
                   Text            =   "Customizable Graph 3"
                EndProperty
-               BeginProperty ButtonMenu20 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu21 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Text            =   "-"
                EndProperty
-               BeginProperty ButtonMenu21 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu22 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "resgraph"
                   Text            =   "Reset all graphs"
                EndProperty
-               BeginProperty ButtonMenu22 {66833FEE-8583-11D1-B16A-00C0F0283628} 
+               BeginProperty ButtonMenu23 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "listgraphs"
                   Text            =   "List all running graphs"
                EndProperty
@@ -1545,6 +1549,8 @@ Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
       Form1.NewGraph DYNAMICCOSTS_GRAPH, "Dynamic_Costs"
     Case "speciesdiversity"
       Form1.NewGraph SPECIESDIVERSITY_GRAPH, "Species_Diversity"
+    Case "avgchlr"
+      Form1.NewGraph AVGCHLR_GRAPH, "Average_Chloroplasts"
     Case "maxgeneticdistance"
       Form1.NewGraph GENETIC_DIST_GRAPH, "Genetic_Distance_x1000-"
     Case "maxgenerationaldistance"
@@ -1576,48 +1582,7 @@ Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
       End If
     Case "listgraphs"
         Dim lg As String
-        lg = "List of all running graphs:" & vbCrLf
-        Dim i As Byte
-        For i = 1 To NUMGRAPHS
-            If graphvisible(i) Then
-                Select Case i
-                Case POPULATION_GRAPH
-                    lg = lg & vbCrLf & "Populations"
-                Case MUTATIONS_GRAPH
-                    lg = lg & vbCrLf & "Average_Mutations"
-                Case AVGAGE_GRAPH
-                    lg = lg & vbCrLf & "Average_Age"
-                Case OFFSPRING_GRAPH
-                    lg = lg & vbCrLf & "Average_Offspring"
-                Case ENERGY_GRAPH
-                    lg = lg & vbCrLf & "Average_Energy"
-                Case DNALENGTH_GRAPH
-                    lg = lg & vbCrLf & "Average_DNA_length"
-                Case DNACOND_GRAPH
-                    lg = lg & vbCrLf & "Average_DNA_Cond_statements"
-                Case MUT_DNALENGTH_GRAPH
-                    lg = lg & vbCrLf & "Average_Mutations_per_DNA_length_x1000"
-                Case ENERGY_SPECIES_GRAPH
-                    lg = lg & vbCrLf & "Total_Energy_per_Species_x1000"
-                Case DYNAMICCOSTS_GRAPH
-                    lg = lg & vbCrLf & "Dynamic_Costs"
-                Case SPECIESDIVERSITY_GRAPH
-                    lg = lg & vbCrLf & "Species_Diversity"
-                Case GENETIC_DIST_GRAPH
-                    lg = lg & vbCrLf & "Genetic_Distance_x1000"
-                Case GENERATION_DIST_GRAPH
-                    lg = lg & vbCrLf & "Max_Generational_Distance"
-                Case GENETIC_SIMPLE_GRAPH
-                    lg = lg & vbCrLf & "Simple_Genetic_Distance_x1000"
-                Case CUSTOM_1_GRAPH
-                    lg = lg & vbCrLf & "Customizable_Graph_1"
-                Case CUSTOM_2_GRAPH
-                    lg = lg & vbCrLf & "Customizable_Graph_2"
-                Case CUSTOM_3_GRAPH
-                    lg = lg & vbCrLf & "Customizable_Graph_3"
-                End Select
-            End If
-        Next i
+        lg = "List of all running graphs:" & vbCrLf & Form1.calc_graphs
         MsgBox lg, vbInformation
   End Select
 End Sub
