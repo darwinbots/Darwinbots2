@@ -1123,7 +1123,7 @@ Private Sub ManageChlr(n As Integer) 'Panda 8/15/2013 The new chloroplast functi
     If rob(n).mem(mkchlr) > 0 Or rob(n).mem(rmchlr) > 0 Then ChangeChlr n
     
     If rob(n).chloroplasts > 32000 Then rob(n).chloroplasts = 32000
-    If rob(n).chloroplasts < 0 Then rob(n).chloroplasts = 0
+    If rob(n).chloroplasts < 0 Then rob(n).chloroplasts = 0 'Panda 9/5/2013 Bug fix
     
     rob(n).mem(chlr) = rob(n).chloroplasts
     
