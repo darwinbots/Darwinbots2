@@ -253,13 +253,17 @@ Public Function SysvarDetok(n As Integer, Optional robn As Integer = 0) As Strin
   SysvarDetok = n
   
   While sysvar(t + 1).value <> 0
-    If sysvar(t + 1).value = Abs(n) Mod MaxMem Then SysvarDetok = "." + sysvar(t + 1).Name
+    If sysvar(t + 1).value = Abs(n) Mod MaxMem Then
+        SysvarDetok = "." + sysvar(t + 1).Name
+    End If
     t = t + 1
   Wend
   
-  If robn > 0 And n <> 0 Then ' EricL 4/17/2006 Added n<>0 to address parse bug when DNA contains 0 store
+  If robn > 0 And (n Mod MaxMem) <> 0 Then  ' EricL 4/17/2006 Added n<>0 to address parse bug when DNA contains 0 store 'Botsareus 9/7/2013 modified for high range fix
     For t = 1 To UBound(rob(robn).vars)
-      If rob(robn).vars(t).value = Abs(n) Mod MaxMem Then SysvarDetok = "." + rob(robn).vars(t).Name
+      If rob(robn).vars(t).value = Abs(n) Mod MaxMem Then
+        SysvarDetok = "." + rob(robn).vars(t).Name
+      End If
     Next t
   End If
   
@@ -382,8 +386,18 @@ Private Function AdvancedCommandDetok(n As Integer) As String
     Case 7
       AdvancedCommandDetok = "pyth"
     Case 8
-      If Not ismutating Then AdvancedCommandDetok = "debugint" 'Botsareus 1/31/2013 the new debugint command
+      AdvancedCommandDetok = "anglecmp"
     Case 9
+      AdvancedCommandDetok = "unpow"
+    Case 10
+      AdvancedCommandDetok = "depow"
+    Case 11
+      AdvancedCommandDetok = "sin"
+    Case 12
+      AdvancedCommandDetok = "cos"
+    Case 13
+      If Not ismutating Then AdvancedCommandDetok = "debugint" 'Botsareus 1/31/2013 the new debugint command
+    Case 14
       If Not ismutating Then AdvancedCommandDetok = "debugbool" 'Botsareus 1/31/2013 the new debugbool command
   End Select
 End Function
@@ -406,10 +420,20 @@ Private Function AdvancedCommandTok(s As String) As block
       AdvancedCommandTok.value = 6
     Case "pyth"
       AdvancedCommandTok.value = 7
+    Case "anglecmp"
+      AdvancedCommandTok.value = 8
+    Case "unpow"
+      AdvancedCommandTok.value = 9
+    Case "depow"
+      AdvancedCommandTok.value = 10
+    Case "sin"
+      AdvancedCommandTok.value = 11
+    Case "cos"
+      AdvancedCommandTok.value = 12
     Case "debugint" 'Botsareus 1/31/2013 the new debugint command
-      If Not ismutating Then AdvancedCommandTok.value = 8
+      If Not ismutating Then AdvancedCommandTok.value = 13
     Case "debugbool" 'Botsareus 1/31/2013 the new debugbool command
-      If Not ismutating Then AdvancedCommandTok.value = 9
+      If Not ismutating Then AdvancedCommandTok.value = 14
   End Select
 End Function
 
@@ -581,6 +605,28 @@ Private Function StoresDetok(n As Integer) As String
       StoresDetok = "inc"
     Case 3
       StoresDetok = "dec"
+    Case 4 'Botsareus 9/7/2013 New dna commands
+      StoresDetok = "addstore"
+    Case 5
+      StoresDetok = "substore"
+    Case 6
+      StoresDetok = "multstore"
+    Case 7
+      StoresDetok = "divstore"
+    Case 8
+      StoresDetok = "ceilstore"
+    Case 9
+      StoresDetok = "floorstore"
+    Case 10
+      StoresDetok = "rndstore"
+    Case 11
+      StoresDetok = "sgnstore"
+    Case 12
+      StoresDetok = "abstore"
+    Case 13
+      StoresDetok = "sqrstore"
+    Case 14
+      StoresDetok = "negstore"
   End Select
 End Function
 
@@ -594,6 +640,28 @@ Private Function StoresTok(s As String) As block
       StoresTok.value = 2
     Case "dec"
       StoresTok.value = 3
+    Case "addstore" 'Botsareus 9/7/2013 New dna commands
+      StoresTok.value = 4
+    Case "substore"
+      StoresTok.value = 5
+    Case "multstore"
+      StoresTok.value = 6
+    Case "divstore"
+      StoresTok.value = 7
+    Case "ceilstore"
+      StoresTok.value = 8
+    Case "floorstore"
+      StoresTok.value = 9
+    Case "rndstore"
+      StoresTok.value = 10
+    Case "sgnstore"
+      StoresTok.value = 11
+    Case "absstore"
+      StoresTok.value = 12
+    Case "sqrstore"
+      StoresTok.value = 13
+    Case "negstore"
+      StoresTok.value = 14
   End Select
 End Function
 

@@ -323,10 +323,33 @@ If n < 8 Then rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(ADCMDCOST) * 
     Case 7 ' pyth
       DNApyth
     Case 8
-      DNAdebugint robid, at_position    'Botsareus 1/31/2013 the new debugint command
+      DNAanglecmp
     Case 9
+      DNAunpow  ' a ^ (1/b)
+    Case 10
+      DNAdepow  ' log(a) / Log(b)
+    Case 11
+      DNAsin
+    Case 12
+      DNAcos
+    Case 13
+      DNAdebugint robid, at_position    'Botsareus 1/31/2013 the new debugint command
+    Case 14
       DNAdebugbool robid, at_position   'Botsareus 1/31/2013 the new debugbool command
   End Select
+End Sub
+
+Private Sub DNAanglecmp() 'Allowes a robot to quickly calculate the difference between two angles
+    Dim a As Double
+    Dim b As Double
+    Dim c As Double
+    
+    b = PopIntStack
+    a = PopIntStack
+    
+    c = AngDiff(a / 200, b / 200) * 200
+        
+    PushIntStack c
 End Sub
 
 Private Sub findang()
@@ -342,6 +365,7 @@ Private Sub findang()
   e = angnorm(angle(c, d, a, b)) * 200
   PushIntStack e
 End Sub
+
 
 Private Sub finddist()
   Dim a As Single  'target xpos
@@ -398,6 +422,25 @@ Private Sub DNASqr()
     PushIntStack b
 End Sub
 
+Private Sub DNAsin()
+    Dim a As Single
+    a = PopIntStack
+    Dim b As Single
+    
+      b = Sin(a / 200) * 32000
+    PushIntStack b
+End Sub
+
+Private Sub DNAcos()
+    Dim a As Single
+    a = PopIntStack
+    Dim b As Single
+    
+    b = Cos(a / 200) * 32000
+    
+    PushIntStack b
+End Sub
+
 'returns a power number. Raises a (top number) to the power of b (second number)
 'Seems kind of pointless to me
 Private Sub DNApow()
@@ -409,14 +452,43 @@ Private Sub DNApow()
     
     If Abs(b) > 10 Then b = 10 * Sgn(b)
     
-    'Dim Index As Long
-    
     If a = 0 Then
       c = 0
     Else
       c = a ^ b
     End If
     If Abs(c) > 2000000000 Then c = Sgn(c) * 2000000000
+    PushIntStack c
+End Sub
+
+'Botsareus 9/7/2013 more power commands
+Private Sub DNAunpow()
+    Dim a As Double
+    Dim b As Double
+    Dim c As Double
+    b = Abs(PopIntStack)
+    a = Abs(PopIntStack)
+    
+    If b = 0 Then
+      c = 0
+    Else
+      c = a ^ (1 / b)
+    End If
+    PushIntStack c
+End Sub
+
+Private Sub DNAdepow()
+    Dim a As Double
+    Dim b As Double
+    Dim c As Double
+    b = Abs(PopIntStack)
+    a = Abs(PopIntStack)
+    
+    If b = 0 Or a = 0 Then
+      c = 0
+    Else
+      c = Log(a) / Log(b)
+    End If
     PushIntStack c
 End Sub
 
@@ -761,10 +833,28 @@ Private Sub ExecuteStores(n As Integer)
        DNAinc
      Case 3 'dec
        DNAdec
-     Case 4 '+=
+     Case 4 '+= 'Botsareus 9/7/2013 New commannds
+        DNAaddstore
      Case 5 '-=
+        DNAsubstore
      Case 6 '*=
+        DNAmultstore
      Case 7 '/=
+        DNAdivstore
+     Case 8
+        DNAceilstore
+     Case 9
+        DNAfloorstore
+     Case 10
+        DNArndstore
+     Case 11
+        DNAsgnstore
+     Case 12
+        DNAabsstore
+     Case 13
+        DNAsqrstore
+     Case 14
+        DNAnegstore
    End Select
 End Sub
 
@@ -819,6 +909,208 @@ Private Sub DNAdec()
    End If
 End Sub
 
+Private Sub DNAaddstore()
+   Dim b As Long
+   Dim a As Long
+   b = PopIntStack          ' Pop the stack and get the mem location to store to
+   If b <> 0 Then           ' Stores to 0 are allowed, but do nothing and cost nothing
+     b = Abs(b) Mod MaxMem  ' Make sure the location hits the bot's memory to increase the chance of mutations hitting sysvars.
+     If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
+     a = PopIntStack + rob(currbot).mem(b)
+     a = a Mod 32000
+     
+     'Botsareus 3/22/2013 handle tieang...tielen 1...4 overwrites
+     Dim k As Byte
+     For k = 0 To 3
+      If b = 480 + k Then rob(currbot).TieAngOverwrite(k) = True
+      If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
+     Next
+     
+     rob(currbot).mem(b) = a
+     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
+   End If
+End Sub
+
+Private Sub DNAsubstore()
+   Dim b As Long
+   Dim a As Long
+   b = PopIntStack          ' Pop the stack and get the mem location to store to
+   If b <> 0 Then           ' Stores to 0 are allowed, but do nothing and cost nothing
+     b = Abs(b) Mod MaxMem  ' Make sure the location hits the bot's memory to increase the chance of mutations hitting sysvars.
+     If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
+     a = rob(currbot).mem(b) - PopIntStack
+     a = a Mod 32000
+     
+     'Botsareus 3/22/2013 handle tieang...tielen 1...4 overwrites
+     Dim k As Byte
+     For k = 0 To 3
+      If b = 480 + k Then rob(currbot).TieAngOverwrite(k) = True
+      If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
+     Next
+     
+     rob(currbot).mem(b) = a
+     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
+   End If
+End Sub
+
+Private Sub DNAmultstore()
+   Dim b As Long
+   Dim a As Long
+   b = PopIntStack          ' Pop the stack and get the mem location to store to
+   If b <> 0 Then           ' Stores to 0 are allowed, but do nothing and cost nothing
+     b = Abs(b) Mod MaxMem  ' Make sure the location hits the bot's memory to increase the chance of mutations hitting sysvars.
+     If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
+     a = rob(currbot).mem(b) * PopIntStack
+     a = a Mod 32000
+     
+     'Botsareus 3/22/2013 handle tieang...tielen 1...4 overwrites
+     Dim k As Byte
+     For k = 0 To 3
+      If b = 480 + k Then rob(currbot).TieAngOverwrite(k) = True
+      If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
+     Next
+     
+     rob(currbot).mem(b) = a
+     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
+   End If
+End Sub
+
+Private Sub DNAdivstore()
+   Dim b As Long
+   Dim a As Long
+   Dim c As Long
+   b = PopIntStack          ' Pop the stack and get the mem location to store to
+   c = PopIntStack
+   If b <> 0 Then           ' Stores to 0 are allowed, but do nothing and cost nothing
+     b = Abs(b) Mod MaxMem  ' Make sure the location hits the bot's memory to increase the chance of mutations hitting sysvars.
+     If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
+     If c = 0 Then
+      a = 0
+     Else
+      a = rob(currbot).mem(b) / c
+     End If
+     
+     'Botsareus 3/22/2013 handle tieang...tielen 1...4 overwrites
+     Dim k As Byte
+     For k = 0 To 3
+      If b = 480 + k Then rob(currbot).TieAngOverwrite(k) = True
+      If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
+     Next
+     
+     rob(currbot).mem(b) = a
+     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
+   End If
+End Sub
+
+Private Sub DNAceilstore()
+   Dim b As Long
+   Dim a As Long
+   Dim c As Long
+   b = PopIntStack          ' Pop the stack and get the mem location to store to
+   c = PopIntStack
+   If b <> 0 Then           ' Stores to 0 are allowed, but do nothing and cost nothing
+     b = Abs(b) Mod MaxMem  ' Make sure the location hits the bot's memory to increase the chance of mutations hitting sysvars.
+     If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
+     a = IIf(rob(currbot).mem(b) > c, c, rob(currbot).mem(b))
+     
+     'Botsareus 3/22/2013 handle tieang...tielen 1...4 overwrites
+     Dim k As Byte
+     For k = 0 To 3
+      If b = 480 + k Then rob(currbot).TieAngOverwrite(k) = True
+      If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
+     Next
+     
+     rob(currbot).mem(b) = a
+     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
+   End If
+End Sub
+
+Private Sub DNAfloorstore()
+   Dim b As Long
+   Dim a As Long
+   Dim c As Long
+   b = PopIntStack          ' Pop the stack and get the mem location to store to
+   c = PopIntStack
+   If b <> 0 Then           ' Stores to 0 are allowed, but do nothing and cost nothing
+     b = Abs(b) Mod MaxMem  ' Make sure the location hits the bot's memory to increase the chance of mutations hitting sysvars.
+     If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
+     a = IIf(rob(currbot).mem(b) < c, c, rob(currbot).mem(b))
+     
+     'Botsareus 3/22/2013 handle tieang...tielen 1...4 overwrites
+     Dim k As Byte
+     For k = 0 To 3
+      If b = 480 + k Then rob(currbot).TieAngOverwrite(k) = True
+      If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
+     Next
+     
+     rob(currbot).mem(b) = a
+     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
+   End If
+End Sub
+
+Private Sub DNArndstore()
+   Dim a As Long, b As Long
+   a = PopIntStack
+   If a <> 0 Then
+     a = Abs(a) Mod MaxMem
+     If a = 0 Then a = 1000
+     b = Random(0, Abs(rob(currbot).mem(a))) * Sgn(rob(currbot).mem(a))
+     rob(currbot).mem(a) = b
+     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 7
+   End If
+End Sub
+
+Private Sub DNAsgnstore()
+   Dim a As Long, b As Long
+   a = PopIntStack
+   If a <> 0 Then
+     a = Abs(a) Mod MaxMem
+     If a = 0 Then a = 1000
+     b = Sgn(rob(currbot).mem(a))
+     rob(currbot).mem(a) = b
+     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 7
+   End If
+End Sub
+
+Private Sub DNAabsstore()
+   Dim a As Long, b As Long
+   a = PopIntStack
+   If a <> 0 Then
+     a = Abs(a) Mod MaxMem
+     If a = 0 Then a = 1000
+     b = Abs(rob(currbot).mem(a))
+     rob(currbot).mem(a) = b
+     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 8
+   End If
+End Sub
+
+Private Sub DNAsqrstore()
+   Dim a As Long, b As Long
+   a = PopIntStack
+   If a <> 0 Then
+     a = Abs(a) Mod MaxMem
+     If a = 0 Then a = 1000
+     If rob(currbot).mem(a) > 0 Then
+        b = Sqr(rob(currbot).mem(a))
+     Else
+        b = 0
+     End If
+     rob(currbot).mem(a) = b
+     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 7
+   End If
+End Sub
+
+Private Sub DNAnegstore()
+   Dim a As Long, b As Long
+   a = PopIntStack
+   If a <> 0 Then
+     a = Abs(a) Mod MaxMem
+     If a = 0 Then a = 1000
+     b = -rob(currbot).mem(a)
+     rob(currbot).mem(a) = b
+     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 8
+   End If
+End Sub
 
 '''''''''''''''''''''''''''''''''''''''''''
 '''''''''''''''''''''''''''''''''''''''''''
