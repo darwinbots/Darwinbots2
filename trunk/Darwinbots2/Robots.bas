@@ -1135,7 +1135,7 @@ End Sub
 Private Sub ChangeChlr(t As Integer) 'Panda 8/15/2013 change the number of chloroplasts
 
 With rob(t)
-  
+ 
   Dim tmpchlr As Single 'Botsareus 8/24/2013 used to charge energy for adding chloroplasts
   tmpchlr = .chloroplasts
   

@@ -1813,6 +1813,8 @@ End Sub
 ' tricky!
 Private Sub SecTimer_Timer()
 
+  If Enabled = False Then Exit Sub '9/7/2013 Do not count the timer if form is disabled
+
   Static TenSecondsAgo(10) As Long
   'Static SumOfLastTenSeconds As Long
 '  Static SecondLastCycle As Long
