@@ -163,7 +163,7 @@ Begin VB.Form frmGset
          Top             =   1920
          Width           =   4695
          Begin VB.CheckBox chkGreedy 
-            Caption         =   "Nearly kill robots that are excessively to there kids, using them to dump there energy."
+            Caption         =   "Nearly kill robots that are excessively greedy to there kids, using them to dump there energy."
             Height          =   375
             Left            =   240
             TabIndex        =   8

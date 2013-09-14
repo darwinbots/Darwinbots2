@@ -121,13 +121,9 @@ Begin VB.Form optionsform
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "DisableMutationsCheck"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "Frame14"
-      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).Control(2)=   "Frame13"
-      Tab(3).Control(2).Enabled=   0   'False
       Tab(3).Control(3)=   "Frame15"
-      Tab(3).Control(3).Enabled=   0   'False
       Tab(3).ControlCount=   4
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
@@ -2314,6 +2310,7 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0571
@@ -5197,8 +5194,8 @@ If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 
   StartAnotherRound = True ' Set true for first simulation.  Will get set true if running leagues or using auto-restart mode
   While StartAnotherRound
     StartAnotherRound = False
-    SimOpts.UserSeedNumber = Timer * 100 'Botsareus 6/11/2013 Randomize seed on restart
     Form1.StartSimul
+    SimOpts.UserSeedNumber = Timer * 100 'Botsareus 6/11/2013 Randomize seed on restart, moved to after first sim
   Wend
   
 End Sub
