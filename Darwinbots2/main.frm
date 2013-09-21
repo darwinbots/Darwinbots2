@@ -1462,6 +1462,7 @@ Private Sub loadrobs()
       
       rob(a).nrg = SimOpts.Specie(k).Stnrg
       rob(a).body = 1000
+
       rob(a).radius = FindRadius(rob(a).body)
       rob(a).mem(468) = 32000
       rob(a).mem(SetAim) = rob(a).aim * 200
