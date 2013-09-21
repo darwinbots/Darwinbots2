@@ -31,9 +31,9 @@ Public Sub UpdateSim()
     Dim fullrange As Integer
     fullrange = .TotRunCycle Mod (.MutCycMax + .MutCycMin)
     If fullrange < .MutCycMax Then
-     .MutCurrMult = 16 ^ Sin(fullrange / .MutCycMax * PI)
+     .MutCurrMult = 20 ^ Sin(fullrange / .MutCycMax * PI)
     Else
-     .MutCurrMult = 16 ^ -Sin((fullrange - .MutCycMax) / .MutCycMin * PI)
+     .MutCurrMult = 20 ^ -Sin((fullrange - .MutCycMax) / .MutCycMin * PI)
     End If
    End With
   End If
@@ -147,9 +147,9 @@ Public Sub UpdateSim()
      SaveSimulation MDIForm1.MainDir + "\saves\lastautosave.sim"
      'Botsareus 5/13/2013 delete local copy
      If dir(MDIForm1.MainDir + "\saves\localcopy.sim") <> "" Then Kill (MDIForm1.MainDir + "\saves\localcopy.sim")
-         Open App.path & "\autosaved.gset" For Output As #1
-          Write #1, True
-         Close #1
+     Open App.path & "\autosaved.gset" For Output As #1
+      Write #1, True
+     Close #1
     End If
   End If
      

@@ -325,9 +325,9 @@ If n < 8 Then rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(ADCMDCOST) * 
     Case 8
       DNAanglecmp
     Case 9
-      DNAunpow  ' a ^ (1/b)
+      DNAroot  ' a ^ (1/b)
     Case 10
-      DNAdepow  ' log(a) / Log(b)
+      DNAlogx  ' log(a) / Log(b)
     Case 11
       DNAsin
     Case 12
@@ -462,7 +462,7 @@ Private Sub DNApow()
 End Sub
 
 'Botsareus 9/7/2013 more power commands
-Private Sub DNAunpow()
+Private Sub DNAroot()
     Dim a As Double
     Dim b As Double
     Dim c As Double
@@ -477,14 +477,14 @@ Private Sub DNAunpow()
     PushIntStack c
 End Sub
 
-Private Sub DNAdepow()
+Private Sub DNAlogx()
     Dim a As Double
     Dim b As Double
     Dim c As Double
     b = Abs(PopIntStack)
     a = Abs(PopIntStack)
     
-    If b = 0 Or a = 0 Then
+    If b < 2 Or a = 0 Then 'Botsareus 9/15/2013 b is changed to 2 to avoid div/0
       c = 0
     Else
       c = Log(a) / Log(b)

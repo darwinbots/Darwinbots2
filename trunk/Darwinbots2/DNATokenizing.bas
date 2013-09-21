@@ -388,9 +388,9 @@ Private Function AdvancedCommandDetok(n As Integer) As String
     Case 8
       AdvancedCommandDetok = "anglecmp"
     Case 9
-      AdvancedCommandDetok = "unpow"
+      AdvancedCommandDetok = "root"
     Case 10
-      AdvancedCommandDetok = "depow"
+      AdvancedCommandDetok = "logx"
     Case 11
       AdvancedCommandDetok = "sin"
     Case 12
@@ -422,9 +422,9 @@ Private Function AdvancedCommandTok(s As String) As block
       AdvancedCommandTok.value = 7
     Case "anglecmp"
       AdvancedCommandTok.value = 8
-    Case "unpow"
+    Case "root"
       AdvancedCommandTok.value = 9
-    Case "depow"
+    Case "logx"
       AdvancedCommandTok.value = 10
     Case "sin"
       AdvancedCommandTok.value = 11

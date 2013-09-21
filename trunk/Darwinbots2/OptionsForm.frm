@@ -1475,7 +1475,7 @@ Begin VB.Form optionsform
          End
          Begin VB.CheckBox MutOscill 
             Alignment       =   1  'Right Justify
-            Caption         =   "Rendi la frequenza di mutazione oscilante fra 16x e 1/16x, alternativamente."
+            Caption         =   "Rendi la frequenza di mutazione oscilante fra 20x e 1/20x, alternativamente."
             Height          =   645
             Left            =   120
             TabIndex        =   92
