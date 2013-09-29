@@ -114,36 +114,36 @@ Begin VB.Form optionsform
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Frame21"
-      Tab(2).Control(1)=   "Frame20"
+      Tab(2).Control(0)=   "Frame20"
+      Tab(2).Control(1)=   "Frame21"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Mutations"
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "DisableMutationsCheck"
-      Tab(3).Control(1)=   "Frame14"
-      Tab(3).Control(2)=   "Frame13"
-      Tab(3).Control(3)=   "Frame15"
+      Tab(3).Control(0)=   "Frame15"
+      Tab(3).Control(1)=   "Frame13"
+      Tab(3).Control(2)=   "Frame14"
+      Tab(3).Control(3)=   "DisableMutationsCheck"
       Tab(3).ControlCount=   4
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame7"
+      Tab(4).Control(0)=   "Frame8"
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(2)=   "Frame8"
+      Tab(4).Control(2)=   "Frame7"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Simulazione"
+      Tab(5).Control(0)=   "Label41"
       Tab(5).Control(1)=   "Label42"
-      Tab(5).Control(2)=   "Label41"
+      Tab(5).Control(2)=   "Simulazione"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "Frame4"
-      Tab(6).Control(1)=   "Frame10"
+      Tab(6).Control(0)=   "Frame10"
+      Tab(6).Control(1)=   "Frame4"
       Tab(6).ControlCount=   2
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "List Non-Native Species "
@@ -2310,7 +2310,6 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0571
@@ -5100,6 +5099,7 @@ If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 
         
     TmpOpts.FixedBotRadii = False
     TmpOpts.NoShotDecay = False
+    TmpOpts.NoWShotDecay = False
     TmpOpts.DisableTies = False
     TmpOpts.DisableTypArepro = False
     TmpOpts.RepopAmount = 10
@@ -5697,6 +5697,7 @@ skipthisspecie4:
     Write #1, TmpOpts.Specie(t).VirusImmune
   Next
   
+  Write #1, TmpOpts.NoWShotDecay ' EricL 6/8/2006
   
   Close 1
   Exit Sub
@@ -5988,6 +5989,10 @@ Public Sub ReadSettFromFile()
     If Not EOF(1) Then Input #1, TmpOpts.Specie(t).CantReproduce
     If Not EOF(1) Then Input #1, TmpOpts.Specie(t).VirusImmune
   Next
+  
+  'Botsareus 9/28/2013 Do not decay waste shots
+  TmpOpts.NoWShotDecay = False
+  If Not EOF(1) Then Input #1, TmpOpts.NoWShotDecay
   
   
   If (Not EOF(1)) Then MsgBox "This settings file is a newer version than this version can read.  " + vbCrLf + _

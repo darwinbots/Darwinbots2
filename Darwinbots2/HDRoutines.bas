@@ -627,6 +627,8 @@ Public Sub SaveSimulation(path As String)
      Put #1, , graphtop(k)
      Put #1, , graphsave(k)
    Next k
+   
+   Put #1, , SimOpts.NoWShotDecay 'Botsareus 9/28/2013
        
   Close 1
   Form1.MousePointer = vbArrow
@@ -1145,6 +1147,9 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
       End Select
      End If
     Next k
+    
+    SimOpts.NoWShotDecay = False 'Load information about not decaying waste shots
+    If Not EOF(1) Then Get #1, , SimOpts.NoWShotDecay 'EricL 6/8/2006 Added this
     
   Close 1
   

@@ -204,11 +204,26 @@ getout:
 End Sub
 
 Public Sub feedveg2(t As Integer) 'gives veg an additional meal based on waste 'Botsareus 8/25/2013 Fix for all robots based on chloroplasts
+  'Botsareus 9/21/2013 completely redesigned to be liner and spread body vs energy
+  Dim Energy As Single
+  Dim body As Single
+  
   With rob(t)
-  If .nrg + (.Waste / 2) * (.chloroplasts / 32000) < 32000 Then
-    .nrg = .nrg + (.Waste / 2) * (.chloroplasts / 32000)
-    .Waste = .Waste - .Waste * (.chloroplasts / 32000)
-  End If
+   Energy = .chloroplasts / 64000 * (1 - SimOpts.VegFeedingToBody)
+   body = (.chloroplasts / 64000 * SimOpts.VegFeedingToBody) / 10
+   
+   If .Waste > 0 Then
+    If .nrg + Energy < 32000 Then
+     .nrg = .nrg + Energy
+     .Waste = .Waste - .chloroplasts / 32000 * (1 - SimOpts.VegFeedingToBody)
+    End If
+    If .body + body < 32000 Then
+     .body = .body + body
+     .Waste = .Waste - .chloroplasts / 32000 * SimOpts.VegFeedingToBody
+    End If
+    If .Waste < 0 Then .Waste = 0
+   End If
+   
   End With
 End Sub
 

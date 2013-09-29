@@ -166,6 +166,8 @@ Public Type SimOptions
   FluidSolidCustom As Integer ' EricL 5/7/2006 Used for initializing the field properties UI
   CostRadioSetting As Integer 'EricL 5/7/2006 Used for iniitializing the costs radio button UI
   NoShotDecay As Boolean ' EricL 6/8/2006 Used to indicate shots should not decay
+  NoWShotDecay As Boolean 'Botsareus 9/28/2013 Do not decay waste shots
+  
   SunUp As Boolean 'EricL 6/7/2006 Indicates if we are using the option of setting the sun at an nrg threshold
   SunUpThreshold As Long
   SunDown As Boolean 'EricL 6/7/2006 Indicates if we are using the option to have the sun rise on a nrg threshold
