@@ -1100,7 +1100,7 @@ Private Sub Timer2_Timer()
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As File
+          Dim fileToDelete As file
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1118,7 +1118,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As File
+          Dim fileToDelete2 As file
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -1200,6 +1200,8 @@ MDIForm1.menuupdate
   
   
   MDIForm1.DontDecayNrgShots.Checked = SimOpts.NoShotDecay
+  MDIForm1.DontDecayWstShots.Checked = SimOpts.NoWShotDecay
+  
   MDIForm1.DisableTies.Checked = SimOpts.DisableTies
   MDIForm1.DisableArep.Checked = SimOpts.DisableTypArepro
   
@@ -1412,6 +1414,8 @@ Sub startloaded()
   defaultHeight = 0.2
     
   MDIForm1.DontDecayNrgShots.Checked = SimOpts.NoShotDecay
+  MDIForm1.DontDecayWstShots.Checked = SimOpts.NoWShotDecay
+  
   MDIForm1.DisableTies.Checked = SimOpts.DisableTies
   MDIForm1.DisableArep.Checked = SimOpts.DisableTypArepro
     

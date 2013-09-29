@@ -733,6 +733,10 @@ Begin VB.MDIForm MDIForm1
             Caption         =   "Don't decay nrg shots"
             Checked         =   -1  'True
          End
+         Begin VB.Menu DontDecayWstShots 
+            Caption         =   "Don't decay waste shots"
+            Checked         =   -1  'True
+         End
       End
       Begin VB.Menu TiesMenu 
          Caption         =   "Ties"
@@ -1041,6 +1045,12 @@ Private Sub DontDecayNrgShots_Click()
   DontDecayNrgShots.Checked = Not DontDecayNrgShots.Checked
   SimOpts.NoShotDecay = DontDecayNrgShots.Checked
   TmpOpts.NoShotDecay = DontDecayNrgShots.Checked
+End Sub
+
+Private Sub DontDecayWstShots_Click() 'Botsareus 9/28/2013 Don't decay waste shots
+  DontDecayWstShots.Checked = Not DontDecayWstShots.Checked
+  SimOpts.NoWShotDecay = DontDecayWstShots.Checked
+  TmpOpts.NoWShotDecay = DontDecayWstShots.Checked
 End Sub
 
 Private Sub DrawSpiral_Click()
@@ -1982,6 +1992,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   TmpOpts.DisableTies = False
   TmpOpts.DisableTypArepro = False
   TmpOpts.NoShotDecay = False
+  TmpOpts.NoWShotDecay = False
   TmpOpts.chartingInterval = 200
   TmpOpts.FieldWidth = 16000
   TmpOpts.FieldHeight = 12000
