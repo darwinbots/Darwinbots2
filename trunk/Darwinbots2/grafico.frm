@@ -3937,6 +3937,7 @@ End If
 End Sub
 
 Private Sub Form_Resize()
+On Error GoTo patch 'Botsareus 10/12/2013 Attempt to fix a 380 error viea patch
 
   Dim t As Integer
   
@@ -3966,6 +3967,7 @@ Private Sub Form_Resize()
     FHeight = Me.Height
     FWidth = Me.Width
   End If
+patch:
 End Sub
 
 'Public Sub AddVal(n As String, x As Single, s As Integer)

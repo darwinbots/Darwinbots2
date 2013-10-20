@@ -139,7 +139,7 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
    
   If SimOpts.Daytime Then daymod = 1 Else daymod = 0
   
-  ScreenArea = ((CDbl(SimOptModule.SimOpts.FieldWidth) * CDbl(SimOptModule.SimOpts.FieldHeight)) ^ 0.92) * 2.05   'Panda 8/14/2013 Figure out screen area 'Botsareus 8/24/2013 Area corrected to have less effect in larger simulations
+  ScreenArea = ((CDbl(SimOptModule.SimOpts.FieldWidth) * CDbl(SimOptModule.SimOpts.FieldHeight)) ^ 0.92) * 3  'Panda 8/14/2013 Figure out screen area 'Botsareus 9/29/2013 Area corrected to have less effect in larger simulations
   
   For t = 1 To MaxRobs 'Panda 8/14/2013 Figure out total robot area
     If rob(t).exist Then 'Botsareus 8/14/2013 We have to make sure the robot is alive first

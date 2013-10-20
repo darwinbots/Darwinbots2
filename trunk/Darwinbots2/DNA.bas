@@ -1043,6 +1043,15 @@ Private Sub DNAfloorstore()
       If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
      Next
      
+     'Botsareus 10/12/2013 Fix for out of range floor
+     If a > 0 Then
+       a = a Mod 32000
+       If a = 0 Then a = 32000  ' Special case 32000
+     ElseIf a < 0 Then
+       a = a Mod 32000
+       If a = 0 Then a = -32000 ' special case -32000
+     End If
+     
      rob(currbot).mem(b) = a
      rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
    End If

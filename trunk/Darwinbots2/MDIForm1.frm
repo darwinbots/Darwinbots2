@@ -1987,6 +1987,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   HighLightTeleportersMenu.Checked = True
   HighLightAllTeleporters
   DontDecayNrgShots.Checked = False
+  DontDecayWstShots.Checked = False
   DisableTies.Checked = False
   DisableArep.Checked = False
   TmpOpts.DisableTies = False
