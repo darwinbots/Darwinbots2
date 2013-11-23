@@ -139,8 +139,8 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
    
   If SimOpts.Daytime Then daymod = 1 Else daymod = 0
   
-  ScreenArea = ((CDbl(SimOptModule.SimOpts.FieldWidth) * CDbl(SimOptModule.SimOpts.FieldHeight)) ^ 0.92) * 3  'Panda 8/14/2013 Figure out screen area 'Botsareus 9/29/2013 Area corrected to have less effect in larger simulations
-  
+  ScreenArea = ((CDbl(SimOptModule.SimOpts.FieldWidth) * CDbl(SimOptModule.SimOpts.FieldHeight)) ^ 0.93) * 3  'Panda 8/14/2013 Figure out screen area 'Botsareus 9/29/2013 Area corrected to have less effect in larger simulations
+
   For t = 1 To MaxRobs 'Panda 8/14/2013 Figure out total robot area
     If rob(t).exist Then 'Botsareus 8/14/2013 We have to make sure the robot is alive first
         TotalRobotArea = TotalRobotArea + rob(t).radius ^ 2 * PI
@@ -167,9 +167,9 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
       
       'Panda 8/14/2013 New chloroplast codez
       ChloroplastCorrection = rob(t).chloroplasts / 16000
-      AddEnergyRate = AreaCorrection * ChloroplastCorrection * tok * 1.25
+      AddEnergyRate = (AreaCorrection * ChloroplastCorrection) ^ 0.8 * tok * 1.25
       SubtractEnergyRate = (rob(t).chloroplasts / 32000) ^ 2 * tok
-      
+          
       acttok = AddEnergyRate - SubtractEnergyRate
       
       Select Case SimOpts.VegFeedingMethod

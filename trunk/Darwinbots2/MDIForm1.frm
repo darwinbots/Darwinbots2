@@ -1412,6 +1412,11 @@ End Sub
 
 Sub fixcam() 'Botsareus 2/23/2013 When simulation starts the screen is normailized
 Form1.BackColor = backgcolor 'Botsareus 4/27/2013 Set back ground skin color
+If startnovid Then 'turn off vedio as requested
+     visualize = False
+     Form1.Label1.Visible = True
+     startnovid = False
+End If
 If MDIForm1.WindowState <> 2 Then Exit Sub
 If screenratiofix = False Then Exit Sub
 Form1.visiblew = Screen.Width / Screen.Height * 4 / 3 * Form1.visibleh
@@ -1931,7 +1936,7 @@ If simalreadyrunning And Not autosaved Then MsgBox strMsgSendData
 
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
 Dim revision As String
 
 Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause initial simulation

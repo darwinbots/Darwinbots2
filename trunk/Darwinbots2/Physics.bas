@@ -17,7 +17,7 @@ Public mlink As Single
 
 Public Const smudgefactor As Single = 50 'just to keep the bots more likely to stay visible
 
-Dim boylabldisp As Boolean
+Public boylabldisp As Boolean
 
 Public Function NetForces(n As Integer)
   Dim mag As Single
@@ -42,7 +42,7 @@ End Function
 
 Public Sub CalcMass(n As Integer)
   With rob(n)
-  .mass = (.body / 1000) + (.shell / 200) + (.chloroplasts / 32000) ^ 3 * 31680  'Panda 8/14/2013 set value for mass
+  .mass = (.body / 1000) + (.shell / 200) + (.chloroplasts / 32000) ^ 2 * 31680  'Panda 8/14/2013 set value for mass
   'If .mass < 0.1 Then .mass = 0.1 'stops the Euler integration from wigging out too badly.
   If .mass < 1 Then .mass = 1 'stops the Euler integration from wigging out too badly.
   If .mass > 32000 Then .mass = 32000

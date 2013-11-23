@@ -1209,6 +1209,7 @@ Private Sub ManageDeath(n As Integer)
         .DisableMovementSysvars = True
         .CantSee = True
         .VirusImmune = True
+        .chloroplasts = 0 'Botsareus 11/10/2013 Reset chloroplasts for corpse
                 
         'Zero out the eyes
         For i = (EyeStart + 1) To (EyeEnd - 1)
@@ -1468,9 +1469,9 @@ Public Sub UpdateBots()
   Next t
   DoEvents
   
-  'Botsareus 4/17/2013 Prevent big birthas -Botsareusnotdone need to be replaced with chloroplasts check later, chloroplasts must be less then 1/2 body for check to happen
+  'Botsareus 4/17/2013 Prevent big birthas -Botsareusnotdone need to be replaced with chloroplasts check later, chloroplasts must be less then 1/2 of body for check to happen
   For t = 1 To MaxRobs
-   If Not rob(t).Veg Then
+   If rob(t).chloroplasts < rob(t).body / 2 Then
     If rob(t).exist And rob(t).body > bodyfix Then KillRobot t
    End If
   Next
