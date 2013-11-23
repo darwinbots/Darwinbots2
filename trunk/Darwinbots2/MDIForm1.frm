@@ -1793,10 +1793,12 @@ Private Sub simload(Optional path As String)
         MDIForm1.inssp.Enabled = False
         MDIForm1.DisableArep.Enabled = False
     Else
+        If Command$ = "" Then 'Botsareus 11/23/2013 Do not prompt for internet mode when loading by command line
         If MsgBox("Would you like to connect to Internet Mode?", vbYesNo + vbExclamation, MBwarning) = vbYes Then
             StartInInternetMode = True
         Else
            StartInInternetMode = False
+        End If
         End If
     End If
   End If
@@ -2070,15 +2072,6 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
       'Botsareus 5/8/2013 Change of message for diag mode
       If MsgBox(IIf(autosaved, strMsgEnterDiagMode, "Continue the last simulation?"), vbYesNo + vbExclamation, MBwarning) = vbYes Then
          simload MDIForm1.MainDir + IIf(autosaved, "\Saves\lastautosave.sim", "\Saves\lastexit.sim")
-      End If
-    Else
-      InfoForm.Show
-    ' Put the code here to start up a default sim using internally defined bots
-      If MsgBox("Would you like to connect to Internet Mode?", vbYesNo + vbExclamation, MBwarning) = vbYes Then
-        MDIForm1.Caption = MDIForm1.Caption + "    Internet Mode"
-        Load Form1
-        F1InternetButton.value = 1
-        Form1.StartSimul
       End If
     End If
      

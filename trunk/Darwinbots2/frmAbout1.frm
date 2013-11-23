@@ -296,11 +296,6 @@ help.text = ""
     help.text = help.text + vbTab + vbTab + "My energy storing and retrieving are limited to 100 points of energy in either direction so I can't abuse this ability." + vbCrLf
 
     help.text = help.text + "" + vbCrLf
-    help.text = help.text + "setboy" + vbTab + "-----" + vbTab + "I feel like floating. Sets my bouyancy value in the range of -2000 (sink) to +2000 (float)." + vbCrLf
-    help.text = help.text + "rdboy" + vbTab + "-----" + vbTab + "Just how floaty am I though? Reads back my bouyancy value." + vbCrLf
-    help.text = help.text + vbTab + vbTab + "Remember you can only float around in pond mode. Bouyancy is a waste of time otherwise." + vbCrLf
-    
-    help.text = help.text + "" + vbCrLf
     help.text = help.text + "repro" + vbTab + "-----" + vbTab + "It's time to have a baby. I will just let him have a percentage of my energy and body to give him" + vbCrLf
     help.text = help.text + vbTab + vbTab + "a good start in life. AAAHHH! isn't that cute?" + vbCrLf
     help.text = help.text + "mrepro" + vbTab + "-----" + vbTab + "Same as .repro but this time I will make sure that my baby gets the maximum mutations possible." + vbCrLf
@@ -551,6 +546,21 @@ Private Sub Form_Load() ''Botsareus 8/7/2012 mod for new version
     help.text = help.text + "pyth" + vbTab + "-----" + vbTab + "Returns the hypotenuse formed by the legs of a triangle with lengths the two top values of the stack." + vbCrLf
     help.text = help.text + vbTab + "Syntax." + vbTab + "(3 4 pyth) Basically does (3 3 mult 4 4 mult add sqr)" + vbCrLf
     help.text = help.text + "" + vbCrLf
+    '
+    '
+    help.text = help.text + "anglecmp" + vbTab + "-----" + vbTab + "Calculates the shortest angle between the two angles given." + vbCrLf
+    help.text = help.text + vbTab + "Syntax." + vbTab + "(314 1200 anglecmp) will leave 371 on the stack" + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    help.text = help.text + "root" + vbTab + "-----" + vbTab + "Syntax." + vbTab + "Using a ^ b = c. Treat the first value as c. Given the second value as b returns a." + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    help.text = help.text + "logx" + vbTab + "-----" + vbTab + "Syntax." + vbTab + "Using a ^ b = c. Treat the first value as c. Given the second value as a returns b." + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    help.text = help.text + "sin" + vbTab + "-----" + vbTab + "Takes the Sine of the given angle and returns a value between 0 and 32000." + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    help.text = help.text + "cos" + vbTab + "-----" + vbTab + "Takes the Cosine of the given angle and returns a value between 0 and 32000." + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    
+    help.text = help.text + "Note:  Angles in DarwinBots are expressed in radians multiplied by 200." + vbCrLf
     
     help.text = help.text + "" + vbCrLf
     help.text = help.text + "Here are bitwise operators" + vbCrLf
@@ -595,12 +605,12 @@ Private Sub Form_Load() ''Botsareus 8/7/2012 mod for new version
     help.text = help.text + "Here is a list of store commands that write to the memory adress specified" + vbCrLf
     help.text = help.text + "" + vbCrLf
     
-    help.text = help.text + "inc" + vbTab + "-----" + vbTab + "Increments the value stored in a given memory cell by one." + vbCrLf
+    help.text = help.text + "inc" + vbTab + "-----" + vbTab + "Increments the value stored in a given memory location by one." + vbCrLf
     help.text = help.text + vbTab + vbTab + "The memory location is defined by the top number on the stack which is then deleted." + vbCrLf
     help.text = help.text + vbTab + "Syntax." + vbTab + "(330 inc) will increment the value stored in memory location 330 (.tie)" + vbCrLf
     help.text = help.text + "" + vbCrLf
      
-    help.text = help.text + "dec" + vbTab + "-----" + vbTab + "decrements the value stored in a given memory cell by one." + vbCrLf
+    help.text = help.text + "dec" + vbTab + "-----" + vbTab + "decrements the value stored in a given memory location by one." + vbCrLf
     help.text = help.text + vbTab + vbTab + "The memory location is defined by the top number on the stack which is then deleted." + vbCrLf
     help.text = help.text + vbTab + "Syntax." + vbTab + "(2 dec) will decrement the value stored in memory location 2 (.dn)" + vbCrLf
     help.text = help.text + "" + vbCrLf
@@ -608,6 +618,49 @@ Private Sub Form_Load() ''Botsareus 8/7/2012 mod for new version
     help.text = help.text + "store" + vbTab + "-----" + vbTab + "Stores the #2 value of the stack into the memory location defined by the #1 value." + vbCrLf
     help.text = help.text + vbTab + vbTab + "The top two stack values are then deleted." + vbCrLf
     help.text = help.text + vbTab + "Syntax." + vbTab + "(55 4 store) will store a value of 55 in memory location 4 (.aimdx)" + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    
+    help.text = help.text + "addstore" + vbTab + "-----" + vbTab + "Works like add but the second variable passed is a memory location and data is added directly into location." + vbCrLf
+    help.text = help.text + vbTab + "Syntax." + vbTab + "(55 4 addstore) will add a value of 55 in memory location 4 (.aimdx)" + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    
+    help.text = help.text + "substore" + vbTab + "-----" + vbTab + "Works like sub but the second variable passed is a memory location and data is subtracted directly from location." + vbCrLf
+    help.text = help.text + vbTab + "Syntax." + vbTab + "(55 4 substore) will subtract a value of 55 in memory location 4 (.aimdx)" + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    
+    help.text = help.text + "multstore" + vbTab + "-----" + vbTab + "Works like mult but the second variable passed is a memory location and data is multiplied directly with location." + vbCrLf
+    help.text = help.text + vbTab + "Syntax." + vbTab + "(55 4 multstore) will mult the value of 55 with data in memory location 4 (.aimdx)" + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    
+    help.text = help.text + "divstore" + vbTab + "-----" + vbTab + "Works like div but the second variable passed is a memory location and data is devided directly with location." + vbCrLf
+    help.text = help.text + vbTab + "Syntax." + vbTab + "(55 4 divstore) will devide by a value of 55 in memory location 4 (.aimdx)" + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    
+    help.text = help.text + "Ceilstore" + vbTab + "-----" + vbTab + "Works like ceil but the second variable passed is a memory location and ceil is preformed on location." + vbCrLf
+    help.text = help.text + vbTab + "Syntax." + vbTab + "(55 4 ceilstore) If memory location 4 has a value greater then 55 then memory 4 will be 55" + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    
+    help.text = help.text + "floorstore" + vbTab + "-----" + vbTab + "Works like floor but the second variable passed is a memory location and floor is preformed on location." + vbCrLf
+    help.text = help.text + vbTab + "Syntax." + vbTab + "(55 4 floorstore) If memory location 4 has a value less then 55 then memory 4 will be 55" + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    
+    help.text = help.text + "rndstore" + vbTab + "-----" + vbTab + "Takes the value stored in a given memory location, takes the random of that value," + vbCrLf
+    help.text = help.text + vbTab + vbTab + "and puts it back into the same memory location" + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    
+    help.text = help.text + "sgnstore" + vbTab + "-----" + vbTab + "Takes the value stored in a given memory location, takes the sign (-1, 0, 1) of that value," + vbCrLf
+    help.text = help.text + vbTab + vbTab + "and puts it back into the same memory location" + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    
+    help.text = help.text + "absstore" + vbTab + "-----" + vbTab + "Takes the value stored in a given memory location, takes its absolute value," + vbCrLf
+    help.text = help.text + vbTab + vbTab + "and puts it back into the same memory location" + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    
+    help.text = help.text + "sqrstore" + vbTab + "-----" + vbTab + "Takes the value stored in a given memory location, takes the square root of that value," + vbCrLf
+    help.text = help.text + vbTab + vbTab + "and puts it back into the same memory location" + vbCrLf
+    help.text = help.text + "" + vbCrLf
+    
+    help.text = help.text + "negstore" + vbTab + "-----" + vbTab + "Converts a memory location to its negative value. " + vbCrLf
     help.text = help.text + "" + vbCrLf
     
 
@@ -809,8 +862,9 @@ Private Sub Form_Load() ''Botsareus 8/7/2012 mod for new version
     help.text = help.text + vbTab + vbTab + "My energy storing and retrieving are limited to 100 points of energy in either direction so I can't abuse this ability." + vbCrLf
 
     help.text = help.text + "" + vbCrLf
-    help.text = help.text + "setboy" + vbTab + "-----" + vbTab + "I feel like floating. Sets my bouyancy value in the range of -2000 (sink) to +2000 (float)." + vbCrLf
-    help.text = help.text + "rdboy" + vbTab + "-----" + vbTab + "Just how floaty am I though? Reads back my bouyancy value." + vbCrLf
+    help.text = help.text + "setboy" + vbTab + "-----" + vbTab + "I feel like floating. Change my buoyancy by a specified level. Passing a positive value here will increase buoyancy." + vbCrLf
+    help.text = help.text + vbTab + vbTab + "Passing a negative value will decrease it." + vbCrLf
+    help.text = help.text + "rdboy" + vbTab + "-----" + vbTab + "Just how floaty am I though? Reads back my bouyancy value. At 32000 I will float all the way to the top." + vbCrLf
     help.text = help.text + vbTab + vbTab + "Remember you can only float around in pond mode. Bouyancy is a waste of time otherwise." + vbCrLf
     
     help.text = help.text + "" + vbCrLf
