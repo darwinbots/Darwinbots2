@@ -939,8 +939,8 @@ Private Sub Upkeep(n As Integer)
     Cost = (.DnaLen - 1) * SimOpts.Costs(DNACYCCOST) * SimOpts.Costs(COSTMULTIPLIER)
     .nrg = .nrg - Cost
     
-    'degrade slime
-    .Slime = .Slime * 0.98
+    'degrade slime 'Botsareus 11/23/2013 Changed slime from 2% to 1%
+    .Slime = .Slime * 0.99
     If .Slime < 0.5 Then .Slime = 0 ' To keep things sane for integer rounding, etc.
     .mem(821) = CInt(.Slime)
     
@@ -1229,11 +1229,15 @@ Private Sub ManageDeath(n As Integer)
   End With
 End Sub
 
-Private Sub ManageBouyancy(n As Integer) 'Botsareus 2/2/2013 Bouyancy fix
+Private Sub ManageBouyancy(n As Integer) 'Botsareus 2/2/2013 Bouyancy fix 'Botsareus 11/23/2013 More mods, more old school now
   With rob(n)
-    If .mem(setboy) > 2000 Or .mem(setboy) < -2000 Then .mem(setboy) = 2000 * Sgn(.mem(setboy))
-    .Bouyancy = Abs(.mem(setboy)) / 2000
-    .mem(rdboy) = .Bouyancy * 2000
+    If .mem(setboy) <> 0 Then
+     .Bouyancy = .Bouyancy + .mem(setboy) / 32000
+     If .Bouyancy < 0 Then .Bouyancy = 0
+     If .Bouyancy > 1 Then .Bouyancy = 1
+     .mem(rdboy) = .Bouyancy * 32000
+     .mem(setboy) = 0
+    End If
   End With
 End Sub
 
