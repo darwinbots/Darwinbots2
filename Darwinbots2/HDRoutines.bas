@@ -76,7 +76,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As File
+  Dim robotFile As file
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -278,7 +278,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As File
+  Dim fileToDelete As file
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -645,6 +645,7 @@ UseSafeMode = True
 intFindBestV2 = 100
 UseOldColor = True
 
+
 Dim holdmaindir As String
 
 'see if maindir overwrite exisits
@@ -670,8 +671,14 @@ If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
       If Not EOF(1) Then Input #1, UseSafeMode
       If Not EOF(1) Then Input #1, intFindBestV2
       If Not EOF(1) Then Input #1, UseOldColor
+      If Not EOF(1) Then Input #1, boylabldisp
+      If Not EOF(1) Then Input #1, startnovid
     Close #1
 End If
+
+'some global settings change during simulation (copy is here)
+loadboylabldisp = boylabldisp
+loadstartnovid = startnovid
 
 'see if safemode settings exisit
 If dir(App.path & "\Safemode.gset") <> "" Then

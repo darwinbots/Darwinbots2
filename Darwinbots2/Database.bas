@@ -80,7 +80,7 @@ Public Sub Snapshot()
         Form1.TotalOffspring = 1
         s = Form1.score(rn, 1, 10, 0) + rob(rn).nrg + rob(rn).body * 10 'Botsareus 5/22/2013 Advanced fit test
         s = (Form1.TotalOffspring ^ sPopulation) * (s ^ sEnergy)
-        Print #3, CStr(s); v; CStr(rob(rn).nrg + rob(rn).body * 10); v; CStr(0);
+        Print #3, CStr(s); v; CStr(rob(rn).nrg + rob(rn).body * 10); v; .chloroplasts;
         d = ""
         d = DetokenizeDNA(rn, False)
         Print #3, d;
@@ -135,6 +135,6 @@ getout:
 End Sub
 
 ' when I wasn't aware of the existence of CStr()
-Private Function sstr(x) As String
-  sstr = Right(Str(x), Len(Str(x)) - 1)
+Private Function sstr(X) As String
+  sstr = Right(Str(X), Len(Str(X)) - 1)
 End Function

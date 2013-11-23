@@ -12,6 +12,11 @@ Public chseedloadsim As Boolean
 Public UseSafeMode As Boolean
 Public intFindBestV2 As Integer
 Public UseOldColor As Boolean
+Public startnovid As Boolean
+
+'some global settings change within simulation
+Public loadboylabldisp As Boolean
+Public loadstartnovid As Boolean
 
 Public tmpseed As Long 'used only by "load simulation"
 'Public elcrasho As Long  'Botsareusnotdone temporary way to crash program

@@ -1121,6 +1121,9 @@ Private Sub Default_Click()
   Costs(27).text = "0.01"
   Costs(28).text = "0.1"
   Costs(29).text = "0.1"
+  
+  Costs(8).text = "0.2"
+  
   Costs(AGECOSTSTART).text = "0"  'EricL 4/12/2006 New for 2.42.2
   AgeCostLog.value = 0 'EricL 4/12/2006 New for 4.24.2
   BotNoCostThreshold.text = "0"

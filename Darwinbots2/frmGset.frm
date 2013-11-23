@@ -133,17 +133,17 @@ Begin VB.Form frmGset
       End
       Begin VB.Frame Frame1 
          Caption         =   "Randomization"
-         Height          =   1455
+         Height          =   1095
          Left            =   120
          TabIndex        =   9
-         Top             =   3600
+         Top             =   3840
          Width           =   4695
          Begin VB.CheckBox chkchseedloadsim 
             Caption         =   "Generate new seed when you click 'Load Simulation'"
             Height          =   375
             Left            =   240
             TabIndex        =   11
-            Top             =   720
+            Top             =   600
             Width           =   4275
          End
          Begin VB.CheckBox chkchseedstartnew 
@@ -151,7 +151,7 @@ Begin VB.Form frmGset
             Height          =   375
             Left            =   240
             TabIndex        =   10
-            Top             =   360
+            Top             =   240
             Width           =   4275
          End
       End
@@ -160,7 +160,7 @@ Begin VB.Form frmGset
          Height          =   1575
          Left            =   120
          TabIndex        =   5
-         Top             =   1920
+         Top             =   2160
          Width           =   4695
          Begin VB.CheckBox chkGreedy 
             Caption         =   "Nearly kill robots that are excessively greedy to there kids, using them to dump there energy."
@@ -189,17 +189,33 @@ Begin VB.Form frmGset
       End
       Begin VB.Frame ffmUI 
          Caption         =   "UI Settings"
-         Height          =   1335
+         Height          =   1575
          Left            =   120
          TabIndex        =   3
          Top             =   480
          Width           =   4695
+         Begin VB.CheckBox chkNoVid 
+            Caption         =   "Turn off Video when simulation starts"
+            Height          =   255
+            Left            =   240
+            TabIndex        =   22
+            Top             =   1080
+            Width           =   3495
+         End
+         Begin VB.CheckBox chkNoBoyMsg 
+            Caption         =   "Don't display Buoyancy Warning"
+            Height          =   255
+            Left            =   240
+            TabIndex        =   21
+            Top             =   810
+            Width           =   2775
+         End
          Begin VB.CheckBox chkOldColor 
             Caption         =   "Use old simulation colors"
             Height          =   375
             Left            =   240
             TabIndex        =   20
-            Top             =   720
+            Top             =   480
             Width           =   3075
          End
          Begin VB.CheckBox chkScreenRatio 
@@ -207,7 +223,7 @@ Begin VB.Form frmGset
             Height          =   375
             Left            =   240
             TabIndex        =   4
-            Top             =   360
+            Top             =   240
             Width           =   3075
          End
       End
@@ -255,6 +271,8 @@ MsgBox "Global settings will take effect when you restart DarwinBots.", vbInform
       Write #1, chkSafeMode = 1
       Write #1, sldFindBest.value
       Write #1, chkOldColor = 1
+      Write #1, chkNoBoyMsg = 1
+      Write #1, chkNoVid = 1
     Close #1
 'unload
 Unload Me
@@ -284,6 +302,8 @@ txtBodyFix = bodyfix
 chkGreedy = IIf(reprofix, 1, 0)
 chkchseedstartnew.value = IIf(chseedstartnew, 1, 0)
 chkchseedloadsim.value = IIf(chseedloadsim, 1, 0)
+chkNoBoyMsg.value = IIf(loadboylabldisp, 1, 0) 'some global settings change within simulation
+chkNoVid.value = IIf(loadstartnovid, 1, 0) 'some global settings change within simulation
 txtCD = MDIForm1.MainDir
 'only eanable txtCD and chkUseCD if maindir.gset exisits
 If dir(App.path & "\Maindir.gset") <> "" Then
