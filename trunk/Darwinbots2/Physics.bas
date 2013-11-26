@@ -1156,6 +1156,10 @@ Public Sub Repel3(rob1 As Integer, rob2 As Integer) 'Botsareusnotdone collision 
     touch rob1, rob(rob2).pos.X, rob(rob2).pos.Y
     touch rob2, rob(rob1).pos.X, rob(rob1).pos.Y
     
+    'Update last touch variables
+    rob(rob1).lasttch = rob2
+    rob(rob2).lasttch = rob1
+    
     'Update the refvars to reflect touching bots.
     lookoccurr rob1, rob2
     lookoccurr rob2, rob1

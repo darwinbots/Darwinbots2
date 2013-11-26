@@ -23,6 +23,7 @@ Begin VB.Form Consoleform
       _ExtentX        =   8281
       _ExtentY        =   3572
       _Version        =   393217
+      Enabled         =   -1  'True
       ReadOnly        =   -1  'True
       ScrollBars      =   2
       TextRTF         =   $"console.frx":058A
@@ -443,6 +444,7 @@ Private Function printtouch(ind As Integer) As String
   a = a + " Dn:" + Str$(rob(ind).mem(hitdn))
   a = a + " Sx:" + Str$(rob(ind).mem(hitsx))
   a = a + " Dx:" + Str$(rob(ind).mem(hitdx))
+  a = a + " ID:" + Str$(rob(ind).lasttch)
   printtouch = a
 End Function
 

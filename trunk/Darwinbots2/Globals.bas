@@ -19,7 +19,6 @@ Public loadboylabldisp As Boolean
 Public loadstartnovid As Boolean
 
 Public tmpseed As Long 'used only by "load simulation"
-'Public elcrasho As Long  'Botsareusnotdone temporary way to crash program
 Public simalreadyrunning As Boolean
 Public autosaved As Boolean
 
