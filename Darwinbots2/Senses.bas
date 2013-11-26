@@ -98,6 +98,7 @@ End Sub
 Public Sub EraseSenses(n As Integer)
   Dim l As Integer
   With rob(n)
+    .lasttch = 0 'Botsareus 11/26/2013 Erase lasttch here
     .mem(hitup) = 0
     .mem(hitdn) = 0
     .mem(hitdx) = 0
