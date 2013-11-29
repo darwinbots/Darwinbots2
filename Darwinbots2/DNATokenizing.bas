@@ -24,7 +24,6 @@ inizio:
   pos = 0
   DNApos = 0
   hold = ""
-  
    
   ReDim rob(n).DNA(0)
   DNApos = 0
@@ -34,7 +33,7 @@ inizio:
   End If
   Open path For Input As #1
   While Not EOF(1)
-    Line Input #1, a
+        Line Input #1, a
     
     ' eliminate comments at the end of a line
     ' but preserves comments-only lines
@@ -227,16 +226,15 @@ Public Sub Parse(ByRef Command As String, ByRef bp As block, Optional n As Integ
   Else
     bp.value = 0
     
-    'if command = "end" then
-    
-    If bp.value = 0 Then bp = BasicCommandTok(Command)
-    If bp.value = 0 Then bp = AdvancedCommandTok(Command)
-    If bp.value = 0 Then bp = BitwiseCommandTok(Command)
-    If bp.value = 0 Then bp = ConditionsTok(Command)
-    If bp.value = 0 Then bp = LogicTok(Command)
-    If bp.value = 0 Then bp = StoresTok(Command)
-    If bp.value = 0 Then bp = FlowTok(Command)
-    If bp.value = 0 Then bp = MasterFlowTok(Command)
+    'Botsareus 11/27/2013 Automatically lower case var
+    If bp.value = 0 Then bp = BasicCommandTok(LCase(Command))
+    If bp.value = 0 Then bp = AdvancedCommandTok(LCase(Command))
+    If bp.value = 0 Then bp = BitwiseCommandTok(LCase(Command))
+    If bp.value = 0 Then bp = ConditionsTok(LCase(Command))
+    If bp.value = 0 Then bp = LogicTok(LCase(Command))
+    If bp.value = 0 Then bp = StoresTok(LCase(Command))
+    If bp.value = 0 Then bp = FlowTok(LCase(Command))
+    If bp.value = 0 Then bp = MasterFlowTok(LCase(Command))
     If bp.value = 0 And Left(Command, 1) = "*" Then
       bp.tipo = 1
       bp.value = SysvarTok(Right(Command, Len(Command) - 1), n)
