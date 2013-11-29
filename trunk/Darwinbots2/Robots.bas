@@ -277,10 +277,14 @@ Private Type robot
   
   ' informative
   SonNumber As Integer      ' number of sons
+  
   Mutations As Integer      ' total mutations
   GenMut As Single          ' figure out how many mutations before the next genetic test
   OldGD As Single           ' our old genetic distance
   LastMut As Integer        ' last mutations
+  MutEpiReset As Double     ' how many mutations until epigenetic reset
+  Reset As Boolean
+  
   parent As Long            ' parent absolute number
   age As Long               ' age in cycles
   newage As Long            ' age this simulation
@@ -797,9 +801,9 @@ Public Sub UpdatePosition(ByVal n As Integer)
   .mem(dirsx) = 0
   
   .mem(velscalar) = iceil(Sqr(vt))
-  .mem(vel) = iceil(Cos(.aim) * .vel.x + Sin(.aim) * .vel.Y * -1)
+  .mem(vel) = iceil(Cos(.aim) * .vel.x + Sin(.aim) * .vel.y * -1)
   .mem(veldn) = .mem(vel) * -1
-  .mem(veldx) = iceil(Sin(.aim) * .vel.x + Cos(.aim) * .vel.Y)
+  .mem(veldx) = iceil(Sin(.aim) * .vel.x + Cos(.aim) * .vel.y)
   .mem(velsx) = .mem(veldx) * -1
   
   .mem(masssys) = .mass
@@ -1457,6 +1461,7 @@ Public Sub UpdateBots()
              
         'EricL Transfer genetic meomory locations for newborns through the birth tie during their first 15 cycles
         If rob(t).age < 15 Then DoGeneticMemory t
+        If rob(t).age = 15 Then rob(t).Reset = False
         
         If Not rob(t).Corpse And Not rob(t).DisableDNA Then SetAimFunc t  'Setup aiming
         If Not rob(t).Corpse And Not rob(t).DisableDNA Then BotDNAManipulation t
@@ -1996,7 +2001,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
   tempnrg = rob(n).nrg
   If tempnrg > 0 Then
     nx = rob(n).pos.x + absx(rob(n).aim, sondist, 0, 0, 0)
-    ny = rob(n).pos.Y + absy(rob(n).aim, sondist, 0, 0, 0)
+    ny = rob(n).pos.y + absy(rob(n).aim, sondist, 0, 0, 0)
     tests = tests Or simplecoll(nx, ny, n)
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
     If Not tests Then
@@ -2029,10 +2034,10 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       Erase rob(nuovo).Ties
       
       rob(nuovo).pos.x = rob(n).pos.x + absx(rob(n).aim, sondist, 0, 0, 0)
-      rob(nuovo).pos.Y = rob(n).pos.Y + absy(rob(n).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.y = rob(n).pos.y + absy(rob(n).aim, sondist, 0, 0, 0)
       rob(nuovo).exist = True
       rob(nuovo).BucketPos.x = -2
-      rob(nuovo).BucketPos.Y = -2
+      rob(nuovo).BucketPos.y = -2
       UpdateBotBucket nuovo
       rob(nuovo).vel = rob(n).vel
       rob(nuovo).color = rob(n).color
@@ -2150,6 +2155,18 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       'Successfully reproduced
       rob(n).mem(Repro) = 0
       rob(n).mem(mrepro) = 0
+            
+      'Botsareus 11/29/2013 Reset epigenetic memory
+      If epireset Then
+       rob(nuovo).MutEpiReset = rob(n).MutEpiReset + rob(nuovo).LastMut ^ epiresetemp
+       If rob(nuovo).MutEpiReset > epiresetOP And rob(n).MutEpiReset > 0 Then
+         rob(nuovo).MutEpiReset = 0
+         rob(nuovo).Reset = True
+         For i = 0 To 4
+          rob(nuovo).mem(971 + i) = 0
+         Next i
+       End If
+      End If
       
       rob(n).nrg = rob(n).nrg - rob(n).DnaLen * SimOpts.Costs(DNACOPYCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 7/7/2013 Reproduction DNACOPY cost
       If rob(n).nrg < 0 Then rob(n).nrg = 0
@@ -2210,7 +2227,7 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
   tempnrg = rob(female).nrg
   If tempnrg > 0 Then
     nx = rob(female).pos.x + absx(rob(female).aim, sondist, 0, 0, 0)
-    ny = rob(female).pos.Y + absy(rob(female).aim, sondist, 0, 0, 0)
+    ny = rob(female).pos.y + absy(rob(female).aim, sondist, 0, 0, 0)
     tests = tests Or simplecoll(nx, ny, female)
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
     If Not tests Then
@@ -2285,10 +2302,10 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       Erase rob(nuovo).Ties
       
       rob(nuovo).pos.x = rob(female).pos.x + absx(rob(female).aim, sondist, 0, 0, 0)
-      rob(nuovo).pos.Y = rob(female).pos.Y + absy(rob(female).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.y = rob(female).pos.y + absy(rob(female).aim, sondist, 0, 0, 0)
       rob(nuovo).exist = True
       rob(nuovo).BucketPos.x = -2
-      rob(nuovo).BucketPos.Y = -2
+      rob(nuovo).BucketPos.y = -2
       UpdateBotBucket nuovo
       
       rob(nuovo).vel = rob(female).vel
@@ -2400,6 +2417,18 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       rob(female).mem(SEXREPRO) = 0 ' sucessfully reproduced, so reset .sexrepro
       rob(female).fertilized = -1           ' Set to -1 so spermDNA space gets reclaimed next cycle
       rob(female).mem(SYSFERTILIZED) = 0    ' Sperm is only good for one birth presently
+      
+      'Botsareus 11/29/2013 Reset epigenetic memory
+      If epireset Then
+       rob(nuovo).MutEpiReset = rob(female).MutEpiReset + rob(nuovo).LastMut ^ epiresetemp
+       If rob(nuovo).MutEpiReset > epiresetOP And rob(female).MutEpiReset > 0 Then
+         rob(nuovo).MutEpiReset = 0
+         rob(nuovo).Reset = True
+         For i = 0 To 4
+          rob(nuovo).mem(971 + i) = 0
+         Next i
+       End If
+      End If
                   
       rob(female).nrg = rob(female).nrg - rob(female).DnaLen * SimOpts.Costs(DNACOPYCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 7/7/2013 Reproduction DNACOPY cost
       If rob(female).nrg < 0 Then rob(female).nrg = 0
@@ -2574,8 +2603,10 @@ End Function
 
 
 'EricL 4/20/2006 This feature was never ported from 2.3X so implement it here 'Botsareus 11/26/2013 bug fix
-Public Function DoGeneticMemory(t As Integer)
+Public Sub DoGeneticMemory(t As Integer)
   Dim loc As Integer ' memory location to copy from parent to offspring
+  
+  If rob(t).Reset Then Exit Sub
   
   'Make sure the bot has a tie
   If rob(t).numties > 0 Then
@@ -2595,10 +2626,10 @@ Public Function DoGeneticMemory(t As Integer)
       End If
     End If
   End If
-End Function
+End Sub
 
 ' verifies rapidly if a field position is already occupied
-Public Function simplecoll(x As Long, Y As Long, k As Integer) As Boolean
+Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
   Dim t As Integer
   Dim radius As Long
   
@@ -2607,7 +2638,7 @@ Public Function simplecoll(x As Long, Y As Long, k As Integer) As Boolean
   For t = 1 To MaxRobs
     If rob(t).exist Then
       If Abs(rob(t).pos.x - x) < rob(t).radius + rob(k).radius And _
-        Abs(rob(t).pos.Y - Y) < rob(t).radius + rob(k).radius Then
+        Abs(rob(t).pos.y - y) < rob(t).radius + rob(k).radius Then
         If k <> t Then
           simplecoll = True
           GoTo getout
@@ -2620,8 +2651,8 @@ Public Function simplecoll(x As Long, Y As Long, k As Integer) As Boolean
   For t = 1 To numObstacles
     If Not ((Obstacles.Obstacles(t).pos.x > Max(rob(k).pos.x, x)) Or _
            (Obstacles.Obstacles(t).pos.x + Obstacles.Obstacles(t).Width < Min(rob(k).pos.x, x)) Or _
-           (Obstacles.Obstacles(t).pos.Y > Max(rob(k).pos.Y, Y)) Or _
-           (Obstacles.Obstacles(t).pos.Y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.Y, Y))) Then
+           (Obstacles.Obstacles(t).pos.y > Max(rob(k).pos.y, y)) Or _
+           (Obstacles.Obstacles(t).pos.y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.y, y))) Then
        simplecoll = True
        GoTo getout
     End If
@@ -2632,7 +2663,7 @@ Public Function simplecoll(x As Long, Y As Long, k As Integer) As Boolean
   End If
   
   If SimOpts.Updnconnected = False Then
-    If Y < rob(k).radius + smudgefactor Or Y + rob(k).radius + smudgefactor > SimOpts.FieldHeight Then simplecoll = True
+    If y < rob(k).radius + smudgefactor Or y + rob(k).radius + smudgefactor > SimOpts.FieldHeight Then simplecoll = True
   End If
 getout:
 End Function

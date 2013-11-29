@@ -132,6 +132,11 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False)
     If Not reproducing Then
       If .Mutables.mutarray(PointUP) > 0 Then PointMutation robn
       If .Mutables.mutarray(DeltaUP) > 0 Then DeltaMut robn
+      
+      'special case update epigenetic reset
+      If CLng(.LastMut) - Delta > 0 And epireset Then
+        .MutEpiReset = .MutEpiReset + (CLng(.LastMut) - Delta) ^ epiresetemp
+      End If
     Else
       If .Mutables.mutarray(CopyErrorUP) > 0 Then CopyError robn
       If .Mutables.mutarray(InsertionUP) > 0 Then Insertion robn

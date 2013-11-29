@@ -41,7 +41,7 @@ Begin VB.Form frmGset
       _ExtentY        =   9128
       _Version        =   393216
       Style           =   1
-      Tabs            =   1
+      Tabs            =   2
       TabHeight       =   520
       BackColor       =   12632256
       TabCaption(0)   =   "Main settings"
@@ -60,6 +60,62 @@ Begin VB.Form frmGset
       Tab(0).Control(5)=   "ffmFBSBO"
       Tab(0).Control(5).Enabled=   0   'False
       Tab(0).ControlCount=   6
+      TabCaption(1)   =   "Mutations"
+      TabPicture(1)   =   "frmGset.frx":001C
+      Tab(1).ControlEnabled=   0   'False
+      Tab(1).Control(0)=   "ffmEpiReset"
+      Tab(1).Control(0).Enabled=   0   'False
+      Tab(1).ControlCount=   1
+      Begin VB.Frame ffmEpiReset 
+         Caption         =   "Epigenetic Reset"
+         Height          =   735
+         Left            =   -74880
+         TabIndex        =   23
+         Top             =   480
+         Width           =   7575
+         Begin VB.TextBox txtOP 
+            Height          =   375
+            Left            =   6840
+            TabIndex        =   27
+            Text            =   "17"
+            ToolTipText     =   "This is how much exponential amplified mutations a robot must have in order to trigger an epigenetic memory reset."
+            Top             =   240
+            Width           =   615
+         End
+         Begin VB.TextBox txtMEmp 
+            Height          =   375
+            Left            =   4920
+            TabIndex        =   25
+            Text            =   "1.3"
+            ToolTipText     =   $"frmGset.frx":0038
+            Top             =   240
+            Width           =   615
+         End
+         Begin VB.CheckBox chkEpiReset 
+            Caption         =   "Periodically reset Epigenetic memory"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   24
+            Top             =   300
+            Width           =   2895
+         End
+         Begin VB.Label lblOP 
+            Caption         =   "overload point:"
+            Height          =   255
+            Left            =   5640
+            TabIndex        =   28
+            Top             =   240
+            Width           =   1215
+         End
+         Begin VB.Label lblMEmp 
+            Caption         =   "mutation amplification:"
+            Height          =   255
+            Left            =   3240
+            TabIndex        =   26
+            Top             =   240
+            Width           =   1695
+         End
+      End
       Begin VB.Frame ffmFBSBO 
          Caption         =   "Find Best Settings base on:"
          Height          =   915
@@ -228,6 +284,14 @@ Begin VB.Form frmGset
          End
       End
    End
+   Begin VB.Label lbl 
+      Caption         =   "Note: To reset all values delete global.gset file from your main directory."
+      Height          =   255
+      Left            =   120
+      TabIndex        =   29
+      Top             =   5400
+      Width           =   7455
+   End
 End
 Attribute VB_Name = "frmGset"
 Attribute VB_GlobalNameSpace = False
@@ -273,6 +337,9 @@ MsgBox "Global settings will take effect when you restart DarwinBots.", vbInform
       Write #1, chkOldColor = 1
       Write #1, chkNoBoyMsg = 1
       Write #1, chkNoVid = 1
+      Write #1, chkEpiReset = 1
+      Write #1, val(txtMEmp)
+      Write #1, val(txtOP)
     Close #1
 'unload
 Unload Me
@@ -284,6 +351,11 @@ Set myFSO = CreateObject("Scripting.FileSystemObject")
 FolderExists = myFSO.FolderExists(sFullPath)
 End Function
 
+
+Private Sub chkEpiReset_Click()
+txtMEmp.Enabled = chkEpiReset.value = 1
+txtOP.Enabled = chkEpiReset.value = 1
+End Sub
 
 Private Sub chkUseCD_Click()
 If chkUseCD.value = 1 Then
@@ -319,10 +391,28 @@ chkSafeMode = IIf(UseSafeMode, 1, 0)
 sldFindBest.value = intFindBestV2
 'use old color
 chkOldColor = IIf(UseOldColor, 1, 0)
+'epigenetic reset
+chkEpiReset = IIf(epireset, 1, 0)
+txtMEmp = epiresetemp
+txtOP = epiresetOP
+txtMEmp.Enabled = chkEpiReset.value = 1
+txtOP.Enabled = chkEpiReset.value = 1
 End Sub
 
 Private Sub txtBodyFix_LostFocus()
 'make sure the value is sane
 txtBodyFix = Abs(val(txtBodyFix))
 If txtBodyFix > 32100 Then txtBodyFix = 32100
+End Sub
+
+Private Sub txtMEmp_LostFocus()
+'make sure the value is sane
+txtMEmp = Abs(val(txtMEmp))
+If txtMEmp > 5 Then txtMEmp = 5
+End Sub
+
+Private Sub txtOP_LostFocus()
+'make sure the value is sane
+txtOP = Abs(val(txtOP))
+If txtOP > 32000 Then txtOP = 32000
 End Sub

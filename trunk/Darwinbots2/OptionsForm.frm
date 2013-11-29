@@ -114,36 +114,36 @@ Begin VB.Form optionsform
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Frame21"
-      Tab(2).Control(1)=   "Frame20"
+      Tab(2).Control(0)=   "Frame20"
+      Tab(2).Control(1)=   "Frame21"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Mutations"
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "DisableMutationsCheck"
-      Tab(3).Control(1)=   "Frame14"
-      Tab(3).Control(2)=   "Frame13"
-      Tab(3).Control(3)=   "Frame15"
+      Tab(3).Control(0)=   "Frame15"
+      Tab(3).Control(1)=   "Frame13"
+      Tab(3).Control(2)=   "Frame14"
+      Tab(3).Control(3)=   "DisableMutationsCheck"
       Tab(3).ControlCount=   4
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame7"
+      Tab(4).Control(0)=   "Frame8"
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(2)=   "Frame8"
+      Tab(4).Control(2)=   "Frame7"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Simulazione"
+      Tab(5).Control(0)=   "Label41"
       Tab(5).Control(1)=   "Label42"
-      Tab(5).Control(2)=   "Label41"
+      Tab(5).Control(2)=   "Simulazione"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "Frame4"
-      Tab(6).Control(1)=   "Frame10"
+      Tab(6).Control(0)=   "Frame10"
+      Tab(6).Control(1)=   "Frame4"
       Tab(6).ControlCount=   2
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "List Non-Native Species "
@@ -2310,7 +2310,6 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0571
@@ -3030,8 +3029,8 @@ Private Declare Function SetROP2 Lib "gdi32" (ByVal hdc As Long, ByVal nDrawMode
 Private Declare Function Rectangle Lib "gdi32" (ByVal hdc As Long, ByVal x1 As Long, ByVal y1 As Long, ByVal x2 As Long, ByVal y2 As Long) As Long
 
 Private Type POINTAPI
-    X As Long
-    Y As Long
+    x As Long
+    y As Long
 End Type
 
 Private Type RECT
@@ -3081,7 +3080,7 @@ Private Sub BoyAll_Click()
  DispSettings
 End Sub
 
-Private Sub CorpseCheck_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub CorpseCheck_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
 If CorpseCheck.value = 1 Then 'Botsareus 1/17/2013 set default values
     TmpOpts.DecayType = 3
     TmpOpts.Decay = 75
@@ -3504,9 +3503,9 @@ Private Sub clearall()
   Wend
 End Sub
 
-Sub additem(path As String)
+Sub additem(Path As String)
   Dim k As Integer, t As Long
-  SpecList.additem extractname(path)
+  SpecList.additem extractname(Path)
   'k = SpecList.ListCount - 1
   
   k = TmpOpts.SpeciesNum
@@ -3517,10 +3516,10 @@ Sub additem(path As String)
   TmpOpts.Specie(k).Posdn = 1
   TmpOpts.Specie(k).Poslf = 0
   TmpOpts.Specie(k).Postp = 0
-  TmpOpts.Specie(k).Name = extractname(path)
-  TmpOpts.Specie(k).path = extractpath(path)
-  ExtractComment path, k
-  TmpOpts.Specie(k).path = relpath(TmpOpts.Specie(k).path)
+  TmpOpts.Specie(k).Name = extractname(Path)
+  TmpOpts.Specie(k).Path = extractpath(Path)
+  ExtractComment Path, k
+  TmpOpts.Specie(k).Path = relpath(TmpOpts.Specie(k).Path)
   TmpOpts.Specie(k).Veg = False
   TmpOpts.Specie(k).CantSee = False
   TmpOpts.Specie(k).DisableMovementSysvars = False
@@ -3544,7 +3543,7 @@ Sub additem(path As String)
   TmpOpts.Specie(k).Stnrg = 3000
   TmpOpts.Specie(k).Native = True
   
-  AssignSkin k, path
+  AssignSkin k, Path
   ShowSkin k
   
 
@@ -3571,13 +3570,13 @@ Sub duplitem(b As Integer, a As Integer)
   TmpOpts.Specie(a).Native = TmpOpts.Specie(b).Native
 End Sub
 
-Private Sub ExtractComment(path As String, k As Integer)
+Private Sub ExtractComment(Path As String, k As Integer)
   On Error GoTo fine
   Dim commend As Boolean
   Dim a As String
-  path = stringops.respath(path)
+  Path = stringops.respath(Path)
   TmpOpts.Specie(k).Comment = ""
-  Open path For Input As 1
+  Open Path For Input As 1
     While Not EOF(1) And Not commend
       Line Input #1, a
       'Debug.Print a
@@ -3602,25 +3601,25 @@ End Sub
 
 Private Sub ShowSkin(k As Integer)
   Dim t As Integer
-  Dim X As Long
-  Dim Y As Long
-  X = Cerchio.Left + Cerchio.Width / 2
-  Y = Cerchio.Top + Cerchio.Height / 2
+  Dim x As Long
+  Dim y As Long
+  x = Cerchio.Left + Cerchio.Width / 2
+  y = Cerchio.Top + Cerchio.Height / 2
   multx = Cerchio.Width / 120
   multy = Cerchio.Height / 120
   Me.AutoRedraw = True
-  Line7.x1 = TmpOpts.Specie(k).Skin(0) * multx * Cos(TmpOpts.Specie(k).Skin(1) / 100) + X
-  Line7.y1 = TmpOpts.Specie(k).Skin(0) * multy * Sin(TmpOpts.Specie(k).Skin(1) / 100) + Y
-  Line7.x2 = TmpOpts.Specie(k).Skin(2) * multx * Cos(TmpOpts.Specie(k).Skin(3) / 100) + X
-  Line7.y2 = TmpOpts.Specie(k).Skin(2) * multy * Sin(TmpOpts.Specie(k).Skin(3) / 100) + Y
+  Line7.x1 = TmpOpts.Specie(k).Skin(0) * multx * Cos(TmpOpts.Specie(k).Skin(1) / 100) + x
+  Line7.y1 = TmpOpts.Specie(k).Skin(0) * multy * Sin(TmpOpts.Specie(k).Skin(1) / 100) + y
+  Line7.x2 = TmpOpts.Specie(k).Skin(2) * multx * Cos(TmpOpts.Specie(k).Skin(3) / 100) + x
+  Line7.y2 = TmpOpts.Specie(k).Skin(2) * multy * Sin(TmpOpts.Specie(k).Skin(3) / 100) + y
   Line8.x1 = Line7.x2
   Line8.y1 = Line7.y2
-  Line8.x2 = TmpOpts.Specie(k).Skin(4) * multx * Cos(TmpOpts.Specie(k).Skin(5) / 100) + X
-  Line8.y2 = TmpOpts.Specie(k).Skin(4) * multy * Sin(TmpOpts.Specie(k).Skin(5) / 100) + Y
+  Line8.x2 = TmpOpts.Specie(k).Skin(4) * multx * Cos(TmpOpts.Specie(k).Skin(5) / 100) + x
+  Line8.y2 = TmpOpts.Specie(k).Skin(4) * multy * Sin(TmpOpts.Specie(k).Skin(5) / 100) + y
   Line9.x1 = Line8.x2
   Line9.y1 = Line8.y2
-  Line9.x2 = TmpOpts.Specie(k).Skin(6) * multx * Cos(TmpOpts.Specie(k).Skin(7) / 100) + X
-  Line9.y2 = TmpOpts.Specie(k).Skin(6) * multy * Sin(TmpOpts.Specie(k).Skin(7) / 100) + Y
+  Line9.x2 = TmpOpts.Specie(k).Skin(6) * multx * Cos(TmpOpts.Specie(k).Skin(7) / 100) + x
+  Line9.y2 = TmpOpts.Specie(k).Skin(6) * multy * Sin(TmpOpts.Specie(k).Skin(7) / 100) + y
 End Sub
 
 'Botsareus 4/37/2013 Do not need this one also
@@ -3654,7 +3653,7 @@ End Sub
 '  Next i
 'End Sub
 
-Sub AssignSkin(k As Integer, path As String) 'The new skin engine requires path
+Sub AssignSkin(k As Integer, Path As String) 'The new skin engine requires path
 'Botsareus 4/27/2013 The new skin engine
 
 
@@ -3666,17 +3665,17 @@ robname = Replace(TmpOpts.Specie(k).Name, ".txt", "")
 Dim newR As Double
 Dim nextR As Double
 Dim nameR As Double
-Dim X As Long
+Dim x As Long
 
 Dim dbls() As Double
 
 ReDim dbls(Len(robname) - 1)
-For X = 1 To Len(robname)
-dbls(X - 1) = Rnd(-Asc(Mid(robname, X, 1)))
+For x = 1 To Len(robname)
+dbls(x - 1) = Rnd(-Asc(Mid(robname, x, 1)))
 Next 'pre seeds
 
-For X = 1 To Len(robname)
-newR = dbls(X - 1)
+For x = 1 To Len(robname)
+newR = dbls(x - 1)
 nextR = Rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
 Next 'randomize by name
 
@@ -3685,17 +3684,17 @@ newR = 0
 nextR = 0
 
   If MaxRobs = 0 Then ReDim rob(0)
-  If LoadDNA(path, 0) Then
+  If LoadDNA(Path, 0) Then
 
     Randomize 0
     
     ReDim dbls(UBound(rob(0).DNA))
-    For X = 0 To UBound(rob(0).DNA)
-    dbls(X) = Rnd(-(angle(0, 0, Rnd(-rob(0).DNA(X).value) - 0.5, Rnd(-rob(0).DNA(X).tipo) - 0.5)))
+    For x = 0 To UBound(rob(0).DNA)
+    dbls(x) = Rnd(-(angle(0, 0, Rnd(-rob(0).DNA(x).value) - 0.5, Rnd(-rob(0).DNA(x).tipo) - 0.5)))
     Next 'pre seeds
     
-    For X = 0 To UBound(rob(0).DNA)
-    newR = dbls(X)
+    For x = 0 To UBound(rob(0).DNA)
+    newR = dbls(x)
     nextR = Rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
     Next 'randomize by dna
     
@@ -3772,7 +3771,7 @@ Public Sub datatolist() 'datatolist
   
   For i = 0 To TmpOpts.SpeciesNum - 1
       SpecList.additem (TmpOpts.Specie(i).Name)
-      ExtractComment TmpOpts.Specie(i).path + "\" + TmpOpts.Specie(i).Name, i
+      ExtractComment TmpOpts.Specie(i).Path + "\" + TmpOpts.Specie(i).Name, i
   Next i
    
    
@@ -3899,7 +3898,7 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
       b = Rnd * 255
     Case "Custom"
       col = TmpOpts.Specie(k).color
-      MakeColor col
+      MakeColor col, respath(TmpOpts.Specie(k).Path) + "\" + TmpOpts.Specie(k).Name
       If ColorForm.SelectColor Then
         TmpOpts.Specie(k).color = ColorForm.color
       Else
@@ -3917,9 +3916,10 @@ bypass:
   Line8.BorderColor = TmpOpts.Specie(k).color
   Line9.BorderColor = TmpOpts.Specie(k).color
 End Sub
-Private Sub MakeColor(col As Long)
+Private Sub MakeColor(col As Long, Path As String)
   ColorForm.color = col
   ColorForm.SelectColor = False
+  ColorForm.Path = Path
   ColorForm.Show vbModal
 End Sub
 
@@ -3952,13 +3952,13 @@ Private Sub PosReset_Click()
 
 End Sub
 
-Private Sub Initial_Position_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Initial_Position_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   If Button = vbLeftButton Then
     DragBegin Initial_Position
   End If
 End Sub
 
-Private Sub IPB_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub IPB_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   If Button = vbLeftButton Then
     DragBegin Initial_Position
   End If
@@ -4028,8 +4028,8 @@ Public Sub DragBegin(ctl As Control)
     m_DragRect.TwipsToScreen m_CurrCtl
     
     'Make initial mouse position relative to control
-    m_DragPoint.X = m_DragPoint.X - m_DragRect.Left
-    m_DragPoint.Y = m_DragPoint.Y - m_DragRect.Top
+    m_DragPoint.x = m_DragPoint.x - m_DragRect.Left
+    m_DragPoint.y = m_DragPoint.y - m_DragRect.Top
     
     'Force redraw of form without sizing handles
     'before drawing dragging rectangle
@@ -4061,7 +4061,7 @@ End Sub
 
 'To handle all mouse message anywhere on the form, we set the mouse
 'capture to the form. Mouse movement is processed here
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
 If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selected
 
     Dim nWidth As Single, nHeight As Single
@@ -4076,8 +4076,8 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
         'Hide existing rectangle
         DrawDragRect
         'Update drag rectangle coordinates
-        m_DragRect.Left = pt.X - m_DragPoint.X
-        m_DragRect.Top = pt.Y - m_DragPoint.Y
+        m_DragRect.Left = pt.x - m_DragPoint.x
+        m_DragRect.Top = pt.y - m_DragPoint.y
         m_DragRect.Right = m_DragRect.Left + nWidth
         m_DragRect.Bottom = m_DragRect.Top + nHeight
         'Draw new rectangle
@@ -4090,25 +4090,25 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
         'Action depends on handle being dragged
         Select Case m_DragHandle
             Case 0
-                m_DragRect.Left = pt.X
-                m_DragRect.Top = pt.Y
+                m_DragRect.Left = pt.x
+                m_DragRect.Top = pt.y
             Case 2
-                m_DragRect.Right = pt.X
-                m_DragRect.Top = pt.Y
+                m_DragRect.Right = pt.x
+                m_DragRect.Top = pt.y
             Case 4
-                m_DragRect.Right = pt.X
-                m_DragRect.Bottom = pt.Y
+                m_DragRect.Right = pt.x
+                m_DragRect.Bottom = pt.y
             Case 6
-                m_DragRect.Left = pt.X
-                m_DragRect.Bottom = pt.Y
+                m_DragRect.Left = pt.x
+                m_DragRect.Bottom = pt.y
             Case 9
-                m_DragRect.Top = pt.Y
+                m_DragRect.Top = pt.y
             Case 10
-                m_DragRect.Bottom = pt.Y
+                m_DragRect.Bottom = pt.y
             Case 11
-                m_DragRect.Left = pt.X
+                m_DragRect.Left = pt.x
             Case 12
-                m_DragRect.Right = pt.X
+                m_DragRect.Right = pt.x
         End Select
         'Draw new rectangle
         DrawDragRect
@@ -4117,7 +4117,7 @@ End Sub
 
 'To handle all mouse message anywhere on the form, we set the mouse
 'capture to the form. Mouse up is processed here
-Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
 If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selected
 
     If Button = vbLeftButton Then
@@ -4162,7 +4162,7 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
 End Sub
 
 'Process MouseDown over handles
-Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
     Dim i As Integer
     Dim rc As RECT
 
@@ -4192,7 +4192,7 @@ Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As In
     ClipCursor rc
 End Sub
 
-Private Sub Robplacline_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Robplacline_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
     Dim i As Integer
     Dim rc As RECT
 
@@ -5497,12 +5497,12 @@ Private Sub SaveSettings_Click() 'savesettings
 fine:
 End Sub
 
-Public Sub savesett(path As String)
+Public Sub savesett(Path As String)
 On Error GoTo fine
   Dim t As Integer
   Dim k As Integer
   Dim numSpecies As Integer
-  Open path For Output As #1
+  Open Path For Output As #1
   
   'EricL 4/13/2006 using this for version information
   '-2 is pre 2.42.2 versions
@@ -5533,7 +5533,7 @@ On Error GoTo fine
     Write #1, 0
     
     Write #1, TmpOpts.Specie(t).Mutables.mutarray(0)
-    Write #1, TmpOpts.Specie(t).path
+    Write #1, TmpOpts.Specie(t).Path
     Write #1, TmpOpts.Specie(t).qty
     Write #1, TmpOpts.Specie(t).Name
     Write #1, TmpOpts.Specie(t).Veg
@@ -5709,7 +5709,7 @@ fine:
   MsgBox ("Unable to save settings: some error occurred")
 End Sub
 
-Public Sub ReadSett(path As String)
+Public Sub ReadSett(Path As String)
 On Error GoTo aiuto
   Dim t As Integer
   Dim col As Single
@@ -5725,15 +5725,15 @@ On Error GoTo aiuto
 
 carica:
   On Error GoTo aiuto
-  Open path For Input As #1
+  Open Path For Input As #1
   Input #1, maxs 'we can actually use this for version info
   
   'EricL 4/13/2006 Check for older settings files.  2.42.1 fixed bugs that introduced incomptabilities...
   If maxs <> -1 Then
-    If Right(path, 12) = "lastexit.set" Then
+    If Right(Path, 12) = "lastexit.set" Then
       MsgBox ("The settings from your last exit are incomptable with this version.  Last exit settings not loaded.  When you exit the program, a new lastexit settings file will be created automatically.")
     Else
-      If Right(path, 11) = "default.set" Then
+      If Right(Path, 11) = "default.set" Then
         MsgBox ("The default settings file is incomptable with this version.  You can save your settings to default.set to create a new one.  Settings not loaded.")
       Else
         MsgBox ("The settings file is incomptable with this version.  Settings not loaded.")
@@ -5745,10 +5745,10 @@ carica:
   End If
   Close 1
   'EricL 3/21/2006 Added following three lines to work around problem with default settings file
-  If (TmpOpts.MaxEnergy = 500000) And (Right(path, 11) = "default.set") Then
+  If (TmpOpts.MaxEnergy = 500000) And (Right(Path, 11) = "default.set") Then
     TmpOpts.MaxEnergy = 50
   End If
-  lastsettings = path
+  lastsettings = Path
   Exit Sub
 aiuto:
   Close 1
@@ -5765,17 +5765,17 @@ aiuto:
       MsgBox ("Darwinbots cannot continue.  Program will exit.")
       End 'Botsareus 7/12/2012 force DB to exit
     End If
-  ElseIf Err.Number = 53 And Right(path, 12) = "lastexit.set" Then
+  ElseIf Err.Number = 53 And Right(Path, 12) = "lastexit.set" Then
        MsgBox ("Cannot find the settings file from your last exit.  " + vbCrLf + _
                "Using the internal default settings. " + vbCrLf + vbCrLf + _
                "If this is a new install, this is normal.")
       InfoForm.Show 'Botsareus 3/24/2012 Show the info form if no settings where found
   Else
     MsgBox MBcannotfindI, , MBwarning
-    CommonDialog1.FileName = path
+    CommonDialog1.FileName = Path
     CommonDialog1.ShowOpen
-    path = CommonDialog1.FileName
-    If path <> "" Then GoTo carica
+    Path = CommonDialog1.FileName
+    If Path <> "" Then GoTo carica
   End If
   
 End Sub
@@ -5805,7 +5805,7 @@ Public Sub ReadSettFromFile()
     Input #1, k
     
     Input #1, TmpOpts.Specie(t).Mutables.mutarray(0)
-    Input #1, TmpOpts.Specie(t).path
+    Input #1, TmpOpts.Specie(t).Path
     Input #1, TmpOpts.Specie(t).qty
     Input #1, TmpOpts.Specie(t).Name
     Input #1, TmpOpts.Specie(t).Veg

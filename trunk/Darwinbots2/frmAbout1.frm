@@ -900,6 +900,7 @@ Private Sub Form_Load() ''Botsareus 8/7/2012 mod for new version
     Help.text = Help.text + "tie" + vbTab + "-----" + vbTab + "Fires a permanent tie toward another robot in my eye5 cell. It won't hit if he is too far away." + vbCrLf
     Help.text = Help.text + vbTab + vbTab + "The number that I store in .tie becomes the permanent reference address for that tie" + vbCrLf
     Help.text = Help.text + vbTab + vbTab + "I will need to remember this number so that I can access the tie a little later." + vbCrLf
+    Help.text = Help.text + vbTab + vbTab + "Now I can attach a permanent tie to your parent at birth or even tie by touch if I don't see anything." + vbCrLf
     Help.text = Help.text + "tienum" + vbTab + "-----" + vbTab + "This is where I have to store a value to access my tie. If this doesn't match the number" + vbCrLf
     Help.text = Help.text + vbTab + vbTab + "that I used to make my tie then I can't get at it. What was that number again?" + vbCrLf
     Help.text = Help.text + "deltie" + vbTab + "-----" + vbTab + "This lets me delete a tie that I don't want any more. I still need that number though." + vbCrLf

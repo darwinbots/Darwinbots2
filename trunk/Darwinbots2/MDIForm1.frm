@@ -1628,20 +1628,20 @@ Private Sub costi_Click()
   optionsform.Show vbModal
 End Sub
 
-Private Sub czin_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czin_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   AspettaFlag = True
   ZoomInPremuto
 End Sub
 
-Private Sub czin_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czin_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   AspettaFlag = False
 End Sub
 
 Public Sub ZoomIn()
   If Form1.visiblew > RobSize * 4 Then
     If robfocus > 0 Then
-      xc = rob(robfocus).pos.X
-      yc = rob(robfocus).pos.Y
+      xc = rob(robfocus).pos.x
+      yc = rob(robfocus).pos.y
     Else
       xc = Form1.visiblew / 2 + Form1.ScaleLeft
       yc = Form1.visibleh / 2 + Form1.ScaleTop
@@ -1670,7 +1670,7 @@ Private Sub ZoomOutPremuto()
   Wend
 End Sub
 
-Private Sub czo_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czo_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   AspettaFlag = True
   ZoomOutPremuto
 End Sub
@@ -1720,7 +1720,7 @@ Public Sub ZoomOut()
   Form1.Redraw
 End Sub
 
-Private Sub czo_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub czo_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
  AspettaFlag = False
 End Sub
 
@@ -1938,7 +1938,7 @@ If simalreadyrunning And Not autosaved Then MsgBox strMsgSendData
 
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As file
+Dim lastSim As File
 Dim revision As String
 
 Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause initial simulation
