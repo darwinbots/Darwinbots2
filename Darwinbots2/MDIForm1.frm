@@ -1656,6 +1656,15 @@ Public Sub ZoomIn()
   End If
 End Sub
 
+Public Sub Follow() 'Botsareus 11/29/2013 Zoom follow selected robot
+    If robfocus > 0 And Form1.visiblew < 6000 And visualize Then
+      xc = rob(robfocus).pos.x
+      yc = rob(robfocus).pos.y
+      Form1.ScaleTop = yc - Form1.ScaleHeight / 2
+      Form1.ScaleLeft = xc - Form1.ScaleWidth / 2
+  End If
+End Sub
+
 Private Sub ZoomInPremuto()
   While AspettaFlag = True
     ZoomIn
@@ -1938,7 +1947,7 @@ If simalreadyrunning And Not autosaved Then MsgBox strMsgSendData
 
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
 Dim revision As String
 
 Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause initial simulation

@@ -305,7 +305,7 @@ End Sub
 
 Private Sub ExecuteAdvancedCommand(n As Integer, robid As Integer, at_position As Integer)
 
-If n < 8 Then rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(ADCMDCOST) * SimOpts.Costs(COSTMULTIPLIER))
+If n < 13 Then rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(ADCMDCOST) * SimOpts.Costs(COSTMULTIPLIER))
 
   Select Case n
     Case 1 'findang
@@ -360,8 +360,8 @@ Private Sub findang()
   Dim e As Single  'angle to target
   b = PopIntStack ' * Form1.yDivisor
   a = PopIntStack ' * Form1.xDivisor
-  c = rob(currbot).pos.X / Form1.xDivisor
-  d = rob(currbot).pos.Y / Form1.yDivisor
+  c = rob(currbot).pos.x / Form1.xDivisor
+  d = rob(currbot).pos.y / Form1.yDivisor
   e = angnorm(angle(c, d, a, b)) * 200
   PushIntStack e
 End Sub
@@ -375,8 +375,8 @@ Private Sub finddist()
   Dim e As Single  'distance to target
   b = PopIntStack * Form1.yDivisor
   a = PopIntStack * Form1.xDivisor
-  c = rob(currbot).pos.X
-  d = rob(currbot).pos.Y
+  c = rob(currbot).pos.x
+  d = rob(currbot).pos.y
   e = Sqr(((c - a) ^ 2 + (d - b) ^ 2))
   If Abs(e) > 2000000000# Then
     e = Sgn(e) * 2000000000#
@@ -960,7 +960,14 @@ Private Sub DNAmultstore()
    If b <> 0 Then           ' Stores to 0 are allowed, but do nothing and cost nothing
      b = Abs(b) Mod MaxMem  ' Make sure the location hits the bot's memory to increase the chance of mutations hitting sysvars.
      If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
-     a = rob(currbot).mem(b) * PopIntStack
+     
+     'Botsareus 11/30/2013 Small bugfix to prevent overflow
+     Dim c As Long
+     c = PopIntStack
+     c = c Mod 32000
+     
+     
+     a = rob(currbot).mem(b) * c
      a = a Mod 32000
      
      'Botsareus 3/22/2013 handle tieang...tielen 1...4 overwrites
@@ -1019,6 +1026,15 @@ Private Sub DNAceilstore()
       If b = 480 + k Then rob(currbot).TieAngOverwrite(k) = True
       If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
      Next
+     
+     'Botsareus 10/12/2013 Fix for out of range ceil
+     If a > 0 Then
+       a = a Mod 32000
+       If a = 0 Then a = 32000  ' Special case 32000
+     ElseIf a < 0 Then
+       a = a Mod 32000
+       If a = 0 Then a = -32000 ' special case -32000
+     End If
      
      rob(currbot).mem(b) = a
      rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5

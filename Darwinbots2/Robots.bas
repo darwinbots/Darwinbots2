@@ -251,6 +251,7 @@ Private Type robot
   usedvars(1000) As Integer '| used memory cells
   
   ' virtual machine
+  epimem(14) As Integer
   mem(1000) As Integer      ' memory array
   DNA() As block            ' program array
   
@@ -283,7 +284,6 @@ Private Type robot
   OldGD As Single           ' our old genetic distance
   LastMut As Integer        ' last mutations
   MutEpiReset As Double     ' how many mutations until epigenetic reset
-  Reset As Boolean
   
   parent As Long            ' parent absolute number
   age As Long               ' age in cycles
@@ -1461,7 +1461,6 @@ Public Sub UpdateBots()
              
         'EricL Transfer genetic meomory locations for newborns through the birth tie during their first 15 cycles
         If rob(t).age < 15 Then DoGeneticMemory t
-        If rob(t).age = 15 Then rob(t).Reset = False
         
         If Not rob(t).Corpse And Not rob(t).DisableDNA Then SetAimFunc t  'Setup aiming
         If Not rob(t).Corpse And Not rob(t).DisableDNA Then BotDNAManipulation t
@@ -2120,6 +2119,14 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       For i = 0 To 4
         rob(nuovo).mem(971 + i) = rob(n).mem(971 + i)
       Next i
+      'The other 15 genetic memory locations are stored now but can be used later
+      For i = 0 To 14
+        rob(nuovo).epimem(i) = rob(n).mem(976 + i)
+      Next i
+      'Erase parents genetic memory now to prevent him from completing his own transfer by using his kid
+      For i = 0 To 14
+        rob(n).epimem(i) = 0
+      Next i
             
       If rob(n).mem(mrepro) > 0 Then
         Dim temp As mutationprobs
@@ -2161,9 +2168,11 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
        rob(nuovo).MutEpiReset = rob(n).MutEpiReset + rob(nuovo).LastMut ^ epiresetemp
        If rob(nuovo).MutEpiReset > epiresetOP And rob(n).MutEpiReset > 0 Then
          rob(nuovo).MutEpiReset = 0
-         rob(nuovo).Reset = True
          For i = 0 To 4
           rob(nuovo).mem(971 + i) = 0
+         Next i
+         For i = 0 To 14
+          rob(nuovo).epimem(i) = 0
          Next i
        End If
       End If
@@ -2395,6 +2404,15 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       For i = 0 To 4
         rob(nuovo).mem(971 + i) = rob(female).mem(971 + i)
       Next i
+      'The other 15 genetic memory locations are stored now but can be used later
+      For i = 0 To 14
+        rob(nuovo).epimem(i) = rob(female).mem(976 + i)
+      Next i
+      'Erase parents genetic memory now to prevent him from completing his own transfer by using his kid
+      For i = 0 To 14
+        rob(n).epimem(female) = 0
+      Next i
+      
       
       rob(nuovo).LastMutDetail = "Female DNA len " + Str(rob(female).DnaLen) + " and male DNA len " + _
       Str(UBound(rob(female).spermDNA)) + " had offspring DNA len " + Str(rob(nuovo).DnaLen) + " during cycle " + Str(SimOpts.TotRunCycle) + _
@@ -2423,9 +2441,11 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
        rob(nuovo).MutEpiReset = rob(female).MutEpiReset + rob(nuovo).LastMut ^ epiresetemp
        If rob(nuovo).MutEpiReset > epiresetOP And rob(female).MutEpiReset > 0 Then
          rob(nuovo).MutEpiReset = 0
-         rob(nuovo).Reset = True
          For i = 0 To 4
           rob(nuovo).mem(971 + i) = 0
+         Next i
+         For i = 0 To 14
+          rob(nuovo).epimem(i) = 0
          Next i
        End If
       End If
@@ -2601,30 +2621,21 @@ End Function
 '  End If
 'End Sub
 
-
-'EricL 4/20/2006 This feature was never ported from 2.3X so implement it here 'Botsareus 11/26/2013 bug fix
+'Botsareus 12/1/2013 Redone to work in all cases
 Public Sub DoGeneticMemory(t As Integer)
-  Dim loc As Integer ' memory location to copy from parent to offspring
-  
-  If rob(t).Reset Then Exit Sub
+ Dim loc As Integer ' memory location to copy from parent to offspring
   
   'Make sure the bot has a tie
   If rob(t).numties > 0 Then
-    'Make sure parent still exists.  Birth tie should always be the offspring's first tie, so will always be Ties(1)
-    If rob(rob(t).Ties(1).pnt).exist Then
-      'Make sure it really is the birth tie and not some other tie that has formed AND make sure robot t is the child
-      If rob(t).Ties(1).last > 0 And rob(t).parent = rob(t).Ties(1).pnt Then
-        'Make sure robot isn't too old.  Age is 0 the first time through.
-        If rob(t).age < 15 Then
+      'Make sure it really is the birth tie and not some other tie
+      If rob(t).Ties(1).last > 0 Then
           'Copy the memory locations 976 to 990 from parent to child. One per cycle.
           loc = 976 + rob(t).age ' the location to copy
           'only copy the value if the location is 0 in the child and the parent has something to copy
-          If rob(t).mem(loc) = 0 And rob(rob(t).Ties(1).pnt).mem(loc) <> 0 Then
-            rob(t).mem(loc) = rob(rob(t).Ties(1).pnt).mem(loc)
+          If rob(t).mem(loc) = 0 And rob(t).epimem(rob(t).age) <> 0 Then
+            rob(t).mem(loc) = rob(t).epimem(rob(t).age)
           End If
-        End If
       End If
-    End If
   End If
 End Sub
 
