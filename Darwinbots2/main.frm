@@ -1281,9 +1281,7 @@ MDIForm1.menuupdate
   If Form1.Active Then SecTimer.Enabled = True
   SimOpts.TotRunTime = 0
   setfeed
-  If MDIForm1.visualize Then
-    DrawAllRobs
-  End If
+  If MDIForm1.visualize Then DrawAllRobs
   MDIForm1.enablesim
   If SimOpts.DBEnable Then
     CreateArchive SimOpts.DBName
