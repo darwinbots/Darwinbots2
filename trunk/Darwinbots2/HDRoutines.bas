@@ -76,7 +76,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As file
+  Dim robotFile As File
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -278,7 +278,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As file
+  Dim fileToDelete As File
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -1459,6 +1459,12 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     'Panda 2013/08/11 chloroplasts
     If FileContinue(1) Then Get #1, , .chloroplasts
     
+    'Botsareus 12/3/2013 Read epigenetic information
+    
+    For t = 0 To 14
+        If FileContinue(1) Then Get #n, , .epimem(t)
+    Next
+    
     'read in any future data here
     
 OldFile:
@@ -1690,6 +1696,11 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     
     'Panda 8/13/2013 Write chloroplasts
     Put #n, , .chloroplasts
+    
+    'Botsareus 12/3/2013 Write epigenetic information
+    For t = 0 To 14
+        Put #n, , .epimem(t)
+    Next
     
     'write any future data here
     

@@ -279,6 +279,15 @@ Dim MouseClicked As Boolean
 Dim ZoomFlag As Boolean        ' EricL True while mouse button four is held down - for zooming
 Dim DraggingBot As Boolean     ' EricL True while mouse is down dragging bot around
 
+'Botsareus 11/29/2013 Allows for moving whole organism
+Private Type tmppostyp
+n As Integer
+x As Single
+y As Single
+End Type
+Private tmprob_c As Byte
+Private tmppos(50) As tmppostyp
+
 
 Public cyc As Integer          ' cycles/second
 Dim minutescount As Integer
@@ -502,7 +511,7 @@ Private Sub DrawRobPer(n As Integer)
     FillColor = BackColor
 '  End If
   
-      Circle (CentreX, CentreY), rob(n).radius, IIf(rob(n).Reset, vbWhite, rob(n).color)   'new line
+      Circle (CentreX, CentreY), rob(n).radius, rob(n).color    'new line
       
       'Update the magnifying lens
       If MagLens.Visible Then
@@ -1100,7 +1109,7 @@ Private Sub Timer2_Timer()
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As File
+          Dim fileToDelete As file
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1118,7 +1127,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As File
+          Dim fileToDelete2 As file
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -1272,7 +1281,9 @@ MDIForm1.menuupdate
   If Form1.Active Then SecTimer.Enabled = True
   SimOpts.TotRunTime = 0
   setfeed
-  If MDIForm1.visualize Then DrawAllRobs
+  If MDIForm1.visualize Then
+    DrawAllRobs
+  End If
   MDIForm1.enablesim
   If SimOpts.DBEnable Then
     CreateArchive SimOpts.DBName
@@ -1595,6 +1606,11 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y A
     vel = VectorSub(rob(robfocus).pos, VectorSet(x, y))
     rob(robfocus).pos = VectorSet(x, y)
     rob(robfocus).vel = VectorSet(0, 0)
+    Dim a As Byte
+    For a = 1 To tmprob_c
+        rob(tmppos(a).n).pos = VectorSet(x - tmppos(a).x, y - tmppos(a).y)
+        rob(tmppos(a).n).vel = VectorSet(0, 0)
+    Next
     If Not Active Then Redraw
   End If
   
@@ -1699,6 +1715,29 @@ If lblSafeMode.Visible Then Exit Sub 'Botsareus 5/13/2013 Safemode restrictions
   End If
 End Sub
 
+
+'Botsareus 11/29/2013 You can now move whole organism
+Private Sub gen_tmp_pos_lst()
+Dim a As Integer
+Dim rst As Boolean
+rst = True
+tmprob_c = 0
+    For a = 1 To MaxRobs
+      If rob(a).exist And rob(a).highlight Then
+        If a = robfocus Then rst = False
+        tmprob_c = tmprob_c + 1
+        If tmprob_c < 51 Then
+            tmppos(tmprob_c).n = a
+            tmppos(tmprob_c).x = rob(robfocus).pos.x - rob(a).pos.x
+            tmppos(tmprob_c).y = rob(robfocus).pos.y - rob(a).pos.y
+        Else
+            tmprob_c = 50
+        End If
+      End If
+    Next a
+If rst Then tmprob_c = 0
+End Sub
+
 ' clicking (well, half-clicking) on a robot selects it
 ' clicking outside can add a robot if we're in robot insertion
 ' mode.
@@ -1733,6 +1772,7 @@ If lblSafeMode.Visible Then Exit Sub 'Botsareus 5/13/2013 Safemode restrictions
     If Not Form1.SecTimer.Enabled Then datirob.Visible = False 'Botsareus 1/5/2013 Small fix to do with wrong data displayed in robot info, auto hide the window
   Else
     DraggingBot = True
+    gen_tmp_pos_lst
   End If
   
   If n = 0 Then
@@ -1937,6 +1977,8 @@ Private Sub main()
       Form1.SecTimer.Enabled = True
            
       UpdateSim
+      MDIForm1.Follow ' 11/29/2013 zoom follow selected robot
+      
       If StartAnotherRound Then Exit Sub
       
       ' redraws all:
@@ -2849,7 +2891,6 @@ End Function
 ' altered from the bot with the most generations
 ' to the bot with the most invested energy in itself and children
 Function fittest() As Integer
-
 'Botsareus 5/22/2013 Lets figure out what we are searching for
 Dim sPopulation As Double
 Dim sEnergy As Double
