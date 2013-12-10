@@ -1151,8 +1151,15 @@ With rob(t)
   'remove chloroplasts
   .chloroplasts = .chloroplasts - .mem(rmchlr)
   
-  If tmpchlr < .chloroplasts Then .nrg = .nrg - (.chloroplasts - tmpchlr) * SimOpts.Costs(CHLRCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 8/24/2013 only charge energy for adding chloroplasts to prevent robots from cheating by adding and subtracting there chlroplasts in 3 cycles
+  If tmpchlr < .chloroplasts Then
   
+    If TotalChlr > SimOpts.MaxPopulation And .Veg = True Then 'Botsareus 12/3/2013 Attempt to stop vegy spikes
+      .chloroplasts = tmpchlr
+    Else
+     .nrg = .nrg - (.chloroplasts - tmpchlr) * SimOpts.Costs(CHLRCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 8/24/2013 only charge energy for adding chloroplasts to prevent robots from cheating by adding and subtracting there chlroplasts in 3 cycles
+    End If
+    
+  End If
   rob(t).mem(mkchlr) = 0
   rob(t).mem(rmchlr) = 0
   
@@ -2410,7 +2417,7 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       Next i
       'Erase parents genetic memory now to prevent him from completing his own transfer by using his kid
       For i = 0 To 14
-        rob(n).epimem(female) = 0
+        rob(female).epimem(i) = 0
       Next i
       
       
