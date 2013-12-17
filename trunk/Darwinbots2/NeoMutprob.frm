@@ -307,11 +307,31 @@ Begin VB.Form MutationsProbability
    End
    Begin VB.Frame Frame2 
       Caption         =   "Mutation Types"
-      Height          =   4335
+      Height          =   5055
       Left            =   120
       TabIndex        =   7
       Top             =   120
       Width           =   3135
+      Begin VB.OptionButton TypeOption 
+         Caption         =   "Copy Error 2"
+         Height          =   495
+         Index           =   10
+         Left            =   240
+         Style           =   1  'Graphical
+         TabIndex        =   67
+         Top             =   4320
+         Width           =   1215
+      End
+      Begin VB.OptionButton TypeOption 
+         Caption         =   "Point 2"
+         Height          =   495
+         Index           =   9
+         Left            =   1680
+         Style           =   1  'Graphical
+         TabIndex        =   66
+         Top             =   3540
+         Width           =   1215
+      End
       Begin VB.OptionButton TypeOption 
          Caption         =   "Translocation"
          Height          =   495
@@ -320,7 +340,6 @@ Begin VB.Form MutationsProbability
          Style           =   1  'Graphical
          TabIndex        =   64
          Top             =   3540
-         Visible         =   0   'False
          Width           =   1215
       End
       Begin VB.OptionButton TypeOption 
@@ -381,7 +400,6 @@ Begin VB.Form MutationsProbability
          Style           =   1  'Graphical
          TabIndex        =   52
          Top             =   2760
-         Visible         =   0   'False
          Width           =   1215
       End
       Begin VB.OptionButton TypeOption 
@@ -674,6 +692,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 'Botsareus 6/12/2012 form's icon change
+'Botsareus 12/10/2013 moved the order mean and stddev is stored to prevent a bug, implemented new mutation algos.
 
 Dim Mode As Byte
 
@@ -686,7 +705,22 @@ Private Sub Form_Load()
   TypeOption(6).value = True * True
   TypeOption(7).value = True * True
   TypeOption(8).value = True * True
+  TypeOption(9).value = True * True
+  TypeOption(10).value = True * True
   TypeOption(0).value = True * True
+  'Botsareus 12/11/2013 Make new mutations optional
+  TypeOption(4).Visible = sunbelt
+  TypeOption(8).Visible = sunbelt
+  TypeOption(9).Visible = sunbelt
+  TypeOption(10).Visible = sunbelt
+  
+  'no real distinction between minor deletion and major deletion
+  If Delta2 Then
+    TypeOption(1).Caption = """Minor"" Deletion"
+    TypeOption(5).Caption = """Major"" Deletion"
+    TypeOption(7).Visible = False
+  End If
+  
   
 '  If (TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mutations = True) Then
 '    EnableAllCheck.value = 1
@@ -706,13 +740,26 @@ Private Sub Command1_Click(Index As Integer)
             Anti_Prob(.mutarray(2)) * _
             Anti_Prob(.mutarray(3)) * _
             Anti_Prob(.mutarray(5)) * _
-            Anti_Prob(.mutarray(6))
+            Anti_Prob(.mutarray(6)) * _
+            Anti_Prob(.mutarray(7)) * _
+            Anti_Prob(.mutarray(8)) * _
+            Anti_Prob(.mutarray(9)) * _
+            Anti_Prob(.mutarray(10))
     Psome = 1 - Pnone
           
           
     Probs(1).text = CStr(CLng(1 / Psome))
     End With
   End If
+End Sub
+
+Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer) 'Botsareus 12/11/2013
+If Not optionsform.CurrSpec = 50 Then
+    'generate mrates file for robot
+    Dim outpath As String
+    outpath = TmpOpts.Specie(optionsform.CurrSpec).path & "\" & extractexactname(TmpOpts.Specie(optionsform.CurrSpec).Name) & ".mrate"
+    Save_mrates TmpOpts.Specie(optionsform.CurrSpec).Mutables, outpath
+End If
 End Sub
 
 'Private Sub EnableAllCheck_Click()
@@ -802,7 +849,11 @@ Private Sub Probs_Change(Index As Integer)
             Anti_Prob(.mutarray(2)) * _
             Anti_Prob(.mutarray(3)) * _
             Anti_Prob(.mutarray(5)) * _
-            Anti_Prob(.mutarray(6))
+            Anti_Prob(.mutarray(6)) * _
+            Anti_Prob(.mutarray(7)) * _
+            Anti_Prob(.mutarray(8)) * _
+            Anti_Prob(.mutarray(9)) * _
+            Anti_Prob(.mutarray(10))
     Psome = 1 - Pnone
           
     If Psome = 0 Then
@@ -853,6 +904,10 @@ Private Sub TypeOption_Click(Index As Integer)
       SetupDelta
     Case 8 'movement of a segment
       SetupIntraCT
+    Case 9
+      SetupP2
+    Case 10
+      SetupCE2
   End Select
 End Sub
 
@@ -882,11 +937,43 @@ Private Sub SetupPoint()
   
   CustGauss(0).Caption = "Length"
   
-  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(PointUP)
   StdDev(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.StdDev(PointUP)
-      
+  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(PointUP)
+  
   Label3(0).Caption = "1 chance in  XXXXXXX 000 per bp per cycle"
   Probs(0).text = Abs(TmpOpts.Specie(optionsform.CurrSpec).Mutables.mutarray(Mode))
+End Sub
+
+Private Sub SetupP2()
+  CustGauss(0).Visible = False
+  CustGauss(1).Visible = False
+  Slider1.Visible = False
+  Sliders6.Visible = False
+  Slider1Text(0).Visible = False
+  Slider1Text(1).Visible = False
+
+  Text2.text = "NOTE: THE LENGTH OF THIS MUTATION IS ALWAYS 1" + vbCrLf + _
+  "Similar to point mutations, but always changes to an existing sysvar, *sysvar, or special values if followed by .shoot store or .focuseye store." + _
+  "The algorithm is also designed to introduce more stores." + _
+  " Should allow for evolving a zero-bot the same as a random-bot."
+    
+  Label3(0).Caption = "1 chance in  XXXXXXX 000 per bp per cycle"
+  Probs(0).text = Abs(TmpOpts.Specie(optionsform.CurrSpec).Mutables.mutarray(Mode))
+  
+End Sub
+
+Private Sub SetupCE2()
+  CustGauss(0).Visible = False
+  CustGauss(1).Visible = False
+  Slider1.Visible = False
+  Sliders6.Visible = False
+  Slider1Text(0).Visible = False
+  Slider1Text(1).Visible = False
+
+  Text2.text = "Similar to copy error, but always changes to an existing sysvar, *sysvar, or special values if followed by .shoot store or .focuseye store."
+  Label3(0).Caption = "1 chance in  XXXXXXX per bp per copy"
+  Probs(0).text = Abs(TmpOpts.Specie(optionsform.CurrSpec).Mutables.mutarray(Mode))
+  
 End Sub
 
 Private Sub SetupCopyError()
@@ -902,8 +989,8 @@ Private Sub SetupCopyError()
   Slider1Text(1).Caption = "Change Value"
   Slider1.value = TmpOpts.Specie(optionsform.CurrSpec).Mutables.CopyErrorWhatToChange
   
-  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   StdDev(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.StdDev(Mode)
+  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   
   Text2.text = "Similar to point mutations, but these occur during DNA replication " + _
     "for reproduction or viruses.  A small series (usually 1 bp) is changed in either parent " + _
@@ -923,8 +1010,8 @@ Private Sub SetupAmplify()
   Slider1Text(1).Visible = False
   Sliders6.Visible = False
   
-  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   StdDev(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.StdDev(Mode)
+  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   
   Text2.text = "A series of bp are replicated and inserted in another place in the " + _
     "genome."
@@ -943,8 +1030,8 @@ Private Sub SetupMajorDeletion()
   Slider1Text(1).Visible = False
   Sliders6.Visible = False
   
-  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   StdDev(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.StdDev(Mode)
+  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   
   Label3(0).Caption = "1 chance in  XXXXXXX per bp per copy"
   Probs(0).text = Abs(TmpOpts.Specie(optionsform.CurrSpec).Mutables.mutarray(Mode))
@@ -965,8 +1052,8 @@ Private Sub SetupMinorDeletion()
   
   Text2.text = "A small series of bp are deleted from the genome."
   
-  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   StdDev(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.StdDev(Mode)
+  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   
   Label3(0).Caption = "1 chance in  XXXXXXX per bp per copy"
   Probs(0).text = Abs(TmpOpts.Specie(optionsform.CurrSpec).Mutables.mutarray(Mode))
@@ -987,8 +1074,9 @@ Private Sub SetupInsertion()
   Text2.text = "A run of random bp are inserted into the genome.  " + _
     "The size of this run should be fairly small."
   
-  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   StdDev(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.StdDev(Mode)
+  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
+  
   CustGauss(0).Caption = "Length"
   
   Label3(0).Caption = "1 chance in  XXXXXXX per bp per copy"
@@ -1010,8 +1098,8 @@ Private Sub SetupReversal()
     "For example, '2 3 > or' becomes 'or > 3 2'.  Length of " + _
     "reversal should be >= 2."
     
-  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   StdDev(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.StdDev(Mode)
+  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
 End Sub
 
 Private Sub SetupDelta()
@@ -1023,8 +1111,9 @@ Private Sub SetupDelta()
   Sliders6.Visible = False
   
   CustGauss(0).Caption = "Standard Deviation"
-  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
+  
   StdDev(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.StdDev(Mode)
+  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   
   Text2.text = "The mutation rates of a bot are allowed to change " + _
     "slowly over time.  This change in mutation rates can include " + _
@@ -1047,8 +1136,8 @@ Private Sub SetupIntraCT()
     
   CustGauss(0).Caption = "Length"
   
-  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   StdDev(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.StdDev(Mode)
+  Mean(0).text = TmpOpts.Specie(optionsform.CurrSpec).Mutables.Mean(Mode)
   
   Label3(0).Caption = "1 chance in  XXXXXXX per bp per copy"
 End Sub

@@ -106,7 +106,7 @@ Private Sub ExecuteDNA(n As Integer)
         End If
       Case 3 'advanced commands
         If CurrentFlow <> CLEAR Then
-          ExecuteAdvancedCommand .DNA(a).value, n, a
+          ExecuteAdvancedCommand .DNA(a).value, a
         End If
       Case 4 'bitwise commands
         If CurrentFlow <> CLEAR Then
@@ -303,7 +303,7 @@ End Sub
 '''''''''''''''''''''''''''''''''''''''''''''''''
 '''''''''''''''''''''''''''''''''''''''''''''''''
 
-Private Sub ExecuteAdvancedCommand(n As Integer, robid As Integer, at_position As Integer)
+Private Sub ExecuteAdvancedCommand(n As Integer, at_position As Integer)
 
 If n < 13 Then rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(ADCMDCOST) * SimOpts.Costs(COSTMULTIPLIER))
 
@@ -333,9 +333,9 @@ If n < 13 Then rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(ADCMDCOST) *
     Case 12
       DNAcos
     Case 13
-      DNAdebugint robid, at_position    'Botsareus 1/31/2013 the new debugint command
+      DNAdebugint at_position     'Botsareus 1/31/2013 the new debugint command
     Case 14
-      DNAdebugbool robid, at_position   'Botsareus 1/31/2013 the new debugbool command
+      DNAdebugbool at_position   'Botsareus 1/31/2013 the new debugbool command
   End Select
 End Sub
 
@@ -507,24 +507,24 @@ Private Sub DNApyth()
 End Sub
 
 
-Private Sub DNAdebugint(robid As Integer, at_position As Integer)   'Botsareus 1/31/2013 The new debugint command
+Private Sub DNAdebugint(at_position As Integer)   'Botsareus 1/31/2013 The new debugint command
 
     Dim a As Single
     a = PopIntStack
     
-    If Not (rob(robid).console Is Nothing) And DisplayDebug Then rob(robid).console.textout a & " at position " & at_position
+    If Not (rob(currbot).console Is Nothing) And DisplayDebug Then rob(currbot).console.textout a & " at position " & at_position
     
     PushIntStack a
     
 End Sub
 
 
-Private Sub DNAdebugbool(robid As Integer, at_position As Integer)   'Botsareus 1/31/2013 The new debugbool command
+Private Sub DNAdebugbool(at_position As Integer)    'Botsareus 1/31/2013 The new debugbool command
 
     Dim a As Boolean
     a = PopBoolStack
     
-    If Not (rob(robid).console Is Nothing) And DisplayDebug Then rob(robid).console.textout a & " at position " & at_position
+    If Not (rob(currbot).console Is Nothing) And DisplayDebug Then rob(currbot).console.textout a & " at position " & at_position
     
     PushBoolStack a
     

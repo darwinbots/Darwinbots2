@@ -3503,9 +3503,9 @@ Private Sub clearall()
   Wend
 End Sub
 
-Sub additem(Path As String)
+Sub additem(path As String)
   Dim k As Integer, t As Long
-  SpecList.additem extractname(Path)
+  SpecList.additem extractname(path)
   'k = SpecList.ListCount - 1
   
   k = TmpOpts.SpeciesNum
@@ -3516,10 +3516,10 @@ Sub additem(Path As String)
   TmpOpts.Specie(k).Posdn = 1
   TmpOpts.Specie(k).Poslf = 0
   TmpOpts.Specie(k).Postp = 0
-  TmpOpts.Specie(k).Name = extractname(Path)
-  TmpOpts.Specie(k).Path = extractpath(Path)
-  ExtractComment Path, k
-  TmpOpts.Specie(k).Path = relpath(TmpOpts.Specie(k).Path)
+  TmpOpts.Specie(k).Name = extractname(path)
+  TmpOpts.Specie(k).path = extractpath(path)
+  ExtractComment path, k
+  TmpOpts.Specie(k).path = relpath(TmpOpts.Specie(k).path)
   TmpOpts.Specie(k).Veg = False
   TmpOpts.Specie(k).CantSee = False
   TmpOpts.Specie(k).DisableMovementSysvars = False
@@ -3536,14 +3536,18 @@ Sub additem(Path As String)
   Line8.BorderColor = TmpOpts.Specie(k).color
   Line9.BorderColor = TmpOpts.Specie(k).color
   
+  CurrSpec = k
   SetDefaultMutationRates TmpOpts.Specie(k).Mutables
+  'Botsareus 12/11/2013 Do we have an .mrate file assoicated with this robot?
+  Dim mfname As String: mfname = TmpOpts.Specie(k).path & "\" & extractexactname(TmpOpts.Specie(k).Name) & ".mrate"
+  If dir(mfname) <> "" Then TmpOpts.Specie(k).Mutables = Load_mrates(mfname)
   
   TmpOpts.Specie(k).Mutables.Mutations = True
   TmpOpts.Specie(k).qty = 5
   TmpOpts.Specie(k).Stnrg = 3000
   TmpOpts.Specie(k).Native = True
   
-  AssignSkin k, Path
+  AssignSkin k, path
   ShowSkin k
   
 
@@ -3570,13 +3574,13 @@ Sub duplitem(b As Integer, a As Integer)
   TmpOpts.Specie(a).Native = TmpOpts.Specie(b).Native
 End Sub
 
-Private Sub ExtractComment(Path As String, k As Integer)
+Private Sub ExtractComment(path As String, k As Integer)
   On Error GoTo fine
   Dim commend As Boolean
   Dim a As String
-  Path = stringops.respath(Path)
+  path = stringops.respath(path)
   TmpOpts.Specie(k).Comment = ""
-  Open Path For Input As 1
+  Open path For Input As 1
     While Not EOF(1) And Not commend
       Line Input #1, a
       'Debug.Print a
@@ -3653,7 +3657,7 @@ End Sub
 '  Next i
 'End Sub
 
-Sub AssignSkin(k As Integer, Path As String) 'The new skin engine requires path
+Sub AssignSkin(k As Integer, path As String) 'The new skin engine requires path
 'Botsareus 4/27/2013 The new skin engine
 
 
@@ -3684,7 +3688,7 @@ newR = 0
 nextR = 0
 
   If MaxRobs = 0 Then ReDim rob(0)
-  If LoadDNA(Path, 0) Then
+  If LoadDNA(path, 0) Then
 
     Randomize 0
     
@@ -3771,7 +3775,7 @@ Public Sub datatolist() 'datatolist
   
   For i = 0 To TmpOpts.SpeciesNum - 1
       SpecList.additem (TmpOpts.Specie(i).Name)
-      ExtractComment TmpOpts.Specie(i).Path + "\" + TmpOpts.Specie(i).Name, i
+      ExtractComment TmpOpts.Specie(i).path + "\" + TmpOpts.Specie(i).Name, i
   Next i
    
    
@@ -3898,7 +3902,7 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
       b = Rnd * 255
     Case "Custom"
       col = TmpOpts.Specie(k).color
-      MakeColor col, respath(TmpOpts.Specie(k).Path) + "\" + TmpOpts.Specie(k).Name
+      MakeColor col, respath(TmpOpts.Specie(k).path) + "\" + TmpOpts.Specie(k).Name
       If ColorForm.SelectColor Then
         TmpOpts.Specie(k).color = ColorForm.color
       Else
@@ -3916,10 +3920,10 @@ bypass:
   Line8.BorderColor = TmpOpts.Specie(k).color
   Line9.BorderColor = TmpOpts.Specie(k).color
 End Sub
-Private Sub MakeColor(col As Long, Path As String)
+Private Sub MakeColor(col As Long, path As String)
   ColorForm.color = col
   ColorForm.SelectColor = False
-  ColorForm.Path = Path
+  ColorForm.path = path
   ColorForm.Show vbModal
 End Sub
 
@@ -5497,12 +5501,12 @@ Private Sub SaveSettings_Click() 'savesettings
 fine:
 End Sub
 
-Public Sub savesett(Path As String)
+Public Sub savesett(path As String)
 On Error GoTo fine
   Dim t As Integer
   Dim k As Integer
   Dim numSpecies As Integer
-  Open Path For Output As #1
+  Open path For Output As #1
   
   'EricL 4/13/2006 using this for version information
   '-2 is pre 2.42.2 versions
@@ -5533,7 +5537,7 @@ On Error GoTo fine
     Write #1, 0
     
     Write #1, TmpOpts.Specie(t).Mutables.mutarray(0)
-    Write #1, TmpOpts.Specie(t).Path
+    Write #1, TmpOpts.Specie(t).path
     Write #1, TmpOpts.Specie(t).qty
     Write #1, TmpOpts.Specie(t).Name
     Write #1, TmpOpts.Specie(t).Veg
@@ -5709,7 +5713,7 @@ fine:
   MsgBox ("Unable to save settings: some error occurred")
 End Sub
 
-Public Sub ReadSett(Path As String)
+Public Sub ReadSett(path As String)
 On Error GoTo aiuto
   Dim t As Integer
   Dim col As Single
@@ -5725,15 +5729,15 @@ On Error GoTo aiuto
 
 carica:
   On Error GoTo aiuto
-  Open Path For Input As #1
+  Open path For Input As #1
   Input #1, maxs 'we can actually use this for version info
   
   'EricL 4/13/2006 Check for older settings files.  2.42.1 fixed bugs that introduced incomptabilities...
   If maxs <> -1 Then
-    If Right(Path, 12) = "lastexit.set" Then
+    If Right(path, 12) = "lastexit.set" Then
       MsgBox ("The settings from your last exit are incomptable with this version.  Last exit settings not loaded.  When you exit the program, a new lastexit settings file will be created automatically.")
     Else
-      If Right(Path, 11) = "default.set" Then
+      If Right(path, 11) = "default.set" Then
         MsgBox ("The default settings file is incomptable with this version.  You can save your settings to default.set to create a new one.  Settings not loaded.")
       Else
         MsgBox ("The settings file is incomptable with this version.  Settings not loaded.")
@@ -5745,10 +5749,10 @@ carica:
   End If
   Close 1
   'EricL 3/21/2006 Added following three lines to work around problem with default settings file
-  If (TmpOpts.MaxEnergy = 500000) And (Right(Path, 11) = "default.set") Then
+  If (TmpOpts.MaxEnergy = 500000) And (Right(path, 11) = "default.set") Then
     TmpOpts.MaxEnergy = 50
   End If
-  lastsettings = Path
+  lastsettings = path
   Exit Sub
 aiuto:
   Close 1
@@ -5765,17 +5769,17 @@ aiuto:
       MsgBox ("Darwinbots cannot continue.  Program will exit.")
       End 'Botsareus 7/12/2012 force DB to exit
     End If
-  ElseIf Err.Number = 53 And Right(Path, 12) = "lastexit.set" Then
+  ElseIf Err.Number = 53 And Right(path, 12) = "lastexit.set" Then
        MsgBox ("Cannot find the settings file from your last exit.  " + vbCrLf + _
                "Using the internal default settings. " + vbCrLf + vbCrLf + _
                "If this is a new install, this is normal.")
       InfoForm.Show 'Botsareus 3/24/2012 Show the info form if no settings where found
   Else
     MsgBox MBcannotfindI, , MBwarning
-    CommonDialog1.FileName = Path
+    CommonDialog1.FileName = path
     CommonDialog1.ShowOpen
-    Path = CommonDialog1.FileName
-    If Path <> "" Then GoTo carica
+    path = CommonDialog1.FileName
+    If path <> "" Then GoTo carica
   End If
   
 End Sub
@@ -5805,7 +5809,7 @@ Public Sub ReadSettFromFile()
     Input #1, k
     
     Input #1, TmpOpts.Specie(t).Mutables.mutarray(0)
-    Input #1, TmpOpts.Specie(t).Path
+    Input #1, TmpOpts.Specie(t).path
     Input #1, TmpOpts.Specie(t).qty
     Input #1, TmpOpts.Specie(t).Name
     Input #1, TmpOpts.Specie(t).Veg
