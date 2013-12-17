@@ -952,7 +952,7 @@ Private Sub SetupP2()
   Slider1Text(0).Visible = False
   Slider1Text(1).Visible = False
 
-  Text2.text = "NOTE: THE LENGTH OF THIS MUTATION IS ALWAYS 1" + vbCrLf + _
+  Text2.text = "Note: The length of this mutation is always 1, but the rate is multiplied by the Gaussen Length of Point Mutation." + vbCrLf + _
   "Similar to point mutations, but always changes to an existing sysvar, *sysvar, or special values if followed by .shoot store or .focuseye store." + _
   "The algorithm is also designed to introduce more stores." + _
   " Should allow for evolving a zero-bot the same as a random-bot."
