@@ -272,6 +272,7 @@ Private Type robot
    
   PointMutCycle As Long     ' Next cycle to point mutate (expressed in cycles since birth.  ie: age)
   PointMutBP As Long        ' the base pair to mutate
+  Point2MutCycle As Long    ' Botsareus 12/10/2013 The new point2 cycle
   
   condnum As Integer        ' number of conditions (used for cost calculations)
   console As Consoleform    ' console object associated to the robot
@@ -968,7 +969,7 @@ Public Function genelength(n As Integer, P As Integer) As Long
 End Function
 
 Private Sub BotDNAManipulation(n As Integer)
-Dim Length As Long
+Dim length As Long
 
   With rob(n)
   
@@ -983,10 +984,10 @@ Dim Length As Long
    
     'make the virus
     If MakeVirus(n, .mem(mkvirus)) Then
-       Length = genelength(n, .mem(mkvirus)) * 2
-       rob(n).nrg = rob(n).nrg - Length / 2 * SimOpts.Costs(DNACOPYCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 7/20/2013 Creating a virus costs a copy cost
-       If Length < 32000 Then
-         .Vtimer = Length
+       length = genelength(n, .mem(mkvirus)) * 2
+       rob(n).nrg = rob(n).nrg - length / 2 * SimOpts.Costs(DNACOPYCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 7/20/2013 Creating a virus costs a copy cost
+       If length < 32000 Then
+         .Vtimer = length
        Else
          .Vtimer = 32000
        End If
@@ -1300,7 +1301,7 @@ Private Sub ManageReproduction(n As Integer)
 End Sub
 
 Private Sub FireTies(n As Integer)
-  Dim Length As Single, maxLength As Single
+  Dim length As Single, maxLength As Single
   Dim resetlastopp As Boolean 'Botsareus 8/26/2012 only if lastopp is zero, this will reset it back to zero
   
   With rob(n)
@@ -1325,10 +1326,10 @@ Private Sub FireTies(n As Integer)
     If .lastopp > 0 And Not SimOpts.DisableTies And (.lastopptype = 0) Then
       
       '2 robot lengths
-      Length = VectorMagnitude(VectorSub(rob(.lastopp).pos, .pos))
+      length = VectorMagnitude(VectorSub(rob(.lastopp).pos, .pos))
       maxLength = RobSize * 4# + rob(n).radius + rob(rob(n).lastopp).radius
       
-      If Length <= maxLength Then
+      If length <= maxLength Then
         'maketie auto deletes existing ties for you
         maketie n, rob(n).lastopp, rob(n).radius + rob(rob(n).lastopp).radius + RobSize * 2, -20, rob(n).mem(mtie)
       End If
@@ -2134,25 +2135,64 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       For i = 0 To 14
         rob(n).epimem(i) = 0
       Next i
-            
-      If rob(n).mem(mrepro) > 0 Then
-        Dim temp As mutationprobs
-        
-        temp = rob(nuovo).Mutables
-        
-        rob(nuovo).Mutables.Mutations = True ' mutate even if mutations disabled for this bot
-        
-        For t = 0 To 20
-          rob(nuovo).Mutables.mutarray(t) = rob(nuovo).Mutables.mutarray(t) / 10
-          If rob(nuovo).Mutables.mutarray(t) = 0 Then rob(nuovo).Mutables.mutarray(t) = 1000
-        Next t
-        
-        Mutate nuovo, True
-        
-        rob(nuovo).Mutables = temp
+      
+      'Botsareus 12/17/2013 Delta2
+      If Delta2 Then
+        With rob(nuovo)
+            Dim MratesMax As Long
+            MratesMax = IIf(NormMut, CLng(.DnaLen) * CLng(valMaxNormMut), 2000000000)
+            Dim mrep As Byte
+            For mrep = 0 To (Int(3 * Rnd) + 1) * -(rob(n).mem(mrepro) > 0)   '2x to 4x
+                For t = 1 To 10
+                 If t = 9 Then GoTo skip 'ignore PM2 mutation here
+                 If Rnd < DeltaMainChance / 100 Then
+                  If DeltaMainExp <> 0 Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
+                  .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rnd * 2 - 1) * DeltaMainLn
+                  If .Mutables.mutarray(t) < 1 Then .Mutables.mutarray(t) = 1
+                  If .Mutables.mutarray(t) > MratesMax Then .Mutables.mutarray(t) = MratesMax
+                 End If
+                 If Rnd < DeltaDevChance / 100 Then
+                  If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
+                  .Mutables.StdDev(t) = .Mutables.StdDev(t) + (Rnd * 2 - 1) * DeltaDevLn
+                  If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
+                  .Mutables.Mean(t) = .Mutables.Mean(t) + (Rnd * 2 - 1) * DeltaDevLn
+                  'Max range is always 0 to 800
+                  If .Mutables.StdDev(t) < 0 Then .Mutables.StdDev(t) = 0
+                  If .Mutables.StdDev(t) > 200 Then .Mutables.StdDev(t) = 200
+                  If .Mutables.Mean(t) < 1 Then .Mutables.Mean(t) = 1
+                  If .Mutables.Mean(t) > 400 Then .Mutables.Mean(t) = 400
+                 End If
+skip:
+                Next
+                .Mutables.CopyErrorWhatToChange = .Mutables.CopyErrorWhatToChange + (Rnd * 2 - 1) * DeltaWTC
+                If .Mutables.CopyErrorWhatToChange < 0 Then .Mutables.CopyErrorWhatToChange = 0
+                If .Mutables.CopyErrorWhatToChange > 100 Then .Mutables.CopyErrorWhatToChange = 100
+                Mutate nuovo, True
+            Next
+        End With
       Else
-        'Mutate n, True 'mutate parent and child, note that these mutations are independant of each other.
-        Mutate nuovo, True
+      
+      
+        If rob(n).mem(mrepro) > 0 Then
+          Dim temp As mutationprobs
+          
+          temp = rob(nuovo).Mutables
+          
+          rob(nuovo).Mutables.Mutations = True ' mutate even if mutations disabled for this bot
+          
+          For t = 0 To 20
+            rob(nuovo).Mutables.mutarray(t) = rob(nuovo).Mutables.mutarray(t) / 10
+            If rob(nuovo).Mutables.mutarray(t) = 0 Then rob(nuovo).Mutables.mutarray(t) = 1000
+          Next t
+          
+          Mutate nuovo, True
+          
+          rob(nuovo).Mutables = temp
+        Else
+          'Mutate n, True 'mutate parent and child, note that these mutations are independant of each other.
+          Mutate nuovo, True
+        End If
+        
       End If
       
       makeoccurrlist nuovo
@@ -2425,8 +2465,39 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       Str(UBound(rob(female).spermDNA)) + " had offspring DNA len " + Str(rob(nuovo).DnaLen) + " during cycle " + Str(SimOpts.TotRunCycle) + _
       vbCrLf + rob(nuovo).LastMutDetail
             
-      ' Mutate the offspring
-      Mutate nuovo, True
+      If Delta2 Then
+        With rob(nuovo)
+            Dim MratesMax As Long
+            MratesMax = IIf(NormMut, CLng(.DnaLen) * CLng(valMaxNormMut), 2000000000)
+            For t = 1 To 10
+             If t = 9 Then GoTo skip 'ignore PM2 mutation here
+             If Rnd < DeltaMainChance / 100 Then
+              If DeltaMainExp <> 0 Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
+              .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rnd * 2 - 1) * DeltaMainLn
+              If .Mutables.mutarray(t) < 1 Then .Mutables.mutarray(t) = 1
+              If .Mutables.mutarray(t) > MratesMax Then .Mutables.mutarray(t) = MratesMax
+             End If
+             If Rnd < DeltaDevChance / 100 Then
+              If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
+              .Mutables.StdDev(t) = .Mutables.StdDev(t) + (Rnd * 2 - 1) * DeltaDevLn
+              If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
+              .Mutables.Mean(t) = .Mutables.Mean(t) + (Rnd * 2 - 1) * DeltaDevLn
+              'Max range is always 0 to 800
+              If .Mutables.StdDev(t) < 0 Then .Mutables.StdDev(t) = 0
+              If .Mutables.StdDev(t) > 200 Then .Mutables.StdDev(t) = 200
+              If .Mutables.Mean(t) < 1 Then .Mutables.Mean(t) = 1
+              If .Mutables.Mean(t) > 400 Then .Mutables.Mean(t) = 400
+             End If
+skip:
+            Next
+            .Mutables.CopyErrorWhatToChange = .Mutables.CopyErrorWhatToChange + (Rnd * 2 - 1) * DeltaWTC
+            If .Mutables.CopyErrorWhatToChange < 0 Then .Mutables.CopyErrorWhatToChange = 0
+            If .Mutables.CopyErrorWhatToChange > 100 Then .Mutables.CopyErrorWhatToChange = 100
+            Mutate nuovo, True
+        End With
+      Else
+        Mutate nuovo, True
+      End If
         
       makeoccurrlist nuovo
       rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())

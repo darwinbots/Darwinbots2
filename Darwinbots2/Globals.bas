@@ -17,6 +17,21 @@ Public startnovid As Boolean
 Public epireset As Boolean
 Public epiresetemp As Single
 Public epiresetOP As Integer
+Public sunbelt As Boolean
+'Botsareus 12/16/2013 Delta2 on mutations tab
+Public Delta2 As Boolean
+Public DeltaMainExp As Single
+Public DeltaMainLn As Single
+Public DeltaDevExp As Single
+Public DeltaDevLn As Single
+Public DeltaPM As Integer
+Public DeltaWTC As Byte
+Public DeltaMainChance As Byte
+Public DeltaDevChance As Byte
+'Botsareus 12/16/2013 Normalize DNA length
+Public NormMut As Boolean
+Public valNormMut As Integer
+Public valMaxNormMut As Integer
 
 'some global settings change within simulation
 Public loadboylabldisp As Boolean

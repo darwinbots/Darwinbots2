@@ -76,7 +76,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As File
+  Dim robotFile As file
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -278,7 +278,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As File
+  Dim fileToDelete As file
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -647,7 +647,20 @@ UseOldColor = True
 'mutations tab
 epiresetemp = 1.3
 epiresetOP = 17
-
+'Delta2
+Delta2 = False
+DeltaMainExp = 1
+DeltaMainLn = 0
+DeltaDevExp = 7
+DeltaDevLn = 1
+DeltaPM = 3000
+DeltaWTC = 15
+DeltaMainChance = 100
+DeltaDevChance = 30
+'Normailize mutation rates
+NormMut = False
+valNormMut = 86
+valMaxNormMut = 1071
 Dim holdmaindir As String
 
 'see if maindir overwrite exisits
@@ -678,6 +691,22 @@ If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
       If Not EOF(1) Then Input #1, epireset
       If Not EOF(1) Then Input #1, epiresetemp
       If Not EOF(1) Then Input #1, epiresetOP
+      If Not EOF(1) Then Input #1, sunbelt
+      '
+      If Not EOF(1) Then Input #1, Delta2
+      If Not EOF(1) Then Input #1, DeltaMainExp
+      If Not EOF(1) Then Input #1, DeltaMainLn
+      If Not EOF(1) Then Input #1, DeltaDevExp
+      If Not EOF(1) Then Input #1, DeltaDevLn
+      If Not EOF(1) Then Input #1, DeltaPM
+      '
+      If Not EOF(1) Then Input #1, NormMut
+      If Not EOF(1) Then Input #1, valNormMut
+      If Not EOF(1) Then Input #1, valMaxNormMut
+      '
+      If Not EOF(1) Then Input #1, DeltaWTC
+      If Not EOF(1) Then Input #1, DeltaMainChance
+      If Not EOF(1) Then Input #1, DeltaDevChance
     Close #1
 End If
 
@@ -1727,6 +1756,10 @@ Sub salvarob(n As Integer, path As String, Optional nombox As Boolean)
   Print #1, ""
   Print #1, "'#hash: " + hashed
   Close #1
+  
+  'Botsareus 12/11/2013 Save mrates file
+  Save_mrates rob(n).Mutables, extractpath(path) & "\" & extractexactname(extractname(path)) & ".mrate"
+  
   If Not nombox Then
     If MsgBox("Do you want to change robot's name to " + extractname(path) + " ?", vbYesNo, "Robot DNA saved") = vbYes Then
       rob(n).FName = extractname(path)
@@ -1748,7 +1781,7 @@ Public Function Load_League_File(Leaguename As String) As Integer
   Dim currpos As Long
   Dim robotname As String
   Dim robotcomment As String
-  Dim Length As Long
+  Dim length As Long
  
   FileName = MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt"
   
@@ -1812,10 +1845,10 @@ endloop:
     FileName = MDIForm1.MainDir + "\Leagues\" + Leaguename + "league\" 'directory of league robots
     Line = Line + "'"
     
-    Length = InStr(Line, "'") - 1
-    If Right(Left(Line, Length), 1) = " " Then Length = Length - 1
-    robotname = Left(Line, Length)
-    robotcomment = Right(Line, Len(Line) - Length)
+    length = InStr(Line, "'") - 1
+    If Right(Left(Line, length), 1) = " " Then length = length - 1
+    robotname = Left(Line, length)
+    robotcomment = Right(Line, Len(Line) - length)
     robotcomment = Left(robotcomment, Len(robotcomment) - 1)
     robotname = Right(robotname, Len(robotname) - 4) 'takes everything besides teh "1 - " at start of line and " 'blah..." at end of line
     If robotname = "EMPTY" Or robotname = "" Then
@@ -1899,7 +1932,7 @@ Public Function Save_League_File(FName As String) As Integer
   Dim singlecharacter As String
   Dim currpos As Long
   Dim robotname As String
-  Dim Length As Long
+  Dim length As Long
   Dim loopdone As Boolean
   Dim originalleague As Boolean
  
@@ -2261,4 +2294,36 @@ Private Sub LoadShot(n As Integer, t As Long)
   End With
 End Sub
 
+'M U T A T I O N  F I L E Botsareus 12/11/2013
+
+'generate mrates file
+Sub Save_mrates(mut As mutationprobs, FName As String)
+Dim m As Byte
+    Open FName For Output As #1
+        With mut
+            Write #1, .PointWhatToChange
+            Write #1, .CopyErrorWhatToChange
+            For m = 0 To 10 'Need to change this if adding more mutation types (Trying to keep some backword compatability here)
+                Write #1, .mutarray(m)
+                Write #1, .Mean(m)
+                Write #1, .StdDev(m)
+            Next
+        End With
+    Close
+End Sub
+'load mrates file
+Public Function Load_mrates(FName As String) As mutationprobs
+Dim m As Byte
+    Open FName For Input As #1
+        With Load_mrates
+            Input #1, .PointWhatToChange
+            Input #1, .CopyErrorWhatToChange
+            For m = 0 To 10 'Need to change this if adding more mutation types (needs to have eofs if more then 10 for backword compatability)
+                Input #1, .mutarray(m)
+                Input #1, .Mean(m)
+                Input #1, .StdDev(m)
+            Next
+        End With
+    Close
+End Function
 

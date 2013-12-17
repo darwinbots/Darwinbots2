@@ -65,11 +65,196 @@ Begin VB.Form frmGset
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "ffmEpiReset"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).ControlCount=   1
+      Tab(1).Control(1)=   "ffmSunMut"
+      Tab(1).Control(1).Enabled=   0   'False
+      Tab(1).ControlCount=   2
+      Begin VB.Frame ffmSunMut 
+         Caption         =   "Sunline Mutations"
+         Height          =   3735
+         Left            =   -74160
+         TabIndex        =   30
+         Top             =   1320
+         Width           =   9135
+         Begin MSComctlLib.Slider sldMain 
+            Height          =   285
+            Left            =   7080
+            TabIndex        =   50
+            ToolTipText     =   "Probability Delta2 Chance"
+            Top             =   960
+            Width           =   1935
+            _ExtentX        =   3413
+            _ExtentY        =   503
+            _Version        =   393216
+            Max             =   100
+            TickFrequency   =   10
+         End
+         Begin VB.TextBox txtWTC 
+            Height          =   285
+            Left            =   6960
+            TabIndex        =   48
+            Top             =   1920
+            Width           =   615
+         End
+         Begin VB.TextBox txtMxDnalen 
+            Height          =   285
+            Left            =   6240
+            TabIndex        =   46
+            Top             =   2760
+            Width           =   615
+         End
+         Begin VB.TextBox txtDnalen 
+            Height          =   285
+            Left            =   3600
+            TabIndex        =   44
+            Top             =   2760
+            Width           =   615
+         End
+         Begin VB.CheckBox chkNorm 
+            Caption         =   "Normalize default mutation rates and slowest possible rate based on DNA length"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   43
+            Top             =   2400
+            Width           =   6015
+         End
+         Begin VB.TextBox txtPMinter 
+            Height          =   285
+            Left            =   4320
+            TabIndex        =   42
+            Top             =   1920
+            Width           =   615
+         End
+         Begin VB.TextBox txtDevLn 
+            Height          =   285
+            Left            =   6435
+            TabIndex        =   40
+            Top             =   1440
+            Width           =   615
+         End
+         Begin VB.TextBox txtDevExp 
+            Height          =   285
+            Left            =   5280
+            TabIndex        =   38
+            Top             =   1440
+            Width           =   615
+         End
+         Begin VB.TextBox txtMainLn 
+            Height          =   285
+            Left            =   6240
+            TabIndex        =   37
+            Top             =   960
+            Width           =   615
+         End
+         Begin VB.TextBox txtMainExp 
+            Height          =   285
+            Left            =   4995
+            TabIndex        =   35
+            Top             =   960
+            Width           =   615
+         End
+         Begin VB.CheckBox chkDelta2 
+            Caption         =   "Enable Delta2 Mutations"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   34
+            Top             =   600
+            Width           =   2055
+         End
+         Begin VB.PictureBox picIcon 
+            AutoSize        =   -1  'True
+            ClipControls    =   0   'False
+            Height          =   540
+            Left            =   120
+            Picture         =   "frmGset.frx":0038
+            ScaleHeight     =   337.12
+            ScaleMode       =   0  'User
+            ScaleWidth      =   337.12
+            TabIndex        =   33
+            Top             =   3120
+            Width           =   540
+         End
+         Begin VB.CheckBox chkSunbelt 
+            Caption         =   "Enable Point2, CopyError2, Amplification, and Translocation Mutations"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   32
+            Top             =   300
+            Width           =   5295
+         End
+         Begin MSComctlLib.Slider sldDev 
+            Height          =   285
+            Left            =   7080
+            TabIndex        =   51
+            ToolTipText     =   "Mean/Stddev Delta2 Chance"
+            Top             =   1440
+            Width           =   1935
+            _ExtentX        =   3413
+            _ExtentY        =   503
+            _Version        =   393216
+            Max             =   100
+            TickFrequency   =   10
+         End
+         Begin VB.Label lblChance 
+            Caption         =   "Chance of mutation %"
+            Height          =   255
+            Left            =   7200
+            TabIndex        =   49
+            Top             =   720
+            Width           =   1575
+         End
+         Begin VB.Label lblWTC 
+            Caption         =   "Delta2 for what to change:    ±"
+            Height          =   495
+            Left            =   5760
+            TabIndex        =   47
+            Top             =   1800
+            Width           =   1095
+         End
+         Begin VB.Label lblDnalen 
+            Caption         =   "DNA length *    XXXX     Slowest rate DNA length * "
+            Height          =   255
+            Left            =   2520
+            TabIndex        =   45
+            Top             =   2760
+            Width           =   4455
+         End
+         Begin VB.Label lblPMDelta2 
+            Caption         =   "Delta2 cycle interval for Point mutations:"
+            Height          =   495
+            Left            =   2520
+            TabIndex        =   41
+            Top             =   1800
+            Width           =   1695
+         End
+         Begin VB.Label lblMmean 
+            Caption         =   "Mean/Stddev:    Exponential(10^) ± 1/   XXXX  ± Liner"
+            Height          =   375
+            Left            =   2520
+            TabIndex        =   39
+            Top             =   1440
+            Width           =   4335
+         End
+         Begin VB.Label lblMmain 
+            Caption         =   "Probablity:    Exponential(10^) ± 1/   XXXX    ± Liner"
+            Height          =   375
+            Left            =   2520
+            TabIndex        =   36
+            Top             =   960
+            Width           =   3975
+         End
+         Begin VB.Label lblExplMut 
+            Caption         =   $"frmGset.frx":0C7A
+            Height          =   495
+            Left            =   720
+            TabIndex        =   31
+            Top             =   3150
+            Width           =   8175
+         End
+      End
       Begin VB.Frame ffmEpiReset 
          Caption         =   "Epigenetic Reset"
          Height          =   735
-         Left            =   -74880
+         Left            =   -73440
          TabIndex        =   23
          Top             =   480
          Width           =   7575
@@ -87,7 +272,7 @@ Begin VB.Form frmGset
             Left            =   4920
             TabIndex        =   25
             Text            =   "1.3"
-            ToolTipText     =   $"frmGset.frx":0038
+            ToolTipText     =   $"frmGset.frx":0D36
             Top             =   240
             Width           =   615
          End
@@ -298,6 +483,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Option Explicit
 'Botsareus 3/15/2013 The global settings form
 
 Private Sub btnCancel_Click()
@@ -340,6 +526,19 @@ MsgBox "Global settings will take effect when you restart DarwinBots.", vbInform
       Write #1, chkEpiReset = 1
       Write #1, val(txtMEmp)
       Write #1, val(txtOP)
+      Write #1, chkSunbelt = 1
+      Write #1, chkDelta2 = 1
+      Write #1, val(txtMainExp)
+      Write #1, val(txtMainLn)
+      Write #1, val(txtDevExp)
+      Write #1, val(txtDevLn)
+      Write #1, val(txtPMinter)
+      Write #1, chkNorm = 1
+      Write #1, val(txtDnalen)
+      Write #1, val(txtMxDnalen)
+      Write #1, val(txtWTC)
+      Write #1, val(sldMain)
+      Write #1, val(sldDev)
     Close #1
 'unload
 Unload Me
@@ -352,9 +551,31 @@ FolderExists = myFSO.FolderExists(sFullPath)
 End Function
 
 
+Private Sub chkDelta2_Click()
+lblMmain.Visible = chkDelta2.value = 1
+lblMmean.Visible = chkDelta2.value = 1
+lblPMDelta2.Visible = chkDelta2.value = 1
+txtMainExp.Visible = chkDelta2.value = 1
+txtMainLn.Visible = chkDelta2.value = 1
+txtDevExp.Visible = chkDelta2.value = 1
+txtDevLn.Visible = chkDelta2.value = 1
+txtPMinter.Visible = chkDelta2.value = 1
+lblWTC.Visible = chkDelta2.value = 1
+txtWTC.Visible = chkDelta2.value = 1
+lblChance.Visible = chkDelta2.value = 1
+sldMain.Visible = chkDelta2.value = 1
+sldDev.Visible = chkDelta2.value = 1
+End Sub
+
 Private Sub chkEpiReset_Click()
 txtMEmp.Enabled = chkEpiReset.value = 1
 txtOP.Enabled = chkEpiReset.value = 1
+End Sub
+
+Private Sub chkNorm_Click()
+txtDnalen.Visible = chkNorm.value = 1
+lblDnalen.Visible = chkNorm.value = 1
+txtMxDnalen.Visible = chkNorm.value = 1
 End Sub
 
 Private Sub chkUseCD_Click()
@@ -365,7 +586,6 @@ Else
  txtCD.Enabled = False
 End If
 End Sub
-
 
 Private Sub Form_Load()
 'load all global settings into controls
@@ -397,6 +617,40 @@ txtMEmp = epiresetemp
 txtOP = epiresetOP
 txtMEmp.Enabled = chkEpiReset.value = 1
 txtOP.Enabled = chkEpiReset.value = 1
+'Eclipse mutations
+chkSunbelt.value = IIf(sunbelt, 1, 0)
+'Delta2
+chkDelta2.value = IIf(Delta2, 1, 0)
+txtMainExp = DeltaMainExp
+txtMainLn = DeltaMainLn
+txtDevExp = DeltaDevExp
+txtDevLn = DeltaDevLn
+txtPMinter = DeltaPM
+txtWTC = DeltaWTC
+sldMain = DeltaMainChance
+sldDev = DeltaDevChance
+'Norm Mut
+chkNorm = IIf(NormMut, 1, 0)
+txtDnalen = valNormMut
+txtMxDnalen = valMaxNormMut
+'Set values Delta2 and Norm mut
+lblMmain.Visible = chkDelta2.value = 1
+lblMmean.Visible = chkDelta2.value = 1
+lblPMDelta2.Visible = chkDelta2.value = 1
+txtMainExp.Visible = chkDelta2.value = 1
+txtMainLn.Visible = chkDelta2.value = 1
+txtDevExp.Visible = chkDelta2.value = 1
+txtDevLn.Visible = chkDelta2.value = 1
+txtPMinter.Visible = chkDelta2.value = 1
+lblWTC.Visible = chkDelta2.value = 1
+txtWTC.Visible = chkDelta2.value = 1
+lblChance.Visible = chkDelta2.value = 1
+sldMain.Visible = chkDelta2.value = 1
+sldDev.Visible = chkDelta2.value = 1
+'
+txtDnalen.Visible = chkNorm.value = 1
+lblDnalen.Visible = chkNorm.value = 1
+txtMxDnalen.Visible = chkNorm.value = 1
 End Sub
 
 Private Sub txtBodyFix_LostFocus()
@@ -405,14 +659,67 @@ txtBodyFix = Abs(val(txtBodyFix))
 If txtBodyFix > 32100 Then txtBodyFix = 32100
 End Sub
 
+Private Sub txtDevLn_LostFocus()
+txtDevLn = Abs(val(txtDevLn))
+If txtDevLn > 5000 Then txtDevLn = 3000
+End Sub
+
+Private Sub txtDnalen_LostFocus()
+'make sure the value is sane
+txtDnalen = Abs(val(txtDnalen))
+If txtDnalen < 1 Then txtDnalen = 1
+If txtDnalen > 2000 Then txtDnalen = 2000
+End Sub
+
+Private Sub txtMainExp_LostFocus()
+'make sure the value is sane
+txtMainExp = Abs(val(txtMainExp))
+If txtMainExp = 0 Then Exit Sub
+If txtMainExp < 0.4 Then txtMainExp = 0.4
+If txtMainExp > 25 Then txtMainExp = 25
+End Sub
+
+Private Sub txtDevExp_LostFocus()
+'make sure the value is sane
+txtDevExp = Abs(val(txtDevExp))
+If txtDevExp = 0 Then Exit Sub
+If txtDevExp < 0.4 Then txtDevExp = 0.4
+If txtDevExp > 25 Then txtDevExp = 25
+End Sub
+
+Private Sub txtMainLn_LostFocus()
+'make sure the value is sane
+txtMainLn = Round(Abs(val(txtMainLn)))
+If txtMainLn > 5000 Then txtMainLn = 3000
+End Sub
+
 Private Sub txtMEmp_LostFocus()
 'make sure the value is sane
 txtMEmp = Abs(val(txtMEmp))
 If txtMEmp > 5 Then txtMEmp = 5
 End Sub
 
+Private Sub txtMxDnalen_LostFocus()
+'make sure the value is sane
+txtMxDnalen = Abs(val(txtMxDnalen))
+If txtMxDnalen < 1 Then txtMxDnalen = 1
+If txtMxDnalen > 32000 Then txtMxDnalen = 32000
+End Sub
+
 Private Sub txtOP_LostFocus()
 'make sure the value is sane
 txtOP = Abs(val(txtOP))
 If txtOP > 32000 Then txtOP = 32000
+End Sub
+
+Private Sub txtPMinter_LostFocus()
+'make sure the value is sane
+txtPMinter = Round(Abs(val(txtPMinter)))
+If txtPMinter > 32000 Then txtPMinter = 32000
+End Sub
+
+Private Sub txtWTC_Change()
+'make sure the value is sane
+txtWTC = Abs(val(txtWTC))
+If txtWTC > 100 Then txtWTC = 100
 End Sub

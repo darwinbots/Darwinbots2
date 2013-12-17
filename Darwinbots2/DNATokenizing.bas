@@ -620,7 +620,7 @@ Private Function StoresDetok(n As Integer) As String
     Case 11
       StoresDetok = "sgnstore"
     Case 12
-      StoresDetok = "abstore"
+      StoresDetok = "absstore"
     Case 13
       StoresDetok = "sqrstore"
     Case 14

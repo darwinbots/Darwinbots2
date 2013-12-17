@@ -32,6 +32,13 @@ Function extractname(path As String) As String
   End If
 End Function
 
+Function extractexactname(name As String) As String
+'Botsareus 12/11/2013 Extracts the name portion of fname
+Dim sp() As String
+sp = Split(name, ".")
+extractexactname = sp(0)
+End Function
+
 Function relpath(path As String) As String
   If path Like MDIForm1.MainDir + "*" Then
     path = "&#" + Right(path, Len(path) - Len(MDIForm1.MainDir))

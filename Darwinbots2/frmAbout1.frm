@@ -72,15 +72,6 @@ Begin VB.Form DNA_Help
       Top             =   6840
       Width           =   1740
    End
-   Begin VB.Line Line1 
-      BorderColor     =   &H00808080&
-      BorderStyle     =   6  'Inside Solid
-      Index           =   1
-      X1              =   84.515
-      X2              =   8451.465
-      Y1              =   2070.654
-      Y2              =   2070.654
-   End
    Begin VB.Label lblTitle 
       Caption         =   "Application Title"
       ForeColor       =   &H00000000&
@@ -649,7 +640,7 @@ Private Sub Form_Load() ''Botsareus 8/7/2012 mod for new version
     Help.text = Help.text + vbTab + "Syntax." + vbTab + "(55 4 divstore) will devide by a value of 55 in memory location 4 (.aimdx)" + vbCrLf
     Help.text = Help.text + "" + vbCrLf
     
-    Help.text = Help.text + "Ceilstore" + vbTab + "-----" + vbTab + "Works like ceil but the second variable passed is a memory location and ceil is preformed on location." + vbCrLf
+    Help.text = Help.text + "ceilstore" + vbTab + "-----" + vbTab + "Works like ceil but the second variable passed is a memory location and ceil is preformed on location." + vbCrLf
     Help.text = Help.text + vbTab + "Syntax." + vbTab + "(55 4 ceilstore) If memory location 4 has a value greater then 55 then memory 4 will be 55" + vbCrLf
     Help.text = Help.text + "" + vbCrLf
     
