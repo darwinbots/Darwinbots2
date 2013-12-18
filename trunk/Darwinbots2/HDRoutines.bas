@@ -1242,7 +1242,7 @@ End Sub
 Private Sub LoadRobotBody(n As Integer, r As Integer)
 'robot r
 'file #n,
-  Dim t As Integer, k As Integer, ind As Integer, Fe As Byte, L1 As Long
+  Dim t As Integer, k As Integer, ind As Integer, Fe As Byte, L1 As Long, inttmp As Integer
   Dim MessedUpMutations As Boolean
   
   MessedUpMutations = False
@@ -1305,7 +1305,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
         
         
     'EricL Set reasonable default values to protect against corrupted sims that don't read these values
-    SetDefaultMutationRates .Mutables
+    SetDefaultMutationRates .Mutables, True
     
     For t = 0 To 20
       Get #n, , .Mutables.mutarray(t)
@@ -1313,8 +1313,10 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     
     ' informative
     Get #n, , .SonNumber
-    Get #n, , .Mutations
-    Get #n, , .LastMut
+    Get #n, , inttmp
+    .Mutations = inttmp
+    Get #n, , inttmp
+    .LastMut = inttmp
     Get #n, , .parent
     Get #n, , .age
     Get #n, , .BirthCycle
@@ -1614,8 +1616,8 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     
     ' informative
     Put #n, , .SonNumber
-    Put #n, , .Mutations
-    Put #n, , .LastMut
+    Put #n, , sint(.Mutations)
+    Put #n, , sint(.LastMut)
     Put #n, , .parent
     Put #n, , .age
     Put #n, , .BirthCycle
@@ -1781,7 +1783,7 @@ Public Function Load_League_File(Leaguename As String) As Integer
   Dim currpos As Long
   Dim robotname As String
   Dim robotcomment As String
-  Dim length As Long
+  Dim Length As Long
  
   FileName = MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt"
   
@@ -1845,10 +1847,10 @@ endloop:
     FileName = MDIForm1.MainDir + "\Leagues\" + Leaguename + "league\" 'directory of league robots
     Line = Line + "'"
     
-    length = InStr(Line, "'") - 1
-    If Right(Left(Line, length), 1) = " " Then length = length - 1
-    robotname = Left(Line, length)
-    robotcomment = Right(Line, Len(Line) - length)
+    Length = InStr(Line, "'") - 1
+    If Right(Left(Line, Length), 1) = " " Then Length = Length - 1
+    robotname = Left(Line, Length)
+    robotcomment = Right(Line, Len(Line) - Length)
     robotcomment = Left(robotcomment, Len(robotcomment) - 1)
     robotname = Right(robotname, Len(robotname) - 4) 'takes everything besides teh "1 - " at start of line and " 'blah..." at end of line
     If robotname = "EMPTY" Or robotname = "" Then
@@ -1932,7 +1934,7 @@ Public Function Save_League_File(FName As String) As Integer
   Dim singlecharacter As String
   Dim currpos As Long
   Dim robotname As String
-  Dim length As Long
+  Dim Length As Long
   Dim loopdone As Boolean
   Dim originalleague As Boolean
  
@@ -2309,7 +2311,7 @@ Dim m As Byte
                 Write #1, .StdDev(m)
             Next
         End With
-    Close
+    Close #1
 End Sub
 'load mrates file
 Public Function Load_mrates(FName As String) As mutationprobs
@@ -2324,6 +2326,12 @@ Dim m As Byte
                 Input #1, .StdDev(m)
             Next
         End With
-    Close
+    Close #1
 End Function
 
+'D A T A C O N V E R S I O N S Botsareus 12/18/2013
+
+Private Function sint(ByVal lval As Long) As Integer
+lval = lval Mod 32000
+sint = lval
+End Function

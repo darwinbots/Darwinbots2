@@ -728,8 +728,8 @@ Sub Form_Load()
   MemoryStateCheck.value = 0
 End Sub
 
-Sub infoupdate(n As Integer, nrg As Single, par As Long, mut As Integer, age As Long, _
-                son As Integer, pmut As Single, FName As String, gn As Integer, mo As Integer, _
+Sub infoupdate(n As Integer, nrg As Single, par As Long, mut As Long, age As Long, _
+                son As Integer, pmut As Single, FName As String, gn As Integer, mo As Long, _
                 gennum As Integer, DnaLen As Integer, lastown As String, Waste As Single, body As Single, _
                 mass As Single, venom As Single, shell As Single, Slime As Single, ChlrVal As Single) 'Botsareus 8/25/2013 Mod to display chloroplast info.
   robnum.Caption = Str$(n)

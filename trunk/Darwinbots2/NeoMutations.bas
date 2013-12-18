@@ -140,10 +140,7 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False) 'Bot
       If .Mutables.mutarray(P2UP) > 0 And sunbelt Then PointMutation2 robn
       
       'special case update epigenetic reset
-      If CLng(.LastMut) - Delta > 0 And epireset Then
-        .MutEpiReset = .MutEpiReset + (CLng(.LastMut) - Delta) ^ epiresetemp
-        DoEvents
-      End If
+      If CLng(.LastMut) - Delta > 0 And epireset Then .MutEpiReset = .MutEpiReset + (CLng(.LastMut) - Delta) ^ epiresetemp
       
       'Delta2 point mutation change
       If Delta2 And DeltaPM > 0 Then
@@ -189,13 +186,8 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False) 'Bot
       If .Mutables.mutarray(MinorDeletionUP) > 0 Then MinorDeletion robn
     End If
     ismutating = False 'Botsareus 2/2/2013 Tells the parseor to ignore debugint and debugbool while the robot is mutating
-    
-
         
     Delta = CLng(.LastMut) - Delta 'Botsareus 9/4/2012 Moved delta check before overflow reset to fix an error where robot info is not being updated
-    
-    If .Mutations > 32000 Then .Mutations = 32000  'Botsareus 5/31/2012 Prevents mutations overflow
-    If .LastMut > 32000 Then .LastMut = 32000
   
     If (Delta > 0) Then  'The bot has mutated.
     
@@ -907,11 +899,11 @@ Public Sub DeleteSpecificGene(ByRef DNA() As block, k As Integer)
 getout:
 End Sub
 
-Public Sub SetDefaultMutationRates(ByRef changeme As mutationprobs)
+Public Sub SetDefaultMutationRates(ByRef changeme As mutationprobs, Optional skipNorm As Boolean = False)
 'Botsareus 12/17/2013 Figure out dna length
 Dim Length As Integer
 Dim path As String
-If NormMut Then
+If NormMut And Not skipNorm Then
     If optionsform.CurrSpec = 50 Then 'exsisting robot
         Length = rob(robfocus).DnaLen
     Else 'load dna length
@@ -927,7 +919,7 @@ End If
   With (changeme)
   
   For a = 0 To 20
-    .mutarray(a) = IIf(NormMut, Length * CLng(valNormMut), 5000)
+    .mutarray(a) = IIf(NormMut And Not skipNorm, Length * CLng(valNormMut), 5000)
     .Mean(a) = 1
     .StdDev(a) = 0
   Next a
