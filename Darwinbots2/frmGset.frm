@@ -42,11 +42,12 @@ Begin VB.Form frmGset
       _Version        =   393216
       Style           =   1
       Tabs            =   2
+      Tab             =   1
       TabHeight       =   520
       BackColor       =   12632256
       TabCaption(0)   =   "Main settings"
       TabPicture(0)   =   "frmGset.frx":0000
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "ffmUI"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "ffmCheatin"
@@ -62,7 +63,7 @@ Begin VB.Form frmGset
       Tab(0).ControlCount=   6
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
-      Tab(1).ControlEnabled=   0   'False
+      Tab(1).ControlEnabled=   -1  'True
       Tab(1).Control(0)=   "ffmEpiReset"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "ffmSunMut"
@@ -70,10 +71,10 @@ Begin VB.Form frmGset
       Tab(1).ControlCount=   2
       Begin VB.Frame ffmSunMut 
          Caption         =   "Sunline Mutations"
-         Height          =   3735
-         Left            =   -74160
+         Height          =   3775
+         Left            =   840
          TabIndex        =   30
-         Top             =   1320
+         Top             =   1280
          Width           =   9135
          Begin MSComctlLib.Slider sldMain 
             Height          =   285
@@ -244,19 +245,19 @@ Begin VB.Form frmGset
          End
          Begin VB.Label lblExplMut 
             Caption         =   $"frmGset.frx":0C7A
-            Height          =   495
+            Height          =   600
             Left            =   720
             TabIndex        =   31
-            Top             =   3150
+            Top             =   3100
             Width           =   8175
          End
       End
       Begin VB.Frame ffmEpiReset 
          Caption         =   "Epigenetic Reset"
          Height          =   735
-         Left            =   -73440
+         Left            =   1560
          TabIndex        =   23
-         Top             =   480
+         Top             =   460
          Width           =   7575
          Begin VB.TextBox txtOP 
             Height          =   375
@@ -272,7 +273,7 @@ Begin VB.Form frmGset
             Left            =   4920
             TabIndex        =   25
             Text            =   "1.3"
-            ToolTipText     =   $"frmGset.frx":0D36
+            ToolTipText     =   $"frmGset.frx":0D8C
             Top             =   240
             Width           =   615
          End
@@ -304,7 +305,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmFBSBO 
          Caption         =   "Find Best Settings base on:"
          Height          =   915
-         Left            =   4920
+         Left            =   -70080
          TabIndex        =   16
          Top             =   2280
          Width           =   5655
@@ -343,7 +344,7 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkSafeMode 
          Caption         =   "Use Safe Mode"
          Height          =   255
-         Left            =   6720
+         Left            =   -68280
          TabIndex        =   15
          Top             =   1920
          Width           =   1935
@@ -351,7 +352,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmMainDir 
          Caption         =   "Main Directory"
          Height          =   1215
-         Left            =   4920
+         Left            =   -70080
          TabIndex        =   12
          Top             =   480
          Width           =   5655
@@ -375,7 +376,7 @@ Begin VB.Form frmGset
       Begin VB.Frame Frame1 
          Caption         =   "Randomization"
          Height          =   1095
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   9
          Top             =   3840
          Width           =   4695
@@ -399,7 +400,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmCheatin 
          Caption         =   "Cheating Prevention"
          Height          =   1575
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   5
          Top             =   2160
          Width           =   4695
@@ -431,7 +432,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmUI 
          Caption         =   "UI Settings"
          Height          =   1575
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   3
          Top             =   480
          Width           =   4695

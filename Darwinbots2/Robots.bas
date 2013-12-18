@@ -280,10 +280,10 @@ Private Type robot
   ' informative
   SonNumber As Integer      ' number of sons
   
-  Mutations As Integer      ' total mutations
+  Mutations As Long      ' total mutations
   GenMut As Single          ' figure out how many mutations before the next genetic test
   OldGD As Single           ' our old genetic distance
-  LastMut As Integer        ' last mutations
+  LastMut As Long        ' last mutations
   MutEpiReset As Double     ' how many mutations until epigenetic reset
   
   parent As Long            ' parent absolute number
@@ -969,7 +969,7 @@ Public Function genelength(n As Integer, P As Integer) As Long
 End Function
 
 Private Sub BotDNAManipulation(n As Integer)
-Dim length As Long
+Dim Length As Long
 
   With rob(n)
   
@@ -984,10 +984,10 @@ Dim length As Long
    
     'make the virus
     If MakeVirus(n, .mem(mkvirus)) Then
-       length = genelength(n, .mem(mkvirus)) * 2
-       rob(n).nrg = rob(n).nrg - length / 2 * SimOpts.Costs(DNACOPYCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 7/20/2013 Creating a virus costs a copy cost
-       If length < 32000 Then
-         .Vtimer = length
+       Length = genelength(n, .mem(mkvirus)) * 2
+       rob(n).nrg = rob(n).nrg - Length / 2 * SimOpts.Costs(DNACOPYCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 7/20/2013 Creating a virus costs a copy cost
+       If Length < 32000 Then
+         .Vtimer = Length
        Else
          .Vtimer = 32000
        End If
@@ -1301,7 +1301,7 @@ Private Sub ManageReproduction(n As Integer)
 End Sub
 
 Private Sub FireTies(n As Integer)
-  Dim length As Single, maxLength As Single
+  Dim Length As Single, maxLength As Single
   Dim resetlastopp As Boolean 'Botsareus 8/26/2012 only if lastopp is zero, this will reset it back to zero
   
   With rob(n)
@@ -1326,10 +1326,10 @@ Private Sub FireTies(n As Integer)
     If .lastopp > 0 And Not SimOpts.DisableTies And (.lastopptype = 0) Then
       
       '2 robot lengths
-      length = VectorMagnitude(VectorSub(rob(.lastopp).pos, .pos))
+      Length = VectorMagnitude(VectorSub(rob(.lastopp).pos, .pos))
       maxLength = RobSize * 4# + rob(n).radius + rob(rob(n).lastopp).radius
       
-      If length <= maxLength Then
+      If Length <= maxLength Then
         'maketie auto deletes existing ties for you
         maketie n, rob(n).lastopp, rob(n).radius + rob(rob(n).lastopp).radius + RobSize * 2, -20, rob(n).mem(mtie)
       End If
