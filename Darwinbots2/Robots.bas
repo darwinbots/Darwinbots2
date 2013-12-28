@@ -280,10 +280,10 @@ Private Type robot
   ' informative
   SonNumber As Integer      ' number of sons
   
-  Mutations As Long      ' total mutations
+  Mutations As Long         ' total mutations
   GenMut As Single          ' figure out how many mutations before the next genetic test
   OldGD As Single           ' our old genetic distance
-  LastMut As Long        ' last mutations
+  LastMut As Long           ' last mutations
   MutEpiReset As Double     ' how many mutations until epigenetic reset
   
   parent As Long            ' parent absolute number

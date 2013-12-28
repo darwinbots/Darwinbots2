@@ -178,7 +178,7 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False) 'Bot
     Else
       If .Mutables.mutarray(CopyErrorUP) > 0 Then CopyError robn
       If .Mutables.mutarray(CE2UP) > 0 And sunbelt Then CopyError2 robn
-      If .Mutables.mutarray(InsertionUP) > 0 Then Insertion robn
+      If .Mutables.mutarray(InsertionUP) > 0 Then Insertion robn, Timer
       If .Mutables.mutarray(ReversalUP) > 0 Then Reversal robn
       If .Mutables.mutarray(TranslocationUP) > 0 And sunbelt Then Translocation robn 'Botsareus Translocation and Amplification still bugy, but I want them.
       If .Mutables.mutarray(AmplificationUP) > 0 And sunbelt Then Amplification robn, Timer 'We pass timer to amplification to terminate an endless loop
@@ -188,6 +188,9 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False) 'Bot
     ismutating = False 'Botsareus 2/2/2013 Tells the parseor to ignore debugint and debugbool while the robot is mutating
         
     Delta = CLng(.LastMut) - Delta 'Botsareus 9/4/2012 Moved delta check before overflow reset to fix an error where robot info is not being updated
+  
+    If .Mutations > 32000 Then .Mutations = 32000  'Botsareus 5/31/2012 Prevents mutations overflow
+    If .LastMut > 32000 Then .LastMut = 32000
   
     If (Delta > 0) Then  'The bot has mutated.
     
@@ -233,6 +236,7 @@ On Error GoTo getout:
       Length = Length \ 2
       If t - Length < 1 Then GoTo skip
       If t + Length > .DnaLen - 1 Then GoTo skip
+      If UBound(rob(robn).DNA) + CLng(Length) > 32000 Then GoTo skip
       
       If Length > 0 Then
       
@@ -710,7 +714,7 @@ getout:
   End With
 End Sub
 
-Private Sub Insertion(robn As Integer)
+Private Sub Insertion(robn As Integer, timee As Long)
   Dim location As Integer
   Dim Length As Integer
   Dim accum As Long
@@ -719,10 +723,14 @@ Private Sub Insertion(robn As Integer)
   With rob(robn)
   For t = 1 To (.DnaLen - 1)
     If Rnd < 1 / (.Mutables.mutarray(InsertionUP) / SimOpts.MutCurrMult) Then
+     If Timer - 4 > timee Then Exit Sub 'Botsareus 12/21/2013 safety exit
       If .Mutables.Mean(InsertionUP) = 0 Then .Mutables.Mean(InsertionUP) = 1
       Do
         Length = Gauss(.Mutables.StdDev(InsertionUP), .Mutables.Mean(InsertionUP))
       Loop While Length <= 0
+      
+      If CLng(rob(robn).DnaLen) + CLng(Length) > 32000 Then Exit Sub
+      
       
       MakeSpace .DNA(), t + accum, Length, .DnaLen
       rob(robn).DnaLen = rob(robn).DnaLen + Length
@@ -909,6 +917,8 @@ If NormMut And Not skipNorm Then
     Else 'load dna length
         If MaxRobs = 0 Then ReDim rob(0)
         path = TmpOpts.Specie(optionsform.CurrSpec).path & "\" & TmpOpts.Specie(optionsform.CurrSpec).Name
+        path = Replace(path, "&#", MDIForm1.MainDir)
+        If dir(path) = "" Then path = MDIForm1.MainDir & "\Robots\" & TmpOpts.Specie(optionsform.CurrSpec).Name
         If LoadDNA(path, 0) Then
             Length = DnaLen(rob(0).DNA)
         End If

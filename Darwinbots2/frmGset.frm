@@ -42,12 +42,11 @@ Begin VB.Form frmGset
       _Version        =   393216
       Style           =   1
       Tabs            =   2
-      Tab             =   1
       TabHeight       =   520
       BackColor       =   12632256
       TabCaption(0)   =   "Main settings"
       TabPicture(0)   =   "frmGset.frx":0000
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "ffmUI"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "ffmCheatin"
@@ -63,7 +62,7 @@ Begin VB.Form frmGset
       Tab(0).ControlCount=   6
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "ffmEpiReset"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "ffmSunMut"
@@ -72,7 +71,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmSunMut 
          Caption         =   "Sunline Mutations"
          Height          =   3775
-         Left            =   840
+         Left            =   -74160
          TabIndex        =   30
          Top             =   1280
          Width           =   9135
@@ -255,7 +254,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmEpiReset 
          Caption         =   "Epigenetic Reset"
          Height          =   735
-         Left            =   1560
+         Left            =   -73440
          TabIndex        =   23
          Top             =   460
          Width           =   7575
@@ -305,7 +304,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmFBSBO 
          Caption         =   "Find Best Settings base on:"
          Height          =   915
-         Left            =   -70080
+         Left            =   4920
          TabIndex        =   16
          Top             =   2280
          Width           =   5655
@@ -344,7 +343,7 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkSafeMode 
          Caption         =   "Use Safe Mode"
          Height          =   255
-         Left            =   -68280
+         Left            =   6720
          TabIndex        =   15
          Top             =   1920
          Width           =   1935
@@ -352,7 +351,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmMainDir 
          Caption         =   "Main Directory"
          Height          =   1215
-         Left            =   -70080
+         Left            =   4920
          TabIndex        =   12
          Top             =   480
          Width           =   5655
@@ -376,7 +375,7 @@ Begin VB.Form frmGset
       Begin VB.Frame Frame1 
          Caption         =   "Randomization"
          Height          =   1095
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   9
          Top             =   3840
          Width           =   4695
@@ -400,7 +399,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmCheatin 
          Caption         =   "Cheating Prevention"
          Height          =   1575
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   5
          Top             =   2160
          Width           =   4695
@@ -432,7 +431,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmUI 
          Caption         =   "UI Settings"
          Height          =   1575
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   3
          Top             =   480
          Width           =   4695

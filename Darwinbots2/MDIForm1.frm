@@ -1104,7 +1104,8 @@ Top:
     End If
 tryagain:
     'This section create our new Internet Mode Teleporter
-    i = NewTeleporter(False, False, SimOpts.FieldHeight / 20, True)  'Botsareus 5/12/2012 Changed the startup size of teleporter for better robot flow
+    i = NewTeleporter(False, False, (SimOpts.FieldHeight ^ 0.5) * 10, True)  'Botsareus 5/12/2012 Changed the startup size of teleporter for better robot flow
+    
     
     Teleporters(i).vel = VectorSet(0, 0)
     Teleporters(i).teleportVeggies = True
