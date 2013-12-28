@@ -139,7 +139,16 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
    
   If SimOpts.Daytime Then daymod = 1 Else daymod = 0
   
-  ScreenArea = ((CDbl(SimOptModule.SimOpts.FieldWidth) * CDbl(SimOptModule.SimOpts.FieldHeight)) ^ 0.93) * 3  'Panda 8/14/2013 Figure out screen area 'Botsareus 9/29/2013 Area corrected to have less effect in larger simulations
+  ScreenArea = CDbl(SimOptModule.SimOpts.FieldWidth) * CDbl(SimOptModule.SimOpts.FieldHeight) * 0.85 'Botsareus 12/28/2013 Formula simplified, people are getting resonable frame rates with 3ghz cpus
+  
+  'Botsareus 12/28/2013 Subtract Obstacles
+  For t = 1 To numObstacles
+    If Obstacles.Obstacles(t).exist Then
+     ScreenArea = ScreenArea - Obstacles.Obstacles(t).Width * Obstacles.Obstacles(t).Height
+    End If
+  Next
+  
+  If ScreenArea < 1 Then ScreenArea = 1
 
   For t = 1 To MaxRobs 'Panda 8/14/2013 Figure out total robot area
     If rob(t).exist Then 'Botsareus 8/14/2013 We have to make sure the robot is alive first

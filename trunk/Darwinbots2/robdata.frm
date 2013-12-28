@@ -55,6 +55,7 @@ Begin VB.Form datirob
          _ExtentX        =   11562
          _ExtentY        =   12250
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"robdata.frx":0E42

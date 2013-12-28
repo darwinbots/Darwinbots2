@@ -1109,7 +1109,7 @@ Private Sub Timer2_Timer()
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As file
+          Dim fileToDelete As File
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1127,7 +1127,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As file
+          Dim fileToDelete2 As File
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -1904,13 +1904,14 @@ Private Sub SecTimer_Timer()
   SimOpts.CycSec = CSng(CSng(CSng(SimOpts.TotRunCycle) - CSng(TenSecondsAgo((SimOpts.TotRunTime + 1) Mod 10))) * 0.1)
   
   'Botsareus 6/5/2013 pipe code work in progress
-  If InternetMode.Visible = True Then
-    Dim Request() As Byte
-    Dim Response() As Byte
-    Request = "{ ""Population"":""" & CStr(TotalRobotsDisplayed) & """, ""CyclesPerSecond"":""" & CStr(SimOpts.CycSec) & ","" ""Size"":""" & CStr(SimOpts.FieldHeight * SimOpts.FieldWidth) & """, ""MutationRate"":""" & CStr(SimOpts.MutCurrMult) & """ }"
-    ReDim Response(0)
-    PipeRPC1.PipeCall Request, Response
-  End If
+  '12/28/2013 Disabled for possible causing overflows
+'  If InternetMode.Visible = True Then
+'    Dim Request() As Byte
+'    Dim Response() As Byte
+'    Request = "{ ""Population"":""" & CStr(TotalRobotsDisplayed) & """, ""CyclesPerSecond"":""" & CStr(SimOpts.CycSec) & ","" ""Size"":""" & CStr(SimOpts.FieldHeight * SimOpts.FieldWidth) & """, ""MutationRate"":""" & CStr(SimOpts.MutCurrMult) & """ }"
+'    ReDim Response(0)
+'    PipeRPC1.PipeCall Request, Response
+'  End If
   
   cyccaption SimOpts.CycSec
 
