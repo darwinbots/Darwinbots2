@@ -149,6 +149,7 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False) 'Bot
         MratesMax = IIf(NormMut, CLng(.DnaLen) * CLng(valMaxNormMut), 2000000000)
         Dim t As Byte
         For t = 0 To 9 Step 9 'Point and Point2
+        If .Mutables.mutarray(t) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
          If Rnd < DeltaMainChance / 100 Then
           If DeltaMainExp <> 0 Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
           .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rnd * 2 - 1) * DeltaMainLn
@@ -166,6 +167,7 @@ Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False) 'Bot
           If .Mutables.Mean(t) < 1 Then .Mutables.Mean(t) = 1
           If .Mutables.Mean(t) > 400 Then .Mutables.Mean(t) = 400
          End If
+skip:
         Next
         .Mutables.PointWhatToChange = .Mutables.PointWhatToChange + (Rnd * 2 - 1) * DeltaWTC
         If .Mutables.PointWhatToChange < 0 Then .Mutables.PointWhatToChange = 0

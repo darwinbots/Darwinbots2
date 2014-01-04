@@ -366,7 +366,7 @@ End Type
 Private iinc As Integer 'used simply to update the next match
 
 'si = start index, ei = end index, iinc = layer
-Private Sub FindLongestSequences(ByRef rob1() As block2, ByRef rob2() As block2, si1 As Integer, ei1 As Integer, si2 As Integer, ei2 As Integer)
+Private Sub FindLongestSequences(ByRef rob1() As block2, ByRef rob2() As block2, si1 As Integer, ei1 As Integer, si2 As Integer, ei2 As Integer, ByVal timee As Long)
 'Step1 What index range is smaller?
 Dim searchlen As Integer
 searchlen = ei1 - si1
@@ -374,12 +374,16 @@ If ei2 - si2 < searchlen Then searchlen = ei2 - si2
 'Step2 Recrusivelly sweep from largest to shortest searchlen until match is found
 Dim mylen As Integer
 For mylen = (searchlen + 1) To 1 Step -1
+
+If Timer - 40 > timee Then Exit Sub 'safe
+
     'Step2A The sweep itself
     Dim sweep1 As Integer
     Dim sweep2 As Integer
     
     For sweep1 = si1 To ei1 - (mylen - 1)
         For sweep2 = si2 To ei2 - (mylen - 1)
+        
             'the match algo
             Dim lenloop As Integer
             Dim allmatch As Boolean 'are all values the same for this sweep?
@@ -405,9 +409,9 @@ Next
 Exit Sub
 step3:
 'find lefthand subsequance
-If sweep1 > si1 And sweep2 > si2 Then FindLongestSequences rob1, rob2, si1, sweep1 - 1, si2, sweep2 - 1
+If sweep1 > si1 And sweep2 > si2 Then FindLongestSequences rob1, rob2, si1, sweep1 - 1, si2, sweep2 - 1, timee
 'find righthand subsequance
-If sweep1 + (mylen - 1) < ei1 And sweep2 + (mylen - 1) < ei2 Then FindLongestSequences rob1, rob2, sweep1 + mylen, ei1, sweep2 + mylen, ei2
+If sweep1 + (mylen - 1) < ei1 And sweep2 + (mylen - 1) < ei2 Then FindLongestSequences rob1, rob2, sweep1 + mylen, ei1, sweep2 + mylen, ei2, timee
 End Sub
 
 Private Function scanfromn(ByRef rob() As block2, ByVal n As Integer, ByRef layer As Integer)
@@ -1279,11 +1283,16 @@ Private Sub ManageReproduction(n As Integer)
       rob(n).mem(SYSFERTILIZED) = 0
     End If
   Else
-    If rob(n).fertilized = -1 Then  ' Safe now to delete the spermDNA
-      ReDim rob(n).spermDNA(0)
-      rob(n).spermDNAlen = 0
+    'new code here to block sex repro
+    If rob(n).fertilized < -10 Then
+        rob(n).fertilized = rob(n).fertilized + 1
+    Else
+        If rob(n).fertilized = -1 Then  ' Safe now to delete the spermDNA
+          ReDim rob(n).spermDNA(0)
+          rob(n).spermDNAlen = 0
+        End If
+        rob(n).fertilized = -2  'This is so we don't keep reDiming every time through
     End If
-    rob(n).fertilized = -2  'This is so we don't keep reDiming every time through
   End If
     
   'Asexual reproduction
@@ -2145,6 +2154,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
             For mrep = 0 To (Int(3 * Rnd) + 1) * -(rob(n).mem(mrepro) > 0)   '2x to 4x
                 For t = 1 To 10
                  If t = 9 Then GoTo skip 'ignore PM2 mutation here
+                 If .Mutables.mutarray(t) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
                  If Rnd < DeltaMainChance / 100 Then
                   If DeltaMainExp <> 0 Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
                   .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rnd * 2 - 1) * DeltaMainLn
@@ -2309,8 +2319,12 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       
       'Step2 Find longest sequance
       iinc = 0
-      FindLongestSequences dna1, dna2, 0, UBound(dna1), 0, UBound(dna2)
-      If GeneticDistance(dna1, dna2) > 0.6 Then Exit Function 'If robot is too unsimiler then do not reproduce
+      FindLongestSequences dna1, dna2, 0, UBound(dna1), 0, UBound(dna2), Timer
+      'If robot is too unsimiler then do not reproduce and block sex reproduction for 16 cycles
+      If GeneticDistance(dna1, dna2) > 0.6 Then
+        rob(female).fertilized = -26
+        Exit Function
+      End If
       'Step3 do crossover and optionaly save to file
     
       Dim Outdna() As block
@@ -2471,6 +2485,7 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
             MratesMax = IIf(NormMut, CLng(.DnaLen) * CLng(valMaxNormMut), 2000000000)
             For t = 1 To 10
              If t = 9 Then GoTo skip 'ignore PM2 mutation here
+             If .Mutables.mutarray(t) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
              If Rnd < DeltaMainChance / 100 Then
               If DeltaMainExp <> 0 Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
               .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rnd * 2 - 1) * DeltaMainLn
