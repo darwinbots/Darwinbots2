@@ -139,7 +139,7 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
    
   If SimOpts.Daytime Then daymod = 1 Else daymod = 0
   
-  ScreenArea = CDbl(SimOptModule.SimOpts.FieldWidth) * CDbl(SimOptModule.SimOpts.FieldHeight) * 0.85 'Botsareus 12/28/2013 Formula simplified, people are getting resonable frame rates with 3ghz cpus
+  ScreenArea = CDbl(SimOptModule.SimOpts.FieldWidth) * CDbl(SimOptModule.SimOpts.FieldHeight) 'Botsareus 12/28/2013 Formula simplified, people are getting resonable frame rates with 3ghz cpus
   
   'Botsareus 12/28/2013 Subtract Obstacles
   For t = 1 To numObstacles
@@ -147,6 +147,8 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
      ScreenArea = ScreenArea - Obstacles.Obstacles(t).Width * Obstacles.Obstacles(t).Height
     End If
   Next
+  
+  ScreenArea = ScreenArea * 0.85 'Botsareus 1/3/2014 multiply now (radial correction)
   
   If ScreenArea < 1 Then ScreenArea = 1
 
