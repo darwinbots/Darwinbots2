@@ -412,14 +412,10 @@ Private Sub BlackColorOption_Click()
   RandomColorOption.value = False
 End Sub
 
-Private Sub Cancel_Click()
-  Me.Hide
-End Sub
-
 Private Sub DriftRateSlider_Change()
   SimOpts.shapeDriftRate = DriftRateSlider.value
-  If leftCompactor > 0 Then Obstacles.Obstacles(leftCompactor).vel.X = (SimOpts.shapeDriftRate * 0.1) * Sgn(Obstacles.Obstacles(leftCompactor).vel.X)
-  If rightCompactor > 0 Then Obstacles.Obstacles(rightCompactor).vel.X = (SimOpts.shapeDriftRate * 0.1) * Sgn(Obstacles.Obstacles(rightCompactor).vel.X)
+  If leftCompactor > 0 Then Obstacles.Obstacles(leftCompactor).vel.x = (SimOpts.shapeDriftRate * 0.1) * Sgn(Obstacles.Obstacles(leftCompactor).vel.x)
+  If rightCompactor > 0 Then Obstacles.Obstacles(rightCompactor).vel.x = (SimOpts.shapeDriftRate * 0.1) * Sgn(Obstacles.Obstacles(rightCompactor).vel.x)
 End Sub
 
 Public Sub InitShapesDialog()
@@ -437,6 +433,17 @@ Public Sub InitShapesDialog()
   If SimOpts.shapesAreSeeThrough Then ShapesSeeThroughCheck.value = 1 Else ShapesSeeThroughCheck.value = 0
   If SimOpts.shapesAbsorbShots Then ShapesAbsorbShotsCheck.value = 1 Else ShapesAbsorbShotsCheck.value = 0
   If SimOpts.shapesAreVisable Then ShapesVisableCheck.value = 1 Else ShapesVisableCheck.value = 0
+End Sub
+
+Private Sub CopyToTmpOpts() 'Botsareus 1/5/2014 Make sure the shape settings are saved
+TmpOpts.makeAllShapesTransparent = SimOpts.makeAllShapesTransparent
+TmpOpts.makeAllShapesBlack = SimOpts.makeAllShapesBlack
+TmpOpts.shapeDriftRate = SimOpts.shapeDriftRate
+TmpOpts.allowHorizontalShapeDrift = SimOpts.allowHorizontalShapeDrift
+TmpOpts.allowVerticalShapeDrift = SimOpts.allowVerticalShapeDrift
+TmpOpts.shapesAreSeeThrough = SimOpts.shapesAreSeeThrough
+TmpOpts.shapesAbsorbShots = SimOpts.shapesAbsorbShots
+TmpOpts.shapesAreVisable = SimOpts.shapesAreVisable
 End Sub
 
 Private Sub HeightSlider_Change()
@@ -462,6 +469,7 @@ Private Sub MazeWidthSlider_Change()
 End Sub
 
 Private Sub OK_Click()
+  CopyToTmpOpts
   Me.Hide
 End Sub
 

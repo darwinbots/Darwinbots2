@@ -2145,6 +2145,7 @@ If dir(MDIForm1.MainDir + "\settings\lastexit.set") <> "" Then
         'moved savesett here
         If optionsform.Visible = False Then
           TmpOpts = SimOpts
+          optionsform.ObsRepop
         End If
         optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
         
@@ -2166,6 +2167,7 @@ Else
         'copyed savesett here
         If optionsform.Visible = False Then
           TmpOpts = SimOpts
+          optionsform.ObsRepop
         End If
         optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
   
