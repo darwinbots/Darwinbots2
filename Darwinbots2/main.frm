@@ -1109,7 +1109,7 @@ Private Sub Timer2_Timer()
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As File
+          Dim fileToDelete As file
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1127,7 +1127,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As File
+          Dim fileToDelete2 As file
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -1308,7 +1308,23 @@ MDIForm1.menuupdate
  ' MDIForm1.ZoomOut
  
   strSimStart = Replace(Replace(Now, ":", "-"), "/", "-")
- 
+  
+  'Botsareus 1/5/2014 The Obstacle Regeneration code
+  
+  Dim o As Integer
+  Dim oo As Integer
+For o = 1 To UBound(xObstacle)
+If xObstacle(o).exist Then
+With xObstacle(o)
+    oo = NewObstacle(.pos.x * SimOpts.FieldWidth, .pos.y * SimOpts.FieldHeight, .Width * SimOpts.FieldWidth, .Height * SimOpts.FieldHeight)
+    Obstacles.Obstacles(oo).color = xObstacle(o).color
+    Obstacles.Obstacles(oo).vel = xObstacle(o).vel
+End With
+End If
+Next
+  
+  'sim running
+
   main
   
 End Sub

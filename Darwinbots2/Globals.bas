@@ -42,6 +42,8 @@ Public simalreadyrunning As Boolean
 Public autosaved As Boolean
 
 
+'Botsareus 1/5/2014 Copy of Obstacle array
+Public xObstacle() As Obstacle
 
 ' var structure, to store the correspondance name<->value
 Public Type var

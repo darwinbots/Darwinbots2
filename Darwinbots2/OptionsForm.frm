@@ -114,36 +114,36 @@ Begin VB.Form optionsform
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Frame20"
-      Tab(2).Control(1)=   "Frame21"
+      Tab(2).Control(0)=   "Frame21"
+      Tab(2).Control(1)=   "Frame20"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Mutations"
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "Frame15"
-      Tab(3).Control(1)=   "Frame13"
-      Tab(3).Control(2)=   "Frame14"
-      Tab(3).Control(3)=   "DisableMutationsCheck"
+      Tab(3).Control(0)=   "DisableMutationsCheck"
+      Tab(3).Control(1)=   "Frame14"
+      Tab(3).Control(2)=   "Frame13"
+      Tab(3).Control(3)=   "Frame15"
       Tab(3).ControlCount=   4
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame8"
+      Tab(4).Control(0)=   "Frame7"
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(2)=   "Frame7"
+      Tab(4).Control(2)=   "Frame8"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Label41"
+      Tab(5).Control(0)=   "Simulazione"
       Tab(5).Control(1)=   "Label42"
-      Tab(5).Control(2)=   "Simulazione"
+      Tab(5).Control(2)=   "Label41"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "Frame10"
-      Tab(6).Control(1)=   "Frame4"
+      Tab(6).Control(0)=   "Frame4"
+      Tab(6).Control(1)=   "Frame10"
       Tab(6).ControlCount=   2
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "List Non-Native Species "
@@ -2626,6 +2626,7 @@ Begin VB.Form optionsform
             End
          End
          Begin VB.PictureBox IPB 
+            AutoRedraw      =   -1  'True
             Height          =   1695
             Left            =   120
             ScaleHeight     =   1635
@@ -3056,9 +3057,6 @@ Private m_DragHandle As Integer
 Private m_DragRect As New CRect
 Private m_DragPoint As POINTAPI
 Private speclistchecked As Boolean
-
-
-
 
 Private Sub AutoRobTxt_Change()
   If val(AutoRobTxt.text) > 10000 Then AutoRobTxt.text = "10000"
@@ -3959,12 +3957,14 @@ End Sub
 Private Sub Initial_Position_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   If Button = vbLeftButton Then
     DragBegin Initial_Position
+    PaintObstacles
   End If
 End Sub
 
 Private Sub IPB_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   If Button = vbLeftButton Then
     DragBegin Initial_Position
+    PaintObstacles
   End If
 End Sub
 
@@ -4794,6 +4794,37 @@ Form1.hide_graphs
 datirob.Visible = False
 ActivForm.Visible = False
 Shape2.FillColor = IIf(UseOldColor, &H511206, vbBlack)
+
+'Botsareus 1/5/2014 Repopulate obstacle array
+If Form1.Visible Then ObsRepop
+PaintObstacles
+End Sub
+
+Sub ObsRepop()
+xObstacle = Obstacles.Obstacles
+Dim o As Integer
+For o = 1 To UBound(xObstacle)
+If xObstacle(o).exist Then
+With xObstacle(o)
+ .pos.x = .pos.x / SimOpts.FieldWidth
+ .pos.y = .pos.y / SimOpts.FieldHeight
+ .Width = .Width / SimOpts.FieldWidth
+ .Height = .Height / SimOpts.FieldHeight
+End With
+End If
+Next
+End Sub
+
+Private Sub PaintObstacles() 'Botsareus 1/5/2014 The obstacle paint code
+IPB.Cls
+Dim o As Integer
+For o = 1 To UBound(xObstacle)
+If xObstacle(o).exist Then
+With xObstacle(o)
+ IPB.Line (.pos.x * IPB.ScaleWidth, .pos.y * IPB.ScaleHeight)-((.pos.x + .Width) * IPB.ScaleWidth, (.pos.y + .Height) * IPB.ScaleHeight), .color, BF
+End With
+End If
+Next
 End Sub
 
 Private Sub Form_Load()
@@ -5705,8 +5736,47 @@ skipthisspecie4:
     Write #1, TmpOpts.Specie(t).VirusImmune
   Next
   
-  Write #1, TmpOpts.NoWShotDecay ' EricL 6/8/2006
+  Write #1, TmpOpts.NoWShotDecay 'Botsareus 9/28/2013
   
+  'Botsareus 1/5/2014 Save obstacle data
+  Write #1, TmpOpts.makeAllShapesTransparent
+  Write #1, TmpOpts.makeAllShapesBlack
+  Write #1, TmpOpts.shapeDriftRate
+  Write #1, TmpOpts.allowHorizontalShapeDrift
+  Write #1, TmpOpts.allowVerticalShapeDrift
+  Write #1, TmpOpts.shapesAreSeeThrough
+  Write #1, TmpOpts.shapesAbsorbShots
+  Write #1, TmpOpts.shapesAreVisable
+  
+  Dim o As Integer
+  
+  'count walls first
+  Dim numXobs As Integer
+  
+  For o = 1 To UBound(xObstacle)
+  If xObstacle(o).exist Then
+  With xObstacle(o)
+    numXobs = numXobs + 1
+  End With
+  End If
+  Next
+  
+  Write #1, numXobs
+
+  For o = 1 To UBound(xObstacle)
+  If xObstacle(o).exist Then
+  With xObstacle(o)
+    Write #1, .color
+    Write #1, .Width
+    Write #1, .Height
+    Write #1, .vel.x
+    Write #1, .vel.y
+    Write #1, .pos.x
+    Write #1, .pos.y
+  End With
+  End If
+  Next
+'
   Close 1
   Exit Sub
 fine:
@@ -6001,6 +6071,35 @@ Public Sub ReadSettFromFile()
   'Botsareus 9/28/2013 Do not decay waste shots
   TmpOpts.NoWShotDecay = False
   If Not EOF(1) Then Input #1, TmpOpts.NoWShotDecay
+  
+  'Botsareus 1/5/2014 Obstecle settings
+  If Not EOF(1) Then Input #1, TmpOpts.makeAllShapesTransparent
+  If Not EOF(1) Then Input #1, TmpOpts.makeAllShapesBlack
+  If Not EOF(1) Then Input #1, TmpOpts.shapeDriftRate
+  If Not EOF(1) Then Input #1, TmpOpts.allowHorizontalShapeDrift
+  If Not EOF(1) Then Input #1, TmpOpts.allowVerticalShapeDrift
+  If Not EOF(1) Then Input #1, TmpOpts.shapesAreSeeThrough
+  If Not EOF(1) Then Input #1, TmpOpts.shapesAbsorbShots
+  If Not EOF(1) Then Input #1, TmpOpts.shapesAreVisable
+  
+  Dim numXobs As Integer
+  
+  If Not EOF(1) Then Input #1, numXobs
+
+  ReDim xObstacle(numXobs)
+  Dim o As Integer
+  For o = 1 To numXobs
+  With xObstacle(o)
+    If Not EOF(1) Then Input #1, .color
+    If Not EOF(1) Then Input #1, .Width
+    If Not EOF(1) Then Input #1, .Height
+    If Not EOF(1) Then Input #1, .vel.x
+    If Not EOF(1) Then Input #1, .vel.y
+    If Not EOF(1) Then Input #1, .pos.x
+    If Not EOF(1) Then Input #1, .pos.y
+    .exist = True
+  End With
+  Next
   
   
   If (Not EOF(1)) Then MsgBox "This settings file is a newer version than this version can read.  " + vbCrLf + _
