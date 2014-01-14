@@ -375,7 +375,7 @@ If ei2 - si2 < searchlen Then searchlen = ei2 - si2
 Dim mylen As Integer
 For mylen = (searchlen + 1) To 1 Step -1
 
-If Timer - 40 > timee Then Exit Sub 'safe
+If Timer - 32 > timee Then Exit Sub 'safe
 
     'Step2A The sweep itself
     Dim sweep1 As Integer
@@ -458,7 +458,7 @@ Dim t As Integer
 
 'Step2 Figure out genetic distance
 iinc = 0
-FindLongestSequences dna1, dna2, 0, UBound(dna1), 0, UBound(dna2)
+FindLongestSequences dna1, dna2, 0, UBound(dna1), 0, UBound(dna2), Timer
 DoGeneticDistance = GeneticDistance(dna1, dna2)
 End Function
 

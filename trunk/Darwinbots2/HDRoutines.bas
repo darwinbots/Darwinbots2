@@ -367,11 +367,19 @@ Public Sub SaveSimulation(path As String)
     
     Put #1, , numOfExistingBots
     
+    Form1.lblSaving.Visible = True 'Botsareus 1/14/2014 New code to display save status
+    
     For t = 1 To MaxRobs
       If rob(t).exist Then
         SaveRobotBody 1, t
       End If
+      If t Mod 20 = 0 Then
+        Form1.lblSaving.Caption = "Saving... (" & Int(t / MaxRobs * 100) & "%)" 'Botsareus 1/14/2014
+        DoEvents
+      End If
     Next t
+    
+    Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     
     Put #1, , Len(SimOpts.AutoRobPath)
     Put #1, , SimOpts.AutoRobPath
@@ -773,10 +781,18 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
     'Round up to the next multiple of 500
     ReDim rob(MaxRobs + (500 - (MaxRobs Mod 500)))
     
+    Form1.lblSaving.Visible = True 'Botsareus 1/14/2014 New code to display load status
+    Form1.Visible = True
+    
     For k = 1 To MaxRobs
      LoadRobot 1, k
-     ' DoEvents
+      If k Mod 20 = 0 Then
+        Form1.lblSaving.Caption = "Loading... (" & Int(k / MaxRobs * 100) & "%)" 'Botsareus 1/14/2014
+        DoEvents
+      End If
     Next k
+    
+    Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     
     ' As of 2.42.8, the sim file is packed.  Every bot stored is guarenteed to exist, yet their bot numbers, when loaded, may be
     ' different from the sim they came from.  Thus, we remap all the ties from all the loaded bots.

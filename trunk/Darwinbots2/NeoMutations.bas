@@ -506,7 +506,11 @@ Private Sub Point2MutWhen(randval As Single, robn As Integer)
     mutation_rate = .Mutables.mutarray(P2UP) / SimOpts.MutCurrMult
     
     'keeps Point2 lengths the same as Point
-    mutation_rate = mutation_rate / Gauss(.Mutables.StdDev(PointUP), .Mutables.Mean(PointUP))
+    Dim calc_gauss As Double
+    calc_gauss = Gauss(.Mutables.StdDev(PointUP), .Mutables.Mean(PointUP))
+    If calc_gauss < 1 Then calc_gauss = 1
+    
+    mutation_rate = mutation_rate / calc_gauss
     
     'Here we test to make sure the probability of a point mutation isn't crazy high.
     'A value of 1 is the probability of mutating every base pair every 1000 cycles
