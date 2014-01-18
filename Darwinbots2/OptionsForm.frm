@@ -2310,7 +2310,6 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0571
@@ -3539,6 +3538,7 @@ Sub additem(path As String)
   SetDefaultMutationRates TmpOpts.Specie(k).Mutables
   'Botsareus 12/11/2013 Do we have an .mrate file assoicated with this robot?
   Dim mfname As String: mfname = TmpOpts.Specie(k).path & "\" & extractexactname(TmpOpts.Specie(k).Name) & ".mrate"
+  mfname = Replace(mfname, "&#", MDIForm1.MainDir) 'Botsareus 1/18/2014 Bugfix
   If dir(mfname) <> "" Then TmpOpts.Specie(k).Mutables = Load_mrates(mfname)
   
   TmpOpts.Specie(k).Mutables.Mutations = True

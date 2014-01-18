@@ -505,7 +505,7 @@ Private Sub Point2MutWhen(randval As Single, robn As Integer)
     
     mutation_rate = .Mutables.mutarray(P2UP) / SimOpts.MutCurrMult
     
-    'keeps Point2 lengths the same as Point
+    'keeps Point2 lengths the same as Point Botsareus 1/14/2014 Checking to make sure value is >= 1
     Dim calc_gauss As Double
     calc_gauss = Gauss(.Mutables.StdDev(PointUP), .Mutables.Mean(PointUP))
     If calc_gauss < 1 Then calc_gauss = 1
@@ -521,7 +521,7 @@ Private Sub Point2MutWhen(randval As Single, robn As Integer)
   
     'result = offset + Fix(Log(randval) / Log(1 - 1 / (1000 * .Mutables.mutarray(PointUP))))
     result = Log(1 - randval) / Log(1 - 1 / (1000 * mutation_rate))
-    While result > 2000000000: result = result - 2000000000: Wend 'Botsareus 3/15/2013 overflow fix
+    While result > 1800000000: result = result - 1800000000: Wend 'Botsareus 3/15/2013 overflow fix
     .Point2MutCycle = .age + result / (.DnaLen - 1)
 getout:
   End With
@@ -548,7 +548,7 @@ Private Sub PointMutWhereAndWhen(randval As Single, robn As Integer, Optional of
   
     'result = offset + Fix(Log(randval) / Log(1 - 1 / (1000 * .Mutables.mutarray(PointUP))))
     result = Log(1 - randval) / Log(1 - 1 / (1000 * mutation_rate))
-    While result > 2000000000: result = result - 2000000000: Wend 'Botsareus 3/15/2013 overflow fix
+    While result > 1800000000: result = result - 1800000000: Wend 'Botsareus 3/15/2013 overflow fix
     .PointMutBP = (result Mod (.DnaLen - 1)) + 1 'note that DNA(DNALen) = end.
     'We don't mutate end.  Also note that DNA does NOT start at 0th element
     .PointMutCycle = .age + result / (.DnaLen - 1)

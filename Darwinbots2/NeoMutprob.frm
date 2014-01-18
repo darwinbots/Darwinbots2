@@ -705,7 +705,7 @@ If Not optionsform.CurrSpec = 50 Then
     outpath = TmpOpts.Specie(optionsform.CurrSpec).path & "\" & extractexactname(TmpOpts.Specie(optionsform.CurrSpec).Name) & ".mrate"
     outpath = Replace(outpath, "&#", MDIForm1.MainDir)
     'Botsareus 12/28/2013 Search robots folder only if path not found
-    If dir(path) = "" Then outpath = MDIForm1.MainDir & "\Robots\" & TmpOpts.Specie(optionsform.CurrSpec).Name
+    If dir(path) = "" Then outpath = MDIForm1.MainDir & "\Robots\" & extractexactname(TmpOpts.Specie(optionsform.CurrSpec).Name) & ".mrate"
     Save_mrates TmpOpts.Specie(optionsform.CurrSpec).Mutables, outpath
 End If
 End Sub
