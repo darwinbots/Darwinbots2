@@ -667,7 +667,7 @@ DeltaMainChance = 100
 DeltaDevChance = 30
 'Normailize mutation rates
 NormMut = False
-valNormMut = 86
+valNormMut = 1071
 valMaxNormMut = 1071
 Dim holdmaindir As String
 

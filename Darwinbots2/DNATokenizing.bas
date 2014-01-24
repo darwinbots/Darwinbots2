@@ -113,7 +113,9 @@ here:
   ReDim Preserve rob(n).DNA(DNApos)  'EricL - Added March 15, 2006
   'Botsareus 6/5/2013 Bug fix to do with leading zero on def
   If useref Then
-    If rob(n).DNA(0).tipo = 0 And rob(n).DNA(0).value = 0 Then
+    If rob(n).DNA(0).tipo = 0 And rob(n).DNA(0).value = 0 And _
+       Not rob(n).DNA(1).tipo = 9 _
+    Then
         For DNApos = 0 To UBound(rob(n).DNA) - 1
             rob(n).DNA(DNApos) = rob(n).DNA(DNApos + 1)
         Next
