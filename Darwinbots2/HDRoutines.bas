@@ -1512,6 +1512,10 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
         If FileContinue(1) Then Get #n, , .epimem(t)
     Next
     
+    'Botsareus 1/28/2014 Read robot tag
+    
+    Get #n, , .tag
+    
     'read in any future data here
     
 OldFile:
@@ -1748,6 +1752,10 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     For t = 0 To 14
         Put #n, , .epimem(t)
     Next
+    
+    'Botsareus 1/28/2014 Write robot tag
+    
+    Put #n, , .tag
     
     'write any future data here
     

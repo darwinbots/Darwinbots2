@@ -367,6 +367,9 @@ Private Sub CancelButton_Click()
 End Sub
 
 Private Sub Form_Activate()
+
+SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 1/28/2014 Teleport form is always on top
+
 Dim aspectRatio As Single
 
  aspectRatio = SimOpts.FieldHeight / SimOpts.FieldWidth

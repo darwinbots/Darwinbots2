@@ -328,6 +328,8 @@ Private Type robot
                                     ' with this DNA until the counter hits 0.  Will be zero if unfertilized.
   spermDNA() As block               ' Contains the DNA this bot has been fertilized with.
   spermDNAlen As Integer
+  
+  tag As String * 50
 
 End Type
 
@@ -2115,6 +2117,8 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       'Botsareus 4/9/2013 we need to copy some variables for genetic distance
       rob(nuovo).OldGD = rob(n).OldGD
       rob(nuovo).GenMut = rob(n).GenMut
+      'Botsareus 1/29/2014 Copy the tag
+      rob(nuovo).tag = rob(n).tag
     
   
       For i = 0 To 500
@@ -2447,6 +2451,8 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       'Botsareus 4/9/2013 we need to copy some variables for genetic distance
       rob(nuovo).OldGD = rob(female).OldGD
       rob(nuovo).GenMut = rob(female).GenMut
+      'Botsareus 1/29/2014 Copy the tag
+      rob(nuovo).tag = rob(female).tag
   
       For i = 0 To 500
         rob(nuovo).Ancestors(i) = rob(female).Ancestors(i)  ' copy the parents ancestor list

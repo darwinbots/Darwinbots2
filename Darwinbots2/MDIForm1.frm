@@ -1938,7 +1938,12 @@ strMsgSendData = "Please go to " & MDIForm1.MainDir & " and give the administrat
 "settings\lastran.set" & vbCrLf & _
 "saves\localcopy.sim" & vbCrLf & _
 "saves\lastautosave.sim" & vbCrLf & vbCrLf & _
-"If you don't see any or all of these file(s) let the administrator know they are missing."
+"If you don't see any or all of these file(s) let the administrator know they are missing." & vbCrLf & vbCrLf & _
+"If you where running a league please give the following files if they exsist:" & vbCrLf & vbCrLf & _
+"league\test.txt" & vbCrLf & _
+"league\robotA.txt" & vbCrLf & _
+"league\robotB.txt" & vbCrLf & vbCrLf & _
+"If you where running survival_evolution or eco_survival_evolution please give the administrator the \survival\ folder."
 'Botsareus 5/8/2013 If the program didcrash and autosave prompt to enter safemode
 strMsgEnterDiagMode = "Warning: Diagnostic mode does not check for errors by user generated events. If the error happened immediacy after you manipulated the simulation. Please press NO and tell what you did to the administrator. Otherwise, it is recommended that you run diagnostic mode." & vbCrLf & vbCrLf & _
 "Do you want to run diagnostic mode?"
@@ -1948,7 +1953,7 @@ If simalreadyrunning And Not autosaved Then MsgBox strMsgSendData
 
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As file
+Dim lastSim As File
 Dim revision As String
 
 Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause initial simulation
