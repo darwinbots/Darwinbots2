@@ -47,13 +47,13 @@ Begin VB.Form datirob
          Width           =   5775
       End
       Begin RichTextLib.RichTextBox dnatext 
-         Height          =   6945
+         Height          =   6705
          Left            =   0
          TabIndex        =   27
-         Top             =   120
+         Top             =   360
          Width           =   6555
          _ExtentX        =   11562
-         _ExtentY        =   12250
+         _ExtentY        =   11827
          _Version        =   393217
          Enabled         =   -1  'True
          ReadOnly        =   -1  'True
@@ -68,6 +68,14 @@ Begin VB.Form datirob
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
+      End
+      Begin VB.Label robtag 
+         Height          =   255
+         Left            =   40
+         TabIndex        =   62
+         ToolTipText     =   "Double click to edit"
+         Top             =   120
+         Width           =   6615
       End
    End
    Begin VB.Frame Frame1 
@@ -649,8 +657,8 @@ Private Sub dnashow_Click()
   btnMark.Visible = True 'Botsareus 3/15/2013 Makes dna easyer to debug
 End Sub
 
-Private Sub Form_Activate()
-SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
+Private Sub dnatext_Change()
+robtag.Caption = Left(rob(robfocus).tag, 45) 'Botsareus 1/28/2014 New short description feature
 End Sub
 
 Private Sub MemoryCommand_Click()
@@ -706,6 +714,13 @@ Private Function GiveMutationDetails(robfocus) As String
   If GiveMutationDetails = "" Then GiveMutationDetails = "No mutations"
 End Function
 
+Private Sub robtag_DblClick() 'Botsareus 1/28/2014 Enter short description for robot
+    SetWindowPos hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
+    rob(robfocus).tag = InputBox("Enter short description for robot. Can not be more then 45 characters long.", , Left(rob(robfocus).tag, 45))
+    rob(robfocus).tag = Left(replacechars(rob(robfocus).tag), 45)
+    robtag.Caption = rob(robfocus).tag
+    SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
+End Sub
 
 Private Sub ShrinkWin_Click()
   Me.Width = 3255
@@ -721,6 +736,7 @@ Public Sub RefreshDna()
 End Sub
 
 Sub Form_Load()
+  SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
   strings Me
   rage.Caption = "Age (cycles)" 'EricL 4/13/2006 Override resource file because I don't have a resource editor handy :)
   Me.Width = 3255

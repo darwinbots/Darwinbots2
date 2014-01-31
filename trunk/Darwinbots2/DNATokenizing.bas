@@ -750,6 +750,9 @@ Private Sub getvals(n As Integer, ByVal a As String, hold As String)
  If Name = "mutations" Then
    Mutations = val(value)
  End If
+ If Name = "tag" Then 'Botsareus 1/28/2014 New short description feature
+   rob(n).tag = Left(replacechars(value), 45)
+ End If
 ' If Name = "image" Then
 '   SimOpts.Specie(SpeciesFromBot(n)).DisplayImage = LoadPicture(value)
 ' End If
@@ -812,6 +815,8 @@ Public Function SaveRobHeader(n As Integer) As String
   'SaveRobHeader = "'#name: " + rob(n).FName + vbCrLf +
     SaveRobHeader = "'#generation: " + CStr(rob(n).generation) + vbCrLf + _
     "'#mutations: " + CStr(rob(n).Mutations) + vbCrLf
+    Dim blank As String * 50
+    If rob(n).tag <> blank Then SaveRobHeader = "'#tag:" + Left(rob(n).tag, 45) + vbCrLf
 End Function
 
 ' loads the sysvars.txt file

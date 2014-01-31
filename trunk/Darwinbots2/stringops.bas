@@ -32,10 +32,10 @@ Function extractname(path As String) As String
   End If
 End Function
 
-Function extractexactname(name As String) As String
+Function extractexactname(Name As String) As String
 'Botsareus 12/11/2013 Extracts the name portion of fname
 Dim sp() As String
-sp = Split(name, ".")
+sp = Split(Name, ".")
 extractexactname = sp(0)
 End Function
 
@@ -58,4 +58,16 @@ Function ConvertCommasToDecimal(s As String) As String
 
   ConvertCommasToDecimal = Replace(s, ",", ".")
 
+End Function
+
+'Botsareus 1/29/2014 replace special chars function
+Function replacechars(s As String) As String
+Dim i As Byte
+For i = 0 To 31
+s = Replace(s, Chr(i), "?")
+Next
+For i = 127 To 254
+s = Replace(s, Chr(i), "?")
+Next
+replacechars = s
 End Function
