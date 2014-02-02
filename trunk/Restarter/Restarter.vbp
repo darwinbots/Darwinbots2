@@ -3,6 +3,7 @@ Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\..\Windows
 Module=Module1; main.bas
 Startup="Sub Main"
 ExeName32="Restarter.exe"
+Path32="..\..\..\Desktop"
 Command32=""
 Name="Project1"
 HelpContextID="0"
