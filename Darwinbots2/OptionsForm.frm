@@ -114,36 +114,36 @@ Begin VB.Form optionsform
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Frame20"
-      Tab(2).Control(1)=   "Frame21"
+      Tab(2).Control(0)=   "Frame21"
+      Tab(2).Control(1)=   "Frame20"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Mutations"
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "Frame15"
-      Tab(3).Control(1)=   "Frame13"
-      Tab(3).Control(2)=   "Frame14"
-      Tab(3).Control(3)=   "DisableMutationsCheck"
+      Tab(3).Control(0)=   "DisableMutationsCheck"
+      Tab(3).Control(1)=   "Frame14"
+      Tab(3).Control(2)=   "Frame13"
+      Tab(3).Control(3)=   "Frame15"
       Tab(3).ControlCount=   4
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame8"
+      Tab(4).Control(0)=   "Frame7"
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(2)=   "Frame7"
+      Tab(4).Control(2)=   "Frame8"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Label41"
+      Tab(5).Control(0)=   "Simulazione"
       Tab(5).Control(1)=   "Label42"
-      Tab(5).Control(2)=   "Simulazione"
+      Tab(5).Control(2)=   "Label41"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "Frame10"
-      Tab(6).Control(1)=   "Frame4"
+      Tab(6).Control(0)=   "Frame4"
+      Tab(6).Control(1)=   "Frame10"
       Tab(6).ControlCount=   2
       Begin VB.CommandButton NativeSpeciesButton 
          Caption         =   "List Non-Native Species "
@@ -3149,6 +3149,8 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer) 'Botsareu
   Canc = True
 End Sub
 
+
+
 Private Sub Gradient_LostFocus()
 'Botsareus 3/26/2013 applyed caps to gradient
 Gradient.text = val(Gradient.text)
@@ -3459,8 +3461,7 @@ Private Sub DuplicaButt_Click() 'Botsareus 4/30/2013 Fix for the duplicator
   PopulateSpeciesList
 fine:
 End Sub
-
-Private Sub DelSpec_Click()
+Sub DelSpec_Click()
   Dim ind As Integer, k As Long, t As Long, l As Long
   ind = SpecList.ListIndex
   If ind >= 0 Then
@@ -5031,7 +5032,7 @@ Private Sub RestartSimCheck_Click()
   End If
 End Sub
 
-Public Sub StartNew_Click() 'startnew
+Sub StartNew_Click() 'startnew
 
   If Form1.Visible Then
     If MsgBox("Are you sure?", vbYesNo, "About to start a new simulation") = vbNo Then
@@ -5043,9 +5044,16 @@ If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 
 
   'Botsareus 5/7/2013 Safemode component
   Form1.lblSafeMode.Visible = False
-  MDIForm1.Objects.Enabled = True
-  MDIForm1.inssp.Enabled = True
-  MDIForm1.DisableArep.Enabled = True
+  
+  If x_restartmode = 0 Or x_restartmode > 4 Then
+    MDIForm1.Objects.Enabled = True
+    MDIForm1.inssp.Enabled = True
+    MDIForm1.DisableArep.Enabled = True
+  Else
+    MDIForm1.Objects.Enabled = False
+    MDIForm1.inssp.Enabled = False
+    MDIForm1.DisableArep.Enabled = False
+  End If
   
   If dir(MDIForm1.MainDir + "\saves\localcopy.sim") <> "" Then Kill (MDIForm1.MainDir + "\saves\localcopy.sim")
   If dir(MDIForm1.MainDir + "\saves\lastautosave.sim") <> "" Then Kill (MDIForm1.MainDir + "\saves\lastautosave.sim")

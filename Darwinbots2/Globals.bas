@@ -45,6 +45,12 @@ Public autosaved As Boolean
 'Botsareus 1/5/2014 Copy of Obstacle array
 Public xObstacle() As Obstacle
 
+'Botsareus 1/31/2014 Restart modes
+Public x_restartmode As Byte
+Public x_filenumber As Integer
+Public leagueSourceDir As String
+Public UseStepladder As Boolean
+
 ' var structure, to store the correspondance name<->value
 Public Type var
   Name As String
@@ -232,7 +238,6 @@ Dim hWindow As Long
     lngResult = WaitForSingleObject(hProcess, INFINITE)
         
 End Function
-
 
 
 ' Not sure where to put this function, so it's going here

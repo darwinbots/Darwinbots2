@@ -41,7 +41,6 @@ Begin VB.Form frmGset
       _ExtentY        =   9128
       _Version        =   393216
       Style           =   1
-      Tabs            =   2
       TabHeight       =   520
       BackColor       =   12632256
       TabCaption(0)   =   "Main settings"
@@ -63,11 +62,42 @@ Begin VB.Form frmGset
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ffmEpiReset"
-      Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "ffmSunMut"
-      Tab(1).Control(1).Enabled=   0   'False
+      Tab(1).Control(0)=   "ffmSunMut"
+      Tab(1).Control(1)=   "ffmEpiReset"
       Tab(1).ControlCount=   2
+      TabCaption(2)   =   "Leagues"
+      TabPicture(2)   =   "frmGset.frx":0038
+      Tab(2).ControlEnabled=   0   'False
+      Tab(2).Control(0)=   "chkStepladder"
+      Tab(2).Control(1)=   "txtSourceDir"
+      Tab(2).Control(2)=   "chkTournament"
+      Tab(2).Control(3)=   "lblSource"
+      Tab(2).ControlCount=   4
+      Begin VB.CheckBox chkStepladder 
+         Caption         =   "Stepladder league"
+         Height          =   195
+         Left            =   -72000
+         TabIndex        =   55
+         Top             =   3000
+         Width           =   3015
+      End
+      Begin VB.TextBox txtSourceDir 
+         Height          =   405
+         Left            =   -72000
+         TabIndex        =   54
+         Text            =   "C:\"
+         Top             =   2040
+         Visible         =   0   'False
+         Width           =   5415
+      End
+      Begin VB.CheckBox chkTournament 
+         Caption         =   "Tournament league"
+         Height          =   195
+         Left            =   -72000
+         TabIndex        =   52
+         Top             =   2640
+         Width           =   1815
+      End
       Begin VB.Frame ffmSunMut 
          Caption         =   "Sunline Mutations"
          Height          =   3775
@@ -165,7 +195,7 @@ Begin VB.Form frmGset
             ClipControls    =   0   'False
             Height          =   540
             Left            =   120
-            Picture         =   "frmGset.frx":0038
+            Picture         =   "frmGset.frx":0054
             ScaleHeight     =   337.12
             ScaleMode       =   0  'User
             ScaleWidth      =   337.12
@@ -243,7 +273,7 @@ Begin VB.Form frmGset
             Width           =   3975
          End
          Begin VB.Label lblExplMut 
-            Caption         =   $"frmGset.frx":0C7A
+            Caption         =   $"frmGset.frx":0C96
             Height          =   600
             Left            =   720
             TabIndex        =   31
@@ -272,7 +302,7 @@ Begin VB.Form frmGset
             Left            =   4920
             TabIndex        =   25
             Text            =   "1.3"
-            ToolTipText     =   $"frmGset.frx":0D8C
+            ToolTipText     =   $"frmGset.frx":0DA8
             Top             =   240
             Width           =   615
          End
@@ -468,6 +498,15 @@ Begin VB.Form frmGset
             Width           =   3075
          End
       End
+      Begin VB.Label lblSource 
+         Caption         =   "Source Directory"
+         Height          =   375
+         Left            =   -72000
+         TabIndex        =   53
+         Top             =   1800
+         Visible         =   0   'False
+         Width           =   1935
+      End
    End
    Begin VB.Label lbl 
       Caption         =   "Note: To reset all values delete global.gset file from your main directory."
@@ -509,8 +548,61 @@ Else
      Close #1
 End If
 
+  
+'Botsareus 1/31/2014 The league modes
+If txtSourceDir.Visible Then
+    If txtCD <> MDIForm1.MainDir Then
+        MsgBox "Can not start a league while changing main directory.", vbCritical
+        txtCD = MDIForm1.MainDir
+        Exit Sub
+    End If
+    If txtSourceDir.text = MDIForm1.MainDir & "\league" Or txtSourceDir.text Like MDIForm1.MainDir & "\league\*" Then
+        MsgBox "League source directory can not be the same as league engine directory.", vbCritical
+        Exit Sub
+    End If
+    If Not FolderExists(txtSourceDir.text) Then
+        MsgBox "Please use a valid directory for the league source directory.", vbCritical
+        Exit Sub
+    End If
+    If FolderExists(MDIForm1.MainDir & "\league") Then
+        If MsgBox("The current league will be restarted. Continue?", vbYesNo + vbQuestion) = vbYes Then
+            RecursiveRmDir MDIForm1.MainDir & "\league"
+        Else
+            Exit Sub
+        End If
+    End If
+    'create folder
+    RecursiveMkDir MDIForm1.MainDir & "\league"
+    RecursiveMkDir MDIForm1.MainDir & "\league\seeded"
+    RecursiveMkDir MDIForm1.MainDir & "\league\stepladder"
+    'generate list of species that are not repopulating
+    Dim specielist As String
+    specielist = ""
+    Dim i As Integer
+    For i = 0 To UBound(TmpOpts.Specie)
+        If TmpOpts.Specie(i).Veg = False And TmpOpts.Specie(i).Name <> "" Then
+            specielist = specielist & TmpOpts.Specie(i).Name & vbNewLine
+        End If
+    Next
+    'remove all nonrepopulating robots
+    If specielist <> "" Then
+        If MsgBox("The following robots must be removed first:" & vbCrLf & vbCrLf & specielist & vbCrLf & "Continue?", vbYesNo + vbQuestion) = vbYes Then
+            For i = 0 To UBound(TmpOpts.Specie)
+                If TmpOpts.Specie(i).Veg = False And TmpOpts.Specie(i).Name <> "" Then
+                    optionsform.SpecList.ListIndex = i
+                    optionsform.DelSpec_Click
+                    i = i - 1
+                End If
+            Next
+        Else
+            Exit Sub
+        End If
+    End If
+End If
+
 'prompt that settings will take place when you restart db
-MsgBox "Global settings will take effect when you restart DarwinBots.", vbInformation
+MsgBox "Global settings will take effect the next time DarwinBots starts.", vbInformation
+
 'save all settings
     Open MDIForm1.MainDir & "\Global.gset" For Output As #1
       Write #1, chkScreenRatio = 1
@@ -539,7 +631,24 @@ MsgBox "Global settings will take effect when you restart DarwinBots.", vbInform
       Write #1, val(txtWTC)
       Write #1, val(sldMain)
       Write #1, val(sldDev)
+      Write #1, txtSourceDir
+      Write #1, chkStepladder = 1
     Close #1
+    
+'Botsareus 1/31/2014 Setup a league
+If txtSourceDir.Visible Then
+    'R E S T A R T  I N I T
+    optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
+    Open App.path & "\restartmode.gset" For Output As #1
+        Write #1, 1
+        Write #1, 1
+    Close #1
+    Open App.path & "\Safemode.gset" For Output As #1
+     Write #1, False
+    Close #1
+    shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+End If
+
 'unload
 Unload Me
 End Sub
@@ -576,6 +685,33 @@ Private Sub chkNorm_Click()
 txtDnalen.Visible = chkNorm.value = 1
 lblDnalen.Visible = chkNorm.value = 1
 txtMxDnalen.Visible = chkNorm.value = 1
+End Sub
+
+
+Private Sub chkStepladder_Click()
+If chkStepladder.value = 1 Then
+    lblSource.Visible = True
+    txtSourceDir.Visible = True
+Else
+    If Not chkTournament.value = 1 Then
+        lblSource.Visible = False
+        txtSourceDir.Visible = False
+    End If
+End If
+End Sub
+
+Private Sub chkTournament_Click()
+If chkTournament.value = 1 Then
+    chkStepladder.Caption = "Stepladder league (round of 16)"
+    lblSource.Visible = True
+    txtSourceDir.Visible = True
+Else
+    chkStepladder.Caption = "Stepladder league"
+    If Not chkStepladder.value = 1 Then
+        lblSource.Visible = False
+        txtSourceDir.Visible = False
+    End If
+End If
 End Sub
 
 Private Sub chkUseCD_Click()
@@ -651,6 +787,8 @@ sldDev.Visible = chkDelta2.value = 1
 txtDnalen.Visible = chkNorm.value = 1
 lblDnalen.Visible = chkNorm.value = 1
 txtMxDnalen.Visible = chkNorm.value = 1
+'
+txtSourceDir = leagueSourceDir
 End Sub
 
 Private Sub txtBodyFix_LostFocus()
@@ -717,6 +855,7 @@ Private Sub txtPMinter_LostFocus()
 txtPMinter = Round(Abs(val(txtPMinter)))
 If txtPMinter > 32000 Then txtPMinter = 32000
 End Sub
+
 
 Private Sub txtWTC_Change()
 'make sure the value is sane

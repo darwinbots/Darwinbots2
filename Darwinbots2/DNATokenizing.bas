@@ -816,7 +816,7 @@ Public Function SaveRobHeader(n As Integer) As String
     SaveRobHeader = "'#generation: " + CStr(rob(n).generation) + vbCrLf + _
     "'#mutations: " + CStr(rob(n).Mutations) + vbCrLf
     Dim blank As String * 50
-    If rob(n).tag <> blank Then SaveRobHeader = "'#tag:" + Left(rob(n).tag, 45) + vbCrLf
+    If Left(rob(n).tag, 45) <> Left(blank, 45) Then SaveRobHeader = "'#tag:" + Left(rob(n).tag, 45) + vbCrLf
 End Function
 
 ' loads the sysvars.txt file
