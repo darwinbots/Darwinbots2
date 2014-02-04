@@ -18,13 +18,6 @@ Begin VB.Form Form1
    MinButton       =   0   'False
    ScaleHeight     =   8445
    ScaleWidth      =   12045
-   Begin DarwinBots.PipeRPC PipeRPC1 
-      Left            =   840
-      Top             =   5640
-      _ExtentX        =   847
-      _ExtentY        =   847
-      PipeName        =   "CalcServerPipe"
-   End
    Begin VB.Timer SecTimer 
       Interval        =   1000
       Left            =   2040
@@ -1113,6 +1106,7 @@ End Sub
 
 ' counts minutes for autosaves
 Private Sub Timer2_Timer()
+If lblSaving.Visible Then Exit Sub
   InTimer2 = True
   If SimOpts.AutoSimTime > 0 Then
     minutescount = minutescount + 1

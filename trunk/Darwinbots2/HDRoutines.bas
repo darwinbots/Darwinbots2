@@ -5,6 +5,66 @@ Option Explicit
 '   D I S K    O P E R A T I O N S
 '
 
+Public Function NamefileRecursive(ByVal s As String) As String 'Botsareus 1/31/2014 .txt files only
+Dim i As Byte
+i = Asc("a") - 1
+NamefileRecursive = s
+Do While dir(NamefileRecursive) <> ""
+i = i + 1
+NamefileRecursive = Replace(s, ".txt", "") & Chr(i) & ".txt"
+Loop
+End Function
+
+'Botsareus 1/31/2014 Delete this directory and all the files it contains.
+Public Sub RecursiveRmDir(ByVal dir_name As String)
+Dim file_name As String
+Dim files As Collection
+Dim i As Integer
+
+    ' Get a list of files it contains.
+    Set files = New Collection
+    file_name = dir$(dir_name & "\*.*", vbReadOnly + _
+        vbHidden + vbSystem + vbDirectory)
+    Do While Len(file_name) > 0
+        If (file_name <> "..") And (file_name <> ".") Then
+            files.Add dir_name & "\" & file_name
+        End If
+        file_name = dir$()
+    Loop
+
+    ' Delete the files.
+    For i = 1 To files.count
+        file_name = files(i)
+        ' See if it is a directory.
+        If GetAttr(file_name) And vbDirectory Then
+            ' It is a directory. Delete it.
+            RecursiveRmDir file_name
+        Else
+            ' It's a file. Delete it.
+            SetAttr file_name, vbNormal
+            Kill file_name
+        End If
+    Next i
+
+    ' The directory is now empty. Delete it.
+    RmDir dir_name
+End Sub
+
+'Botsareus 1/31/2014  stores all files names in folder into Collection
+Function getfiles(ByVal dir_name As String) As Collection
+Dim file_name As String
+Dim i As Integer
+
+    ' Get a list of files it contains.
+    Set getfiles = New Collection
+    file_name = dir$(dir_name & "\*.*")
+    Do While Len(file_name) > 0
+        getfiles.Add dir_name & "\" & file_name
+        file_name = dir$()
+    Loop
+End Function
+
+
 Public Function RecursiveMkDir(destDir As String) As Boolean
    
    Dim i As Long
@@ -58,18 +118,18 @@ Public Sub SaveOrganism(path As String, r As Integer)
     cnum = cnum + 1
   Wend
   On Error GoTo problem
-  Open path For Binary As 1
-    Put #1, , cnum
+  Open path For Binary As #778
+    Put #778, , cnum
     For k = 0 To cnum - 1
       rob(clist(k)).LastOwner = IntOpts.IName
-      SaveRobotBody 1, clist(k)
+      SaveRobotBody 778, clist(k)
     Next k
-  Close 1
+  Close #778
   Exit Sub
 problem:
 
  ' MsgBox ("Error saving organism.")
-  Close 1
+  Close #778
 End Sub
 
 'Adds a record to the species array when a bot with a new species is loaded or teleported in
@@ -139,12 +199,12 @@ Public Function LoadOrganism(path As String, x As Single, y As Single) As Intege
   
 tryagain:
   On Error GoTo problem
-  Open path For Binary As 1
-    Get #1, , cnum
+  Open path For Binary As #777
+    Get #777, , cnum
     For k = 0 To cnum - 1
       nuovo = posto()
       clist(k) = nuovo
-      LoadRobot 1, nuovo
+      LoadRobot 777, nuovo
       LoadOrganism = nuovo
       i = SimOpts.SpeciesNum
       foundSpecies = False
@@ -158,7 +218,7 @@ tryagain:
       If Not foundSpecies Then AddSpecie nuovo, False
       
     Next k
-  Close 1
+  Close #777
   If x > -1 And y > -1 Then
     PlaceOrganism clist(), x, y
   End If
@@ -166,7 +226,7 @@ tryagain:
 
   Exit Function
 problem:
-  Close 1
+  Close #777
   LoadOrganism = -1
   If nuovo > 0 Then
     rob(nuovo).exist = False
@@ -378,8 +438,6 @@ Public Sub SaveSimulation(path As String)
         DoEvents
       End If
     Next t
-    
-    Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     
     Put #1, , Len(SimOpts.AutoRobPath)
     Put #1, , SimOpts.AutoRobPath
@@ -638,6 +696,8 @@ Public Sub SaveSimulation(path As String)
    
    Put #1, , SimOpts.NoWShotDecay 'Botsareus 9/28/2013
        
+    Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
+    
   Close 1
   Form1.MousePointer = vbArrow
 End Sub
@@ -670,6 +730,7 @@ NormMut = False
 valNormMut = 1071
 valMaxNormMut = 1071
 Dim holdmaindir As String
+leagueSourceDir = Left$(App.path, 3)
 
 'see if maindir overwrite exisits
 If dir(App.path & "\Maindir.gset") <> "" Then
@@ -680,6 +741,15 @@ If dir(App.path & "\Maindir.gset") <> "" Then
     If dir(holdmaindir & "\", vbDirectory) <> "" Then 'Botsareus 6/11/2013 small bug fix to do with no longer finding a main directory
         MDIForm1.MainDir = holdmaindir
     End If
+End If
+
+'see if restartmode exisit
+
+If dir(App.path & "\restartmode.gset") <> "" Then
+    Open App.path & "\restartmode.gset" For Input As #1
+      Input #1, x_restartmode
+      Input #1, x_filenumber
+    Close #1
 End If
 
 'see if settings exsist
@@ -715,6 +785,9 @@ If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
       If Not EOF(1) Then Input #1, DeltaWTC
       If Not EOF(1) Then Input #1, DeltaMainChance
       If Not EOF(1) Then Input #1, DeltaDevChance
+      '
+      If Not EOF(1) Then Input #1, leagueSourceDir
+      If Not EOF(1) Then Input #1, UseStepladder
     Close #1
 End If
 
@@ -791,8 +864,6 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
         DoEvents
       End If
     Next k
-    
-    Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     
     ' As of 2.42.8, the sim file is packed.  Every bot stored is guarenteed to exist, yet their bot numbers, when loaded, may be
     ' different from the sim they came from.  Thus, we remap all the ties from all the loaded bots.
@@ -1208,6 +1279,8 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
     SimOpts.NoWShotDecay = False 'Load information about not decaying waste shots
     If Not EOF(1) Then Get #1, , SimOpts.NoWShotDecay 'EricL 6/8/2006 Added this
     
+    Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
+    
   Close 1
   
   If SimOpts.Costs(DYNAMICCOSTSENSITIVITY) = 0 Then SimOpts.Costs(DYNAMICCOSTSENSITIVITY) = 500
@@ -1514,7 +1587,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     
     'Botsareus 1/28/2014 Read robot tag
     
-    Get #n, , .tag
+    If FileContinue(1) Then Get #n, , .tag
     
     'read in any future data here
     

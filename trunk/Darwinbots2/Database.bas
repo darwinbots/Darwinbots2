@@ -56,6 +56,7 @@ Public Sub Snapshot()
   
   On Error GoTo fine
   SnapBrowse
+  If Form1.CommonDialog1.FileName = "" Then Exit Sub
   Open SnapName For Output As 3
   Print #3, "Rob id,Parent id,Founder name,Generation,Birth cycle,Age,Mutations,New mutations,Dna length,Offspring number,kills,Fitness,Energy,Chloroplasts" & vbCrLf;
   v = ","
@@ -135,6 +136,6 @@ getout:
 End Sub
 
 ' when I wasn't aware of the existence of CStr()
-Private Function sstr(X) As String
-  sstr = Right(Str(X), Len(Str(X)) - 1)
+Private Function sstr(x) As String
+  sstr = Right(Str(x), Len(Str(x)) - 1)
 End Function

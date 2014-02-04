@@ -142,7 +142,7 @@ Public Sub UpdateSim()
   End If
   
   'Botsareus 5/6/2013 The safemode system
-  If UseSafeMode Then
+  If UseSafeMode And (x_restartmode = 0 Or x_restartmode > 4) Then 'special modes does not apply
     If SimOpts.TotRunCycle Mod 2000 = 0 And SimOpts.TotRunCycle > 0 Then
      SaveSimulation MDIForm1.MainDir + "\saves\lastautosave.sim"
      'Botsareus 5/13/2013 delete local copy
@@ -152,5 +152,20 @@ Public Sub UpdateSim()
      Close #1
     End If
   End If
-     
+  
+  'R E S T A R T  N E X T
+  'Botsareus 1/31/2014 seeding
+  If x_restartmode = 1 Then
+    If SimOpts.TotRunCycle = 200 Then
+        FileCopy MDIForm1.MainDir & "\league\test.txt", NamefileRecursive(MDIForm1.MainDir & "\league\seeded\" & totnvegsDisplayed & ".txt")
+        Open App.path & "\restartmode.gset" For Output As #1
+         Write #1, x_restartmode
+         Write #1, x_filenumber
+        Close #1
+        Open App.path & "\Safemode.gset" For Output As #1
+         Write #1, False
+        Close #1
+        shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+    End If
+  End If
 End Sub

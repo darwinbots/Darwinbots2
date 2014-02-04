@@ -1076,6 +1076,18 @@ If Form1.lblSafeMode.Visible Then
     MsgBox "Can not enable Internet during safemode."
     Exit Sub
 End If
+If x_restartmode = 1 Then
+    MsgBox "Can not enable Internet during league seeding."
+    Exit Sub
+End If
+If x_restartmode = 2 Then
+    MsgBox "Can not enable Internet during tournament league."
+    Exit Sub
+End If
+If x_restartmode = 3 Then
+    MsgBox "Can not enable Internet during stepladder league."
+    Exit Sub
+End If
 
   Dim i As Integer
   Dim b As Integer
@@ -1953,7 +1965,7 @@ If simalreadyrunning And Not autosaved Then MsgBox strMsgSendData
 
 Dim path As String
 Dim fso As New FileSystemObject
-Dim lastSim As File
+Dim lastSim As file
 Dim revision As String
 
 Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause initial simulation
@@ -2056,6 +2068,41 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   optionsform.ReadSett MDIForm1.MainDir + IIf(simalreadyrunning, "\settings\lastran.set", "\settings\lastexit.set")
   optionsform.IntSettLoad
   
+  'Botsareus 1/31/2014 R E S T A R T  L O A D
+  If Not (x_restartmode = 0 Or x_restartmode > 4) Then
+        If Not simalreadyrunning Then
+            Select Case x_restartmode
+            Case 1
+                Dim files As Collection
+                Set files = getfiles(leagueSourceDir)
+                    If x_filenumber > files.count Then GoTo mode2
+                    SimOpts = TmpOpts
+                    'copy robot
+                    FileCopy files(x_filenumber), MDIForm1.MainDir & "\league\test.txt"
+                    'add tag to robot
+                    Open MDIForm1.MainDir & "\league\test.txt" For Append As #1
+                     Print #1, "'#tag:" & extractname(files(x_filenumber))
+                    Close
+                    'now update file number
+                    x_filenumber = x_filenumber + 1
+                    'load robot
+                    optionsform.additem MDIForm1.MainDir & "\league\test.txt"
+                    'disable mutations
+                    Dim i As Byte
+                    For i = 0 To UBound(TmpOpts.Specie)
+                     If TmpOpts.Specie(i).Name = "test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                    Next
+                    'new seed and run sim
+                    chseedstartnew = True
+                    optionsform.StartNew_Click
+                    Exit Sub
+            Case 2
+mode2:
+                MsgBox "Time for mode 2"
+            End Select
+        End If
+  End If
+  
   'Botsareus debug -Botsareusnotdone to be used later by league and evo modes
 '    Dim k As Integer
 '    For k = 0 To TmpOpts.SpeciesNum - 1
@@ -2136,6 +2183,13 @@ Public Function DisableRobotsMenu()
 End Function
 
 Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+
+If x_restartmode > 0 Then
+    If MsgBox("Exiting now will end the current restart mode. Continue?", vbQuestion + vbYesNo) = vbNo Then Exit Sub
+End If
+
+If dir(App.path & "\restartmode.gset") <> "" Then Kill App.path & "\restartmode.gset"
+
 Form1.hide_graphs
 
 'Botsareus 5/5/2013 Replaced MBsure with a better message. (Sorry, no Italian version)
@@ -2194,10 +2248,9 @@ Private Sub MDIForm_Resize()
   'InfoForm.ZOrder
 End Sub
 Private Sub MDIForm_Unload(Cancel As Integer)
+
    
-  
-   
-  SaveSimulation MDIForm1.MainDir + "\saves\lastexit.sim" 'save last settings
+SaveSimulation MDIForm1.MainDir + "\saves\lastexit.sim"  'save last settings
   
   'Botsareus 5/5/2013 Update the system that the program closed
   
