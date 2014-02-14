@@ -418,17 +418,10 @@ Public Sub Redraw()
   End If
   Cls
   
-  If MagLens.Visible Then MagLens.Cls  ' Clear the magnifying lens
-  
   If Flickermode Then Me.AutoRedraw = False
     
   If numObstacles > 0 Then Obstacles.DrawObstacles
   
-  If MagLens.Visible Then
-     MagX = (MagLens.Left / Form1.Width) * Form1.visiblew + Form1.ScaleLeft
-     MagY = (MagLens.Top / Form1.Height) * Form1.visibleh + Form1.ScaleTop
-  End If
-  If SimOpts.EGridEnabled Then DrawEgrid
   DrawArena
   DrawAllTies
   DrawAllRobs
@@ -524,14 +517,6 @@ Private Sub DrawRobPer(n As Integer)
 '  End If
   
       Circle (CentreX, CentreY), rob(n).radius, rob(n).color    'new line
-      
-      'Update the magnifying lens
-      If MagLens.Visible Then
-        If CentreX > MagX And CentreX < MagX + MagLens.ScaleWidth And _
-         CentreY > MagY And CentreY < MagY + MagLens.ScaleHeight Then
-           MagLens.Circle (CentreX - MagX, CentreY - MagY), rob(n).radius, rob(n).color
-        End If
-      End If
       
     If MDIForm1.displayResourceGuagesToggle = True Then
 
@@ -666,14 +651,6 @@ Private Sub DrawRobAim(n As Integer)
        
     pos2 = VectorAdd(.pos, VectorScalar(VectorUnit(pos), .radius))
     PSet (pos2.x, pos2.y), vbWhite
-    
-    'Update the magnifying lens
-    If MagLens.Visible Then
-      If pos2.x > MagX And pos2.x < MagX + MagLens.ScaleWidth And _
-         pos2.y > MagY And pos2.y < MagY + MagLens.ScaleHeight Then
-         MagLens.PSet (pos2.x - MagX, pos2.y - MagY), vbWhite
-      End If
-    End If
     
     If MDIForm1.displayMovementVectorsToggle Then
       'Draw the voluntary movement vectors
@@ -885,13 +862,6 @@ Public Sub DrawShots()
       End If
     ElseIf Shots(t).exist And Shots(t).stored = False Then
       PSet (Shots(t).pos.x, Shots(t).pos.y), Shots(t).color
-       'Update the magnifying lens
-      If MagLens.Visible Then
-        If Shots(t).pos.x > MagX And Shots(t).pos.x < MagX + MagLens.ScaleWidth And _
-           Shots(t).pos.y > MagY And Shots(t).pos.y < MagY + MagLens.ScaleHeight Then
-           MagLens.PSet (Shots(t).pos.x - MagX, Shots(t).pos.y - MagY), vbWhite
-        End If
-      End If
     End If
   Next t
   FillColor = BackColor
@@ -1072,20 +1042,6 @@ Public Sub DrawAllTies()
   Next t
 End Sub
 
-Public Function DrawEgrid()
-Dim i As Long
-
-'Draw Vertical Lines
-For i = 0 To SimOpts.FieldWidth Step SimOpts.EGridWidth
-  Line (i, 0)-(i, SimOpts.FieldHeight), vbBlack
-Next i
-  
-'Draw Horizontal Lines
-For i = 0 To SimOpts.FieldHeight Step SimOpts.EGridWidth
-  Line (0, i)-(SimOpts.FieldWidth, i), vbBlack
-Next i
-
-End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1122,7 +1078,7 @@ If lblSaving.Visible Then Exit Sub
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As File
+          Dim fileToDelete As file
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1140,7 +1096,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As File
+          Dim fileToDelete2 As file
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -1305,12 +1261,7 @@ MDIForm1.menuupdate
      FindSpecies
      F1count = 0
   End If
-  
-  If LeagueMode Then
-    'LeagueForm.Show
-    SimOpts.TotRunCycle = -1
-  End If
-  
+
   If SimOpts.MaxEnergy > 5000 Then
     If MsgBox("Your nrg allotment is set to" + Str(SimOpts.MaxEnergy) + ".  A correct value " + _
               "is in the neighborhood of about 10 or so.  Do you want to change your energy allotment " + _
@@ -1508,10 +1459,7 @@ Private Sub loadrobs()
       rob(a).radius = FindRadius(rob(a).body)
       rob(a).mem(468) = 32000
       rob(a).mem(SetAim) = rob(a).aim * 200
-'      rob(a).mem(480) = 32000 Botsareus 2/21/2013 Broken
-'      rob(a).mem(481) = 32000
-'      rob(a).mem(482) = 32000
-'      rob(a).mem(483) = 32000
+      If rob(a).Veg Then rob(a).chloroplasts = StartChlr 'Botsareus 2/12/2014 Start a robot with chloroplasts
       rob(a).Dead = False
       If rob(a).Shape = 0 Then
         rob(a).Shape = Random(3, 5)

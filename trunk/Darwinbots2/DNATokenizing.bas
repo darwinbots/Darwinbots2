@@ -156,10 +156,6 @@ fine:
       GoTo inizio
     End If
     
-    If LeagueMode Then
-      FileCopy path2, path
-    End If
-    
   Else
     Close 1
     MsgBox Err.Description + ".  Path: " + path + MBnovalidrob

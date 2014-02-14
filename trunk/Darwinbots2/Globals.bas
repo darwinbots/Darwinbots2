@@ -50,6 +50,13 @@ Public x_restartmode As Byte
 Public x_filenumber As Integer
 Public leagueSourceDir As String
 Public UseStepladder As Boolean
+Public x_fudge As Byte
+Public FudgeEyes As Boolean
+Public FudgeAll As Boolean
+
+Public StartChlr As Integer 'Botsareus 2/12/2014 Start repopulating robots with chloroplasts
+
+Public ModeChangeCycles As Long 'Botsareus 2/14/2014 Used to calculate time difference and mode change for survival
 
 ' var structure, to store the correspondance name<->value
 Public Type var
@@ -315,6 +322,7 @@ Public Sub aggiungirob(r As Integer, x As Single, y As Single)
     End If
     
     rob(a).Veg = SimOpts.Specie(r).Veg
+    If rob(a).Veg Then rob(a).chloroplasts = StartChlr 'Botsareus 2/12/2014 Start a robot with chloroplasts
     'NewMove loaded via robscriptload
     rob(a).Fixed = SimOpts.Specie(r).Fixed
     rob(a).CantSee = SimOpts.Specie(r).CantSee

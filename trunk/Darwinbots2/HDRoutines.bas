@@ -118,25 +118,26 @@ Public Sub SaveOrganism(path As String, r As Integer)
     cnum = cnum + 1
   Wend
   On Error GoTo problem
-  Open path For Binary As #778
-    Put #778, , cnum
+  Close #401
+  Open path For Binary As #401
+    Put #401, , cnum
     For k = 0 To cnum - 1
       rob(clist(k)).LastOwner = IntOpts.IName
-      SaveRobotBody 778, clist(k)
+      SaveRobotBody 401, clist(k)
     Next k
-  Close #778
+  Close #401
   Exit Sub
 problem:
 
  ' MsgBox ("Error saving organism.")
-  Close #778
+  Close #401
 End Sub
 
 'Adds a record to the species array when a bot with a new species is loaded or teleported in
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As File
+  Dim robotFile As file
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -199,12 +200,13 @@ Public Function LoadOrganism(path As String, x As Single, y As Single) As Intege
   
 tryagain:
   On Error GoTo problem
-  Open path For Binary As #777
-    Get #777, , cnum
+  Close #402
+  Open path For Binary As #402
+    Get #402, , cnum
     For k = 0 To cnum - 1
       nuovo = posto()
       clist(k) = nuovo
-      LoadRobot 777, nuovo
+      LoadRobot 402, nuovo
       LoadOrganism = nuovo
       i = SimOpts.SpeciesNum
       foundSpecies = False
@@ -218,7 +220,7 @@ tryagain:
       If Not foundSpecies Then AddSpecie nuovo, False
       
     Next k
-  Close #777
+  Close #402
   If x > -1 And y > -1 Then
     PlaceOrganism clist(), x, y
   End If
@@ -226,7 +228,7 @@ tryagain:
 
   Exit Function
 problem:
-  Close #777
+  Close #402
   LoadOrganism = -1
   If nuovo > 0 Then
     rob(nuovo).exist = False
@@ -338,7 +340,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As File
+  Dim fileToDelete As file
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -788,6 +790,8 @@ If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
       '
       If Not EOF(1) Then Input #1, leagueSourceDir
       If Not EOF(1) Then Input #1, UseStepladder
+      If Not EOF(1) Then Input #1, x_fudge
+      If Not EOF(1) Then Input #1, StartChlr
     Close #1
 End If
 
@@ -1292,7 +1296,7 @@ End Sub
 
 ' loads a single robot
 Public Sub LoadRobot(fnum As Integer, ByVal n As Integer)
-  LoadRobotBody 1, n
+  LoadRobotBody fnum, n
   If rob(n).exist Then
     GiveAbsNum n
     insertsysvars n
@@ -1321,12 +1325,6 @@ Public Sub GiveAbsNum(k As Integer)
   End If
 End Sub
 
-' saves a single robot
-Public Sub SaveRobot(n As Integer, path As String)
-  Open path For Binary As 1
-    SaveRobotBody 1, n
-  Close 1
-End Sub
 ' loads the body of the robot
 Private Sub LoadRobotBody(n As Integer, r As Integer)
 'robot r
@@ -1418,25 +1416,25 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     Get #n, , .color
     
     'new stuff using FileContinue conditions for backward and forward compatability
-    If FileContinue(1) Then Get #n, , .body: .radius = FindRadius(.body)
-    If FileContinue(1) Then Get #n, , .Bouyancy
-    If FileContinue(1) Then Get #n, , .Corpse
-    If FileContinue(1) Then Get #n, , .Pwaste
-    If FileContinue(1) Then Get #n, , .Waste
-    If FileContinue(1) Then Get #n, , .poison
-    If FileContinue(1) Then Get #n, , .venom
-    If FileContinue(1) Then Get #n, , .Shape
-    If FileContinue(1) Then Get #n, , .exist
-    If FileContinue(1) Then Get #n, , .Dead
+    If FileContinue(n) Then Get #n, , .body: .radius = FindRadius(.body)
+    If FileContinue(n) Then Get #n, , .Bouyancy
+    If FileContinue(n) Then Get #n, , .Corpse
+    If FileContinue(n) Then Get #n, , .Pwaste
+    If FileContinue(n) Then Get #n, , .Waste
+    If FileContinue(n) Then Get #n, , .poison
+    If FileContinue(n) Then Get #n, , .venom
+    If FileContinue(n) Then Get #n, , .Shape
+    If FileContinue(n) Then Get #n, , .exist
+    If FileContinue(n) Then Get #n, , .Dead
     
-    If FileContinue(1) Then Get #n, , k: .FName = Space(k)
-    If FileContinue(1) Then Get #n, , .FName
+    If FileContinue(n) Then Get #n, , k: .FName = Space(k)
+    If FileContinue(n) Then Get #n, , .FName
             
-    If FileContinue(1) Then Get #n, , k: .LastOwner = Space(k)
-    If FileContinue(1) Then Get #n, , .LastOwner
+    If FileContinue(n) Then Get #n, , k: .LastOwner = Space(k)
+    If FileContinue(n) Then Get #n, , .LastOwner
     If .LastOwner = "" Then .LastOwner = "Local"
     
-    If FileContinue(1) Then Get #n, , k
+    If FileContinue(n) Then Get #n, , k
        
     'EricL 5/2/2006  This needs some explaining.  The length of the mutation details can exceed 2^15 -1 for bots with lots
     'of mutations.  If we are reading an old file, the length could be negative in which case we read what we can and then punt and skip the
@@ -1467,7 +1465,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     End If
     If k = 1 Then
       'Its a new file with lots of mutations.  Read the actual length stored as a Long
-      Get #1, , L1
+      Get #n, , L1
     Else
       'Not that many mutations for this bot (It's possible its an old file with lots of mutations and the len wrapped.
       'If so, we just read the postiive len and keep going.  Everything following this will be wrong, but the sim should
@@ -1476,21 +1474,21 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     End If
     
     .LastMutDetail = Space(L1)
-    If FileContinue(1) Then Get #1, , .LastMutDetail
+    If FileContinue(n) Then Get #n, , .LastMutDetail
     
-    If FileContinue(1) Then Get #1, , .Mutables.Mutations
+    If FileContinue(n) Then Get #n, , .Mutables.Mutations
     
     For t = 0 To 20
-      If FileContinue(1) Then Get #1, , .Mutables.Mean(t)
-      If FileContinue(1) Then Get #1, , .Mutables.StdDev(t)
+      If FileContinue(n) Then Get #n, , .Mutables.Mean(t)
+      If FileContinue(n) Then Get #n, , .Mutables.StdDev(t)
     Next t
     
     For t = 0 To 20
       If .Mutables.Mean(t) < 0 Or .Mutables.Mean(t) > 32000 Or .Mutables.StdDev(t) < 0 Or .Mutables.StdDev(t) > 32000 Then MessedUpMutations = True
     Next t
         
-    If FileContinue(1) Then Get #1, , .Mutables.CopyErrorWhatToChange
-    If FileContinue(1) Then Get #1, , .Mutables.PointWhatToChange
+    If FileContinue(n) Then Get #n, , .Mutables.CopyErrorWhatToChange
+    If FileContinue(n) Then Get #n, , .Mutables.PointWhatToChange
     
     If .Mutables.CopyErrorWhatToChange < 0 Or .Mutables.CopyErrorWhatToChange > 32000 Or .Mutables.PointWhatToChange < 0 Or .Mutables.PointWhatToChange > 32000 Then
       MessedUpMutations = True
@@ -1501,106 +1499,106 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
       SetDefaultMutationRates .Mutables
     End If
     
-    If FileContinue(1) Then Get #1, , .View
-    If FileContinue(1) Then Get #1, , .NewMove
+    If FileContinue(n) Then Get #n, , .View
+    If FileContinue(n) Then Get #n, , .NewMove
     
     .oldBotNum = 0
-    If FileContinue(1) Then Get #1, , .oldBotNum
+    If FileContinue(n) Then Get #n, , .oldBotNum
       
     .CantSee = False
-    If FileContinue(1) Then Get #1, , .CantSee
+    If FileContinue(n) Then Get #n, , .CantSee
     If CInt(.CantSee) > 0 Or CInt(.CantSee) < -1 Then .CantSee = False ' Protection against corrpt sim files.
     
     .DisableDNA = False
-    If FileContinue(1) Then Get #1, , .DisableDNA
+    If FileContinue(n) Then Get #n, , .DisableDNA
     If CInt(.DisableDNA) > 0 Or CInt(.DisableDNA) < -1 Then .DisableDNA = False ' Protection against corrpt sim files.
     
     .DisableMovementSysvars = False
-    If FileContinue(1) Then Get #1, , .DisableMovementSysvars
+    If FileContinue(n) Then Get #n, , .DisableMovementSysvars
     If CInt(.DisableMovementSysvars) > 0 Or CInt(.DisableMovementSysvars) < -1 Then .DisableMovementSysvars = False    ' Protection against corrpt sim files.
     
     .CantReproduce = False
-    If FileContinue(1) Then Get #1, , .CantReproduce
+    If FileContinue(n) Then Get #n, , .CantReproduce
     If CInt(.CantReproduce) > 0 Or CInt(.CantReproduce) < -1 Then .CantReproduce = False ' Protection against corrpt sim files.
     
     .shell = 0
-    If FileContinue(1) Then Get #1, , .shell
+    If FileContinue(n) Then Get #n, , .shell
     
     If .shell > 32000 Then .shell = 32000
     If .shell < 0 Then .shell = 0
     
     .Slime = 0
-    If FileContinue(1) Then Get #1, , .Slime
+    If FileContinue(n) Then Get #n, , .Slime
             
     If .Slime > 32000 Then .Slime = 32000
     If .Slime < 0 Then .Slime = 0
     
     .VirusImmune = False
-    If FileContinue(1) Then Get #1, , .VirusImmune
+    If FileContinue(n) Then Get #n, , .VirusImmune
     If CInt(.VirusImmune) > 0 Or CInt(.VirusImmune) < -1 Then .VirusImmune = False ' Protection against corrpt sim files.
     
     .SubSpecies = 0 ' For older sims saved before this was implemented, set the sup species to be the bot's number.  Every bot is a sub species.
-    If FileContinue(1) Then Get #1, , .SubSpecies
+    If FileContinue(n) Then Get #n, , .SubSpecies
     
     .spermDNAlen = 0
-    If FileContinue(1) Then Get #1, , .spermDNAlen: ReDim .spermDNA(.spermDNAlen)
+    If FileContinue(n) Then Get #n, , .spermDNAlen: ReDim .spermDNA(.spermDNAlen)
     For t = 1 To .spermDNAlen
-      If FileContinue(1) Then Get #1, , .spermDNA(t).tipo
-      If FileContinue(1) Then Get #1, , .spermDNA(t).value
+      If FileContinue(n) Then Get #n, , .spermDNA(t).tipo
+      If FileContinue(n) Then Get #n, , .spermDNA(t).value
     Next t
     
     .fertilized = -1
-    If FileContinue(1) Then Get #1, , .fertilized
+    If FileContinue(n) Then Get #n, , .fertilized
     
-    If FileContinue(1) Then Get #1, , .AncestorIndex
+    If FileContinue(n) Then Get #n, , .AncestorIndex
     For t = 0 To 500
-      If FileContinue(1) Then Get #1, , .Ancestors(t).mut
-      If FileContinue(1) Then Get #1, , .Ancestors(t).num
-      If FileContinue(1) Then Get #1, , .Ancestors(t).sim
+      If FileContinue(n) Then Get #n, , .Ancestors(t).mut
+      If FileContinue(n) Then Get #n, , .Ancestors(t).num
+      If FileContinue(n) Then Get #n, , .Ancestors(t).sim
     Next t
     
     .sim = 0
-    If FileContinue(1) Then Get #1, , .sim
-    If FileContinue(1) Then Get #1, , .AbsNum
+    If FileContinue(n) Then Get #n, , .sim
+    If FileContinue(n) Then Get #n, , .AbsNum
     
     'Botsareus 2/23/2013 Rest of tie data
-    If FileContinue(1) Then Get #n, , .Multibot
+    If FileContinue(n) Then Get #n, , .Multibot
     For t = 0 To MAXTIES
-        If FileContinue(1) Then Get #n, , .Ties(t).type
-        If FileContinue(1) Then Get #n, , .Ties(t).b
-        If FileContinue(1) Then Get #n, , .Ties(t).k
-        If FileContinue(1) Then Get #n, , .Ties(t).NaturalLength
+        If FileContinue(n) Then Get #n, , .Ties(t).type
+        If FileContinue(n) Then Get #n, , .Ties(t).b
+        If FileContinue(n) Then Get #n, , .Ties(t).k
+        If FileContinue(n) Then Get #n, , .Ties(t).NaturalLength
     Next
     
     'Botsareus 4/9/2013 For genetic distance graph
-    If FileContinue(1) Then Get #1, , .OldGD
+    If FileContinue(n) Then Get #n, , .OldGD
     .GenMut = .DnaLen / GeneticSensitivity
     
     'Panda 2013/08/11 chloroplasts
-    If FileContinue(1) Then Get #1, , .chloroplasts
+    If FileContinue(n) Then Get #n, , .chloroplasts
     
     'Botsareus 12/3/2013 Read epigenetic information
     
     For t = 0 To 14
-        If FileContinue(1) Then Get #n, , .epimem(t)
+        If FileContinue(n) Then Get #n, , .epimem(t)
     Next
     
     'Botsareus 1/28/2014 Read robot tag
     
-    If FileContinue(1) Then Get #n, , .tag
+    If FileContinue(n) Then Get #n, , .tag
     
     'read in any future data here
     
 OldFile:
     'burn through any new data from a different version
-    While FileContinue(1)
-      Get #1, , Fe
+    While FileContinue(n)
+      Get #n, , Fe
     Wend
     
     'grab these three FE codes
-    Get #1, , Fe
-    Get #1, , Fe
-    Get #1, , Fe
+    Get #n, , Fe
+    Get #n, , Fe
+    Get #n, , Fe
     
     'don't you dare put anything after this!
     'except some initialization stuff
@@ -1617,11 +1615,11 @@ Private Function FileContinue(filenumber As Integer) As Boolean
   Dim k As Integer
   
   FileContinue = False
-  Position = Seek(1)
+  Position = Seek(filenumber)
    
   Do
-    If Not EOF(1) Then
-      Get #1, , Fe
+    If Not EOF(filenumber) Then
+      Get #filenumber, , Fe
     Else
       FileContinue = False
       Fe = 254
@@ -1636,7 +1634,7 @@ Private Function FileContinue(filenumber As Integer) As Boolean
   Loop While Not FileContinue And k < 3
   
   'reset position
-  Get #1, Position - 1, Fe
+  Get #filenumber, Position - 1, Fe
 End Function
 ' saves the body of the robot
 Private Sub SaveRobotBody(n As Integer, r As Integer)
@@ -1865,286 +1863,6 @@ Sub salvarob(n As Integer, path As String, Optional nombox As Boolean)
     End If
   End If
 End Sub
-
-Public Function Load_League_File(Leaguename As String) As Integer
-'returns -1 if league doesn't exist,
-'0 if successful,
-'[1-30] if a robot in the list doesn't exist
-'-2 if leaguefile exists but not directory
-'-3 if leaguefile contains too many entrants
-'-4 if leaguefile contains too few entrants
-'-5 if leaguefile contains an unknown error
-  Dim FileName As String
-  Dim Line As String
-  Dim singlecharacter As String
-  Dim currpos As Long
-  Dim robotname As String
-  Dim robotcomment As String
-  Dim Length As Long
- 
-  FileName = MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt"
-  
-  On Error GoTo Nosuchfile
-  Open FileName For Input As 1
-    
-  Line Input #1, Line
-  Line = Line + "'"
-  currpos = 1
-  singlecharacter = Mid(Line, currpos, 1)
-  
-  On Error GoTo invalidfile
-  While True
-    While singlecharacter <> "#"
-      If singlecharacter = "1" Then
-        If Left(Line, 3) = "1 -" Then
-          'start of robot list, exit physics loop
-          GoTo endloop
-        End If
-      End If
-      
-      currpos = currpos + 1
-      If singlecharacter = "'" Then
-        Line Input #1, Line
-        currpos = 1
-        singlecharacter = Mid(Line, currpos, 1)
-      End If
-    Wend
-    
-    'we now have the pos of a physics line
-    If Mid(Line, currpos, 3) = "#F1" Then
-      SimOpts.F1 = True
-      SimOpts.CorpseEnabled = False
-      SimOpts.Costs(SHOTCOST) = 2
-      SimOpts.CostExecCond = 0.004
-      SimOpts.Costs(COSTSTORE) = 0.04
-      SimOpts.DayNight = False
-      SimOpts.FieldWidth = 9237
-      SimOpts.FieldHeight = 6928
-      SimOpts.FieldSize = 1
-      SimOpts.MaxEnergy = 40
-      SimOpts.MaxPopulation = 25
-      SimOpts.MinVegs = 10
-      SimOpts.Pondmode = False
-      SimOpts.PhysBrown = 0
-      SimOpts.Toroidal = True
-    Else
-      'custom physics.
-    End If
-    
-    Line Input #1, Line
-    singlecharacter = Mid(Line, currpos, 1)
-  Wend
-endloop:
-  
-  'we are now at the start of the robot declaration list.  Add these robots to
-  'the league table
-  Dim Index As Integer
-  
-  For Index = 0 To 30
-    FileName = MDIForm1.MainDir + "\Leagues\" + Leaguename + "league\" 'directory of league robots
-    Line = Line + "'"
-    
-    Length = InStr(Line, "'") - 1
-    If Right(Left(Line, Length), 1) = " " Then Length = Length - 1
-    robotname = Left(Line, Length)
-    robotcomment = Right(Line, Len(Line) - Length)
-    robotcomment = Left(robotcomment, Len(robotcomment) - 1)
-    robotname = Right(robotname, Len(robotname) - 4) 'takes everything besides teh "1 - " at start of line and " 'blah..." at end of line
-    If robotname = "EMPTY" Or robotname = "" Then
-      Add_Blank_Specie Index
-    Else
-      robotname = FileName + robotname + ".txt" 'now we have the path and filename of the robot
-      'add robot robotname to LeagueEntrants array
-      Add_Specie robotname, Index, robotcomment
-    End If
-    
-    If EOF(1) Then GoTo endloop2
-    
-    Line Input #1, Line
-  Next Index
-endloop2:
-  
-  Index = Index + 1
-  'write emptys to the rest of the array
-  For Index = Index To 30
-    Add_Blank_Specie Index
-  Next Index
-  
-  Close_League_File
-  Load_League_File = 0
-  Exit Function
-  
-Nosuchfile:
-  Close_League_File
-  MsgBox FileName + " doesn't exist.", vbOKOnly, "League File Not Found"
-  Load_League_File = -1
-  Exit Function
-invalidfile:
-  Close_League_File
-  MsgBox "Error reading from " + FileName + ".  Abandoning attempt.", vbOKOnly, "File Reading Error"
-  Load_League_File = -5
-  Exit Function
-End Function
-
-Public Sub Close_League_File()
-  Close 1
-End Sub
-
-Private Sub Add_Specie(path As String, k As Integer, leaguecomment As String)
-  LeagueEntrants(k).Posrg = 1
-  LeagueEntrants(k).Posdn = 1
-  LeagueEntrants(k).Poslf = 0
-  LeagueEntrants(k).Postp = 0
-  LeagueEntrants(k).Name = extractname(path)
-  LeagueEntrants(k).path = extractpath(path)
-  LeagueEntrants(k).path = relpath(LeagueEntrants(k).path)
-  LeagueEntrants(k).Veg = False
-  LeagueEntrants(k).color = vbBlue
-  Dim t As Integer
-  LeagueEntrants(k).Mutables.Mutations = False
-  'For t = 0 To 15
-  '  LeagueEntrants(k).mutarray(t) = 0
-  'Next t
-  LeagueEntrants(k).qty = 5
-  LeagueEntrants(k).Stnrg = 3000
-  LeagueEntrants(k).Fixed = False
-  
-  Dim i As Integer
-  For i = 0 To 7 Step 2
-    LeagueEntrants(k).Skin(i) = Random(0, half)
-    LeagueEntrants(k).Skin(i + 1) = Random(0, 628)
-  Next i
-  
-  LeagueEntrants(k).Leaguefilecomment = leaguecomment
-End Sub
-
-Private Sub Add_Blank_Specie(k As Integer)
-  Dim Specie As datispecie
-   
-  LeagueEntrants(k) = Specie
-End Sub
-
-Public Function Save_League_File(FName As String) As Integer
-  Dim FileName As String
-  Dim tofilename As String
-  Dim Line As String
-  Dim singlecharacter As String
-  Dim currpos As Long
-  Dim robotname As String
-  Dim Length As Long
-  Dim loopdone As Boolean
-  Dim originalleague As Boolean
- 
-  FileName = MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt"
-  tofilename = MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.tmp"
-     
-  'EricL - new code added March 15, 2006
-  'If the Leagues directory doesn't exist yet, create it
-  If dir$(MDIForm1.MainDir + "\Leagues\*.*") = "" Then
-    RecursiveMkDir (MDIForm1.MainDir + "\Leagues")
-  End If
-       
-  'EricL - Moved following three lines here from below
-  'Create the directory for the specific league name if it does not exist.
-  If dir$(MDIForm1.MainDir + "\Leagues\" + Leaguename + "league\*.*") = "" Then
-    RecursiveMkDir (MDIForm1.MainDir + "\Leagues\" + Leaguename + "league")
-  End If
-  
-  On Error GoTo Nosuchfile
-  Open FileName For Input As 1
-enderror:
-   
-  On Error GoTo problem
-  Open tofilename For Output As 2
-    
-  If originalleague = False Then
-    Line Input #1, Line
-    If Left(Line, 4) = "1 - " Then loopdone = True
-    While Not loopdone And Not EOF(1)
-      Print #2, Line
-      Line Input #1, Line
-      If Left(Line, 4) = "1 - " Then loopdone = True
-    Wend
-  Else
-    Line = "'New league created by program."
-    Print #2, Line
-    Line = "#F1"
-    Print #2, Line
-  End If
-  
-  'now we write robot data
- 
-  'EricL - Three lines above used to be here
-  
-  Dim Index As Integer
-  For Index = 1 To 9
-    Line = Index
-    Line = Line + " - "
-    If LeagueEntrants(Index - 1).Name = "" Then LeagueEntrants(Index - 1).Name = "EMPTY.TXT"
-    Line = Line + Left(LeagueEntrants(Index - 1).Name, Len(LeagueEntrants(Index - 1).Name) - 4)
-    Line = Line + LeagueEntrants(Index - 1).Leaguefilecomment
-    Print #2, Line
-    
-    If Not LeagueEntrants(Index - 1).Name = "EMPTY.TXT" Then
-      'if this robot doesn't exist in the league directory, copy its file to the league directory
-      If dir$(MDIForm1.MainDir + "\Leagues\" + Leaguename + "league\" + LeagueEntrants(Index - 1).Name) = "" And LeagueEntrants(Index - 1).Name <> "" Then
-        Dim tempstring As String
-      
-        tempstring = LeagueEntrants(Index - 1).path + "\" + LeagueEntrants(Index - 1).Name
-        If (Left(tempstring, 2) = "&#") Then
-          tempstring = MDIForm1.MainDir + Right(tempstring, Len(tempstring) - 2)
-        End If
-        If dir$(tempstring) <> "" Then
-          FileCopy tempstring, MDIForm1.MainDir + "\Leagues\" + Leaguename + "league\" + LeagueEntrants(Index - 1).Name
-        Else
-          MsgBox "Error copying " + LeagueEntrants(Index - 1).path + "\" + LeagueEntrants(Index - 1).Name + " into league directory.  Continuing...", vbOKOnly, "Copy File Error"
-        End If
-      End If
-    End If
-  Next Index
-  
-  For Index = 10 To 30
-    Line = Index
-    Line = Line + "- "
-    If LeagueEntrants(Index - 1).Name = "" Then LeagueEntrants(Index - 1).Name = "EMPTY.TXT"
-    Line = Line + Left(LeagueEntrants(Index - 1).Name, Len(LeagueEntrants(Index - 1).Name) - 4)
-    Line = Line + LeagueEntrants(Index - 1).Leaguefilecomment
-    Print #2, Line
-  Next Index
-  
-  Close #1
-  Close #2
-  
-  If dir$(MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.bak") = " " Then
-    Kill MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.bak"
-  End If
-  
-  'move leaguetable.txt to leaguetable.bak.
-  If Not originalleague Then
-    FileCopy MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt", MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.bak"
-  End If
-  
-  If dir$(MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt") = " " Then
-     Kill MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt"
-  End If
-  
-  'replace leaguetable.txt with leaguetable.tmp
-  FileCopy MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.tmp", MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.txt"
-  
-  Exit Function
-  
-Nosuchfile:
-  Close #1
-  originalleague = True
-  GoTo enderror
-  
-problem:
-  Close #1
-  Close #2
-  MsgBox "Error writing to " + MDIForm1.MainDir + "\Leagues\" + Leaguename + "leaguetable.tmp.  Abandoning save attempt.", vbOKOnly, "Save file error"
-  Save_League_File = -1
-  Exit Function
-End Function
 
 ' saves a Teleporter
 Private Sub SaveTeleporter(n As Integer, t As Integer)

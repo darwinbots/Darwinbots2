@@ -235,6 +235,20 @@ Public Sub lookoccurr(ByVal n As Integer, ByVal o As Integer)
     rob(n).mem(occurrstart + t) = rob(o).occurr(t)
   Next t
   
+  If rob(o).FName <> rob(n).FName Then
+   'Botsareus 2/5/2014 Eye Fudge
+   If FudgeEyes Or FudgeAll Then
+    If rob(n).mem(occurrstart + 8) < 2 Then rob(n).mem(occurrstart + 8) = Int(Rnd * 2) + 1 Else rob(n).mem(occurrstart + 8) = rob(n).mem(occurrstart + 8) + Int(Rnd * 2) * 2 - 1
+   End If
+   'Fudge the rest of look occurr
+   If FudgeAll Then
+    For t = 1 To 7
+     If rob(n).mem(occurrstart + t) < 2 Then rob(n).mem(occurrstart + t) = Int(Rnd * 2) + 1 Else rob(n).mem(occurrstart + t) = rob(n).mem(occurrstart + t) + Int(Rnd * 2) * 2 - 1
+    Next t
+   End If
+  End If
+  
+  
   If rob(o).nrg < 0 Then
      rob(n).mem(occurrstart + 9) = 0
   ElseIf rob(o).nrg < 32001 Then
@@ -260,8 +274,32 @@ Public Sub lookoccurr(ByVal n As Integer, ByVal o As Integer)
   rob(n).mem(in9) = rob(o).mem(out9)
   rob(n).mem(in10) = rob(o).mem(out10)
   
+  'fudge in/out
+  If FudgeAll Then
+    If rob(o).FName <> rob(n).FName Then
+        If rob(o).mem(out1) <> 0 Then rob(n).mem(in1) = rob(o).mem(out1) + Int(Rnd * 2) * 2 - 1
+        If rob(o).mem(out2) <> 0 Then rob(n).mem(in2) = rob(o).mem(out2) + Int(Rnd * 2) * 2 - 1
+        If rob(o).mem(out3) <> 0 Then rob(n).mem(in3) = rob(o).mem(out3) + Int(Rnd * 2) * 2 - 1
+        If rob(o).mem(out4) <> 0 Then rob(n).mem(in4) = rob(o).mem(out4) + Int(Rnd * 2) * 2 - 1
+        If rob(o).mem(out5) <> 0 Then rob(n).mem(in5) = rob(o).mem(out5) + Int(Rnd * 2) * 2 - 1
+        If rob(o).mem(out6) <> 0 Then rob(n).mem(in6) = rob(o).mem(out6) + Int(Rnd * 2) * 2 - 1
+        If rob(o).mem(out7) <> 0 Then rob(n).mem(in7) = rob(o).mem(out7) + Int(Rnd * 2) * 2 - 1
+        If rob(o).mem(out8) <> 0 Then rob(n).mem(in8) = rob(o).mem(out8) + Int(Rnd * 2) * 2 - 1
+        If rob(o).mem(out9) <> 0 Then rob(n).mem(in9) = rob(o).mem(out9) + Int(Rnd * 2) * 2 - 1
+        If rob(o).mem(out10) <> 0 Then rob(n).mem(in10) = rob(o).mem(out10) + Int(Rnd * 2) * 2 - 1
+    End If
+  End If
+  
   rob(n).mem(711) = rob(o).mem(18)      'refaim
   rob(n).mem(712) = rob(o).occurr(9)    'reftie
+  
+  'Fudge the ties
+  If FudgeAll Then
+    If rob(o).FName <> rob(n).FName Then
+        If rob(n).mem(712) < 2 Then rob(n).mem(712) = Int(Rnd * 2) + 1 Else rob(n).mem(712) = rob(n).mem(712) + Int(Rnd * 2) * 2 - 1
+    End If
+  End If
+  
   rob(n).mem(refshell) = rob(o).shell
   rob(n).mem(refbody) = rob(o).body
   rob(n).mem(refypos) = rob(o).mem(217)
@@ -463,11 +501,7 @@ Public Sub makeoccurrlist(n As Integer)
       t = t + 1
     Wend
 exitwhile:
-    
-    'this is for when two bots have identical eye values in the league
-    If n = 11 Then Record_11eyes .occurr(8)
-    If n >= 16 And n <= 20 And LeagueMode Then League_Eyefudge n, t
-    
+
     'creates the "ownvars" our own readbacks as versions of the refvars seen by others
     For t = 1 To 8
       .mem(720 + t) = .occurr(t)

@@ -441,21 +441,21 @@ GeneticDistance = diffcount / (UBound(rob1) + UBound(rob2) + 2)
 End Function
 
 Public Function DoGeneticDistance(r1 As Integer, r2 As Integer) As Single
-Dim t As Integer
+Dim T As Integer
 'Step1 Create block2 from robots
       Dim dna1() As block2
       Dim dna2() As block2
 
       ReDim dna1(UBound(rob(r1).DNA))
-      For t = 0 To UBound(dna1)
-       dna1(t).tipo = rob(r1).DNA(t).tipo
-       dna1(t).value = rob(r1).DNA(t).value
+      For T = 0 To UBound(dna1)
+       dna1(T).tipo = rob(r1).DNA(T).tipo
+       dna1(T).value = rob(r1).DNA(T).value
       Next
 
       ReDim dna2(UBound(rob(r2).DNA))
-      For t = 0 To UBound(dna2)
-       dna2(t).tipo = rob(r2).DNA(t).tipo
-       dna2(t).value = rob(r2).DNA(t).value
+      For T = 0 To UBound(dna2)
+       dna2(T).tipo = rob(r2).DNA(T).tipo
+       dna2(T).value = rob(r2).DNA(T).value
       Next
 
 'Step2 Figure out genetic distance
@@ -710,11 +710,11 @@ Public Function absy(aim As Single, ByVal up As Integer, ByVal dn As Integer, By
   absy = -Sin(aim) * upTotal + Cos(aim) * sxTotal
 End Function
 
-Private Function SetAimFunc(t As Integer) As Single 'Botsareus 6/29/2013 Turn costs and ma more accurate
+Private Function SetAimFunc(T As Integer) As Single 'Botsareus 6/29/2013 Turn costs and ma more accurate
   Dim diff As Single
   Dim diff2 As Single
   Dim newaim As Single
-  With rob(t)
+  With rob(T)
   
   diff = CSng(.mem(aimsx)) - CSng(.mem(aimdx))
    
@@ -764,7 +764,7 @@ End Function
 ' updates positions, transforming calculated accelerations
 ' in velocities, and velocities in new positions
 Public Sub UpdatePosition(ByVal n As Integer)
-  Dim t As Integer
+  Dim T As Integer
   Dim vt As Single
   
   With rob(n)
@@ -914,14 +914,14 @@ Private Sub altzheimer(n As Integer)
 'makes robots with high waste act in a bizarre fashion.
   Dim loc As Integer, val As Integer
   Dim loops As Integer
-  Dim t As Integer
+  Dim T As Integer
   loops = (rob(n).Pwaste + rob(n).Waste - SimOpts.BadWastelevel) / 4
 
-  For t = 1 To loops
+  For T = 1 To loops
     loc = Random(1, 1000)
     val = Random(-32000, 32000)
     rob(n).mem(loc) = val
-  Next t
+  Next T
   
 End Sub
 
@@ -1145,9 +1145,9 @@ Private Sub ManageChlr(n As Integer) 'Panda 8/15/2013 The new chloroplast functi
 End Sub
 
 
-Private Sub ChangeChlr(t As Integer) 'Panda 8/15/2013 change the number of chloroplasts
+Private Sub ChangeChlr(T As Integer) 'Panda 8/15/2013 change the number of chloroplasts
 
-With rob(t)
+With rob(T)
  
   Dim tmpchlr As Single 'Botsareus 8/24/2013 used to charge energy for adding chloroplasts
   tmpchlr = .chloroplasts
@@ -1167,8 +1167,8 @@ With rob(t)
     End If
     
   End If
-  rob(t).mem(mkchlr) = 0
-  rob(t).mem(rmchlr) = 0
+  rob(T).mem(mkchlr) = 0
+  rob(T).mem(rmchlr) = 0
   
 End With
   
@@ -1381,7 +1381,7 @@ End Sub
 
 'The heart of the robots to simulation interfacing
 Public Sub UpdateBots()
-  Dim t As Integer
+  Dim T As Integer
   Dim i As Integer
   Dim k As Integer
   Dim c As Integer
@@ -1408,55 +1408,51 @@ Public Sub UpdateBots()
   
   If ContestMode Then
     F1count = F1count + 1
-    If F1count = SampFreq And Contests <= Maxrounds Then Countpop
+    If F1count = SampFreq Then Countpop
   End If
   
   'Need to do this first as NetForces can update bots later in the loop
-  For t = 1 To MaxRobs
-    If rob(t).exist Then
-      If numTeleporters > 0 Then CheckTeleporters t
+  For T = 1 To MaxRobs
+    If rob(T).exist Then
+      If numTeleporters > 0 Then CheckTeleporters T
     End If
-  Next t
+  Next T
   
   
   'Only calculate mass due to fuild displacement if the sim medium has density.
   If SimOpts.Density <> 0 Then
-    For t = 1 To MaxRobs
-      If rob(t).exist Then AddedMass t
-    Next t
+    For T = 1 To MaxRobs
+      If rob(T).exist Then AddedMass T
+    Next T
   End If
   
   'this loops is for pre update
-  For t = 1 To MaxRobs
-    If t Mod 250 = 0 Then DoEvents
-    If rob(t).exist Then
-      If (rob(t).Corpse = False) Then Upkeep t ' No upkeep costs if you are dead!
-      If ((rob(t).Corpse = False) And (rob(t).DisableDNA = False)) Then Poisons t
-      ManageFixed t
-      CalcMass t
-      If numObstacles > 0 Then DoObstacleCollisions t
-      bordercolls t
-     
-      TieHooke t ' Handles tie lengths, tie hardening and compressive, elastic tie forces
-      If Not rob(t).Corpse And Not rob(t).DisableDNA Then TieTorque t 'EricL 4/21/2006 Handles tie angles
-      If Not rob(t).Fixed Then NetForces t 'calculate forces on all robots
-      BucketsCollision t
+  For T = 1 To MaxRobs
+    If T Mod 250 = 0 Then DoEvents
+    If rob(T).exist Then
+      If (rob(T).Corpse = False) Then Upkeep T ' No upkeep costs if you are dead!
+      If ((rob(T).Corpse = False) And (rob(T).DisableDNA = False)) Then Poisons T
+      ManageFixed T
+      CalcMass T
+      If numObstacles > 0 Then DoObstacleCollisions T
+      bordercolls T
+      TieHooke T ' Handles tie lengths, tie hardening and compressive, elastic tie forces
+      If Not rob(T).Corpse And Not rob(T).DisableDNA Then TieTorque T 'EricL 4/21/2006 Handles tie angles
+      If Not rob(T).Fixed Then NetForces T 'calculate forces on all robots
+      BucketsCollision T
       'Colls2 t
-      
-      If rob(t).ImpulseStatic > 0 Then
-        staticV = VectorScalar(VectorUnit(rob(t).ImpulseInd), rob(t).ImpulseStatic)
-        If VectorMagnitudeSquare(staticV) > VectorMagnitudeSquare(rob(t).ImpulseInd) Then
-          rob(t).ImpulseInd = VectorSub(rob(t).ImpulseInd, staticV)
+      If rob(T).ImpulseStatic > 0 Then
+        staticV = VectorScalar(VectorUnit(rob(T).ImpulseInd), rob(T).ImpulseStatic)
+        If VectorMagnitudeSquare(staticV) > VectorMagnitudeSquare(rob(T).ImpulseInd) Then
+          rob(T).ImpulseInd = VectorSub(rob(T).ImpulseInd, staticV)
         End If
       End If
-      rob(t).ImpulseInd = VectorSub(rob(t).ImpulseInd, rob(t).ImpulseRes)
-    
+      rob(T).ImpulseInd = VectorSub(rob(T).ImpulseInd, rob(T).ImpulseRes)
       
-      If Not rob(t).Corpse And Not rob(t).DisableDNA Then tieportcom t 'transfer data through ties
-      If Not rob(t).Corpse And Not rob(t).DisableDNA Then readtie t 'reads all of the tref variables from a given tie number
-      
+      If Not rob(T).Corpse And Not rob(T).DisableDNA Then tieportcom T 'transfer data through ties
+      If Not rob(T).Corpse And Not rob(T).DisableDNA Then readtie T 'reads all of the tref variables from a given tie number
     End If
-  Next t
+  Next T
   
   DoEvents
     
@@ -1466,76 +1462,76 @@ Public Sub UpdateBots()
     SimOpts.Specie(i).population = 0
     i = i + 1
   Wend
-  For t = 1 To MaxRobs
-    If rob(t).exist Then UpdateCounters t ' Counts the number of bots and decays body...
-  Next t
+  For T = 1 To MaxRobs
+    If rob(T).exist Then UpdateCounters T ' Counts the number of bots and decays body...
+  Next T
   
   DoEvents
   
-  For t = 1 To MaxRobs
-    If t Mod 250 = 0 Then DoEvents
+  For T = 1 To MaxRobs
+    If T Mod 250 = 0 Then DoEvents
      
-    If rob(t).exist Then
-        Update_Ties t                    ' Carries out all tie routines
+    If rob(T).exist Then
+        Update_Ties T                    ' Carries out all tie routines
              
         'EricL Transfer genetic meomory locations for newborns through the birth tie during their first 15 cycles
-        If rob(t).age < 15 Then DoGeneticMemory t
+        If rob(T).age < 15 Then DoGeneticMemory T
         
-        If Not rob(t).Corpse And Not rob(t).DisableDNA Then SetAimFunc t  'Setup aiming
-        If Not rob(t).Corpse And Not rob(t).DisableDNA Then BotDNAManipulation t
-        UpdatePosition t 'updates robot's position
+        If Not rob(T).Corpse And Not rob(T).DisableDNA Then SetAimFunc T  'Setup aiming
+        If Not rob(T).Corpse And Not rob(T).DisableDNA Then BotDNAManipulation T
+        UpdatePosition T 'updates robot's position
         'EricL 4/9/2006 Got rid of a loop below by moving these inside this loop.  Should speed things up a little.
-        If rob(t).nrg > 32000 Then rob(t).nrg = 32000
+        If rob(T).nrg > 32000 Then rob(T).nrg = 32000
         
         'EricL 4/14/2006 Allow energy to continue to be negative to address loophole
         'where bots energy goes neagative above, gets reset to 0 here and then they only have to feed a tiny bit
         'from body.
-        If rob(t).nrg < -32000 Then rob(t).nrg = -32000
+        If rob(T).nrg < -32000 Then rob(T).nrg = -32000
                 
-        If rob(t).poison > 32000 Then rob(t).poison = 32000
-        If rob(t).poison < 0 Then rob(t).poison = 0
+        If rob(T).poison > 32000 Then rob(T).poison = 32000
+        If rob(T).poison < 0 Then rob(T).poison = 0
       
-        If rob(t).venom > 32000 Then rob(t).venom = 32000
-        If rob(t).venom < 0 Then rob(t).venom = 0
+        If rob(T).venom > 32000 Then rob(T).venom = 32000
+        If rob(T).venom < 0 Then rob(T).venom = 0
       
-        If rob(t).Waste > 32000 Then rob(t).Waste = 32000
-        If rob(t).Waste < 0 Then rob(t).Waste = 0
+        If rob(T).Waste > 32000 Then rob(T).Waste = 32000
+        If rob(T).Waste < 0 Then rob(T).Waste = 0
     End If
    
-  Next t
+  Next T
   DoEvents
   
   'Botsareus 4/17/2013 Prevent big birthas Replaced with chloroplasts check later, chloroplasts must be less then 1/2 of body for check to happen
-  For t = 1 To MaxRobs
-   If rob(t).chloroplasts < rob(t).body / 2 Then
-    If rob(t).exist And rob(t).body > bodyfix Then KillRobot t
+  For T = 1 To MaxRobs
+   If rob(T).chloroplasts < rob(T).body / 2 Then
+    If rob(T).exist And rob(T).body > bodyfix Then KillRobot T
    End If
   Next
     
-  For t = 1 To MaxRobs
-    If t Mod 250 = 0 Then DoEvents
-    UpdateTieAngles t                ' Updates .tielen and .tieang.  Have to do this here after all bot movement happens above.
+  For T = 1 To MaxRobs
+    If T Mod 250 = 0 Then DoEvents
+    UpdateTieAngles T                ' Updates .tielen and .tieang.  Have to do this here after all bot movement happens above.
   
-    If Not rob(t).Corpse And Not rob(t).DisableDNA And rob(t).exist Then
-      Mutate t
-      MakeStuff t
-      HandleWaste t
-      Shooting t
-      ManageChlr t
-      ManageBody t
-      Shock t
-      ManageBouyancy t
-      ManageReproduction t
-      WriteSenses t
-      FireTies t
+    If Not rob(T).Corpse And Not rob(T).DisableDNA And rob(T).exist Then
+      Mutate T
+      MakeStuff T
+      HandleWaste T
+      Shooting T
+      ManageChlr T
+      ManageBody T
+      Shock T
+      ManageBouyancy T
+      ManageReproduction T
+      WriteSenses T
+      FireTies T
     End If
-    If Not rob(t).Corpse And rob(t).exist Then
-      Ageing t      ' Even bots with disabled DNA age...
-      ManageDeath t ' Even bots with disabled DNA can die...
+    If Not rob(T).Corpse And rob(T).exist Then
+      Ageing T      ' Even bots with disabled DNA age...
+      ManageDeath T ' Even bots with disabled DNA can die...
     End If
-    If rob(t).exist Then TotalSimEnergy(CurrentEnergyCycle) = TotalSimEnergy(CurrentEnergyCycle) + rob(t).nrg + rob(t).body * 10
+    If rob(T).exist Then TotalSimEnergy(CurrentEnergyCycle) = TotalSimEnergy(CurrentEnergyCycle) + rob(T).nrg + rob(T).body * 10
    
-  Next t
+  Next T
   'DoEvents
   ReproduceAndKill
   RemoveExtinctSpecies
@@ -1543,7 +1539,7 @@ Public Sub UpdateBots()
   
   'Restart
   'Leaguemode handles restarts differently so only restart here if not in leaguemode
-  If totnvegs = 0 And SimOpts.Restart And Not LeagueMode Then 'Botsareus 6/11/2013 Using SimOpts instead of raw RestartMode
+  If totnvegs = 0 And SimOpts.Restart And Not SimOpts.F1 Then 'Botsareus 6/11/2013 Using SimOpts instead of raw RestartMode
   ' totnvegs = 1
   ' Contests = Contests + 1
     ReStarts = ReStarts + 1
@@ -1553,60 +1549,60 @@ Public Sub UpdateBots()
 End Sub
 
 Private Sub ReproduceAndKill()
-  Dim t As Integer
+  Dim T As Integer
   Dim temp As Integer
   Dim temp2 As Integer
     
-  t = 1
-  While t < rp
-    If rep(t) > 0 Then
-       If rob(rep(t)).mem(mrepro) > 0 And rob(rep(t)).mem(Repro) > 0 Then
+  T = 1
+  While T < rp
+    If rep(T) > 0 Then
+       If rob(rep(T)).mem(mrepro) > 0 And rob(rep(T)).mem(Repro) > 0 Then
          If Rnd > 0.5 Then
-           temp = rob(rep(t)).mem(Repro)
+           temp = rob(rep(T)).mem(Repro)
          Else
-           temp = rob(rep(t)).mem(mrepro)
+           temp = rob(rep(T)).mem(mrepro)
          End If
        Else
-         If rob(rep(t)).mem(mrepro) > 0 Then temp = rob(rep(t)).mem(mrepro)
-         If rob(rep(t)).mem(Repro) > 0 Then temp = rob(rep(t)).mem(Repro)
+         If rob(rep(T)).mem(mrepro) > 0 Then temp = rob(rep(T)).mem(mrepro)
+         If rob(rep(T)).mem(Repro) > 0 Then temp = rob(rep(T)).mem(Repro)
        End If
-       temp2 = rep(t)
+       temp2 = rep(T)
        Reproduce temp2, temp
   
-    ElseIf rep(t) < 0 Then
+    ElseIf rep(T) < 0 Then
       ' negative values in the rep array indicate sexual reproduction
-      SexReproduce -rep(t)
+      SexReproduce -rep(T)
      ' rob(-rep(t)).fertilized = 0 ' sperm shots only work for one birth for now
      ' rob(-rep(t)).mem(SYSFERTILIZED) = 0
     End If
     
-    t = t + 1
+    T = T + 1
   Wend
-  t = 1
+  T = 1
   
   'kill robots
-  While t < kl
-    KillRobot kil(t)
-    t = t + 1
+  While T < kl
+    KillRobot kil(T)
+    T = T + 1
   Wend
 End Sub
 
-Private Sub storebody(t As Integer)
-  If rob(t).mem(313) > 100 Then rob(t).mem(313) = 100
-  rob(t).nrg = rob(t).nrg - rob(t).mem(313)
-  rob(t).body = rob(t).body + rob(t).mem(313) / 10
-  If rob(t).body > 32000 Then rob(t).body = 32000
-  rob(t).radius = FindRadius(rob(t).body)
-  rob(t).mem(313) = 0
+Private Sub storebody(T As Integer)
+  If rob(T).mem(313) > 100 Then rob(T).mem(313) = 100
+  rob(T).nrg = rob(T).nrg - rob(T).mem(313)
+  rob(T).body = rob(T).body + rob(T).mem(313) / 10
+  If rob(T).body > 32000 Then rob(T).body = 32000
+  rob(T).radius = FindRadius(rob(T).body)
+  rob(T).mem(313) = 0
 End Sub
 
-Private Sub feedbody(t As Integer)
-  If rob(t).mem(fdbody) > 100 Then rob(t).mem(fdbody) = 100
-  rob(t).nrg = rob(t).nrg + rob(t).mem(fdbody)
-  rob(t).body = rob(t).body - CSng(rob(t).mem(fdbody)) / 10#
-  If rob(t).nrg > 32000 Then rob(t).nrg = 32000
-  rob(t).radius = FindRadius(rob(t).body)
-  rob(t).mem(fdbody) = 0
+Private Sub feedbody(T As Integer)
+  If rob(T).mem(fdbody) > 100 Then rob(T).mem(fdbody) = 100
+  rob(T).nrg = rob(T).nrg + rob(T).mem(fdbody)
+  rob(T).body = rob(T).body - CSng(rob(T).mem(fdbody)) / 10#
+  If rob(T).nrg > 32000 Then rob(T).nrg = 32000
+  rob(T).radius = FindRadius(rob(T).body)
+  rob(T).mem(fdbody) = 0
 End Sub
 
 ' here we catch the attempt of a robot to shoot,
@@ -1756,9 +1752,9 @@ CantShoot:
   rob(n).mem(shootval) = 0
 End Sub
 
-Public Sub sharechloroplasts(t As Integer, k As Integer) 'Panda 8/31/2013 code to share chloroplasts
+Public Sub sharechloroplasts(T As Integer, k As Integer) 'Panda 8/31/2013 code to share chloroplasts
   Dim totchlr As Single
-  With rob(t)
+  With rob(T)
     If .mem(sharechlr) > 99 Then .mem(sharechlr) = 99
     If .mem(sharechlr) < 0 Then .mem(sharechlr) = 0
     totchlr = .chloroplasts + rob(.Ties(k).pnt).chloroplasts
@@ -1777,9 +1773,9 @@ Public Sub sharechloroplasts(t As Integer, k As Integer) 'Panda 8/31/2013 code t
   End With
 End Sub
 
-Public Sub shareslime(t As Integer, k As Integer) 'robot shares slime with others in the same multibot structure
+Public Sub shareslime(T As Integer, k As Integer) 'robot shares slime with others in the same multibot structure
   Dim totslime As Single
-  With rob(t)
+  With rob(T)
     If .mem(833) > 99 Then .mem(833) = 99
     If .mem(833) < 0 Then .mem(833) = 0
     totslime = .Slime + rob(.Ties(k).pnt).Slime
@@ -1796,9 +1792,9 @@ Public Sub shareslime(t As Integer, k As Integer) 'robot shares slime with other
     End If
   End With
 End Sub
-Public Sub sharewaste(t As Integer, k As Integer)
+Public Sub sharewaste(T As Integer, k As Integer)
   Dim totwaste As Single
-  With rob(t)
+  With rob(T)
     If .mem(831) > 99 Then .mem(831) = 99
     If .mem(831) < 0 Then .mem(831) = 0
     totwaste = .Waste + rob(.Ties(k).pnt).Waste
@@ -1815,10 +1811,10 @@ Public Sub sharewaste(t As Integer, k As Integer)
     End If
   End With
 End Sub
-Public Sub shareshell(t As Integer, k As Integer)
+Public Sub shareshell(T As Integer, k As Integer)
   Dim totshell As Single
   
-  With rob(t)
+  With rob(T)
     If .mem(832) > 99 Then .mem(832) = 99
     If .mem(832) < 0 Then .mem(832) = 0
     totshell = .shell + rob(.Ties(k).pnt).shell
@@ -1838,33 +1834,33 @@ Public Sub shareshell(t As Integer, k As Integer)
   End With
 
 End Sub
-Public Sub sharenrg(t As Integer, k As Integer)
+Public Sub sharenrg(T As Integer, k As Integer)
   Dim totnrg As Single
   Dim portionThatsMine As Single
   Dim myChangeInNrg As Single
   
-  With rob(t)
+  With rob(T)
   
     'This is an order of operation thing.  A bot earlier in the rob array might have taken all your nrg, taking your
     'nrg to 0.  You should still be able to take some back.
-    If rob(t).nrg < 0 Or rob(.Ties(k).pnt).nrg < 0 Then GoTo getout ' Can't transfer nrg if nrg is negative
+    If rob(T).nrg < 0 Or rob(.Ties(k).pnt).nrg < 0 Then GoTo getout ' Can't transfer nrg if nrg is negative
   
     '.mem(830) is the percentage of the total nrg this bot wants to receive
     'has to be positive to come here, so no worries about changing the .mem location here
-    If rob(t).mem(830) <= 0 Then
-      rob(t).mem(830) = 0
+    If rob(T).mem(830) <= 0 Then
+      rob(T).mem(830) = 0
     Else
-      rob(t).mem(830) = rob(t).mem(830) Mod 100
-      If rob(t).mem(830) = 0 Then rob(t).mem(830) = 100
+      rob(T).mem(830) = rob(T).mem(830) Mod 100
+      If rob(T).mem(830) = 0 Then rob(T).mem(830) = 100
     End If
 
     
     'Total nrg of both bots combined
-    totnrg = rob(t).nrg + rob(.Ties(k).pnt).nrg
+    totnrg = rob(T).nrg + rob(.Ties(k).pnt).nrg
     
-    portionThatsMine = totnrg * (CSng(rob(t).mem(830)) / 100#)      ' This is what the bot wants to have out of the total
+    portionThatsMine = totnrg * (CSng(rob(T).mem(830)) / 100#)      ' This is what the bot wants to have out of the total
     If portionThatsMine > 32000 Then portionThatsMine = 32000 ' Can't want more than the max a bot can have
-    myChangeInNrg = portionThatsMine - rob(t).nrg                   ' This is what the bot's change in nrg would be
+    myChangeInNrg = portionThatsMine - rob(T).nrg                   ' This is what the bot's change in nrg would be
     
     'If the bot is taking nrg, then he can't take more than that represented by his own body.  If giving nrg away, same thing.  The bot
     'can't give away more than that represented by his body.  Should make it so that larger bots win tie feeding battles.
@@ -1987,7 +1983,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
   Dim nbody As Integer
   Dim nx As Long
   Dim ny As Long
-  Dim t As Integer
+  Dim T As Integer
   Dim tests As Boolean
   tests = False
   Dim i As Integer
@@ -2029,9 +2025,9 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       SimOpts.TotBorn = SimOpts.TotBorn + 1
       If rob(n).Veg Then totvegs = totvegs + 1
       ReDim rob(nuovo).DNA(UBound(rob(n).DNA))
-      For t = 1 To UBound(rob(nuovo).DNA)
-        rob(nuovo).DNA(t) = rob(n).DNA(t)
-      Next t
+      For T = 1 To UBound(rob(nuovo).DNA)
+        rob(nuovo).DNA(T) = rob(n).DNA(T)
+      Next T
       rob(nuovo).DnaLen = rob(n).DnaLen
       rob(nuovo).genenum = rob(n).genenum
       rob(nuovo).Mutables = rob(n).Mutables
@@ -2039,13 +2035,13 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       rob(nuovo).LastMut = 0
       rob(nuovo).LastMutDetail = rob(n).LastMutDetail
       
-      For t = 1 To rob(n).maxusedvars
-        rob(nuovo).usedvars(t) = rob(n).usedvars(t)
-      Next t
+      For T = 1 To rob(n).maxusedvars
+        rob(nuovo).usedvars(T) = rob(n).usedvars(T)
+      Next T
       
-      For t = 0 To 12
-        rob(nuovo).Skin(t) = rob(n).Skin(t)
-      Next t
+      For T = 0 To 12
+        rob(nuovo).Skin(T) = rob(n).Skin(T)
+      Next T
       
       rob(nuovo).maxusedvars = rob(n).maxusedvars
       Erase rob(nuovo).mem
@@ -2156,25 +2152,25 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
             MratesMax = IIf(NormMut, CLng(.DnaLen) * CLng(valMaxNormMut), 2000000000)
             Dim mrep As Byte
             For mrep = 0 To (Int(3 * Rnd) + 1) * -(rob(n).mem(mrepro) > 0)   '2x to 4x
-                For t = 1 To 10
-                 If t = 9 Then GoTo skip 'ignore PM2 mutation here
-                 If .Mutables.mutarray(t) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
+                For T = 1 To 10
+                 If T = 9 Then GoTo skip 'ignore PM2 mutation here
+                 If .Mutables.mutarray(T) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
                  If Rnd < DeltaMainChance / 100 Then
-                  If DeltaMainExp <> 0 Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
-                  .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rnd * 2 - 1) * DeltaMainLn
-                  If .Mutables.mutarray(t) < 1 Then .Mutables.mutarray(t) = 1
-                  If .Mutables.mutarray(t) > MratesMax Then .Mutables.mutarray(t) = MratesMax
+                  If DeltaMainExp <> 0 Then .Mutables.mutarray(T) = .Mutables.mutarray(T) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
+                  .Mutables.mutarray(T) = .Mutables.mutarray(T) + (Rnd * 2 - 1) * DeltaMainLn
+                  If .Mutables.mutarray(T) < 1 Then .Mutables.mutarray(T) = 1
+                  If .Mutables.mutarray(T) > MratesMax Then .Mutables.mutarray(T) = MratesMax
                  End If
                  If Rnd < DeltaDevChance / 100 Then
-                  If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
-                  .Mutables.StdDev(t) = .Mutables.StdDev(t) + (Rnd * 2 - 1) * DeltaDevLn
-                  If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
-                  .Mutables.Mean(t) = .Mutables.Mean(t) + (Rnd * 2 - 1) * DeltaDevLn
+                  If DeltaDevExp <> 0 Then .Mutables.StdDev(T) = .Mutables.StdDev(T) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
+                  .Mutables.StdDev(T) = .Mutables.StdDev(T) + (Rnd * 2 - 1) * DeltaDevLn
+                  If DeltaDevExp <> 0 Then .Mutables.Mean(T) = .Mutables.Mean(T) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
+                  .Mutables.Mean(T) = .Mutables.Mean(T) + (Rnd * 2 - 1) * DeltaDevLn
                   'Max range is always 0 to 800
-                  If .Mutables.StdDev(t) < 0 Then .Mutables.StdDev(t) = 0
-                  If .Mutables.StdDev(t) > 200 Then .Mutables.StdDev(t) = 200
-                  If .Mutables.Mean(t) < 1 Then .Mutables.Mean(t) = 1
-                  If .Mutables.Mean(t) > 400 Then .Mutables.Mean(t) = 400
+                  If .Mutables.StdDev(T) < 0 Then .Mutables.StdDev(T) = 0
+                  If .Mutables.StdDev(T) > 200 Then .Mutables.StdDev(T) = 200
+                  If .Mutables.Mean(T) < 1 Then .Mutables.Mean(T) = 1
+                  If .Mutables.Mean(T) > 400 Then .Mutables.Mean(T) = 400
                  End If
 skip:
                 Next
@@ -2194,10 +2190,10 @@ skip:
           
           rob(nuovo).Mutables.Mutations = True ' mutate even if mutations disabled for this bot
           
-          For t = 0 To 20
-            rob(nuovo).Mutables.mutarray(t) = rob(nuovo).Mutables.mutarray(t) / 10
-            If rob(nuovo).Mutables.mutarray(t) = 0 Then rob(nuovo).Mutables.mutarray(t) = 1000
-          Next t
+          For T = 0 To 20
+            rob(nuovo).Mutables.mutarray(T) = rob(nuovo).Mutables.mutarray(T) / 10
+            If rob(nuovo).Mutables.mutarray(T) = 0 Then rob(nuovo).Mutables.mutarray(T) = 1000
+          Next T
           
           Mutate nuovo, True
           
@@ -2256,7 +2252,7 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
   Dim nbody As Integer
   Dim nx As Long
   Dim ny As Long
-  Dim t As Integer
+  Dim T As Integer
   Dim tests As Boolean
   Dim i As Integer
   Dim per As Single
@@ -2310,15 +2306,15 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       Dim dna2() As block2
 
       ReDim dna1(UBound(rob(female).DNA))
-      For t = 0 To UBound(dna1)
-       dna1(t).tipo = rob(female).DNA(t).tipo
-       dna1(t).value = rob(female).DNA(t).value
+      For T = 0 To UBound(dna1)
+       dna1(T).tipo = rob(female).DNA(T).tipo
+       dna1(T).value = rob(female).DNA(T).value
       Next
       
       ReDim dna2(UBound(rob(female).spermDNA))
-      For t = 0 To UBound(dna2)
-       dna2(t).tipo = rob(female).spermDNA(t).tipo
-       dna2(t).value = rob(female).spermDNA(t).value
+      For T = 0 To UBound(dna2)
+       dna2(T).tipo = rob(female).spermDNA(T).tipo
+       dna2(T).value = rob(female).spermDNA(T).value
       Next
       
       'Step2 Find longest sequance
@@ -2337,8 +2333,8 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       
       'Bug fix remove starting zero
       If Outdna(0).value = 0 And Outdna(0).tipo = 0 Then
-        For t = 1 To UBound(Outdna)
-         Outdna(t - 1) = Outdna(t)
+        For T = 1 To UBound(Outdna)
+         Outdna(T - 1) = Outdna(T)
         Next
         ReDim Preserve Outdna(UBound(Outdna) - 1)
       End If
@@ -2363,13 +2359,13 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       rob(nuovo).LastMut = 0
       rob(nuovo).LastMutDetail = rob(female).LastMutDetail
       
-      For t = 1 To rob(female).maxusedvars
-        rob(nuovo).usedvars(t) = rob(female).usedvars(t)
-      Next t
+      For T = 1 To rob(female).maxusedvars
+        rob(nuovo).usedvars(T) = rob(female).usedvars(T)
+      Next T
       
-      For t = 0 To 12
-        rob(nuovo).Skin(t) = rob(female).Skin(t)
-      Next t
+      For T = 0 To 12
+        rob(nuovo).Skin(T) = rob(female).Skin(T)
+      Next T
       
       rob(nuovo).maxusedvars = rob(female).maxusedvars
       Erase rob(nuovo).mem
@@ -2489,25 +2485,25 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
         With rob(nuovo)
             Dim MratesMax As Long
             MratesMax = IIf(NormMut, CLng(.DnaLen) * CLng(valMaxNormMut), 2000000000)
-            For t = 1 To 10
-             If t = 9 Then GoTo skip 'ignore PM2 mutation here
-             If .Mutables.mutarray(t) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
+            For T = 1 To 10
+             If T = 9 Then GoTo skip 'ignore PM2 mutation here
+             If .Mutables.mutarray(T) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
              If Rnd < DeltaMainChance / 100 Then
-              If DeltaMainExp <> 0 Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
-              .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rnd * 2 - 1) * DeltaMainLn
-              If .Mutables.mutarray(t) < 1 Then .Mutables.mutarray(t) = 1
-              If .Mutables.mutarray(t) > MratesMax Then .Mutables.mutarray(t) = MratesMax
+              If DeltaMainExp <> 0 Then .Mutables.mutarray(T) = .Mutables.mutarray(T) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
+              .Mutables.mutarray(T) = .Mutables.mutarray(T) + (Rnd * 2 - 1) * DeltaMainLn
+              If .Mutables.mutarray(T) < 1 Then .Mutables.mutarray(T) = 1
+              If .Mutables.mutarray(T) > MratesMax Then .Mutables.mutarray(T) = MratesMax
              End If
              If Rnd < DeltaDevChance / 100 Then
-              If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
-              .Mutables.StdDev(t) = .Mutables.StdDev(t) + (Rnd * 2 - 1) * DeltaDevLn
-              If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
-              .Mutables.Mean(t) = .Mutables.Mean(t) + (Rnd * 2 - 1) * DeltaDevLn
+              If DeltaDevExp <> 0 Then .Mutables.StdDev(T) = .Mutables.StdDev(T) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
+              .Mutables.StdDev(T) = .Mutables.StdDev(T) + (Rnd * 2 - 1) * DeltaDevLn
+              If DeltaDevExp <> 0 Then .Mutables.Mean(T) = .Mutables.Mean(T) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
+              .Mutables.Mean(T) = .Mutables.Mean(T) + (Rnd * 2 - 1) * DeltaDevLn
               'Max range is always 0 to 800
-              If .Mutables.StdDev(t) < 0 Then .Mutables.StdDev(t) = 0
-              If .Mutables.StdDev(t) > 200 Then .Mutables.StdDev(t) = 200
-              If .Mutables.Mean(t) < 1 Then .Mutables.Mean(t) = 1
-              If .Mutables.Mean(t) > 400 Then .Mutables.Mean(t) = 400
+              If .Mutables.StdDev(T) < 0 Then .Mutables.StdDev(T) = 0
+              If .Mutables.StdDev(T) > 200 Then .Mutables.StdDev(T) = 200
+              If .Mutables.Mean(T) < 1 Then .Mutables.Mean(T) = 1
+              If .Mutables.Mean(T) > 400 Then .Mutables.Mean(T) = 400
              End If
 skip:
             Next
@@ -2556,183 +2552,19 @@ skip:
 getout:
 End Function
 
-' hot hot: sex reproduction
-' same as above, but: dna comes from two parents, is crossed-over,
-' and the resulting dna is then mutated.
-'Public Sub SexReproduce(robA As Integer, robB As Integer)
-'  Dim perA As Integer, perB As Integer
-'  Dim nrgA As Long, nrgB As Long
-'  Dim bodyA As Long, bodyB As Long
-'  Dim sondist As Long
-'  Dim nuovo As Integer
-'  Dim nnrg As Long
-'  Dim nbody As Long
-'  Dim nx As Long
-'  Dim ny As Long
-'  Dim t As Integer
-'  Dim tests As Boolean
-'  Dim n As Integer
-'  Dim i As Integer
-'
-'  tests = False
-'  sondist = RobSize * 1.3
-'
-'  If Sqr((rob(robA).pos.x - rob(robB).pos.x) ^ 2 + (rob(robA).pos.Y - rob(robB).pos.Y) ^ 2) >= RobSize * 2 Then Exit Sub
-'
-'  perA = rob(robA).mem(sexrepro)
-'  perB = rob(robB).mem(sexrepro)
-'  perA = Abs(perA) Mod 100
-'  If perA = 0 Then Exit Sub
-'  perB = Abs(perB) Mod 100
-'  If perB = 0 Then Exit Sub
-' ' If perA < 1 Then perA = 1
-' ' If perA > 99 Then perA = 99
-' ' If perB < 1 Then perB = 1
-' ' If perB > 99 Then perB = 99
-'  nrgA = (rob(robA).nrg / 100) * perA
-'  nrgB = (rob(robB).nrg / 100) * perB
-'  nnrg = nrgA + nrgB
-'  If nnrg > 32000 Then
-'    nnrg = 32000
-'    nrgA = 32000 * (perA / 100)
-'    nrgB = 32000 * (perB / 100)
-'  End If
-'  bodyA = (rob(robA).body / 100) * perA
-'  bodyB = (rob(robB).body / 100) * perB
-'  nbody = bodyA + bodyB
-'  If nbody > 32000 Then
-'    nbody = 32000
-'    bodyA = 32000 * (perA / 100)
-'    bodyB = 32000 * (perB / 100)
-'  End If
-'  rob(perA).nrg = rob(perA).nrg - rob(robA).DnaLen * 1.5
-'  rob(perB).nrg = rob(perB).nrg - rob(robB).DnaLen * 1.5
-'  If rob(perA).nrg > 0 And rob(perB).nrg > 0 Then
-'    nx = rob(perA).pos.x + absx(rob(perA).aim, sondist, 0, 0, 0)
-'    ny = rob(perA).pos.Y + absy(rob(perA).aim, sondist, 0, 0, 0)
-'    'tests = tests Or simplecoll(nx, ny, n)
-'    'tests = tests Or (rob(robA).Fixed And IsInSpawnArea(nx, ny))
-'    If Not tests Then
-'      nuovo = posto()
-'      SimOpts.TotBorn = SimOpts.TotBorn + 1
-'
-'      ReDim rob(nuovo).DNA(100)
-'
-'      'Reimplement below!
-'
-'      'DNA is redimed inside a sub function of CrossingOver
-'      'CrossingOver rob(robA).DNA, rob(robB).DNA, rob(nuovo).DNA
-'
-'      ScanUsedVars nuovo
-'      For t = 0 To 20 ' EricL Changed from 14 to 20
-'        rob(nuovo).Mutables.mutarray(t) = (rob(robA).Mutables.mutarray(t) + rob(robB).Mutables.mutarray(t)) / 2
-'      Next t
-'      If rob(robA).Mutables.Mutations Or rob(robB).Mutables.Mutations Then
-'        rob(nuovo).Mutables.Mutations = True
-'      Else
-'        rob(nuovo).Mutables.Mutations = False
-'      End If
-'      For t = 0 To 12
-'        rob(nuovo).Skin(t) = (rob(robA).Skin(t) + rob(robB).Skin(t)) / 2
-'      Next t
-'      Erase rob(nuovo).mem
-'      Erase rob(nuovo).Ties
-'      rob(nuovo).pos.x = rob(robA).pos.x + absx(rob(robA).aim, sondist, 0, 0, 0)
-'      rob(nuovo).pos.Y = rob(robA).pos.Y + absy(rob(robA).aim, sondist, 0, 0, 0)
-'      rob(nuovo).vel.x = rob(robA).vel.x
-'      rob(nuovo).vel.Y = rob(robA).vel.Y
-'      rob(nuovo).color = rob(robA).color
-'      rob(nuovo).aim = rob(robA).aim + PI
-'      If rob(nuovo).aim > 6.28 Then rob(nuovo).aim = rob(nuovo).aim - 2 * PI
-'      rob(nuovo).aimvector = VectorSet(Cos(rob(nuovo).aim), Sin(rob(nuovo).aim))
-'      rob(nuovo).mem(SetAim) = rob(nuovo).aim * 200
-'      rob(nuovo).mem(468) = 32000
-'      rob(nuovo).mem(480) = 32000
-'      rob(nuovo).mem(481) = 32000
-'      rob(nuovo).mem(482) = 32000
-'      rob(nuovo).mem(483) = 32000
-'      rob(nuovo).exist = True
-'      rob(nuovo).Dead = False
-'      rob(nuovo).generation = rob(robA).generation + 1
-'      rob(nuovo).BirthCycle = SimOpts.TotRunCycle
-'      rob(nuovo).vnum = 1
-'      rob(robA).nrg = rob(robA).nrg - nrgA
-'      rob(robB).nrg = rob(robB).nrg - nrgB
-'      rob(robA).mem(Energy) = rob(robA).nrg
-'      rob(robB).mem(Energy) = rob(robB).nrg
-'      rob(robA).body = rob(robA).body - bodyA
-'      rob(robA).radius = FindRadius(rob(robA).body)
-'      rob(robB).body = rob(robB).body - bodyB
-'      rob(robB).radius = FindRadius(rob(robB).body)
-'      rob(robA).mem(315) = rob(robA).body
-'      rob(robB).mem(315) = rob(robB).body
-'      rob(robA).SonNumber = rob(robA).SonNumber + 1
-'      rob(robB).SonNumber = rob(robB).SonNumber + 1
-'      rob(nuovo).nrg = nnrg
-'      rob(nuovo).body = nbody
-'      rob(nuovo).radius = FindRadius(rob(nuovo).body)
-'      rob(nuovo).Poisoned = False
-'      rob(nuovo).parent = rob(robA).AbsNum
-'      rob(nuovo).FName = rob(robA).FName
-'      rob(nuovo).LastOwner = rob(robA).LastOwner
-'      rob(nuovo).Veg = rob(robA).Veg
-'      rob(nuovo).NewMove = rob(robA).NewMove
-'      rob(nuovo).Fixed = rob(robA).Fixed
-'      If rob(nuovo).Fixed Then rob(nuovo).mem(216) = 1
-'      rob(nuovo).Corpse = False
-'      rob(nuovo).Mutations = rob(robA).Mutations
-'      rob(nuovo).LastMutDetail = rob(robA).LastMutDetail
-'      rob(nuovo).Shape = rob(robA).Shape
-'
-'      rob(nuovo).Vtimer = 0
-'      rob(nuovo).virusshot = 0
-'
-'      'First 5 genetic memory locations happen instantly
-'      'Take the values randomly from either parent
-'      For i = 0 To 4
-'        n = Random(1, 2)
-'        rob(nuovo).mem(971 + i) = rob(n).mem(971 + i)
-'      Next i
-'
-'      'UpdateBotBucket nuovo
-'      'BucketsProximity robA
-'      'BucketsProximity robB
-'      'BucketsProximity nuovo
-'      Mutate nuovo
-'
-'      'If Not CheckIntegrity(rob(nuovo).DNA) Then
-'      '  'parents aren't suposed to be penalized,
-'      '  'so they need to get their nrg and body back
-'      '  'NOT YET IMPLEMENTED!
-'      '  rob(nuovo).nrg = 0
-'      'End If
-'
-'      makeoccurrlist nuovo
-'      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())
-'      maketie robA, nuovo, RobSize * 1.3, 90, 0
-'      maketie robB, nuovo, RobSize * 1.3, 90, 0
-'
-'      'to prevent shock
-'      rob(robA).onrg = rob(robA).nrg
-'      rob(robB).onrg = rob(robB).nrg
-'      rob(nuovo).mass = nbody / 1000 + rob(nuovo).shell / 200
-'    End If
-'  End If
-'End Sub
-
 'Botsareus 12/1/2013 Redone to work in all cases
-Public Sub DoGeneticMemory(t As Integer)
+Public Sub DoGeneticMemory(T As Integer)
  Dim loc As Integer ' memory location to copy from parent to offspring
   
   'Make sure the bot has a tie
-  If rob(t).numties > 0 Then
+  If rob(T).numties > 0 Then
       'Make sure it really is the birth tie and not some other tie
-      If rob(t).Ties(1).last > 0 Then
+      If rob(T).Ties(1).last > 0 Then
           'Copy the memory locations 976 to 990 from parent to child. One per cycle.
-          loc = 976 + rob(t).age ' the location to copy
+          loc = 976 + rob(T).age ' the location to copy
           'only copy the value if the location is 0 in the child and the parent has something to copy
-          If rob(t).mem(loc) = 0 And rob(t).epimem(rob(t).age) <> 0 Then
-            rob(t).mem(loc) = rob(t).epimem(rob(t).age)
+          If rob(T).mem(loc) = 0 And rob(T).epimem(rob(T).age) <> 0 Then
+            rob(T).mem(loc) = rob(T).epimem(rob(T).age)
           End If
       End If
   End If
@@ -2740,33 +2572,33 @@ End Sub
 
 ' verifies rapidly if a field position is already occupied
 Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
-  Dim t As Integer
+  Dim T As Integer
   Dim radius As Long
   
   simplecoll = False
   
-  For t = 1 To MaxRobs
-    If rob(t).exist Then
-      If Abs(rob(t).pos.x - x) < rob(t).radius + rob(k).radius And _
-        Abs(rob(t).pos.y - y) < rob(t).radius + rob(k).radius Then
-        If k <> t Then
+  For T = 1 To MaxRobs
+    If rob(T).exist Then
+      If Abs(rob(T).pos.x - x) < rob(T).radius + rob(k).radius And _
+        Abs(rob(T).pos.y - y) < rob(T).radius + rob(k).radius Then
+        If k <> T Then
           simplecoll = True
           GoTo getout
         End If
       End If
     End If
-  Next t
+  Next T
   
   'EricL Can't reproduce into or across a shape
-  For t = 1 To numObstacles
-    If Not ((Obstacles.Obstacles(t).pos.x > Max(rob(k).pos.x, x)) Or _
-           (Obstacles.Obstacles(t).pos.x + Obstacles.Obstacles(t).Width < Min(rob(k).pos.x, x)) Or _
-           (Obstacles.Obstacles(t).pos.y > Max(rob(k).pos.y, y)) Or _
-           (Obstacles.Obstacles(t).pos.y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.y, y))) Then
+  For T = 1 To numObstacles
+    If Not ((Obstacles.Obstacles(T).pos.x > Max(rob(k).pos.x, x)) Or _
+           (Obstacles.Obstacles(T).pos.x + Obstacles.Obstacles(T).Width < Min(rob(k).pos.x, x)) Or _
+           (Obstacles.Obstacles(T).pos.y > Max(rob(k).pos.y, y)) Or _
+           (Obstacles.Obstacles(T).pos.y + Obstacles.Obstacles(T).Height < Min(rob(k).pos.y, y))) Then
        simplecoll = True
        GoTo getout
     End If
-  Next t
+  Next T
   
   If SimOpts.Dxsxconnected = False Then
     If x < rob(k).radius + smudgefactor Or x + rob(k).radius + smudgefactor > SimOpts.FieldWidth Then simplecoll = True
@@ -2781,23 +2613,23 @@ End Function
 ' searches a free slot in the robots array, to store a new rob
 Public Function posto() As Integer
   Dim newsize As Long
-  Dim t As Integer
+  Dim T As Integer
   Dim foundone As Boolean
   Dim x As Long
   
-  t = 1
+  T = 1
   foundone = False
-  While Not foundone And t <= MaxRobs
-    If Not rob(t).exist Then
+  While Not foundone And T <= MaxRobs
+    If Not rob(T).exist Then
       foundone = True
     Else
-      t = t + 1
+      T = T + 1
     End If
   Wend
   
   ' t could be MaxRobs + 1
-  If t > MaxRobs Then
-    MaxRobs = t ' The array is fully packed.  Every slot is taken.
+  If T > MaxRobs Then
+    MaxRobs = T ' The array is fully packed.  Every slot is taken.
   End If
   
   newsize = UBound(rob())
@@ -2830,7 +2662,7 @@ Public Function posto() As Integer
   '  t = t - 1
   'End If
   
-  posto = t
+  posto = T
   
   'potential memory leak:  I'm not sure if VB will catch and release the dereferenced memory or not
   Dim blank As robot

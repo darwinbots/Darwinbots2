@@ -58,21 +58,89 @@ Begin VB.Form frmGset
       Tab(0).Control(4).Enabled=   0   'False
       Tab(0).Control(5)=   "ffmFBSBO"
       Tab(0).Control(5).Enabled=   0   'False
-      Tab(0).ControlCount=   6
+      Tab(0).Control(6)=   "ffmInitChlr"
+      Tab(0).Control(6).Enabled=   0   'False
+      Tab(0).ControlCount=   7
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ffmSunMut"
-      Tab(1).Control(1)=   "ffmEpiReset"
+      Tab(1).Control(0)=   "ffmEpiReset"
+      Tab(1).Control(1)=   "ffmSunMut"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "chkStepladder"
-      Tab(2).Control(1)=   "txtSourceDir"
-      Tab(2).Control(2)=   "chkTournament"
-      Tab(2).Control(3)=   "lblSource"
-      Tab(2).ControlCount=   4
+      Tab(2).Control(0)=   "lblSource"
+      Tab(2).Control(0).Enabled=   0   'False
+      Tab(2).Control(1)=   "chkTournament"
+      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(2)=   "txtSourceDir"
+      Tab(2).Control(2).Enabled=   0   'False
+      Tab(2).Control(3)=   "chkStepladder"
+      Tab(2).Control(3).Enabled=   0   'False
+      Tab(2).Control(4)=   "ffmFudge"
+      Tab(2).Control(4).Enabled=   0   'False
+      Tab(2).ControlCount=   5
+      Begin VB.Frame ffmInitChlr 
+         Caption         =   "Advanced Chloroplast Options"
+         Height          =   975
+         Left            =   4920
+         TabIndex        =   60
+         Top             =   3480
+         Width           =   5655
+         Begin VB.TextBox txtStartChlr 
+            Height          =   375
+            Left            =   2400
+            TabIndex        =   61
+            Text            =   "0"
+            Top             =   360
+            Width           =   1455
+         End
+         Begin VB.Label lblStartChlr 
+            Caption         =   "Start Repopulating Robots with  XXXXXXXXXXXXX  Chloroplasts"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   62
+            Top             =   435
+            Width           =   5295
+         End
+      End
+      Begin VB.Frame ffmFudge 
+         Caption         =   "Fudging on F1 Contest"
+         Height          =   975
+         Left            =   -72120
+         TabIndex        =   56
+         Top             =   3360
+         Width           =   5535
+         Begin VB.OptionButton optFudging 
+            Caption         =   "All possible recognition methods"
+            Height          =   255
+            Index           =   2
+            Left            =   2760
+            TabIndex        =   59
+            Top             =   480
+            Width           =   2655
+         End
+         Begin VB.OptionButton optFudging 
+            Caption         =   "Eyes only"
+            Height          =   255
+            Index           =   1
+            Left            =   1440
+            TabIndex        =   58
+            Top             =   480
+            Width           =   1095
+         End
+         Begin VB.OptionButton optFudging 
+            Caption         =   "None"
+            Height          =   255
+            Index           =   0
+            Left            =   240
+            TabIndex        =   57
+            Top             =   480
+            Value           =   -1  'True
+            Width           =   1815
+         End
+      End
       Begin VB.CheckBox chkStepladder 
          Caption         =   "Stepladder league"
          Height          =   195
@@ -447,7 +515,7 @@ Begin VB.Form frmGset
             TabIndex        =   7
             Text            =   "32100"
             Top             =   480
-            Width           =   1935
+            Width           =   1455
          End
          Begin VB.Label CheatinLab 
             Caption         =   "Kill robots that have more then this amound of body to prevent BigBerthas:"
@@ -633,6 +701,14 @@ MsgBox "Global settings will take effect the next time DarwinBots starts.", vbIn
       Write #1, val(sldDev)
       Write #1, txtSourceDir
       Write #1, chkStepladder = 1
+      
+      Dim tmpopt As OptionButton
+      For Each tmpopt In optFudging
+        If tmpopt.value Then Write #1, tmpopt.Index
+      Next
+      
+      Write #1, val(txtStartChlr.text)
+      
     Close #1
     
 'Botsareus 1/31/2014 Setup a league
@@ -658,7 +734,6 @@ Dim myFSO As Object
 Set myFSO = CreateObject("Scripting.FileSystemObject")
 FolderExists = myFSO.FolderExists(sFullPath)
 End Function
-
 
 Private Sub chkDelta2_Click()
 lblMmain.Visible = chkDelta2.value = 1
@@ -789,6 +864,9 @@ lblDnalen.Visible = chkNorm.value = 1
 txtMxDnalen.Visible = chkNorm.value = 1
 '
 txtSourceDir = leagueSourceDir
+optFudging(x_fudge).value = True
+'
+txtStartChlr.text = StartChlr
 End Sub
 
 Private Sub txtBodyFix_LostFocus()
@@ -856,6 +934,11 @@ txtPMinter = Round(Abs(val(txtPMinter)))
 If txtPMinter > 32000 Then txtPMinter = 32000
 End Sub
 
+Private Sub txtStartChlr_LostFocus()
+'make sure the value is sane
+txtStartChlr = Abs(val(txtStartChlr))
+If txtStartChlr > 32000 Then txtStartChlr = 32000
+End Sub
 
 Private Sub txtWTC_Change()
 'make sure the value is sane
