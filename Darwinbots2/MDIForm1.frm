@@ -1219,10 +1219,6 @@ Private Sub intOptionsOpen_Click()
   optionsform.Show vbModal
 End Sub
 
-Private Sub InvokeLens_Click()
-  MagLens.Show
-End Sub
-
 Private Sub Leagues_Click()
  optionsform.SSTab1.Tab = 4
   NetEvent.Timer1.Enabled = False
@@ -1424,6 +1420,14 @@ Toolbar1.Refresh 'Botsareus 1/11/2013 Force toolbar to refresh
 End Sub
 
 Sub fixcam() 'Botsareus 2/23/2013 When simulation starts the screen is normailized
+'Botsareus 2/9/3014 Based on collected data we need to figure out fudging here Botsareusnotdone expend for evo modes
+If SimOpts.F1 Then
+    Select Case x_fudge
+    Case 1: FudgeEyes = True
+    Case 2: FudgeAll = True
+    End Select
+    optMaxCycles = MaxCycles 'Botsareus 2/14/2014 Move max cycles to optimized max cycles
+End If
 Form1.BackColor = backgcolor 'Botsareus 4/27/2013 Set back ground skin color
 If startnovid Then 'turn off vedio as requested
      visualize = False
@@ -1847,7 +1851,7 @@ Private Sub simload(Optional path As String)
   'Botsareus 6/11/2013 Restart loaded simulation
   While StartAnotherRound
     StartAnotherRound = False
-    SimOpts.UserSeedNumber = Timer * 100 'Botsareus 6/11/2013 Randomize seed on restart
+    SimOpts.UserSeedNumber = Rnd * 100 'Botsareus 6/11/2013 Randomize seed on restart
     Form1.StartSimul
   Wend
 
@@ -2063,11 +2067,22 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   TmpOpts.RepopCooldown = 10
   TmpOpts.PhysBrown = 0.5
   
+  MaxPop = 700
+  MaxCycles = 15000
+  Maxrounds = 1
+  MinRounds = 5
+  optMinRounds = 5
+  
   EnableRobotsMenu
     
   optionsform.ReadSett MDIForm1.MainDir + IIf(simalreadyrunning, "\settings\lastran.set", "\settings\lastexit.set")
   optionsform.IntSettLoad
   
+  'From now on all league and special evolution modes use the restart system.
+  'I have decided to get rid of Eric's attempt at the stepladder league primarly because I
+  'do not trust the randomizer and DBs current logic incase of a crash. I also wanted the
+  'file system to keep track of the league instead of the internal logic of the program for
+  'the same reason. Search "R E S" to find the new components. -Bots
   'Botsareus 1/31/2014 R E S T A R T  L O A D
   If Not (x_restartmode = 0 Or x_restartmode > 4) Then
         If Not simalreadyrunning Then
@@ -2102,15 +2117,6 @@ mode2:
             End Select
         End If
   End If
-  
-  'Botsareus debug -Botsareusnotdone to be used later by league and evo modes
-'    Dim k As Integer
-'    For k = 0 To TmpOpts.SpeciesNum - 1
-'        optionsform.AssignSkin k, TmpOpts.Specie(k).path & "\" & TmpOpts.Specie(k).Name
-'    Next
-'    SimOpts = TmpOpts
-'    Form1.StartSimul
-  'end debug
 
   If exitDB Then
     MDIForm_Unload (1)
@@ -2183,12 +2189,22 @@ Public Function DisableRobotsMenu()
 End Function
 
 Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
-
-If x_restartmode > 0 Then
-    If MsgBox("Exiting now will end the current restart mode. Continue?", vbQuestion + vbYesNo) = vbNo Then Exit Sub
+If Form1.lblSaving.Visible Then 'Botsareus 2/7/2014 small bug fix for autosave
+    Cancel = 1
+    Exit Sub
 End If
 
-If dir(App.path & "\restartmode.gset") <> "" Then Kill App.path & "\restartmode.gset"
+If x_restartmode > 0 Then
+    Select Case MsgBox("Do you want to stop the current restart mode? Press CANCEL to return to the program.", vbQuestion + vbYesNoCancel)
+        Case vbCancel: Exit Sub
+        Case vbYes: Kill App.path & "\restartmode.gset"
+        Case vbNo
+                Open App.path & "\Safemode.gset" For Output As #1
+                 Write #1, False
+                Close #1
+                End
+    End Select
+End If
 
 Form1.hide_graphs
 
@@ -2248,7 +2264,6 @@ Private Sub MDIForm_Resize()
   'InfoForm.ZOrder
 End Sub
 Private Sub MDIForm_Unload(Cancel As Integer)
-
    
 SaveSimulation MDIForm1.MainDir + "\saves\lastexit.sim"  'save last settings
   
@@ -2328,18 +2343,8 @@ If Form1.GraphLab.Visible Then Exit Sub
   optionsform.Show
 End Sub
 
-Private Sub quit_Click()
+Private Sub quit_Click() 'Botsareus 2/7/2014 Simple quit code
   MDIForm_QueryUnload 0, 0
-  If MsgBox(MBsure, vbYesNo + vbExclamation, MBwarning) = vbYes = vbYes Then
-    If InternetMode Then
-      InternetMode = False
-      On Error GoTo bypass
-      'TODO quit DarwinbotsIM
-bypass:
-    End If
-    
-    MDIForm_Unload 0
-  End If
 End Sub
 
 Private Sub sdna_Click()

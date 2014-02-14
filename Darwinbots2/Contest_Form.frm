@@ -404,4 +404,3 @@ Private Sub Form_Resize()
     Contest_Form.Width = 5000
   End If
 End Sub
-

@@ -76,12 +76,9 @@ Public Sub FrictionForces(n As Integer)
   With rob(n)
   
   If SimOpts.Zgravity = 0 Then GoTo getout
+
+  ZGrav = SimOpts.Zgravity
   
-  If SimOpts.EGridEnabled Then
-    'ZGrav = EGrid(FindEGridX(.pos), FindEGridY(.pos)).Zgravity
-  Else
-    ZGrav = SimOpts.Zgravity
-  End If
   If .vel.x = 0 And .vel.y = 0 Then 'is there a vector way to do this?
     .ImpulseStatic = CSng(.mass * ZGrav * SimOpts.CoefficientStatic) ' * 1 cycle (timestep = 1)
   Else
@@ -112,12 +109,8 @@ Public Sub BrownianForces(n As Integer)
   If SimOpts.PhysBrown = 0 Then GoTo getout
   Dim Impulse As Single
   Dim RandomAngle As Single
- 
-    If SimOpts.EGridEnabled Then
-      'Impulse = EGrid(FindEGridX(rob(n).pos), FindEGridY(rob(n).pos)).PhysBrown * 0.5 * Rnd
-    Else
-      Impulse = SimOpts.PhysBrown * 0.5 * Rnd
-    End If
+
+    Impulse = SimOpts.PhysBrown * 0.5 * Rnd
     
     RandomAngle = Rnd * 2 * PI
     rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(Cos(RandomAngle) * Impulse, Sin(RandomAngle) * Impulse))
@@ -384,22 +377,6 @@ Public Function CylinderCd(ByVal velocitymagnitude As Single, ByVal radius As Si
 getout:
   End With
 End Function
-'
-'Public Sub BouyancyForces(n As Integer) 'Botsareus 2/2/2013 BouyancyForces are no longer needed since boy is proportional to y gravity
-'  Dim Impulse As Single
-'
-'  If SimOpts.Ygravity = 0 Then GoTo getout
-'
-'    If SimOpts.EGridEnabled Then
-'      'Impulse = -SimOpts.Density * rob(n).radius ^ 3 * 4 / 3 * PI * EGrid(FindEGridX(rob(n).pos), FindEGridY(rob(n).pos)).Ygravity
-'    Else
-'      Impulse = -SimOpts.Density * rob(n).radius ^ 3 * 4 / 3 * PI * SimOpts.Ygravity
-'    End If
-'    rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(0, Impulse))
-'
-'getout:
-'
-'End Sub
 
 Public Sub GravityForces(n As Integer) 'Botsareus 2/2/2013 added bouy as part of y-gravity formula
 If (SimOpts.Ygravity = 0 Or Not SimOpts.Pondmode Or SimOpts.Updnconnected) Then
@@ -1045,7 +1022,7 @@ End Sub
 
 'EricL - My attempt to back port 2.5 physics to address collision detection
 'with a bunch of extra tweaks figurred out via trial and error.
-Public Sub Repel3(rob1 As Integer, rob2 As Integer) 'Botsareusnotdone collision code to add to ties
+Public Sub Repel3(rob1 As Integer, rob2 As Integer)
   Dim normal As vector
   Dim vy As vector
   Dim Length As Single

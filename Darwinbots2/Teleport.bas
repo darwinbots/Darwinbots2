@@ -183,8 +183,8 @@ Dim randomV As vector
           Else
             If Teleporters(i).local Then Teleporters(i).NumTeleported = Teleporters(i).NumTeleported + 1 ' Don't update the counter for Internet Mode teleporters
             randomV = VectorSet(SimOpts.FieldWidth * Rnd, SimOpts.FieldHeight * Rnd)
-            If MDIForm1.visualize Then Form1.Line (rob(n).pos.x, rob(n).pos.Y)-(randomV.x, randomV.Y), vbWhite
-            ReSpawn n, CLng(randomV.x), CLng(randomV.Y)
+            If MDIForm1.visualize Then Form1.Line (rob(n).pos.x, rob(n).pos.y)-(randomV.x, randomV.y), vbWhite
+            ReSpawn n, CLng(randomV.x), CLng(randomV.y)
           End If
         End If
       End If
@@ -238,14 +238,14 @@ Public Function DrawTeleporters()
     If SimOpts.TotRunCycle >= 0 Then
       
       If (Form1.visiblew / RobSize) < 1000 And Teleporters(i).pos.x > visibleLeft And _
-         Teleporters(i).pos.x < visibleRight And Teleporters(i).pos.Y > visibleTop And _
-         Teleporters(i).pos.Y < visibleBottom Then
+         Teleporters(i).pos.x < visibleRight And Teleporters(i).pos.y > visibleTop And _
+         Teleporters(i).pos.y < visibleBottom Then
         pictwidth = (Form1.Teleporter.Picture.Height) * zoomRatio * SimOpts.FieldWidth / (2 * Form1.Width)
         pictmod = (SimOpts.TotRunCycle Mod 16) * pictwidth * 1.134 + Form1.ScaleLeft
       
         Form1.PaintPicture Form1.TeleporterMask.Picture, _
         Teleporters(i).pos.x, _
-        Teleporters(i).pos.Y, _
+        Teleporters(i).pos.y, _
         Teleporters(i).Width, _
         Teleporters(i).Height, _
         pictmod, _
@@ -254,7 +254,7 @@ Public Function DrawTeleporters()
             
         Form1.PaintPicture Form1.Teleporter.Picture, _
         Teleporters(i).pos.x, _
-        Teleporters(i).pos.Y, _
+        Teleporters(i).pos.y, _
         Teleporters(i).Width, _
         Teleporters(i).Height, _
         pictmod, _
@@ -263,19 +263,19 @@ Public Function DrawTeleporters()
       End If
           
       If Teleporters(i).highlight And Teleporters(i).pos.x > visibleLeft And _
-         Teleporters(i).pos.x < visibleRight And Teleporters(i).pos.Y > visibleTop And _
-         Teleporters(i).pos.Y < visibleBottom Then
+         Teleporters(i).pos.x < visibleRight And Teleporters(i).pos.y > visibleTop And _
+         Teleporters(i).pos.y < visibleBottom Then
         If Teleporters(i).In Then hilightcolor = vbGreen
         If Teleporters(i).Out Then hilightcolor = vbRed
         If Teleporters(i).local Then hilightcolor = vbYellow
         If Teleporters(i).Internet Then hilightcolor = vbBlue
-        Form1.Circle (Teleporters(i).pos.x + (Teleporters(i).Width / 2), Teleporters(i).pos.Y + (Teleporters(i).Height / 3)), Teleporters(i).Width * 0.6, hilightcolor
+        Form1.Circle (Teleporters(i).pos.x + (Teleporters(i).Width / 2), Teleporters(i).pos.y + (Teleporters(i).Height / 3)), Teleporters(i).Width * 0.6, hilightcolor
       End If
       
       If i = teleporterFocus And Teleporters(i).pos.x > visibleLeft And _
-         Teleporters(i).pos.x < visibleRight And Teleporters(i).pos.Y > visibleTop And _
-         Teleporters(i).pos.Y < visibleBottom Then
-        Form1.Circle (Teleporters(i).pos.x + (Teleporters(i).Width / 2), Teleporters(i).pos.Y + (Teleporters(i).Height / 3)), Teleporters(i).Width * 0.7, vbWhite
+         Teleporters(i).pos.x < visibleRight And Teleporters(i).pos.y > visibleTop And _
+         Teleporters(i).pos.y < visibleBottom Then
+        Form1.Circle (Teleporters(i).pos.x + (Teleporters(i).Width / 2), Teleporters(i).pos.y + (Teleporters(i).Height / 3)), Teleporters(i).Width * 0.7, vbWhite
       End If
  
     End If
@@ -306,7 +306,7 @@ Public Function DriftTeleporter(i As Integer)
     Teleporters(i).vel.x = Teleporters(i).vel.x + (Rnd - 0.5)
   End If
   If Teleporters(i).driftVertical Then
-    Teleporters(i).vel.Y = Teleporters(i).vel.Y + (Rnd - 0.5)
+    Teleporters(i).vel.y = Teleporters(i).vel.y + (Rnd - 0.5)
   End If
   If VectorMagnitude(Teleporters(i).vel) > vel Then
     Teleporters(i).vel = VectorScalar(Teleporters(i).vel, vel / VectorMagnitude(Teleporters(i).vel))
@@ -319,7 +319,7 @@ Public Function MoveTeleporter(i As Integer)
     Teleporters(i).pos = VectorAdd(Teleporters(i).pos, Teleporters(i).vel)
   End If
   Teleporters(i).center = VectorSet(Teleporters(i).pos.x + (Teleporters(i).Width * 0.5), _
-                                    Teleporters(i).pos.Y + (Teleporters(i).Height * 0.3))
+                                    Teleporters(i).pos.y + (Teleporters(i).Height * 0.3))
   
   'Keep teleporters from drifting off into space.
   With Teleporters(i)
@@ -333,14 +333,14 @@ Public Function MoveTeleporter(i As Integer)
       .vel.x = SimOpts.MaxVelocity * 0.1
     End If
   End If
-  If .pos.Y < 0 Then
-    If .pos.Y + .Height < 0 Then
-      .pos.Y = 0
+  If .pos.y < 0 Then
+    If .pos.y + .Height < 0 Then
+      .pos.y = 0
     End If
     If SimOpts.Updnconnected = True Then
-      .pos.Y = .pos.Y + SimOpts.FieldHeight - .Height
+      .pos.y = .pos.y + SimOpts.FieldHeight - .Height
     Else
-      .vel.Y = SimOpts.MaxVelocity * 0.1
+      .vel.y = SimOpts.MaxVelocity * 0.1
     End If
   End If
   If .pos.x + .Width > SimOpts.FieldWidth Then
@@ -353,14 +353,14 @@ Public Function MoveTeleporter(i As Integer)
       .vel.x = -SimOpts.MaxVelocity * 0.1
     End If
   End If
-  If .pos.Y + .Height > SimOpts.FieldHeight Then
-    If .pos.Y > SimOpts.FieldHeight Then
-      .pos.Y = SimOpts.FieldHeight - .Height
+  If .pos.y + .Height > SimOpts.FieldHeight Then
+    If .pos.y > SimOpts.FieldHeight Then
+      .pos.y = SimOpts.FieldHeight - .Height
     End If
     If SimOpts.Updnconnected = True Then
-      .pos.Y = .pos.Y - (SimOpts.FieldHeight - .Height)
+      .pos.y = .pos.y - (SimOpts.FieldHeight - .Height)
     Else
-      .vel.Y = -SimOpts.MaxVelocity * 0.1
+      .vel.y = -SimOpts.MaxVelocity * 0.1
     End If
   End If
   End With
@@ -394,7 +394,7 @@ Dim temp As Boolean
           ReDim Preserve sAns(lElement) As String
           sAns(lElement) = sFile
           If Right(sFile, 3) = "dbo" Then
-            n = LoadOrganism(Teleporters(i).path + "\" + sAns(lElement), Teleporters(i).pos.x + Teleporters(i).Width / 2, Teleporters(i).pos.Y + Teleporters(i).Height / 3)
+            n = LoadOrganism(Teleporters(i).path + "\" + sAns(lElement), Teleporters(i).pos.x + Teleporters(i).Width / 2, Teleporters(i).pos.y + Teleporters(i).Height / 3)
             Teleporters(i).NumTeleportedIn = Teleporters(i).NumTeleportedIn + 1
             Kill (Teleporters(i).path + "\" + sAns(lElement))
             MaxBotsPerCyclePerTeleporter = MaxBotsPerCyclePerTeleporter - 1
@@ -422,7 +422,7 @@ Dim temp As Boolean
           sAns(lElement) = sFile
           If Right(sFile, 3) = "dbo" Then
             randomV = VectorSet(SimOpts.FieldWidth * Rnd, SimOpts.FieldHeight * Rnd)
-            n = LoadOrganism(Teleporters(i).intInPath + "\" + sAns(lElement), randomV.x, randomV.Y)
+            n = LoadOrganism(Teleporters(i).intInPath + "\" + sAns(lElement), randomV.x, randomV.y)
             Teleporters(i).NumTeleportedIn = Teleporters(i).NumTeleportedIn + 1
             Kill (Teleporters(i).intInPath + "\" + sAns(lElement))
             MaxBotsPerCyclePerTeleporter = MaxBotsPerCyclePerTeleporter - 1
@@ -455,12 +455,12 @@ Dim i As Integer
   TeleportInBots
 End Function
 
-Public Function whichTeleporter(x As Single, Y As Single) As Integer
+Public Function whichTeleporter(x As Single, y As Single) As Integer
   Dim t As Integer
   whichTeleporter = 0
   For t = 1 To numTeleporters
     If x >= Teleporters(t).pos.x And x <= Teleporters(t).pos.x + Teleporters(t).Width And _
-       Y >= Teleporters(t).pos.Y And Y <= Teleporters(t).pos.Y + Teleporters(t).Height Then
+       y >= Teleporters(t).pos.y And y <= Teleporters(t).pos.y + Teleporters(t).Height Then
        whichTeleporter = t
        Exit Function
     End If

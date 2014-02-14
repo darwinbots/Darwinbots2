@@ -598,7 +598,7 @@ Dim counter As Integer
 End Sub
 
 
-Public Sub readtie(t As Integer)
+Public Sub readtie(ByVal t As Integer) 'Botsareus 2/11/2014 Bug fix
 
 'reads all of the tref variables from a given tie number
   Dim k As Integer
@@ -654,9 +654,24 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
     Else
       .mem(trefbody) = 32000
     End If
+    
     For l = 1 To 8    'copies all ref vars from tied robot
       .mem(455 + l) = rob(.Ties(k).pnt).occurr(l)
     Next l
+    
+    If .FName <> rob(.Ties(k).pnt).FName Then
+     'Botsareus 2/11/2014 Tie Eye Fudge
+     If FudgeEyes Or FudgeAll Then
+      If rob(n).mem(455 + 8) < 2 Then rob(n).mem(455 + 8) = Int(Rnd * 2) + 1 Else rob(n).mem(455 + 8) = rob(n).mem(455 + 8) + Int(Rnd * 2) * 2 - 1
+     End If
+     'Fudge the rest of Tie occurr
+     If FudgeAll Then
+      For t = 1 To 7
+       If rob(n).mem(455 + t) < 2 Then rob(n).mem(455 + t) = Int(Rnd * 2) + 1 Else rob(n).mem(455 + t) = rob(n).mem(455 + t) + Int(Rnd * 2) * 2 - 1
+      Next t
+     End If
+    End If
+    
     If .mem(476) > 0 And .mem(476) <= 1000 Then   'tmemval and tmemloc couple used to read a specific memory value from tied robot.
       .mem(475) = rob(.Ties(k).pnt).mem(.mem(476))
       If .mem(479) > EyeStart And .mem(479) < EyeEnd Then
@@ -695,6 +710,13 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
     For l = 410 To 419
       .mem(l + 10) = rob(.Ties(k).pnt).mem(l)
     Next l
+    
+    'Fudge tin/tout
+    If FudgeAll And .FName <> rob(.Ties(k).pnt).FName Then
+      For l = 410 To 419
+       If .mem(l + 10) <> 0 Then .mem(l + 10) = .mem(l + 10) + Int(Rnd * 2) * 2 - 1
+      Next l
+    End If
         
   End With
 End Sub
