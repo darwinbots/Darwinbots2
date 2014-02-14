@@ -166,7 +166,7 @@ End Function
 
 ' writes some senses: view, .ref* vars, absvel
 ' pain, pleas, nrg
-Public Sub WriteSenses(n As Integer)
+Public Sub WriteSenses(ByVal n As Integer)
   Dim t As Integer
   Dim i As Integer
   Dim temp As Single

@@ -52,7 +52,7 @@ Public DisplayDebug As Boolean
 ''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''
 
-Private Sub ExecuteDNA(n As Integer)
+Private Sub ExecuteDNA(ByVal n As Integer)
   Dim a As Integer
   Dim b As Integer
   Dim tipo As Long
