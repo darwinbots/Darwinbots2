@@ -24,7 +24,7 @@ Public Class Form1
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Dim c As Byte
         For Each p As Process In Process.GetProcesses
-            If p.ProcessName = "DarwinBotsIM" Then
+            If LCase(p.ProcessName) = "darwinbotsim" Then
                 c = c + 1
                 If c = 2 Then End
             End If
