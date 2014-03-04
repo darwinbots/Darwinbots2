@@ -399,6 +399,8 @@ Dim temp As Boolean
             Kill (Teleporters(i).path + "\" + sAns(lElement))
             MaxBotsPerCyclePerTeleporter = MaxBotsPerCyclePerTeleporter - 1
             sFile = dir
+          ElseIf Right(sFile, 4) = "temp" Then 'Botsareus 2/21/2014 Added code to ignore temp files
+            sFile = dir
           Else
             MsgBox ("Non dbo file " + sFile + "found in " + Teleporters(i).path + ".  Inbound Teleporter Deleted.")
             Teleporters(i).exist = False
@@ -426,6 +428,8 @@ Dim temp As Boolean
             Teleporters(i).NumTeleportedIn = Teleporters(i).NumTeleportedIn + 1
             Kill (Teleporters(i).intInPath + "\" + sAns(lElement))
             MaxBotsPerCyclePerTeleporter = MaxBotsPerCyclePerTeleporter - 1
+            sFile = dir
+          ElseIf Right(sFile, 4) = "temp" Then 'Botsareus 2/21/2014 Added code to ignore temp files
             sFile = dir
           Else
             MsgBox ("Non dbo file " + sFile + "found in " + Teleporters(i).intInPath + ".  Inbound Teleporter Deleted.")

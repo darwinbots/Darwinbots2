@@ -129,22 +129,20 @@ Begin VB.Form optionsform
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "Label19"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).Control(2)=   "Frame7"
-      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).Control(3)=   "btnSetF1"
-      Tab(4).Control(3).Enabled=   0   'False
       Tab(4).Control(4)=   "btnSetF2"
-      Tab(4).Control(4).Enabled=   0   'False
       Tab(4).ControlCount=   5
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
       Tab(5).Control(0)=   "Label41"
+      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "Label42"
+      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).Control(2)=   "Simulazione"
+      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
@@ -959,7 +957,7 @@ Begin VB.Form optionsform
                End
             End
             Begin VB.Frame Frame29 
-               Caption         =   "Rates for Average Repopulation"
+               Caption         =   "Rates for Repopulation"
                Height          =   2175
                Left            =   60
                TabIndex        =   140
@@ -1097,17 +1095,17 @@ Begin VB.Form optionsform
                   Enabled         =   -1  'True
                End
                Begin VB.Label LabelZZ 
-                  Caption         =   "Maximum number avg. vegys."
+                  Caption         =   "* 16K Maximum Chloroplasts"
                   Height          =   195
                   Index           =   0
                   Left            =   960
                   TabIndex        =   152
                   ToolTipText     =   "An average Vegy has 16000 Chloroplasts."
-                  Top             =   310
-                  Width           =   2175
+                  Top             =   315
+                  Width           =   2295
                End
                Begin VB.Label LabelZZ 
-                  Caption         =   "Repopulation threshold average vegys."
+                  Caption         =   "* 16K Repopulation threshold of Chloroplasts"
                   Height          =   435
                   Index           =   1
                   Left            =   960
@@ -1136,7 +1134,7 @@ Begin VB.Form optionsform
                End
             End
             Begin VB.Frame Frame30 
-               Caption         =   "Veggy Energy"
+               Caption         =   "Initial light energy"
                Height          =   3735
                Left            =   3480
                TabIndex        =   133
@@ -2969,7 +2967,7 @@ Private Sub btnSetF1_Click() 'Botsareus 2/5/2014 New way to set league settings
     TmpOpts.FieldWidth = 9237
     TmpOpts.FieldHeight = 6928
     TmpOpts.FieldSize = 1
-    TmpOpts.MaxEnergy = 40           ' Veggy nrg per cycle
+    TmpOpts.MaxEnergy = 120           ' Veggy nrg per cycle
     TmpOpts.MaxPopulation = 25       ' Veggy max population
     TmpOpts.MinVegs = 10
     TmpOpts.Pondmode = False
@@ -3025,7 +3023,7 @@ End Sub
 
 Private Sub btnSetF2_Click() 'Botsareus 2/5/2014 New way to set league settings
 btnSetF1_Click
-TmpOpts.MaxEnergy = 30 ' Veggy nrg per cycle
+TmpOpts.MaxEnergy = 105 ' Veggy nrg per cycle
 MaxNRGText.text = 30
 End Sub
 

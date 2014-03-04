@@ -376,26 +376,17 @@ Private Sub Form_Load()
 '  SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
 End Sub
 
-Private Sub Option1_Click(Index As Integer)
+Private Sub Option1_Click(Index As Integer) 'Botsareus 2/25/2014 Simplified
+If Index = 0 Then Exit Sub
   'robot species index wins this round
-  If Index > 0 And Option1(Index).value = True Then
     Dim t As Integer
-    Dim nd As node
     Dim realname As String
-  
     For t = 1 To MaxRobs
-    '  t = nd.robn
-        'If Not .Veg And Not .Corpse And Not .wall And .exist Then
         If Not rob(t).Veg And Not rob(t).Corpse And rob(t).exist Then
           realname = Left(rob(t).FName, Len(rob(t).FName) - 4)
           If realname <> PopArray(Index).SpName Then KillRobot t
         End If
-   
     Next t
-  
-    Option1(0).value = True
-    Countpop
-  End If
 End Sub
 
 Private Sub Form_Resize()

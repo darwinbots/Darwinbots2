@@ -83,7 +83,9 @@ Public Sub Snapshot()
         s = (Form1.TotalOffspring ^ sPopulation) * (s ^ sEnergy)
         Print #3, CStr(s); v; CStr(rob(rn).nrg + rob(rn).body * 10); v; .chloroplasts;
         d = ""
+        savingtofile = True
         d = DetokenizeDNA(rn, False)
+        savingtofile = False
         Print #3, d;
       End With
     End If
@@ -120,7 +122,9 @@ Public Sub AddRecord(rn As Integer)
   Print #2, sstr(.LastMut); v; sstr(.DnaLen); v; sstr(.SonNumber); v; sstr(TotalRobots); v; sstr(totvegs); v; sstr(totnvegs); v; sstr(.Kills); v;
 
   d = ""
+  savingtofile = True
   d = d + DetokenizeDNA(rn, False)
+  savingtofile = False
   Print #2, d
   End With
   GoTo getout

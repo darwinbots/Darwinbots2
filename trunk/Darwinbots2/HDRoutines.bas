@@ -5,6 +5,22 @@ Option Explicit
 '   D I S K    O P E R A T I O N S
 '
 
+Public Sub deseed(ByVal s As String) 'Botsareus 2/25/2014 Used in Tournament to get back original names of the files and move to result folder
+Dim lastline As String
+Dim files As Collection
+Set files = getfiles(s)
+    Dim i As Integer
+    For i = 1 To files.count
+        Open files(i) For Input As #1 ' Open file for input.
+            Do While Not EOF(1) ' Check for end of file.
+            Line Input #1, lastline
+            Loop
+        Close #1
+        lastline = Replace(lastline, "'#tag:", "")
+        FileCopy files(1), MDIForm1.MainDir & "\league\Tournament_Results\" & lastline
+    Next
+End Sub
+
 Public Function NamefileRecursive(ByVal s As String) As String 'Botsareus 1/31/2014 .txt files only
 Dim i As Byte
 i = Asc("a") - 1
@@ -13,6 +29,30 @@ Do While dir(NamefileRecursive) <> ""
 i = i + 1
 NamefileRecursive = Replace(s, ".txt", "") & Chr(i) & ".txt"
 Loop
+End Function
+
+Public Sub movefilemulti(ByVal source As String, ByVal Out As String, ByVal count As Integer) 'Botsareus 2/18/2014 top/buttom pattern file move
+    Dim files As Collection
+    Dim last As Boolean
+    Dim i As Integer
+    For i = 1 To count
+        Set files = getfiles(source)
+        SortCollection files
+        If last Then
+            FileCopy files(1), Out & "\" & extractname(files(1))
+            Kill files(1)
+        Else
+            FileCopy files(files.count), Out & "\" & extractname(files(files.count))
+            Kill files(files.count)
+        End If
+        last = Not last
+    Next
+End Sub
+
+Public Function FolderExists(sFullPath As String) As Boolean
+Dim myFSO As Object
+Set myFSO = CreateObject("Scripting.FileSystemObject")
+FolderExists = myFSO.FolderExists(sFullPath)
 End Function
 
 'Botsareus 1/31/2014 Delete this directory and all the files it contains.
@@ -63,6 +103,39 @@ Dim i As Integer
         file_name = dir$()
     Loop
 End Function
+
+Private Sub SortCollection(ByRef ColVar As Collection)  'special code to reorder by name
+    Dim oCol As Collection
+    Dim i As Integer
+    Dim i2 As Integer
+    Dim iBefore As Integer
+    If Not (ColVar Is Nothing) Then
+        If ColVar.count > 0 Then
+            Set oCol = New Collection
+            For i = 1 To ColVar.count
+                If oCol.count = 0 Then
+                    oCol.Add ColVar(i)
+                Else
+                    iBefore = 0
+                    For i2 = oCol.count To 1 Step -1
+                        If val(extractexactname(extractname(ColVar(i)))) < val(extractexactname(extractname(oCol(i2)))) Then
+                            iBefore = i2
+                        Else
+                            Exit For
+                        End If
+                    Next
+                    If iBefore = 0 Then
+                        oCol.Add ColVar(i)
+                    Else
+                        oCol.Add ColVar(i), , iBefore
+                    End If
+                End If
+            Next
+            Set ColVar = oCol
+            Set oCol = Nothing
+        End If
+    End If
+End Sub
 
 
 Public Function RecursiveMkDir(destDir As String) As Boolean
@@ -1448,7 +1521,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
       'EricL Set reasonable default values for everything read from this point on.
       .Mutables.Mutations = True
 
-      SetDefaultMutationRates .Mutables
+      SetDefaultMutationRates .Mutables, True
     
       .View = True
       .NewMove = False
@@ -1496,7 +1569,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     
      'If we read wacky values, the file was saved with an older version which messed these up.  Set the defaults.
     If MessedUpMutations Then
-      SetDefaultMutationRates .Mutables
+      SetDefaultMutationRates .Mutables, True
     End If
     
     If FileContinue(n) Then Get #n, , .View
@@ -1587,6 +1660,12 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     
     If FileContinue(n) Then Get #n, , .tag
     
+    'Read if robot is using sunbelt
+    
+    Dim usesunbelt As Boolean 'sunbelt mutations
+    
+    If FileContinue(n) Then Get #n, , usesunbelt
+    
     'read in any future data here
     
 OldFile:
@@ -1604,6 +1683,15 @@ OldFile:
     'except some initialization stuff
     .Vtimer = 0
     .virusshot = 0
+    
+    'Botsareus 2/21/2014 Special case reset sunbelt mutations
+    
+    If Not usesunbelt Then
+        .Mutables.mutarray(P2UP) = 0
+        .Mutables.mutarray(CE2UP) = 0
+        .Mutables.mutarray(AmplificationUP) = 0
+        .Mutables.mutarray(TranslocationUP) = 0
+    End If
   End With
 End Sub
 
@@ -1828,6 +1916,10 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     
     Put #n, , .tag
     
+    'Botsareus 1/28/2014 Write if robot is using sunbelt
+    
+    Put #n, , sunbelt
+    
     'write any future data here
     
     Put #n, , Fe
@@ -1847,7 +1939,9 @@ Sub salvarob(n As Integer, path As String, Optional nombox As Boolean)
   t = 1
   Open path For Output As #1
   hold = SaveRobHeader(n)
+  savingtofile = True 'Botsareus 2/28/2014 when saving to file the def sysvars should not save
   hold = hold + DetokenizeDNA(n, True)
+  savingtofile = False
   hashed = Hash(hold, 20)
   Print #1, hold
   Print #1, ""

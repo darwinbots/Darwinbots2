@@ -1,26 +1,6 @@
 Attribute VB_Name = "NeoMutations"
 Option Explicit
 
-Private Type MutationsType
-  PointPerUnit As Long 'per kilocycle
-  PointCycle As Long 'the cycle we are goin to point mutate during
-  PointMean As Single 'average length of DNA to change
-  PointStdDev As Single 'std dev of this length
-
-  ReproduceTotalPerUnit As Long
-  Reproduce As Long 'a 1 in X chance to mutate when we reproduce
-
-  ReversalPerUnit As Long
-  ReversalLengthMean As Single
-  ReversalLengthStdDev As Single
-
-  CopyErrorPerUnit As Long
-  InsertionPerUnit As Long
-  AmplificationPerUnit As Long
-  MajorDeletionPerUnit As Long
-  MinorDeletionPerUnit As Long
-End Type
-
 '1-(perbot+1)^(1/DNALength) = per unit
 '1-(1-perunit)^DNALength = perbot
 
@@ -125,7 +105,7 @@ End Function
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Public Sub Mutate(robn As Integer, Optional reproducing As Boolean = False) 'Botsareus 12/17/2013
+Public Sub Mutate(ByVal robn As Integer, Optional reproducing As Boolean = False) 'Botsareus 12/17/2013
   Dim Delta As Long
 
   With rob(robn)
@@ -229,7 +209,7 @@ On Error GoTo getout:
   Do
   t = t + 1
    If Timer - 4 > timee Then Exit Sub 'Botsareus 12/10/2013 safety exit
-    If Rnd < 1 / .Mutables.mutarray(AmplificationUP) Then
+    If Rnd < 1 / (.Mutables.mutarray(AmplificationUP) / SimOpts.MutCurrMult) Then
       Length = Gauss(.Mutables.StdDev(AmplificationUP), .Mutables.Mean(AmplificationUP))
       Length = Length Mod UBound(.DNA)
       If Length < 1 Then Length = 1
@@ -299,7 +279,7 @@ On Error GoTo getout:
   Dim counter As Long
   
   For t = 1 To UBound(.DNA) - 1
-    If Rnd < 1 / .Mutables.mutarray(TranslocationUP) Then
+    If Rnd < 1 / (.Mutables.mutarray(TranslocationUP) / SimOpts.MutCurrMult) Then
 
       Length = Gauss(.Mutables.StdDev(TranslocationUP), .Mutables.Mean(TranslocationUP))
       Length = Length Mod UBound(.DNA)
@@ -918,7 +898,7 @@ Public Sub SetDefaultMutationRates(ByRef changeme As mutationprobs, Optional ski
 Dim Length As Integer
 Dim path As String
 If NormMut And Not skipNorm Then
-    If optionsform.CurrSpec = 50 Then 'exsisting robot
+    If optionsform.CurrSpec = 50 Or optionsform.CurrSpec = -1 Then    'only if current spec is selected
         Length = rob(robfocus).DnaLen
     Else 'load dna length
         If MaxRobs = 0 Then ReDim rob(0)
@@ -939,6 +919,7 @@ End If
     .Mean(a) = 1
     .StdDev(a) = 0
   Next a
+  If skipNorm Then .mutarray(P2UP) = 0 'Botsareus 2/21/2014 Might as well disable p2 mutations if loading from the net
   
   .Mean(PointUP) = 3
   .StdDev(PointUP) = 1

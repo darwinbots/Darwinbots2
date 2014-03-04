@@ -31,6 +31,10 @@ Public optMaxCycles As Long
 Private eye11 As Integer 'for eye fudging.  Search 'fudge' to see what I mean
 Public StartAnotherRound As Boolean
 
+'For restarts
+Public robotA As String
+Public robotB As String
+
 Public Sub ResetContest()
   Dim t As Integer
   Contests = 0
@@ -374,7 +378,20 @@ Static setoldpop As Boolean
           Winner = PopArray(t).SpName
 won:
           Over = True
-          MsgBox Winner & " has won.", , "F1 mode"
+          Select Case x_restartmode 'all new league components start with "x_"
+          Case 0
+            MsgBox Winner & " has won.", , "F1 mode"
+          Case 2
+          'R E S T A R T  N E X T
+            'first we make sure next round folder is there
+            If Not FolderExists(MDIForm1.MainDir & "\league\round" & (x_filenumber + 1)) Then MkDir MDIForm1.MainDir & "\league\round" & (x_filenumber + 1)
+            If Winner = "robotA" Then FileCopy MDIForm1.MainDir & "\league\robotA.txt", MDIForm1.MainDir & "\league\round" & (x_filenumber + 1) & "\" & robotA
+            If Winner = "robotB" Then FileCopy MDIForm1.MainDir & "\league\robotB.txt", MDIForm1.MainDir & "\league\round" & (x_filenumber + 1) & "\" & robotB
+            Open App.path & "\Safemode.gset" For Output As #1
+             Write #1, False
+            Close #1
+            shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+          End Select
           Exit Sub
         Else
           Winner = "Statistical Draw. Extending contest."

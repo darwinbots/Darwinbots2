@@ -873,6 +873,7 @@ Public Function maketie(ByVal a As Integer, ByVal b As Integer, c As Long, last 
   
   If rob(b).Slime > 0 Then rob(b).Slime = rob(b).Slime - 20
   If rob(b).Slime < 0 Then rob(b).Slime = 0 'cost to slime layer when attacked
+  If rob(a).numties = -1 Then Exit Function 'Botsareus 3/4/3014 bug fix
   rob(a).nrg = rob(a).nrg - (SimOpts.Costs(TIECOST) * SimOpts.Costs(COSTMULTIPLIER)) / (rob(a).numties + 1) 'Tie cost to form tie
 getout:
 End Function
