@@ -64,8 +64,8 @@ Begin VB.Form frmGset
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ffmEpiReset"
-      Tab(1).Control(1)=   "ffmSunMut"
+      Tab(1).Control(0)=   "ffmSunMut"
+      Tab(1).Control(1)=   "ffmEpiReset"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
@@ -729,12 +729,6 @@ End If
 Unload Me
 End Sub
 
-Private Function FolderExists(sFullPath As String) As Boolean
-Dim myFSO As Object
-Set myFSO = CreateObject("Scripting.FileSystemObject")
-FolderExists = myFSO.FolderExists(sFullPath)
-End Function
-
 Private Sub chkDelta2_Click()
 lblMmain.Visible = chkDelta2.value = 1
 lblMmean.Visible = chkDelta2.value = 1
@@ -777,7 +771,7 @@ End Sub
 
 Private Sub chkTournament_Click()
 If chkTournament.value = 1 Then
-    chkStepladder.Caption = "Stepladder league (round of 16)"
+    chkStepladder.Caption = "Stepladder league (starts at 24 robots)"
     lblSource.Visible = True
     txtSourceDir.Visible = True
 Else

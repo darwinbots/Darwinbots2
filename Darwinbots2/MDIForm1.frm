@@ -1103,7 +1103,7 @@ Top:
   If F1Internet.Checked Then
   
     If IntOpts.IName = "" Then
-      IntOpts.IName = "Newbie" + Str(Random(1, 10000))
+      IntOpts.IName = "Newbie " + CStr(Random(1, 10000))   'Botsareus 2/25/2014 A little bugfix here
     End If
   
     If IntOpts.IName = "" Then
@@ -1145,7 +1145,7 @@ tryagain:
      s = App.path & "\DarwinbotsIM.exe" _
      & " -in " & iq _
      & " -out " & oq _
-     & " -name " & IntOpts.IName _
+     & " -name " & Chr(34) & IntOpts.IName & Chr(34) _
      & " -pid " & Str(GetCurrentProcessId())
      IntOpts.pid = shell(s, vbNormalFocus)
      If IntOpts.pid = 0 Then
@@ -1858,7 +1858,7 @@ Private Sub simload(Optional path As String)
 fine:
 
   If Err.Number <> 32755 Then
-    MsgBox "An Error Occurred.  Darwinbots cannot continue.  Sorry.  " + Err.Description + " " + Err.Source + " " + Str$(Err.Number) + " " + Str$(Err.LastDllError) + ".", vbOKOnly
+    MsgBox "An Error Occurred.  Darwinbots cannot continue.  Sorry.  " + Err.Description + " " + Err.source + " " + Str$(Err.Number) + " " + Str$(Err.LastDllError) + ".", vbOKOnly
   Else
     Exit Sub
   End If
@@ -1942,6 +1942,7 @@ MsgBox "Saving sim failed.  " + Err.Description, vbOKOnly
 End Sub
 
 Private Sub MDIForm_Load()
+calc_dnamatrix
 'Botsareus 5/8/2013 Safemode strings are declared here (sorry, no Italian version)
 Dim strMsgSendData As String
 Dim strMsgEnterDiagMode As String
@@ -2084,39 +2085,108 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   'file system to keep track of the league instead of the internal logic of the program for
   'the same reason. Search "R E S" to find the new components. -Bots
   'Botsareus 1/31/2014 R E S T A R T  L O A D
+                  Dim files As Collection
+                  Dim seeded As Collection
+                  Dim i As Byte
   If Not (x_restartmode = 0 Or x_restartmode > 4) Then
         If Not simalreadyrunning Then
             Select Case x_restartmode
             Case 1
-                Dim files As Collection
                 Set files = getfiles(leagueSourceDir)
-                    If x_filenumber > files.count Then GoTo mode2
+                    If x_filenumber > files.count Then
+                        x_filenumber = 0
+                        x_restartmode = 2
+                        Set files = getfiles(MDIForm1.MainDir & "\league\seeded")
+                        MkDir MDIForm1.MainDir & "\league\round0\"
+                        movefilemulti MDIForm1.MainDir & "\league\seeded", MDIForm1.MainDir & "\league\round0", nextlowestmultof2(files.count)
+                        'reset files
+                        Kill MDIForm1.MainDir & "\league\test.txt"
+                        Open MDIForm1.MainDir & "\league\robotA.txt" For Append As #1
+                         Print #1, "0"
+                        Close #1
+                        Open MDIForm1.MainDir & "\league\robotB.txt" For Append As #1
+                         Print #1, "0"
+                        Close #1
+                        '
+                        GoTo mode2
+                    End If
                     SimOpts = TmpOpts
                     'copy robot
                     FileCopy files(x_filenumber), MDIForm1.MainDir & "\league\test.txt"
                     'add tag to robot
                     Open MDIForm1.MainDir & "\league\test.txt" For Append As #1
-                     Print #1, "'#tag:" & extractname(files(x_filenumber))
-                    Close
+                     Print #1, vbCrLf & "'#tag:" & extractname(files(x_filenumber))
+                    Close #1
                     'now update file number
                     x_filenumber = x_filenumber + 1
                     'load robot
                     optionsform.additem MDIForm1.MainDir & "\league\test.txt"
                     'disable mutations
-                    Dim i As Byte
                     For i = 0 To UBound(TmpOpts.Specie)
                      If TmpOpts.Specie(i).Name = "test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                     Next
+                    'F1 desabled
+                    TmpOpts.F1 = False
                     'new seed and run sim
                     chseedstartnew = True
                     optionsform.StartNew_Click
                     Exit Sub
             Case 2
 mode2:
-                MsgBox "Time for mode 2"
+                Set seeded = getfiles(MDIForm1.MainDir & "\league\seeded")
+                Set files = getfiles(MDIForm1.MainDir & "\league\round" & x_filenumber)
+                If files.count = 0 And FolderExists(MDIForm1.MainDir & "\league\round" & (x_filenumber + 1)) Then
+                    Set files = getfiles(MDIForm1.MainDir & "\league\round" & (x_filenumber + 1))
+                    If (seeded.count + files.count) = 1 Then
+                        'Botsareus 2/25/2014 end of normal tournament league
+                        MkDir MDIForm1.MainDir & "\league\Tournament_Results"
+                        deseed MDIForm1.MainDir & "\league\round" & (x_filenumber + 1)
+                        deseed MDIForm1.MainDir & "\league\seeded"
+                        MsgBox "Go to " & MDIForm1.MainDir & "\league\Tournament_Results to view your results.", vbExclamation, "League Complete!"
+                        x_restartmode = 0
+                        GoTo skipsetup
+                    End If
+                    If files.count <= seeded.count Then movefilemulti MDIForm1.MainDir & "\league\seeded", MDIForm1.MainDir & "\league\round" & (x_filenumber + 1), files.count
+                    x_filenumber = x_filenumber + 1
+                End If
+                '
+                Open App.path & "\restartmode.gset" For Output As #1
+                 Write #1, x_restartmode
+                 Write #1, x_filenumber
+                Close #1
+                '
+                Kill MDIForm1.MainDir & "\league\robotA.txt"
+                Kill MDIForm1.MainDir & "\league\robotB.txt"
+                movefilemulti MDIForm1.MainDir & "\league\round" & x_filenumber, MDIForm1.MainDir & "\league", 2
+                Set files = getfiles(MDIForm1.MainDir & "\league")
+                'save old names
+                robotA = extractname(files(1))
+                robotB = extractname(files(2))
+                'file rename
+                FileCopy files(1), MDIForm1.MainDir & "\league\robotA.txt"
+                FileCopy files(2), MDIForm1.MainDir & "\league\robotB.txt"
+                Kill files(1)
+                Kill files(2)
+                'setup a league round
+                    SimOpts = TmpOpts
+                    'load robot
+                    optionsform.additem MDIForm1.MainDir & "\league\robotA.txt"
+                    optionsform.additem MDIForm1.MainDir & "\league\robotB.txt"
+                    'disable mutations
+                    For i = 0 To UBound(TmpOpts.Specie)
+                     If TmpOpts.Specie(i).Name = "robotA.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).Name = "robotB.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                    Next
+                    'F1 enabled
+                    TmpOpts.F1 = True
+                    'new seed and run sim
+                    chseedstartnew = True
+                    optionsform.StartNew_Click
             End Select
         End If
   End If
+
+skipsetup:
 
   If exitDB Then
     MDIForm_Unload (1)
@@ -2196,9 +2266,17 @@ End If
 
 If x_restartmode > 0 Then
     Select Case MsgBox("Do you want to stop the current restart mode? Press CANCEL to return to the program.", vbQuestion + vbYesNoCancel)
-        Case vbCancel: Exit Sub
+        Case vbCancel
+            Cancel = 1
+            Exit Sub
         Case vbYes: Kill App.path & "\restartmode.gset"
         Case vbNo
+                'special case restore restart mode
+                If x_restartmode = 2 Then
+                FileCopy MDIForm1.MainDir & "\league\robotA.txt", MDIForm1.MainDir & "\league\round" & x_filenumber & "\" & robotA
+                FileCopy MDIForm1.MainDir & "\league\robotB.txt", MDIForm1.MainDir & "\league\round" & x_filenumber & "\" & robotB
+                End If
+                '
                 Open App.path & "\Safemode.gset" For Output As #1
                  Write #1, False
                 Close #1

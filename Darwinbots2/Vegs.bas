@@ -176,6 +176,8 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
       
       If tok < 0 Then tok = 0
       
+      tok = tok / 3.5 'Botsareus 2/25/2014 A little mod for PhinotPi
+      
       'Panda 8/14/2013 New chloroplast codez
       ChloroplastCorrection = rob(t).chloroplasts / 16000
       AddEnergyRate = (AreaCorrection * ChloroplastCorrection) ^ 0.8 * tok * 1.25

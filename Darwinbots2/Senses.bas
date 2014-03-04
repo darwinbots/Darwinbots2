@@ -494,7 +494,7 @@ Public Sub makeoccurrlist(n As Integer)
         End If
       
         If .DNA(t).value = 824 Or .DNA(t).value = 825 Then 'refencing either .strvenom or .venom
-          .occurr(10) = .occurr(11) + 1   'venom controls
+          .occurr(11) = .occurr(11) + 1   'venom controls Botsareus 2/17/2014 Bug fix
         End If
       End If
       

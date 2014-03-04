@@ -92,8 +92,16 @@ Private Sub ExecuteDNA(ByVal n As Integer)
         End If
       Case 1 '*number
         If CurrentFlow <> CLEAR Then 'And .DNA(a).value <= 1000 And .DNA(a).value > 0 Then
-          b = Abs(.DNA(a).value) Mod MaxMem
-          If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
+        
+          b = .DNA(a).value
+          If b > MaxMem Or b < 1 Then
+              b = Abs(.DNA(a).value) Mod MaxMem
+              If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
+    
+              '2/28/2014 New code from Botsareus if it is a real sysvar then put it into range
+              If Not IsNumeric(SysvarDetok(b, n)) Then .DNA(a).value = b
+          End If
+          
           PushIntStack .mem(b)
           rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(DOTNUMCOST) * SimOpts.Costs(COSTMULTIPLIER))
          ' If .DNA(a).value > EyeStart And .DNA(a).value <= EyeEnd Then ' Can mutations make robots blind?
@@ -123,6 +131,19 @@ Private Sub ExecuteDNA(ByVal n As Integer)
           ExecuteLogic .DNA(a).value
         End If
       Case 7 'store, inc and dec
+      
+          '2/28/2014 New code from Botsareus if it is a real sysvar then put it into range
+          If a > 0 Then
+              b = .DNA(a - 1).value
+              If (b > MaxMem Or b < 1) And .DNA(a - 1).tipo = 0 Then
+                b = Abs(.DNA(a - 1).value) Mod MaxMem
+                If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
+                
+                '2/28/2014 New code from Botsareus if it is a real sysvar then put it into range
+                If Not IsNumeric(SysvarDetok(b, n)) Then .DNA(a - 1).value = b
+              End If
+          End If
+'
         If CurrentFlow = body Or CurrentFlow = ELSEBODY Then
           If CondStateIsTrue Then  ' Check the Bool stack.  If empty or True on top, do the stores.  Don't if False.
             ExecuteStores .DNA(a).value

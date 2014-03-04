@@ -352,7 +352,6 @@ Public TotalRobotsDisplayed As Integer      ' Display value to avoid displaying 
 'Public MaxAbsNum As Long                   ' robots born (used to assign unique code)
 Public MaxMem As Integer
 
-
 'Botsareus 4/3/3013 crossover section
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -360,15 +359,21 @@ Public MaxMem As Integer
 
 Public Const GeneticSensitivity As Integer = 75  'Botsareus 4/9/2013 used by genetic distance graph. The higher this number, the more the robot is checked
 
-Private Type block2 'same as a DNA block but has match info.
+Private Type block2
   tipo As Integer
   value As Integer
   match As Integer
 End Type
+
+Private Type block3
+  nucli As Double
+  match As Integer
+End Type
+
 Private iinc As Integer 'used simply to update the next match
 
 'si = start index, ei = end index, iinc = layer
-Private Sub FindLongestSequences(ByRef rob1() As block2, ByRef rob2() As block2, si1 As Integer, ei1 As Integer, si2 As Integer, ei2 As Integer, ByVal timee As Long)
+Private Sub FindLongestSequences(ByRef rob1() As block3, ByRef rob2() As block3, si1 As Integer, ei1 As Integer, si2 As Integer, ei2 As Integer)
 'Step1 What index range is smaller?
 Dim searchlen As Integer
 searchlen = ei1 - si1
@@ -376,8 +381,6 @@ If ei2 - si2 < searchlen Then searchlen = ei2 - si2
 'Step2 Recrusivelly sweep from largest to shortest searchlen until match is found
 Dim mylen As Integer
 For mylen = (searchlen + 1) To 1 Step -1
-
-If Timer - 32 > timee Then Exit Sub 'safe
 
     'Step2A The sweep itself
     Dim sweep1 As Integer
@@ -391,7 +394,7 @@ If Timer - 32 > timee Then Exit Sub 'safe
             Dim allmatch As Boolean 'are all values the same for this sweep?
             allmatch = True
             For lenloop = 0 To mylen - 1
-                If rob1(lenloop + sweep1).tipo <> rob2(lenloop + sweep2).tipo Or rob1(lenloop + sweep1).value <> rob2(lenloop + sweep2).value Then
+                If rob1(lenloop + sweep1).nucli <> rob2(lenloop + sweep2).nucli Then
                     allmatch = False
                     Exit For
                 End If
@@ -407,15 +410,16 @@ If Timer - 32 > timee Then Exit Sub 'safe
             End If
         Next
     Next
+    
+    
 Next
 Exit Sub
 step3:
 'find lefthand subsequance
-If sweep1 > si1 And sweep2 > si2 Then FindLongestSequences rob1, rob2, si1, sweep1 - 1, si2, sweep2 - 1, timee
+If sweep1 > si1 And sweep2 > si2 Then FindLongestSequences rob1, rob2, si1, sweep1 - 1, si2, sweep2 - 1
 'find righthand subsequance
-If sweep1 + (mylen - 1) < ei1 And sweep2 + (mylen - 1) < ei2 Then FindLongestSequences rob1, rob2, sweep1 + mylen, ei1, sweep2 + mylen, ei2, timee
+If sweep1 + (mylen - 1) < ei1 And sweep2 + (mylen - 1) < ei2 Then FindLongestSequences rob1, rob2, sweep1 + mylen, ei1, sweep2 + mylen, ei2
 End Sub
-
 Private Function scanfromn(ByRef rob() As block2, ByVal n As Integer, ByRef layer As Integer)
 Dim a As Integer
 For a = n To UBound(rob)
@@ -428,7 +432,7 @@ Next
 scanfromn = UBound(rob) + 1
 End Function
 
-Private Function GeneticDistance(ByRef rob1() As block2, ByRef rob2() As block2) As Single
+Private Function GeneticDistance(ByRef rob1() As block3, ByRef rob2() As block3) As Single
 Dim diffcount As Integer
 Dim a As Integer
 For a = 0 To UBound(rob1)
@@ -440,134 +444,133 @@ Next
 GeneticDistance = diffcount / (UBound(rob1) + UBound(rob2) + 2)
 End Function
 
+Public Function DoGeneticDistanceSimple(r1 As Integer, r2 As Integer) As Single 'Botsareus 2/26/2014 The new genetic distance using Levenshtein
+Dim dna1_length As Long, dna2_length As Long
+Dim i As Integer, j As Integer
+
+'Actual length
+dna1_length = UBound(rob(r1).DNA)
+dna2_length = UBound(rob(r2).DNA)
+
+'Adjusted length calculator
+Dim stp As Byte
+stp = (dna1_length + dna2_length) / 1250
+If stp < 1 Then stp = 1
+
+Dim dna1(1875) As Integer
+Dim dna2(1875) As Integer
+
+'Adjusted length copy
+For i = 0 To dna1_length Step stp
+ dna1(i / stp) = DNAtoInt(rob(r1).DNA(i).tipo, rob(r1).DNA(i).value)
+Next
+
+For j = 0 To dna2_length Step stp
+ dna2(j / stp) = DNAtoInt(rob(r2).DNA(j).tipo, rob(r2).DNA(j).value)
+Next
+      
+'Set adjusted length
+dna1_length = dna1_length / stp
+dna2_length = dna2_length / stp
+
+Dim MaxL As Integer
+Dim min1 As Integer, min2 As Integer, min3 As Integer, minmin As Integer
+Dim distance() As Integer
+ReDim distance(dna1_length, dna2_length) As Integer
+
+distance(0, 0) = 0
+For i = 1 To dna1_length
+    For j = 1 To dna2_length
+        If dna1(i) = dna2(j) Then
+            distance(i, j) = distance(i - 1, j - 1)
+        Else
+            min1 = distance(i - 1, j) + 1
+            min2 = distance(i, j - 1) + 1
+            min3 = distance(i - 1, j - 1) + 1
+            If min2 < min1 Then
+                If min2 < min3 Then minmin = min2 Else minmin = min3
+            Else
+                If min1 < min3 Then minmin = min1 Else minmin = min3
+            End If
+            distance(i, j) = minmin
+        End If
+    Next
+Next
+
+MaxL = dna1_length: If dna2_length > MaxL Then MaxL = dna2_length
+DoGeneticDistanceSimple = distance(dna1_length, dna2_length) / MaxL
+End Function
+
 Public Function DoGeneticDistance(r1 As Integer, r2 As Integer) As Single
+Dim c As Integer
 Dim t As Integer
-'Step1 Create block2 from robots
-      Dim dna1() As block2
-      Dim dna2() As block2
+Dim t2 As Integer
+Dim t_max As Integer
+Dim mult As Double
+      'Map to nucli
 
-      ReDim dna1(UBound(rob(r1).DNA))
-      For t = 0 To UBound(dna1)
-       dna1(t).tipo = rob(r1).DNA(t).tipo
-       dna1(t).value = rob(r1).DNA(t).value
-      Next
-
-      ReDim dna2(UBound(rob(r2).DNA))
-      For t = 0 To UBound(dna2)
-       dna2(t).tipo = rob(r2).DNA(t).tipo
-       dna2(t).value = rob(r2).DNA(t).value
-      Next
-
-'Step2 Figure out genetic distance
+        'step range calulated
+        Dim stp As Byte
+        stp = (UBound(rob(r1).DNA) + UBound(rob(r2).DNA)) / 500
+        If stp = 0 Then stp = 1
+        If stp > 64 Then stp = 64
+        
+        Dim ndna1() As block3
+        Dim ndna2() As block3
+        Dim length1 As Integer
+        Dim length2 As Integer
+        length1 = -Int(-UBound(rob(r1).DNA) / stp)  'round up
+        length2 = -Int(-UBound(rob(r2).DNA) / stp)
+        ReDim ndna1(length1)
+        ReDim ndna2(length2)
+        
+        'map to nucli
+        
+          If stp = 1 Then
+      
+            'if step is 1 then normal nucli
+            For t = 0 To UBound(rob(r1).DNA)
+             ndna1(t).nucli = (rob(r1).DNA(t).tipo * (2 ^ 16)) Or rob(r1).DNA(t).value
+            Next
+            For t = 0 To UBound(rob(r2).DNA)
+             ndna2(t).nucli = (rob(r2).DNA(t).tipo * (2 ^ 16)) Or rob(r2).DNA(t).value
+            Next
+       
+          Else
+           'else calc the product of primes from dna
+           c = 0
+           For t = 0 To UBound(rob(r1).DNA) Step stp
+            mult = DNAtoSmallPnumber(rob(r1).DNA(t).tipo, rob(r1).DNA(t).value)
+            t_max = IIf(t + stp - 1 > UBound(rob(r1).DNA), UBound(rob(r1).DNA), t + stp - 1)
+            For t2 = t + 1 To t_max
+             mult = mult * DNAtoSmallPnumber(rob(r1).DNA(t2).tipo, rob(r1).DNA(t2).value)
+            Next
+            ndna1(c).nucli = mult
+            c = c + 1
+           Next
+           
+           c = 0
+           For t = 0 To UBound(rob(r2).DNA) Step stp
+            mult = DNAtoSmallPnumber(rob(r2).DNA(t).tipo, rob(r2).DNA(t).value)
+            t_max = IIf(t + stp - 1 > UBound(rob(r2).DNA), UBound(rob(r2).DNA), t + stp - 1)
+            For t2 = t + 1 To t_max
+             mult = mult * DNAtoSmallPnumber(rob(r2).DNA(t2).tipo, rob(r2).DNA(t2).value)
+            Next
+            ndna2(c).nucli = mult
+            c = c + 1
+           Next
+          End If
+      
+'Step3 Figure out genetic distance
 iinc = 0
-FindLongestSequences dna1, dna2, 0, UBound(dna1), 0, UBound(dna2), Timer
-DoGeneticDistance = GeneticDistance(dna1, dna2)
-End Function
-
-'Botsareus 4/10/2013 a simpler genetic distance function
-Public Function DoGeneticDistanceSimple(ByVal r1 As Integer, ByVal r2 As Integer) As Single
-'figure out the smaller Genetic Distance
-Dim diff As Single
-DoGeneticDistanceSimple = 1
-diff = GeneticDistanceSimple(r1, r2)
-If DoGeneticDistanceSimple > diff Then DoGeneticDistanceSimple = diff
-diff = GeneticDistanceSimple(r2, r1)
-If DoGeneticDistanceSimple > diff Then DoGeneticDistanceSimple = diff
-End Function
-
-Public Function GeneticDistanceSimple(ByVal r1 As Integer, ByVal r2 As Integer) As Single
-Dim b As Integer
-Dim a As Integer
-Dim mlst1() As Integer
-Dim mlst2() As Integer
-ReDim mlst1(UBound(rob(r1).DNA))
-ReDim mlst2(UBound(rob(r2).DNA))
-' match list is declared
-Do 'loop until end of both DNA
-
-    'special case different dna length
-    If a > UBound(rob(r1).DNA) Then
-        If mlst2(b) = 0 Then mlst2(b) = -2
-        GoTo fine
-    End If
-    If b > UBound(rob(r2).DNA) Then
-        If mlst1(a) = 0 Then mlst1(a) = -2
-        GoTo fine
-    End If
-
-    If rob(r1).DNA(a).tipo = rob(r2).DNA(b).tipo And rob(r1).DNA(a).value = rob(r2).DNA(b).value Then
-        'the data is the same, store -1
-        mlst1(a) = -1
-        mlst2(b) = -1
-    Else
-        'lets see if data picks up later
-        Dim b2 As Integer
-        For b2 = b + 1 To UBound(rob(r2).DNA)
-            If rob(r2).DNA(b2).tipo = rob(r1).DNA(a).tipo And rob(r2).DNA(b2).value = rob(r1).DNA(a).value And mlst2(b2) < 1 Then
-                'data does pickup later
-                mlst1(a) = b2 + 1
-                mlst2(b2) = a + 1
-                b = b - 1
-                GoTo fine
-            End If
-        Next
-        'lets see if data picks up early
-        For b2 = b - 1 To 0 Step -1
-            If rob(r2).DNA(b2).tipo = rob(r1).DNA(a).tipo And rob(r2).DNA(b2).value = rob(r1).DNA(a).value And mlst2(b2) < 1 Then
-                'data does pickup later
-                mlst1(a) = b2 + 1
-                mlst2(b2) = a + 1
-                b = b - 1
-                GoTo fine
-            End If
-        Next
-        'the data is different, store -2
-        If mlst1(a) < 1 Then mlst1(a) = -2
-        If mlst2(b) < 1 Then mlst2(b) = -2
-    End If
-
-fine:
-    a = a + 1
-    b = b + 1
-Loop Until a > UBound(rob(r1).DNA) And b > UBound(rob(r2).DNA)
-
-Dim diff As Integer 'holds diff data counter
-
-For a = 0 To UBound(rob(r1).DNA)
-    If mlst1(a) = -2 Then
-        diff = diff + 1
-    ElseIf mlst1(a) > 0 Then 'data was moved
-        If a > 0 Then
-            If Abs(mlst1(a - 1) - mlst1(a)) > 1 Then 'only store if move unconsequtive
-                diff = diff + 1
-            End If
-        Else 'should we store the move automaticaly?
-            diff = diff + 1
-        End If
-    End If
-Next
-
-For a = 0 To UBound(rob(r2).DNA)
-    If mlst2(a) = -2 Then
-        diff = diff + 1
-    ElseIf mlst2(a) > 0 Then 'data was moved
-        If a > 0 Then
-            If Abs(mlst2(a - 1) - mlst2(a)) > 1 Then 'only store if move unconsequtive
-                diff = diff + 1
-            End If
-        Else 'should we store the move automaticaly?
-            diff = diff + 1
-        End If
-    End If
-Next
-
-GeneticDistanceSimple = diff / (UBound(rob(r1).DNA) + UBound(rob(r2).DNA) + 2)
+FindLongestSequences ndna1, ndna2, 0, UBound(ndna1), 0, UBound(ndna2)
+DoGeneticDistance = GeneticDistance(ndna1, ndna2)
 End Function
 
 Private Sub crossover(ByRef rob1() As block2, ByRef rob2() As block2, ByRef Outdna() As block)
 Dim i As Integer 'layer
 Dim n1 As Integer 'start pos
-Dim N2 As Integer
+Dim n2 As Integer
 Dim nn As Integer
 Dim res1 As Integer 'result1
 Dim res2 As Integer
@@ -582,7 +585,7 @@ Do
 'diff search
 
 n1 = res1 + resn - nn
-N2 = res2 + resn - nn
+n2 = res2 + resn - nn
 
 'presets
 i = 0
@@ -594,11 +597,11 @@ Else
 End If
 
 res1 = scanfromn(rob1, n1, 0)
-res2 = scanfromn(rob2, N2, i)
+res2 = scanfromn(rob2, n2, i)
 
 
 'subloop
-If res1 - n1 > 0 And res2 - N2 > 0 Then 'run both sides
+If res1 - n1 > 0 And res2 - n2 > 0 Then 'run both sides
     If Int(Rnd * 2) = 0 Then 'which side?
         ReDim Preserve Outdna(upperbound + res1 - n1)
         For a = n1 To res1 - 1
@@ -606,10 +609,10 @@ If res1 - n1 > 0 And res2 - N2 > 0 Then 'run both sides
             Outdna(upperbound + 1 + a - n1).value = rob1(a).value
         Next
     Else
-        ReDim Preserve Outdna(upperbound + res2 - N2)
-        For a = N2 To res2 - 1
-            Outdna(upperbound + 1 + a - N2).tipo = rob2(a).tipo
-            Outdna(upperbound + 1 + a - N2).value = rob2(a).value
+        ReDim Preserve Outdna(upperbound + res2 - n2)
+        For a = n2 To res2 - 1
+            Outdna(upperbound + 1 + a - n2).tipo = rob2(a).tipo
+            Outdna(upperbound + 1 + a - n2).value = rob2(a).value
         Next
     End If
 ElseIf res1 - n1 > 0 Then 'run one side
@@ -620,28 +623,79 @@ ElseIf res1 - n1 > 0 Then 'run one side
             Outdna(upperbound + 1 + a - n1).value = rob1(a).value
         Next
     End If
-ElseIf res2 - N2 > 0 Then 'run other side
+ElseIf res2 - n2 > 0 Then 'run other side
     If Int(Rnd * 2) = 0 Then
-        ReDim Preserve Outdna(upperbound + res2 - N2)
-        For a = N2 To res2 - 1
-            Outdna(upperbound + 1 + a - N2).tipo = rob2(a).tipo
-            Outdna(upperbound + 1 + a - N2).value = rob2(a).value
+        ReDim Preserve Outdna(upperbound + res2 - n2)
+        For a = n2 To res2 - 1
+            Outdna(upperbound + 1 + a - n2).tipo = rob2(a).tipo
+            Outdna(upperbound + 1 + a - n2).value = rob2(a).value
         Next
     End If
 End If
 
 
 'same search
+Dim whatside As Boolean
 
 If i = 0 Then Exit Sub
 upperbound = UBound(Outdna)
 nn = res1
 resn = scanfromn(rob1(), nn, i)
 ReDim Preserve Outdna(upperbound + resn - nn)
+
+whatside = Int(Rnd * 2) = 0
+
+''''debug
+'Dim debugme As Boolean
+'debugme = False
+'Dim k As String
+'Dim temp As String
+'Dim bp As block
+'Dim converttosysvar As Boolean
+''''debug
+
 For a = nn To resn - 1
-    Outdna(upperbound + 1 + a - nn).tipo = rob1(a).tipo
-    Outdna(upperbound + 1 + a - nn).value = rob1(a).value
+    Outdna(upperbound + 1 + a - nn).tipo = IIf(whatside, rob1(a).tipo, rob2(a - nn + res2).tipo) 'left hand side or right hand?
+    Outdna(upperbound + 1 + a - nn).value = IIf(IIf(rob1(a).tipo = rob2(a - nn + res2).tipo And Abs(rob1(a).value) > 999 And Abs(rob2(a - nn + res2).value) > 999, Int(Rnd * 2) = 0, whatside), rob1(a).value, rob2(a - nn + res2).value)  'if typo is different or in var range then all left/right hand, else choose a random side
+    'If rob1(a).tipo = rob2(a - nn + res2).tipo And Abs(rob1(a).value) > 999 And Abs(rob2(a - nn + res2).value) > 999 And rob1(a).value <> rob2(a - nn + res2).value Then debugme = True 'debug
 Next
+
+'If debugme Then
+'Dim a2 As Integer
+'Dim a3 As Integer
+'k = ""
+'      For a = nn To resn - 1
+'
+'        If a = UBound(rob1) Then converttosysvar = False Else converttosysvar = IIf(rob1(a + 1).tipo = 7, True, False)
+'        bp.tipo = rob1(a).tipo
+'        bp.value = rob1(a).value
+'        temp = ""
+'        Parse temp, bp, 1, converttosysvar
+'
+'      k = k & temp & vbTab
+'
+'        a2 = a - nn + res2
+'        If a2 = UBound(rob2) Then converttosysvar = False Else converttosysvar = IIf(rob2(a2 + 1).tipo = 7, True, False)
+'        bp.tipo = rob2(a2).tipo
+'        bp.value = rob2(a2).value
+'        temp = ""
+'        Parse temp, bp, 1, converttosysvar
+'
+'      k = k & temp & vbTab
+'
+'        a3 = upperbound + 1 + a - nn
+'        If a3 = UBound(Outdna) Then converttosysvar = False Else converttosysvar = IIf(Outdna(a3 + 1).tipo = 7, True, False)
+'        bp.tipo = Outdna(a3).tipo
+'        bp.value = Outdna(a3).value
+'        temp = ""
+'        Parse temp, bp, 1, converttosysvar
+'
+'      k = k & temp & vbCrLf
+'
+'      Next
+'
+'      MsgBox k
+'End If
 
 Loop
 
@@ -2253,6 +2307,12 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
   Dim nx As Long
   Dim ny As Long
   Dim t As Integer
+  
+           Dim mult As Double 'cross over
+           Dim t_max As Integer
+           Dim t2 As Integer
+           Dim c As Integer
+  
   Dim tests As Boolean
   Dim i As Integer
   Dim per As Single
@@ -2317,15 +2377,129 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
        dna2(t).value = rob(female).spermDNA(t).value
       Next
       
-      'Step2 Find longest sequance
+      'Step2 map nucli
+      
+      'figure out stp
+      Dim stp As Byte
+      stp = (UBound(dna1) + UBound(dna2)) / 500
+      If stp = 0 Then stp = 1
+      If stp > 64 Then stp = 64
+      
+        Dim ndna1() As block3
+        Dim ndna2() As block3
+        Dim length1 As Integer
+        Dim length2 As Integer
+        length1 = -Int(-UBound(dna1) / stp) 'round up
+        length2 = -Int(-UBound(dna2) / stp)
+        ReDim ndna1(length1)
+        ReDim ndna2(length2)
+      
+        'map to nucli
+        
+          If stp = 1 Then
+      
+            'if step is 1 then normal nucli
+            For t = 0 To UBound(dna1)
+             ndna1(t).nucli = (dna1(t).tipo * (2 ^ 16)) Or dna1(t).value
+            Next
+            For t = 0 To UBound(dna2)
+             ndna2(t).nucli = (dna2(t).tipo * (2 ^ 16)) Or dna2(t).value
+            Next
+       
+          Else
+           'else calc the product of primes from dna
+           
+           c = 0
+           For t = 0 To UBound(dna1) Step stp
+            mult = DNAtoSmallPnumber(dna1(t).tipo, dna1(t).value)
+            t_max = IIf(t + stp - 1 > UBound(dna1), UBound(dna1), t + stp - 1)
+            For t2 = t + 1 To t_max
+             mult = mult * DNAtoSmallPnumber(dna1(t2).tipo, dna1(t2).value)
+            Next
+            ndna1(c).nucli = mult
+            c = c + 1
+           Next
+           
+           c = 0
+           For t = 0 To UBound(dna2) Step stp
+            mult = DNAtoSmallPnumber(dna2(t).tipo, dna2(t).value)
+            t_max = IIf(t + stp - 1 > UBound(dna2), UBound(dna2), t + stp - 1)
+            For t2 = t + 1 To t_max
+             mult = mult * DNAtoSmallPnumber(dna2(t2).tipo, dna2(t2).value)
+            Next
+            ndna2(c).nucli = mult
+            c = c + 1
+           Next
+          End If
+
+      'Step3 Check longest sequences
+
       iinc = 0
-      FindLongestSequences dna1, dna2, 0, UBound(dna1), 0, UBound(dna2), Timer
+      FindLongestSequences ndna1, ndna2, 0, UBound(ndna1), 0, UBound(ndna2)
+      
       'If robot is too unsimiler then do not reproduce and block sex reproduction for 16 cycles
-      If GeneticDistance(dna1, dna2) > 0.6 Then
+      If GeneticDistance(ndna1, ndna2) > 0.6 Then
         rob(female).fertilized = -26
         Exit Function
       End If
-      'Step3 do crossover and optionaly save to file
+      
+      'Step4 map back
+      
+        c = 0
+        For t = 0 To UBound(dna1) Step stp
+            t_max = IIf(t + stp - 1 > UBound(dna1), UBound(dna1), t + stp - 1)
+            For t2 = t To t_max
+                dna1(t2).match = ndna1(c).match
+            Next
+            c = c + 1
+        Next
+        
+        c = 0
+        For t = 0 To UBound(dna2) Step stp
+            t_max = IIf(t + stp - 1 > UBound(dna2), UBound(dna2), t + stp - 1)
+            For t2 = t To t_max
+                dna2(t2).match = ndna2(c).match
+            Next
+            c = c + 1
+        Next
+        
+'      'debug
+'      Dim k As String
+'      Dim temp As String
+'      Dim bp As block
+'      Dim converttosysvar As Boolean
+'      k = ""
+'      For t = 0 To UBound(dna1)
+'
+'        If t = UBound(dna1) Then converttosysvar = False Else converttosysvar = IIf(dna1(t + 1).tipo = 7, True, False)
+'        bp.tipo = dna1(t).tipo
+'        bp.value = dna1(t).value
+'        temp = ""
+'        Parse temp, bp, 1, converttosysvar
+'
+'      k = k & dna1(t).match & vbTab & temp & vbCrLf
+'      Next
+'
+'      Clipboard.CLEAR
+'      Clipboard.SetText k
+'      MsgBox "---", , UBound(dna1) & " " & UBound(dna2)
+'      k = ""
+'      For t = 0 To UBound(dna2)
+'
+'        If t = UBound(dna2) Then converttosysvar = False Else converttosysvar = IIf(dna2(t + 1).tipo = 7, True, False)
+'        bp.tipo = dna2(t).tipo
+'        bp.value = dna2(t).value
+'        temp = ""
+'        Parse temp, bp, 2, converttosysvar
+'
+'      k = k & dna2(t).match & vbTab & temp & vbCrLf
+'
+'      Next
+'      Clipboard.CLEAR
+'      Clipboard.SetText k
+'      MsgBox "done"
+      
+      'Step5 do crossover
     
       Dim Outdna() As block
       ReDim Outdna(0)
