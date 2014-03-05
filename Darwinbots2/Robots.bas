@@ -570,7 +570,7 @@ End Function
 Private Sub crossover(ByRef rob1() As block2, ByRef rob2() As block2, ByRef Outdna() As block)
 Dim i As Integer 'layer
 Dim n1 As Integer 'start pos
-Dim n2 As Integer
+Dim N2 As Integer
 Dim nn As Integer
 Dim res1 As Integer 'result1
 Dim res2 As Integer
@@ -585,7 +585,7 @@ Do
 'diff search
 
 n1 = res1 + resn - nn
-n2 = res2 + resn - nn
+N2 = res2 + resn - nn
 
 'presets
 i = 0
@@ -597,11 +597,11 @@ Else
 End If
 
 res1 = scanfromn(rob1, n1, 0)
-res2 = scanfromn(rob2, n2, i)
+res2 = scanfromn(rob2, N2, i)
 
 
 'subloop
-If res1 - n1 > 0 And res2 - n2 > 0 Then 'run both sides
+If res1 - n1 > 0 And res2 - N2 > 0 Then 'run both sides
     If Int(Rnd * 2) = 0 Then 'which side?
         ReDim Preserve Outdna(upperbound + res1 - n1)
         For a = n1 To res1 - 1
@@ -609,10 +609,10 @@ If res1 - n1 > 0 And res2 - n2 > 0 Then 'run both sides
             Outdna(upperbound + 1 + a - n1).value = rob1(a).value
         Next
     Else
-        ReDim Preserve Outdna(upperbound + res2 - n2)
-        For a = n2 To res2 - 1
-            Outdna(upperbound + 1 + a - n2).tipo = rob2(a).tipo
-            Outdna(upperbound + 1 + a - n2).value = rob2(a).value
+        ReDim Preserve Outdna(upperbound + res2 - N2)
+        For a = N2 To res2 - 1
+            Outdna(upperbound + 1 + a - N2).tipo = rob2(a).tipo
+            Outdna(upperbound + 1 + a - N2).value = rob2(a).value
         Next
     End If
 ElseIf res1 - n1 > 0 Then 'run one side
@@ -623,12 +623,12 @@ ElseIf res1 - n1 > 0 Then 'run one side
             Outdna(upperbound + 1 + a - n1).value = rob1(a).value
         Next
     End If
-ElseIf res2 - n2 > 0 Then 'run other side
+ElseIf res2 - N2 > 0 Then 'run other side
     If Int(Rnd * 2) = 0 Then
-        ReDim Preserve Outdna(upperbound + res2 - n2)
-        For a = n2 To res2 - 1
-            Outdna(upperbound + 1 + a - n2).tipo = rob2(a).tipo
-            Outdna(upperbound + 1 + a - n2).value = rob2(a).value
+        ReDim Preserve Outdna(upperbound + res2 - N2)
+        For a = N2 To res2 - 1
+            Outdna(upperbound + 1 + a - N2).tipo = rob2(a).tipo
+            Outdna(upperbound + 1 + a - N2).value = rob2(a).value
         Next
     End If
 End If

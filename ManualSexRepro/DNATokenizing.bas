@@ -2,294 +2,36 @@ Attribute VB_Name = "DNATokenizing"
 Option Explicit
 
 '''''''''''''''''''''''''''''''''''''''''''''''
+'Public stuff
+'''''''''''''''''''''''''''''''''''''''''''''''
+
+Public Type block
+  tipo As Integer
+  value As Integer
+End Type
+
+Public Type var
+  Name As String
+  value As Integer
+End Type
+
+Public Type Robot
+  DNA() As block
+  vars(1000) As var
+  vnum As Integer           '| about private variables
+  maxusedvars As Integer    '|
+  usedvars(1000) As Integer '| used memory cells
+End Type
+
+Public rob(3) As Robot
+Public sysvar(1000) As var    ' array of system variables
+Const Maxmem = 1000
+
+
+'''''''''''''''''''''''''''''''''''''''''''''''
 'All the routines that tokenize and detokenize
 'DNA go in here
 '''''''''''''''''''''''''''''''''''''''''''''''
-
-'Botsareus 2/26/2014 special code to convert between DNA and an integer with max length of 6541
-'and then to a prime with max length of 65536 for genetic crossover
-'65536 = MaxDouble ^ (500 / 32000)
-'NOTE: ALL THIS CODE MAY NEED TO BE MODED IF COMMANDS CHANGE!
-Dim dnamatrix(8, 13) As Byte
-Dim parray(6541) As Long
-
-Public savingtofile As Boolean 'make sure that when we are saving to file do not normalize custome sysvars
-
-Public Sub calc_dnamatrix()
-'generate array of prime numbers
-Dim max_ As Long
-Dim is_prime() As Boolean
-Dim i As Long
-Dim j As Long
-Dim max_i As Long
-Dim max_j As Long
-Dim tot  As Integer
-
-tot = 0
-parray(0) = 1
-
-        ' Make an array big enough.
-        max_ = 65536
-        ReDim is_prime(0 To max_)
-
-        ' Assume all of the odd numbers are prime.
-        ' Ignore the even numbers.
-        For i = 3 To max_ Step 2
-            is_prime(i) = True
-        Next i
-
-        ' Use Euler's Sieve.
-        ' See
-        ' http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes.
-        max_i = Sqr(max_) + 1
-        For i = 3 To max_i
-            ' Only use i if it is prime.
-            If (is_prime(i)) Then
-                ' Decide where we need to stop.
-                max_j = max_ \ i
-                If (max_j Mod 2 = 0) Then max_j = max_j - 1 _
-                    ' Make it odd.
-
-                ' "Cross out" multiples of i starting
-                ' with i * max_j and ending with i * i.
-                For j = max_j To i Step -2
-                    ' Only use j if it is prime.
-                    If (is_prime(j)) Then
-                        ' "Cross out" i * j.
-                        is_prime(i * j) = False
-                    End If
-                Next j
-            End If
-        Next i
-
-        For i = 3 To max_ Step 2
-            If (is_prime(i)) Then
-                tot = tot + 1
-                parray(tot) = i
-            End If
-        Next i
-'calculate dna matrix
-Dim result As String
-Dim y As block
-Dim y_tipo As Byte
-Dim y_value As Byte
-Dim count As Byte
-
-For y_tipo = 0 To 8
- For y_value = 0 To 13
-  y.tipo = y_tipo + 2
-  y.value = y_value + 1
-  Parse result, y
-  If result <> "" Then
-   dnamatrix(y_tipo, y_value) = count
-   count = count + 1
-  End If
-  result = ""
- Next
-Next
-End Sub
-
-Public Function DNAtoInt(ByVal tipo As Integer, ByVal value As Integer) As Integer
-'make value sane
-If value > 32000 Then value = 32000
-If value < -32000 Then value = -32000
-'figure out conversion
-If tipo < 2 Then
-
- DNAtoInt = -16646
- 
- If Abs(value) > 999 Then value = 512 * Sgn(value) + value / 2.05
- 
- DNAtoInt = DNAtoInt + value
- 
- If tipo = 1 Then DNAtoInt = DNAtoInt + 32729
- 
-ElseIf tipo > 1 Then
- 'other types
- DNAtoInt = 32691 + dnamatrix(tipo - 2, value - 1) 'dnamatrix adds max of 76 because we have 76 commands
-End If
-End Function
-
-Public Function DNAtoSmallPnumber(ByVal tipo As Integer, ByVal value As Integer) As Long
-'make value sane
-If value > 32000 Then value = 32000
-If value < -32000 Then value = -32000
-'figure out conversion
-If tipo < 2 Then
-
- If Abs(value) < 1000 Then  '0 to 999
-  DNAtoSmallPnumber = Abs(value)
- Else '1000 to 32000
-  DNAtoSmallPnumber = 985 + Abs(value) / 51
- End If
-
- If value > 0 Then DNAtoSmallPnumber = DNAtoSmallPnumber + 1616
- 
- If tipo = 1 Then DNAtoSmallPnumber = DNAtoSmallPnumber + 3232
-ElseIf tipo > 1 Then
- 'other types
- DNAtoSmallPnumber = 6465 + dnamatrix(tipo - 2, value - 1) 'dnamatrix adds max of 76 because we have 76 commands
-End If
-
-DNAtoSmallPnumber = parray(DNAtoSmallPnumber)
-End Function
-
-' loads the dna and parses it
-Public Function LoadDNA(path As String, n As Integer) As Boolean
-
-  On Error GoTo fine:
-  Dim a As String
-  Dim b As String
-  Dim pos As Long
-  Dim DNApos As Long
-  Dim hold As String
-  Dim path2 As String
-  
-inizio:
-
-  a = ""
-  b = ""
-  pos = 0
-  DNApos = 0
-  hold = ""
-   
-  ReDim rob(n).DNA(0)
-  DNApos = 0
-  If path = "" Then
-    LoadDNA = False
-    Exit Function
-  End If
-  Open path For Input As #1
-  While Not EOF(1)
-        Line Input #1, a
-    
-    ' eliminate comments at the end of a line
-    ' but preserves comments-only lines
-    pos = InStr(a, "'")
-    If pos > 1 Then a = Left(a, pos - 1)
-    If Right(a, 2) = vbCrLf Then a = Left(a, Len(a) - 2)
-      
-    'Ignore empty lines for purposes of computing hash
-    If Len(a) <> 0 Then
-      hold = hold + a + vbCrLf
-    End If
-    
-    'Replace any tabs with spaces
-    a = Replace(a, vbTab, " ")
-    a = Trim(a)
-       'Botsareus 5/24/2013 No more use and shp
-       'Botsareus leading zero correction when using defs
-       Dim useref As Boolean
-    If (Left(a, 1) <> "'" And Left(a, 1) <> "/") And a <> "" Then
-        If Left(a, 3) = "def" Then
-'          If Left(a, 3) = "shp" Then  'inserts robot shape
-'            rob(n).Shape = val(Right(a, 1))
-'          End If
-'          If Left(a, 3) = "def" Then  'inserts user defined labels as sysvars
-            insertvar n, a
-            useref = True
-'          End If
-'          If Left(a, 3) = "use" Then
-'            interpretUSE n, a
-'          End If
-        Else
-          pos = InStr(a, " ")
-          While pos <> 0
-            b = Left(a, pos - 1)
-            a = Right(a, Len(a) - pos)
-            
-            While Left(a, 0) = " "
-              a = Right(a, Len(a) - 1)
-            Wend
-            pos = InStr(a, " ")
-            
-            If b <> "" Then
-              DNApos = DNApos + 1
-              If DNApos > UBound(rob(n).DNA()) Then
-                ReDim Preserve rob(n).DNA(DNApos + 5)
-              End If
-              Parse b, rob(n).DNA(DNApos), n
-            End If
-          Wend
-          If a <> "" Then
-            DNApos = DNApos + 1
-            If DNApos > UBound(rob(n).DNA()) Then
-              ReDim Preserve rob(n).DNA(DNApos + 5)
-            End If
-            Parse a, rob(n).DNA(DNApos), n
-          End If
-        End If
-    Else
-      If Left(a, 2) = "'#" Or Left(a, 2) = "/#" Then
-        ' embryo of a new feature, should allow recording
-        ' in dna files info such robot colour, generation,
-        ' mutations etc
-        getvals n, a, hold
-      End If
-    End If
-here:
-  Wend
-  Close 1
-  LoadDNA = True
-  DNApos = DNApos + 1
-  If DNApos > UBound(rob(n).DNA()) Then
-    ReDim Preserve rob(n).DNA(DNApos + 1)
-  End If
-  rob(n).DNA(DNApos).tipo = 10
-  rob(n).DNA(DNApos).value = 1
-  'ReDim Preserve rob(n).DNA(DnaLen(rob(n).DNA())) ' EricL commented out March 15, 2006
-  ReDim Preserve rob(n).DNA(DNApos)  'EricL - Added March 15, 2006
-  'Botsareus 6/5/2013 Bug fix to do with leading zero on def
-  If useref Then
-    If rob(n).DNA(0).tipo = 0 And rob(n).DNA(0).value = 0 And _
-       Not rob(n).DNA(1).tipo = 9 _
-    Then
-        For DNApos = 0 To UBound(rob(n).DNA) - 1
-            rob(n).DNA(DNApos) = rob(n).DNA(DNApos + 1)
-        Next
-        ReDim Preserve rob(n).DNA(UBound(rob(n).DNA) - 1)
-    End If
-  End If
-  Exit Function
-  
-fine:
-  pos = Err.Number
-  If Err.Number = 53 Or Err.Number = 76 Then
-  
-    If path <> MDIForm1.MainDir + "\Robots\" & rob(n).FName Then 'Attempt to load a robot from common folder if not found.
-      If dir(MDIForm1.MainDir + "\Robots\" & rob(n).FName) <> "" Then
-        path = MDIForm1.MainDir + "\Robots\" & rob(n).FName
-        SimOpts.Specie(SpeciesFromBot(n)).path = Left(path, Len(path) - Len(rob(n).FName) - 1)
-        GoTo inizio
-      End If
-    End If
-  
-    Form1.CommonDialog1.DialogTitle = WScannotfind + path
-    Form1.CommonDialog1.ShowOpen
-    
-    If Form1.CommonDialog1.CancelError Then ' The user pressed the cancel button
-      LoadDNA = False
-      Exit Function
-    Else
-      path2 = Form1.CommonDialog1.FileName
-    End If
-    
-    If path = path2 Or path2 = "" Then ' The user hit okay but the path is the same
-      LoadDNA = False
-      Exit Function
-    Else
-      ' The user selected a new path
-      path = path2
-      SimOpts.Specie(SpeciesFromBot(n)).path = Left(path, Len(path) - Len(rob(n).FName) - 1)  ' Update the species struct
-      GoTo inizio
-    End If
-    
-  Else
-    Close 1
-    MsgBox Err.Description + ".  Path: " + path + MBnovalidrob
-    LoadDNA = False
-  End If
-End Function
 
 ' parses dna code, tokenizing or detokenizing instructions in the block
 ' structure
@@ -377,21 +119,11 @@ Public Function SysvarDetok(n As Integer, Optional robn As Integer = 0) As Strin
   SysvarDetok = n
   
   While sysvar(t + 1).value <> 0
-    If sysvar(t + 1).value = Abs(n) Mod MaxMem Then
+    If sysvar(t + 1).value = Abs(n) Mod Maxmem Then
         SysvarDetok = "." + sysvar(t + 1).Name
     End If
     t = t + 1
   Wend
-  
-  If savingtofile Then Exit Function
-  
-  If robn > 0 And (n Mod MaxMem) <> 0 Then  ' EricL 4/17/2006 Added n<>0 to address parse bug when DNA contains 0 store 'Botsareus 9/7/2013 modified for high range fix
-    For t = 1 To UBound(rob(robn).vars)
-      If rob(robn).vars(t).value = Abs(n) Mod MaxMem Then
-        SysvarDetok = "." + rob(robn).vars(t).Name
-      End If
-    Next t
-  End If
   
 End Function
 
@@ -406,12 +138,12 @@ Public Function SysvarTok(a As String, Optional n As Integer = 0) As Integer
     Next t
     
     If n > 0 Then
-      For t = 1 To UBound(rob(n).vars)
+      For t = 0 To UBound(rob(n).vars)
         If rob(n).vars(t).Name = a Then SysvarTok = rob(n).vars(t).value
       Next t
     End If
   Else
-    SysvarTok = val(a)
+    SysvarTok = Val(a)
   End If
 End Function
 
@@ -522,9 +254,9 @@ Private Function AdvancedCommandDetok(n As Integer) As String
     Case 12
       AdvancedCommandDetok = "cos"
     Case 13
-      If Not ismutating Then AdvancedCommandDetok = "debugint" 'Botsareus 1/31/2013 the new debugint command
+      AdvancedCommandDetok = "debugint" 'Botsareus 1/31/2013 the new debugint command
     Case 14
-      If Not ismutating Then AdvancedCommandDetok = "debugbool" 'Botsareus 1/31/2013 the new debugbool command
+      AdvancedCommandDetok = "debugbool" 'Botsareus 1/31/2013 the new debugbool command
   End Select
 End Function
 
@@ -557,9 +289,9 @@ Private Function AdvancedCommandTok(s As String) As block
     Case "cos"
       AdvancedCommandTok.value = 12
     Case "debugint" 'Botsareus 1/31/2013 the new debugint command
-      If Not ismutating Then AdvancedCommandTok.value = 13
+      AdvancedCommandTok.value = 13
     Case "debugbool" 'Botsareus 1/31/2013 the new debugbool command
-      If Not ismutating Then AdvancedCommandTok.value = 14
+      AdvancedCommandTok.value = 14
   End Select
 End Function
 
@@ -839,80 +571,12 @@ Private Function MasterFlowTok(s As String) As block
       MasterFlowTok.value = 1
   End Select
 End Function
-
-' embryo of a new feature, should allow recording
-' in dna files info such robot colour, generation, mutations etc
-Private Sub getvals(n As Integer, ByVal a As String, hold As String)
-'Botsareus 4/30/2013 Do not need to grab FName since we are no longer displaying a message
-
- Dim r As Integer
- Dim g As Integer
- Dim b As Integer
- Static FName As String
- Static generation As Long
- Static Mutations As Long
- Dim Name As String
- Dim value As String
- 
- ' here we divide the string in its two parts
- ' parameter's name and value, which shall be separated by ':'
- Name = Left$(a, InStr(a, ":") - 1)
- value = Right$(a, Len(a) - InStr(a, ":"))
- Name = Trim(Name)
- Name = Mid$(Name, 3)
- value = Trim(value)
- 
- ' here we take the appropriate action
- ' depending on the parameter's name
- ' we record it in the rob structure or, if we want to wait
- ' to check the hash before, in a temporary static variable
-' If Name = "name" Then
-'   FName = value
-'   rob(n).FName = FName
-' End If
- If Name = "generation" Then
-   generation = val(value)
- End If
- If Name = "mutations" Then
-   Mutations = val(value)
- End If
- If Name = "tag" Then 'Botsareus 1/28/2014 New short description feature
-   rob(n).tag = Left(replacechars(value), 45)
- End If
-' If Name = "image" Then
-'   SimOpts.Specie(SpeciesFromBot(n)).DisplayImage = LoadPicture(value)
-' End If
- 
- ' if the current parameter is the hash string, we take its value,
- ' calculate the hash for the dna string from the beginning to
- ' the hash parameter, and compare the two. If they are the same,
- ' we can set the "important" parameters of the robot
- ' (until now they were recorded in static variables)
- If Name = "hash" Then
-   hold = Left(hold, InStr(hold, "'#hash:") - 1)
-   If Hash(hold, 20) = value Then
-     'rob(n).FName = FName
-     rob(n).generation = generation
-     rob(n).Mutations = Mutations
-   'Else
-     'MsgBox rob(n).FName + "'s dna hashing incorrect - ignoring parameters", vbExclamation
-   End If
- End If
- 
- 'If Left$(a, 6) = "color:" Then
- '  'additem function was changed to not apply a random color if a color exists for it already
- '  'bot knows what color it is or wants to be
- '  a = Right$(a, Len(a) - 6)
- '  rob(n).color = Hex(a)
- 'End If
-End Sub
-
 ' calculates the hash function, i.e. simply a string of length f
 ' which is unlikely to be generated by a different input s
 Public Function Hash(s As String, f As Integer) As String
 
   Dim buf(100) As Long
-  Dim k As Long
+  Dim k As Integer
   Dim s2 As String
   Hash = ""
   s = Trim(s)
@@ -933,16 +597,6 @@ Public Function Hash(s As String, f As Integer) As String
     Hash = Hash + Chr(buf(k) Mod 93 + 33)
 
   Next k
-End Function
-
-' saves a robot's header informations; can be padded with any
-' other information, such as color, base energy, etc.
-Public Function SaveRobHeader(n As Integer) As String
-  'SaveRobHeader = "'#name: " + rob(n).FName + vbCrLf +
-    SaveRobHeader = "'#generation: " + CStr(rob(n).generation) + vbCrLf + _
-    "'#mutations: " + CStr(rob(n).Mutations) + vbCrLf
-    Dim blank As String * 50
-    If Left(rob(n).tag, 45) <> Left(blank, 45) Then SaveRobHeader = "'#tag:" + Left(rob(n).tag, 45) + vbCrLf
 End Function
 
 ' loads the sysvars.txt file
@@ -1479,6 +1133,8 @@ Public Sub LoadSysVars()
 End Sub
 
 Public Function DetokenizeDNA(n As Integer, forHash As Boolean, Optional Position As Integer) As String
+'On Error GoTo ex
+
   Dim temp As String, t As Long
   Dim tempint As Integer
   Dim converttosysvar As Boolean
@@ -1490,7 +1146,7 @@ Public Function DetokenizeDNA(n As Integer, forHash As Boolean, Optional Positio
   
   ingene = False
   coding = False
-  t = 1
+  t = 2
   gene = 0
   lastgene = 0
   While Not (rob(n).DNA(t).tipo = 10 And rob(n).DNA(t).value = 1)
@@ -1566,7 +1222,7 @@ Public Function DetokenizeDNA(n As Integer, forHash As Boolean, Optional Positio
    If Not (rob(n).DNA(t - 1).tipo = 9 And rob(n).DNA(t - 1).value = 4) And coding Then ' End of DNA without a stop.
     DetokenizeDNA = DetokenizeDNA + "''''''''''''''''''''''''  " + "Gene: " + Str(gene) + " Ends at position " + Str(t - 1) + "  '''''''''''''''''''''''" + vbCrLf
   End If
-
+ex:
 End Function
 
 Public Function TipoDetok(ByVal tipo As Long) As String

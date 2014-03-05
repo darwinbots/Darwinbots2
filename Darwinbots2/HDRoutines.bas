@@ -498,7 +498,8 @@ Public Sub SaveSimulation(path As String)
   
   RecursiveMkDir (justPath)
   
-  Open path For Binary As 1
+  Close #1
+  Open path For Binary As #1
     
     Put #1, , numOfExistingBots
     
@@ -773,7 +774,7 @@ Public Sub SaveSimulation(path As String)
        
     Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     
-  Close 1
+  Close #1
   Form1.MousePointer = vbArrow
 End Sub
 
@@ -1937,6 +1938,7 @@ Sub salvarob(n As Integer, path As String, Optional nombox As Boolean)
   Dim hold As String
   Dim hashed As String
   t = 1
+  Close #1
   Open path For Output As #1
   hold = SaveRobHeader(n)
   savingtofile = True 'Botsareus 2/28/2014 when saving to file the def sysvars should not save

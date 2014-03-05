@@ -2878,7 +2878,7 @@ sPopulation = (IIf(intFindBestV2 < 100, 100, 200 - intFindBestV2)) / 100
   Dim Mx As Double
   Mx = 0
   For t = 1 To MaxRobs
-    If rob(t).exist And Not rob(t).Veg Then
+    If rob(t).exist And Not rob(t).Veg And Not rob(t).FName = "Corpse" Then
       TotalOffspring = 1
       s = score(t, 1, 10, 0) + rob(t).nrg + rob(t).body * 10 'Botsareus 5/22/2013 Advanced fit test
       s = (TotalOffspring ^ sPopulation) * (s ^ sEnergy)
