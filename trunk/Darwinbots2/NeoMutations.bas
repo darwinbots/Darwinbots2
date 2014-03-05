@@ -158,15 +158,23 @@ skip:
       End If
       
     Else
+      Dim timee As Long
+      timee = Timer
       If .Mutables.mutarray(CopyErrorUP) > 0 Then CopyError robn
+      If Timer - 4 > timee Then GoTo fine 'safe
       If .Mutables.mutarray(CE2UP) > 0 And sunbelt Then CopyError2 robn
+      If Timer - 4 > timee Then GoTo fine 'safe
       If .Mutables.mutarray(InsertionUP) > 0 Then Insertion robn, Timer
+      If Timer - 4 > timee Then GoTo fine 'safe
       If .Mutables.mutarray(ReversalUP) > 0 Then Reversal robn
+      If Timer - 4 > timee Then GoTo fine 'safe
       If .Mutables.mutarray(TranslocationUP) > 0 And sunbelt Then Translocation robn 'Botsareus Translocation and Amplification still bugy, but I want them.
       If .Mutables.mutarray(AmplificationUP) > 0 And sunbelt Then Amplification robn, Timer 'We pass timer to amplification to terminate an endless loop
+fine:
       If .Mutables.mutarray(MajorDeletionUP) > 0 Then MajorDeletion robn
       If .Mutables.mutarray(MinorDeletionUP) > 0 Then MinorDeletion robn
     End If
+
     ismutating = False 'Botsareus 2/2/2013 Tells the parseor to ignore debugint and debugbool while the robot is mutating
         
     Delta = CLng(.LastMut) - Delta 'Botsareus 9/4/2012 Moved delta check before overflow reset to fix an error where robot info is not being updated
