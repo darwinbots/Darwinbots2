@@ -371,6 +371,13 @@ Static setoldpop As Boolean
   '
   F1count = 0
   Wins = Sqr(MinRounds) + (MinRounds / 2)
+  
+  If SpeciesLeft = 0 Then 'in very rear cases both robots are dead when checking, start another round
+      StartAnotherRound = True
+      startnovid = loadstartnovid 'Botsareus bugfix for no vedio
+  End If
+  
+  
   If SpeciesLeft = 1 And Contests + 1 <= MinRounds Then
     If Contests + 1 = MinRounds And Over = False Then 'contest is over now
       For t = 1 To TotSpecies
@@ -378,6 +385,9 @@ Static setoldpop As Boolean
           Winner = PopArray(t).SpName
 won:
           Over = True
+          DisplayActivations = False
+          Form1.Active = False
+          Form1.SecTimer.Enabled = False
           Select Case x_restartmode 'all new league components start with "x_"
           Case 0
             MsgBox Winner & " has won.", , "F1 mode"
@@ -391,6 +401,17 @@ won:
              Write #1, False
             Close #1
             shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+          Case 3
+            If Winner = "robotA" Then populateladder
+            If Winner = "robotB" Then
+                'move file to current position
+                robotB = dir$(leagueSourceDir & "\*.*")
+                movetopos leagueSourceDir & "\" & robotB, x_filenumber
+                'reset filenumber
+                x_filenumber = 0
+                'start another round
+                populateladder
+            End If
           End Select
           Exit Sub
         Else
@@ -412,4 +433,70 @@ won:
       StartAnotherRound = False
     End If
   End If
+End Sub
+
+Public Sub populateladder() 'populate one step ladder round
+'erase robots A and B optionally
+Open MDIForm1.MainDir & "\league\robotA.txt" For Append As #1
+ Print #1, "0"
+Close #1
+Open MDIForm1.MainDir & "\league\robotB.txt" For Append As #1
+ Print #1, "0"
+Close #1
+Kill MDIForm1.MainDir & "\league\robotA.txt"
+Kill MDIForm1.MainDir & "\league\robotB.txt"
+'update file number
+x_filenumber = x_filenumber + 1
+Open App.path & "\restartmode.gset" For Output As #1
+        Write #1, 3
+        Write #1, x_filenumber
+Close #1
+Dim tmpname As String
+Dim file_name As String
+
+'files in stepladder
+Dim files As Collection
+Set files = getfiles(MDIForm1.MainDir & "\league\stepladder")
+
+If x_filenumber > files.count Then 'if filenumber maxed out we need to move robot and reset filenumber
+
+    'move file to last position
+    file_name = dir$(leagueSourceDir & "\*.*")
+    movetopos leagueSourceDir & "\" & file_name, x_filenumber
+
+    'reset file number
+    x_filenumber = 1
+    Open App.path & "\restartmode.gset" For Output As #1
+            Write #1, 3
+            Write #1, x_filenumber
+    Close #1
+
+End If
+
+'RobotB
+file_name = dir$(leagueSourceDir & "\*.*")
+If file_name = "" Then
+    MsgBox "Go to " & MDIForm1.MainDir & "\league\stepladder to view your results.", vbExclamation, "League Complete!"
+    x_restartmode = 0
+    Kill App.path & "\restartmode.gset"
+    Exit Sub
+Else
+FileCopy leagueSourceDir & "\" & file_name, MDIForm1.MainDir & "\league\robotB.txt"
+End If
+
+Dim j As Integer
+'RobotA
+'find a file prefixed i
+For j = 1 To files.count
+    tmpname = extractname(files(j))
+    If tmpname Like x_filenumber & "-*" Then
+        FileCopy files(j), MDIForm1.MainDir & "\league\robotA.txt"
+    End If
+Next
+
+'Restart
+Open App.path & "\Safemode.gset" For Output As #1
+ Write #1, False
+Close #1
+shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
 End Sub

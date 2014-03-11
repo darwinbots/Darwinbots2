@@ -387,6 +387,7 @@ If Index = 0 Then Exit Sub
           If realname <> PopArray(Index).SpName Then KillRobot t
         End If
     Next t
+    Option1(Index).value = False 'Botsareus 3/7/2014 Bug fix
 End Sub
 
 Private Sub Form_Resize()

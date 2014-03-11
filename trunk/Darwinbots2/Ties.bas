@@ -385,9 +385,7 @@ Public Sub Update_Ties(t As Integer)
                 
                 rob(.Ties(k).pnt).nrg = rob(.Ties(k).pnt).nrg + l 'Take the nrg
              
-                ' We should never go here...
-                If rob(.Ties(k).pnt).nrg < 0 And rob(.Ties(k).pnt).Dead = False Then
-                  rob(.Ties(k).pnt).Dead = True
+                If rob(.Ties(k).pnt).nrg <= 0 And rob(.Ties(k).pnt).Dead = False Then 'Botsareus 3/11/2014 Tie feeding kills
                   .Kills = .Kills + 1
                   If .Kills > 32000 Then .Kills = 32000
                   .mem(220) = .Kills
@@ -662,13 +660,13 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
     If .FName <> rob(.Ties(k).pnt).FName Then
      'Botsareus 2/11/2014 Tie Eye Fudge
      If FudgeEyes Or FudgeAll Then
-      If rob(n).mem(455 + 8) < 2 Then rob(n).mem(455 + 8) = Int(Rnd * 2) + 1 Else rob(n).mem(455 + 8) = rob(n).mem(455 + 8) + Int(Rnd * 2) * 2 - 1
+      If .mem(455 + 8) < 2 Then .mem(455 + 8) = Int(Rnd * 2) + 1 Else .mem(455 + 8) = .mem(455 + 8) + Int(Rnd * 2) * 2 - 1
      End If
      'Fudge the rest of Tie occurr
      If FudgeAll Then
-      For t = 1 To 7
-       If rob(n).mem(455 + t) < 2 Then rob(n).mem(455 + t) = Int(Rnd * 2) + 1 Else rob(n).mem(455 + t) = rob(n).mem(455 + t) + Int(Rnd * 2) * 2 - 1
-      Next t
+      For l = 1 To 7
+       If .mem(455 + l) < 2 Then .mem(455 + l) = Int(Rnd * 2) + 1 Else .mem(455 + l) = .mem(455 + l) + Int(Rnd * 2) * 2 - 1
+      Next l
      End If
     End If
     
@@ -873,7 +871,6 @@ Public Function maketie(ByVal a As Integer, ByVal b As Integer, c As Long, last 
   
   If rob(b).Slime > 0 Then rob(b).Slime = rob(b).Slime - 20
   If rob(b).Slime < 0 Then rob(b).Slime = 0 'cost to slime layer when attacked
-  If rob(a).numties = -1 Then Exit Function 'Botsareus 3/4/3014 bug fix
   rob(a).nrg = rob(a).nrg - (SimOpts.Costs(TIECOST) * SimOpts.Costs(COSTMULTIPLIER)) / (rob(a).numties + 1) 'Tie cost to form tie
 getout:
 End Function

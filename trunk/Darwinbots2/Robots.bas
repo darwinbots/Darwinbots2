@@ -1557,7 +1557,7 @@ Public Sub UpdateBots()
   
   'Botsareus 4/17/2013 Prevent big birthas Replaced with chloroplasts check later, chloroplasts must be less then 1/2 of body for check to happen
   For t = 1 To MaxRobs
-   If rob(t).chloroplasts < rob(t).body / 2 Then
+   If rob(t).chloroplasts < rob(t).body / 2 Or rob(t).Kills > 5 Then 'Bug fix here to prevent huge killer vegys
     If rob(t).exist And rob(t).body > bodyfix Then KillRobot t
    End If
   Next
