@@ -959,18 +959,6 @@ Private Sub AddTenObstacles_Click()
   AddRandomObstacles (10)
 End Sub
 
-Private Sub calcium_Click()
-  Gridmode = 8
-  'DispGrid
-End Sub
-
-Private Sub CO2_Click()
-  Gridmode = 6
-  'DispGrid
-End Sub
-
-
-
 Private Sub AutoSpeciationMenu_Click()
   'Speciation.Show 'Commented out to remove error.
 End Sub
@@ -1363,12 +1351,6 @@ Private Sub robinf_Click()
   datirob.Show
   datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime, rob(n).chloroplasts
 End Sub
-Private Sub mdiform1_keydown(KeyCode As Integer)
-  If KeyCode <> 0 Then
-    Form1.Active = False
-    Form1.SecTimer.Enabled = False
-  End If
-End Sub
 
 Private Sub SaveSimWithoutMutations_Click()
   SaveWithoutMutations = True
@@ -1388,11 +1370,6 @@ End Sub
 Private Sub ShowVisionGrid_Click()
   ShowVisionGrid.Checked = Not ShowVisionGrid.Checked
   showVisionGridToggle = ShowVisionGrid.Checked
-End Sub
-
-Private Sub silica_Click()
-  Gridmode = 7
-  'DispGrid
 End Sub
 
 Private Sub Species_Click()
@@ -1767,13 +1744,6 @@ Private Sub killorg_Click()
   KillOrganism robfocus
 End Sub
 
-Private Sub listcont_Click()
-  optionsform.SSTab1.Tab = 5
-  NetEvent.Timer1.Enabled = False
-  NetEvent.Hide
-  optionsform.Show vbModal
-End Sub
-
 Private Sub loadsim_Click(Index As Integer)
 If Form1.GraphLab.Visible Then Exit Sub
 
@@ -1851,7 +1821,7 @@ Private Sub simload(Optional path As String)
   'Botsareus 6/11/2013 Restart loaded simulation
   While StartAnotherRound
     StartAnotherRound = False
-    SimOpts.UserSeedNumber = Rnd * 100 'Botsareus 6/11/2013 Randomize seed on restart
+    SimOpts.UserSeedNumber = Rnd * 2147483647 'Botsareus 6/11/2013 Randomize seed on restart
     Form1.StartSimul
   Wend
 
@@ -1862,17 +1832,6 @@ fine:
   Else
     Exit Sub
   End If
-End Sub
-
-
-Private Sub MDIForm1_Click()
- ' InfoForm.Hide
-  NetEvent.stayontop
-End Sub
-
-Private Sub MDIForm1_ThumbScroll()
- ' InfoForm.Hide
-  NetEvent.stayontop
 End Sub
 
 Private Sub moltiplicatore_Click()
@@ -1942,6 +1901,7 @@ MsgBox "Saving sim failed.  " + Err.Description, vbOKOnly
 End Sub
 
 Private Sub MDIForm_Load()
+
 calc_dnamatrix
 'Botsareus 5/8/2013 Safemode strings are declared here (sorry, no Italian version)
 Dim strMsgSendData As String
@@ -2067,6 +2027,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   TmpOpts.RepopAmount = 10
   TmpOpts.RepopCooldown = 10
   TmpOpts.PhysBrown = 0.5
+  TmpOpts.FieldSize = 2
   
   MaxPop = 700
   MaxCycles = 15000
@@ -2091,6 +2052,23 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   If Not (x_restartmode = 0 Or x_restartmode > 4) Then
         If Not simalreadyrunning Then
             Select Case x_restartmode
+            Case 3
+                If UseStepladder Then leagueSourceDir = MDIForm1.MainDir & "\league\Tournament_Results"
+                'setup a league round
+                    SimOpts = TmpOpts
+                    'load robot
+                    optionsform.additem MDIForm1.MainDir & "\league\robotA.txt"
+                    optionsform.additem MDIForm1.MainDir & "\league\robotB.txt"
+                    'disable mutations
+                    For i = 0 To UBound(TmpOpts.Specie)
+                     If TmpOpts.Specie(i).Name = "robotA.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).Name = "robotB.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                    Next
+                    'F1 enabled
+                    TmpOpts.F1 = True
+                    'new seed and run sim
+                    chseedstartnew = True
+                    optionsform.StartNew_Click
             Case 1
                 Set files = getfiles(leagueSourceDir)
                     If x_filenumber > files.count Then
@@ -2144,7 +2122,21 @@ mode2:
                         deseed MDIForm1.MainDir & "\league\seeded"
                         MsgBox "Go to " & MDIForm1.MainDir & "\league\Tournament_Results to view your results.", vbExclamation, "League Complete!"
                         x_restartmode = 0
+                        Kill App.path & "\restartmode.gset"
                         GoTo skipsetup
+                    ElseIf (seeded.count + files.count) < 25 And UseStepladder Then
+                        'Botsareus 3/8/2014 end of tournament league transition to stepladder
+                        MkDir MDIForm1.MainDir & "\league\Tournament_Results"
+                        deseed MDIForm1.MainDir & "\league\round" & (x_filenumber + 1)
+                        deseed MDIForm1.MainDir & "\league\seeded"
+                        Dim file_name As String
+                        leagueSourceDir = MDIForm1.MainDir & "\league\Tournament_Results"
+                        file_name = dir$(leagueSourceDir & "\*.*")
+                        FileCopy leagueSourceDir & "\" & file_name, MDIForm1.MainDir & "\league\stepladder\1-" & file_name
+                        Kill leagueSourceDir & "\" & file_name
+                        x_filenumber = 0
+                        populateladder
+                        Exit Sub
                     End If
                     If files.count <= seeded.count Then movefilemulti MDIForm1.MainDir & "\league\seeded", MDIForm1.MainDir & "\league\round" & (x_filenumber + 1), files.count
                     x_filenumber = x_filenumber + 1

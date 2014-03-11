@@ -157,7 +157,7 @@ Public Sub UpdateSim()
   'R E S T A R T  N E X T
   'Botsareus 1/31/2014 seeding
   If x_restartmode = 1 Then
-    If SimOpts.TotRunCycle = 200 Then 'Botsareusnotdone change to 2K
+    If SimOpts.TotRunCycle = 2000 Then
         FileCopy MDIForm1.MainDir & "\league\test.txt", NamefileRecursive(MDIForm1.MainDir & "\league\seeded\" & totnvegsDisplayed & ".txt")
         Open App.path & "\restartmode.gset" For Output As #1
          Write #1, x_restartmode

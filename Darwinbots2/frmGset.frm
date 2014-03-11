@@ -147,7 +147,7 @@ Begin VB.Form frmGset
          Left            =   -72000
          TabIndex        =   55
          Top             =   3000
-         Width           =   3015
+         Width           =   5415
       End
       Begin VB.TextBox txtSourceDir 
          Height          =   405
@@ -700,7 +700,7 @@ MsgBox "Global settings will take effect the next time DarwinBots starts.", vbIn
       Write #1, val(sldMain)
       Write #1, val(sldDev)
       Write #1, txtSourceDir
-      Write #1, chkStepladder = 1
+      Write #1, (chkStepladder = 1 And chkTournament = 1)
       
       Dim tmpopt As OptionButton
       For Each tmpopt In optFudging
@@ -714,15 +714,26 @@ MsgBox "Global settings will take effect the next time DarwinBots starts.", vbIn
 'Botsareus 1/31/2014 Setup a league
 If txtSourceDir.Visible Then
     'R E S T A R T  I N I T
-    optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
-    Open App.path & "\restartmode.gset" For Output As #1
-        Write #1, 1
-        Write #1, 1
-    Close #1
-    Open App.path & "\Safemode.gset" For Output As #1
-     Write #1, False
-    Close #1
-    shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+    If chkStepladder = 1 And chkTournament = 0 Then
+        optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set"
+        Dim file_name As String
+        leagueSourceDir = txtSourceDir.text
+        file_name = dir$(leagueSourceDir & "\*.*")
+        FileCopy leagueSourceDir & "\" & file_name, MDIForm1.MainDir & "\league\stepladder\1-" & file_name
+        Kill leagueSourceDir & "\" & file_name
+        x_filenumber = 0
+        populateladder
+    Else
+        optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
+        Open App.path & "\restartmode.gset" For Output As #1
+            Write #1, 1
+            Write #1, 1
+        Close #1
+        Open App.path & "\Safemode.gset" For Output As #1
+         Write #1, False
+        Close #1
+        shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+    End If
 End If
 
 'unload
@@ -771,7 +782,7 @@ End Sub
 
 Private Sub chkTournament_Click()
 If chkTournament.value = 1 Then
-    chkStepladder.Caption = "Stepladder league (starts at 24 robots)"
+    chkStepladder.Caption = "Stepladder league (starts between 16 and 24 robots)"
     lblSource.Visible = True
     txtSourceDir.Visible = True
 Else

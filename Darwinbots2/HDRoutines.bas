@@ -5,6 +5,34 @@ Option Explicit
 '   D I S K    O P E R A T I O N S
 '
 
+Public Sub movetopos(ByVal s As String, ByVal pos As Integer)  'Botsareus 3/7/2014 Used in Stepladder to move files in specific order
+    Dim files As Collection
+    Dim tmpname As String
+    Dim i As Integer
+    Dim j As Integer
+    Set files = getfiles(MDIForm1.MainDir & "\league\stepladder")
+    If pos > files.count Then
+        'just put at end
+        FileCopy s, MDIForm1.MainDir & "\league\stepladder\" & (files.count + 1) & "-" & extractname(s)
+    Else
+        'move files first
+        For i = files.count To pos Step -1
+            'find a file prefixed i
+            For j = 1 To files.count
+                tmpname = extractname(files(j))
+                If tmpname Like CStr(i) & "-*" Then
+                    FileCopy files(j), MDIForm1.MainDir & "\league\stepladder\" & (i + 1) & "-" & Right(tmpname, Len(tmpname) - Len(CStr(i) & "-"))
+                    Kill files(j)
+                Exit For
+                End If
+            Next
+        Next
+        FileCopy s, MDIForm1.MainDir & "\league\stepladder\" & pos & "-" & extractname(s)
+    End If
+    
+    Kill s
+End Sub
+
 Public Sub deseed(ByVal s As String) 'Botsareus 2/25/2014 Used in Tournament to get back original names of the files and move to result folder
 Dim lastline As String
 Dim files As Collection
@@ -17,7 +45,7 @@ Set files = getfiles(s)
             Loop
         Close #1
         lastline = Replace(lastline, "'#tag:", "")
-        FileCopy files(1), MDIForm1.MainDir & "\league\Tournament_Results\" & lastline
+        FileCopy files(i), MDIForm1.MainDir & "\league\Tournament_Results\" & lastline
     Next
 End Sub
 

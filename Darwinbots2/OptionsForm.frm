@@ -129,20 +129,24 @@ Begin VB.Form optionsform
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "Label19"
+      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "Restart"
+      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).Control(2)=   "Frame7"
+      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).Control(3)=   "btnSetF1"
+      Tab(4).Control(3).Enabled=   0   'False
       Tab(4).Control(4)=   "btnSetF2"
-      Tab(4).ControlCount=   5
+      Tab(4).Control(4).Enabled=   0   'False
+      Tab(4).Control(5)=   "btnSetSB"
+      Tab(4).Control(5).Enabled=   0   'False
+      Tab(4).ControlCount=   6
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
       Tab(5).Control(0)=   "Label41"
-      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "Label42"
-      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).Control(2)=   "Simulazione"
-      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
@@ -150,6 +154,14 @@ Begin VB.Form optionsform
       Tab(6).Control(0)=   "Frame10"
       Tab(6).Control(1)=   "Frame4"
       Tab(6).ControlCount=   2
+      Begin VB.CommandButton btnSetSB 
+         Caption         =   "Set SB settings"
+         Height          =   375
+         Left            =   -70440
+         TabIndex        =   246
+         Top             =   3120
+         Width           =   2055
+      End
       Begin VB.CommandButton btnSetF2 
          Caption         =   "Set F2/F3/MB settings"
          Height          =   375
@@ -159,7 +171,7 @@ Begin VB.Form optionsform
          Width           =   2055
       End
       Begin VB.CommandButton btnSetF1 
-         Caption         =   "Set F1 settings"
+         Caption         =   "Set F1/SS settings"
          Height          =   375
          Left            =   -74760
          TabIndex        =   243
@@ -473,8 +485,8 @@ Begin VB.Form optionsform
                LargeChange     =   1
                Min             =   1
                Max             =   25
-               SelStart        =   1
-               Value           =   1
+               SelStart        =   2
+               Value           =   2
             End
             Begin VB.Label Label28 
                Caption         =   "Width:"
@@ -546,7 +558,7 @@ Begin VB.Form optionsform
                _ExtentY        =   503
                _Version        =   327681
                BuddyControl    =   "CustomWaste"
-               BuddyDispid     =   196649
+               BuddyDispid     =   196650
                OrigLeft        =   780
                OrigTop         =   480
                OrigRight       =   1020
@@ -649,7 +661,7 @@ Begin VB.Form optionsform
                      _Version        =   327681
                      Value           =   1
                      BuddyControl    =   "EnergyScalingFactor"
-                     BuddyDispid     =   196659
+                     BuddyDispid     =   196660
                      OrigLeft        =   796
                      OrigTop         =   840
                      OrigRight       =   1036
@@ -862,7 +874,7 @@ Begin VB.Form optionsform
                   _Version        =   327681
                   Value           =   1
                   BuddyControl    =   "Gradient"
-                  BuddyDispid     =   196663
+                  BuddyDispid     =   196664
                   OrigLeft        =   1800
                   OrigTop         =   1140
                   OrigRight       =   2055
@@ -884,7 +896,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "LightText"
-                  BuddyDispid     =   196664
+                  BuddyDispid     =   196665
                   OrigLeft        =   5040
                   OrigTop         =   1560
                   OrigRight       =   5280
@@ -1019,7 +1031,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "RepopAmountText"
-                  BuddyDispid     =   196673
+                  BuddyDispid     =   196674
                   OrigLeft        =   660
                   OrigTop         =   1020
                   OrigRight       =   900
@@ -1039,7 +1051,7 @@ Begin VB.Form optionsform
                   _Version        =   327681
                   Value           =   1
                   BuddyControl    =   "MaxPopText"
-                  BuddyDispid     =   196675
+                  BuddyDispid     =   196676
                   OrigLeft        =   660
                   OrigTop         =   300
                   OrigRight       =   900
@@ -1062,7 +1074,7 @@ Begin VB.Form optionsform
                   _Version        =   327681
                   Value           =   100
                   BuddyControl    =   "MinVegText"
-                  BuddyDispid     =   196674
+                  BuddyDispid     =   196675
                   OrigLeft        =   2730
                   OrigTop         =   2295
                   OrigRight       =   2970
@@ -1085,7 +1097,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "RepopCooldownText"
-                  BuddyDispid     =   196672
+                  BuddyDispid     =   196673
                   OrigLeft        =   660
                   OrigTop         =   1380
                   OrigRight       =   900
@@ -1259,7 +1271,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "DecayText"
-                  BuddyDispid     =   196686
+                  BuddyDispid     =   196687
                   OrigLeft        =   5040
                   OrigTop         =   2280
                   OrigRight       =   5280
@@ -1281,7 +1293,7 @@ Begin VB.Form optionsform
                   _ExtentY        =   503
                   _Version        =   327681
                   BuddyControl    =   "FrequencyText"
-                  BuddyDispid     =   196685
+                  BuddyDispid     =   196686
                   OrigLeft        =   5040
                   OrigTop         =   2280
                   OrigRight       =   5280
@@ -1392,7 +1404,7 @@ Begin VB.Form optionsform
                _Version        =   327681
                Value           =   100
                BuddyControl    =   "ChartInterval"
-               BuddyDispid     =   196692
+               BuddyDispid     =   196693
                OrigLeft        =   4320
                OrigTop         =   3240
                OrigRight       =   4560
@@ -1515,7 +1527,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   100000
             BuddyControl    =   "CyclesHi"
-            BuddyDispid     =   196701
+            BuddyDispid     =   196702
             OrigLeft        =   3570
             OrigTop         =   3465
             OrigRight       =   3810
@@ -1538,7 +1550,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   10000
             BuddyControl    =   "CyclesLo"
-            BuddyDispid     =   196702
+            BuddyDispid     =   196703
             OrigLeft        =   3570
             OrigTop         =   2940
             OrigRight       =   3810
@@ -1843,7 +1855,7 @@ Begin VB.Form optionsform
             Left            =   3000
             TabIndex        =   23
             Text            =   "0"
-            ToolTipText     =   "How many cycles between condition checking"
+            ToolTipText     =   "Write zero here to turn option off"
             Top             =   1140
             Width           =   465
          End
@@ -1865,7 +1877,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   5
             BuddyControl    =   "txtMaxRounds"
-            BuddyDispid     =   196733
+            BuddyDispid     =   196734
             OrigLeft        =   3480
             OrigTop         =   1140
             OrigRight       =   3735
@@ -1884,7 +1896,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   5
             BuddyControl    =   "txtMinRounds"
-            BuddyDispid     =   196732
+            BuddyDispid     =   196733
             OrigLeft        =   3240
             OrigTop         =   960
             OrigRight       =   3480
@@ -2018,7 +2030,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Prop"
-            BuddyDispid     =   196752
+            BuddyDispid     =   196753
             OrigLeft        =   4260
             OrigTop         =   2760
             OrigRight       =   4500
@@ -2069,7 +2081,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Fixed"
-            BuddyDispid     =   196751
+            BuddyDispid     =   196752
             OrigLeft        =   4245
             OrigTop         =   2340
             OrigRight       =   4485
@@ -2373,7 +2385,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "SpecQty"
-            BuddyDispid     =   196770
+            BuddyDispid     =   196771
             OrigLeft        =   2310
             OrigTop         =   525
             OrigRight       =   2550
@@ -2395,7 +2407,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   1000
             BuddyControl    =   "SpecNrg"
-            BuddyDispid     =   196772
+            BuddyDispid     =   196773
             OrigLeft        =   1560
             OrigTop         =   240
             OrigRight       =   1800
@@ -2657,7 +2669,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoSimTxt"
-            BuddyDispid     =   196799
+            BuddyDispid     =   196800
             OrigLeft        =   3360
             OrigTop         =   360
             OrigRight       =   3600
@@ -2677,7 +2689,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoRobTxt"
-            BuddyDispid     =   196796
+            BuddyDispid     =   196797
             OrigLeft        =   3120
             OrigTop         =   240
             OrigRight       =   3375
@@ -2784,11 +2796,11 @@ Begin VB.Form optionsform
       End
       Begin VB.Label Label19 
          Caption         =   $"OptionsForm.frx":0700
-         Height          =   615
+         Height          =   495
          Left            =   -74640
          TabIndex        =   245
          Top             =   3600
-         Width           =   4095
+         Width           =   6135
       End
       Begin VB.Label Label42 
          Caption         =   $"OptionsForm.frx":079A
@@ -2967,7 +2979,7 @@ Private Sub btnSetF1_Click() 'Botsareus 2/5/2014 New way to set league settings
     TmpOpts.FieldWidth = 9237
     TmpOpts.FieldHeight = 6928
     TmpOpts.FieldSize = 1
-    TmpOpts.MaxEnergy = 120           ' Veggy nrg per cycle
+    TmpOpts.MaxEnergy = 80           ' Veggy nrg per cycle
     TmpOpts.MaxPopulation = 25       ' Veggy max population
     TmpOpts.MinVegs = 10
     TmpOpts.Pondmode = False
@@ -3023,8 +3035,17 @@ End Sub
 
 Private Sub btnSetF2_Click() 'Botsareus 2/5/2014 New way to set league settings
 btnSetF1_Click
-TmpOpts.MaxEnergy = 105 ' Veggy nrg per cycle
-MaxNRGText.text = 30
+TmpOpts.MaxEnergy = 60 ' Veggy nrg per cycle
+MaxNRGText.text = 60
+End Sub
+
+Private Sub btnSetSB_Click()
+btnSetF1_Click
+TmpOpts.FieldWidth = 16000
+TmpOpts.FieldHeight = 12000
+FieldSizeSlide.value = 2
+FWidthLab = 16000
+FHeightLab = 12000
 End Sub
 
 Private Sub MaxCyclesText_LostFocus()
@@ -5035,7 +5056,7 @@ If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 
   While StartAnotherRound
     StartAnotherRound = False
     Form1.StartSimul
-    SimOpts.UserSeedNumber = Rnd * 100 'Botsareus 6/11/2013 Randomize seed on restart, moved to after first sim
+    SimOpts.UserSeedNumber = Rnd * 2147483647 'Botsareus 6/11/2013 Randomize seed on restart, moved to after first sim
   Wend
   
 End Sub
