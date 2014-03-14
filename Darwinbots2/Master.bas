@@ -67,6 +67,7 @@ Public Sub UpdateSim()
     LowerRange = TmpOpts.Costs(DYNAMICCOSTTARGETLOWERRANGE) * 0.01 * SimOpts.Costs(DYNAMICCOSTTARGET)
     If (CurrentPopulation = PopulationLast10Cycles(10)) Then
       DynamicCountdown = DynamicCountdown - 1
+      If DynamicCountdown < -10 Then DynamicCountdown = -10
     Else
       DynamicCountdown = 10
     End If

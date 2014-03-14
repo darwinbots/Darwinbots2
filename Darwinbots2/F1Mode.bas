@@ -500,3 +500,20 @@ Open App.path & "\Safemode.gset" For Output As #1
 Close #1
 shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
 End Sub
+
+Public Sub dreason(ByVal name As String, ByVal tag As String, ByVal reason As String)
+
+'update list
+Open MDIForm1.MainDir & "\Disqualifications.txt" For Append As #1
+    Print #1, "Robot """ & name & """(" & Trim(tag) & ") has been disqualified for " & reason & "."
+Close #1
+
+    Dim t As Integer
+
+'kill species
+For t = 1 To MaxRobs
+    If Not rob(t).Veg And Not rob(t).Corpse And rob(t).exist Then
+        If rob(t).FName = name Then KillRobot t
+    End If
+Next t
+End Sub

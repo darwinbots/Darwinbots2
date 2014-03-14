@@ -901,6 +901,7 @@ Dim shellNrgConvRate As Single
     If .shell + Delta < 0 Then Delta = -.shell             ' shell can't go below 0
     
     .shell = .shell + Delta                                ' Make the change in shell
+    
     .nrg = .nrg - (Abs(Delta) * shellNrgConvRate)          ' Making or unmaking shell takes nrg
     
     'This is the transaction cost
@@ -917,6 +918,8 @@ Dim shellNrgConvRate As Single
     .mem(822) = 0                          ' reset the .mkshell sysvar
     .mem(823) = CInt(.shell)               ' update the .shell sysvar
 getout:
+    'Botsareus 3/14/2014 Disqualify
+    If SimOpts.F1 And Disqualify = 2 Then dreason .FName, .tag, "making shell"
   End With
 End Sub
 
@@ -944,6 +947,7 @@ Dim slimeNrgConvRate As Single
     If .Slime + Delta < 0 Then Delta = -.Slime             ' Slime can't go below 0
     
     .Slime = .Slime + Delta                                ' Make the change in slime
+    
     .nrg = .nrg - (Abs(Delta) * slimeNrgConvRate)          ' Making or unmaking slime takes nrg
     
     'This is the transaction cost
@@ -961,6 +965,8 @@ Dim slimeNrgConvRate As Single
     .mem(821) = CInt(.Slime)                ' update the .slime sysvar
     
 getout:
+    'Botsareus 3/14/2014 Disqualify
+    If SimOpts.F1 And Disqualify = 2 Then dreason .FName, .tag, "making slime"
   End With
 End Sub
 
@@ -1114,7 +1120,7 @@ Dim i As Integer
     TotalRobots = TotalRobots + 1
     
     'Update the number of bots in each species
-    While SimOpts.Specie(i).Name <> rob(n).FName And i < SimOpts.SpeciesNum
+    While SimOpts.Specie(i).name <> rob(n).FName And i < SimOpts.SpeciesNum
         i = i + 1
     Wend
     
@@ -1397,6 +1403,8 @@ Private Sub FireTies(ByVal n As Integer)
       If Length <= maxLength Then
         'maketie auto deletes existing ties for you
         maketie n, rob(n).lastopp, rob(n).radius + rob(rob(n).lastopp).radius + RobSize * 2, -20, rob(n).mem(mtie)
+        'Botsareus 3/14/2014 Disqualify
+        If SimOpts.F1 And Disqualify = 2 Then dreason rob(n).FName, rob(n).tag, "making a tie"
       End If
       
     End If
@@ -1734,6 +1742,8 @@ Private Sub robshoot(n As Integer)
     If rob(n).nrg < Cost Then Cost = rob(n).nrg
     rob(n).nrg = rob(n).nrg - Cost ' EricL - postive shots should cost the shotcost
     newshot n, shtype, value, 1
+    'Botsareus 3/14/2014 Disqualify
+    If SimOpts.F1 And Disqualify = 2 Then dreason rob(n).FName, rob(n).tag, "firing an info shot"
   Case -1 ' Nrg request Feeding Shot
     If rob(n).Multibot Then
       value = 20 + (rob(n).body / 5) * (rob(n).numties + 1)
@@ -1977,6 +1987,8 @@ Public Sub storevenom(n As Integer)
     .mem(824) = 0                          ' reset the .mkvenom sysvar
     .mem(825) = Int(.venom)               ' update the .venom sysvar
 getout:
+    'Botsareus 3/14/2014 Disqualify
+    If SimOpts.F1 And Disqualify = 2 Then dreason .FName, .tag, "making venom"
   End With
 End Sub
 ' Robot n converts some of his energy to poison
@@ -2014,6 +2026,8 @@ Public Sub storepoison(n As Integer)
     .mem(826) = 0                          ' reset the .mkpoison sysvar
     .mem(827) = CInt(.poison)              ' update the .poison sysvar
 getout:
+    'Botsareus 3/14/2014 Disqualify
+    If SimOpts.F1 And Disqualify = 2 Then dreason .FName, .tag, "making poison"
   End With
  
 End Sub
@@ -2357,6 +2371,10 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
     tests = tests Or simplecoll(nx, ny, female)
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
     If Not tests Then
+    
+    'Botsareus 3/14/2014 Disqualify
+    If SimOpts.F1 And Disqualify = 2 Then dreason rob(female).FName, rob(female).tag, "attempting to reproduce sexually"
+    
       'Do the crossover.  The sperm DNA is on the mom's bot structure
       'Botsareus 4/2/2013 Crossover fix
       
@@ -2419,7 +2437,7 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
             ndna1(c).nucli = mult
             c = c + 1
            Next
-           
+
            c = 0
            For t = 0 To UBound(dna2) Step stp
             mult = DNAtoSmallPnumber(dna2(t).tipo, dna2(t).value)
@@ -2430,6 +2448,7 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
             ndna2(c).nucli = mult
             c = c + 1
            Next
+           
           End If
 
       'Step3 Check longest sequences
@@ -2437,9 +2456,10 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
       iinc = 0
       FindLongestSequences ndna1, ndna2, 0, UBound(ndna1), 0, UBound(ndna2)
       
-      'If robot is too unsimiler then do not reproduce and block sex reproduction for 16 cycles
+      'If robot is too unsimiler then do not reproduce and block sex reproduction for 32 cycles
+      
       If GeneticDistance(ndna1, ndna2) > 0.6 Then
-        rob(female).fertilized = -26
+        rob(female).fertilized = -42
         Exit Function
       End If
       

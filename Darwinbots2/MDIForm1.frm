@@ -1135,15 +1135,47 @@ tryagain:
      & " -out " & oq _
      & " -name " & Chr(34) & IntOpts.IName & Chr(34) _
      & " -pid " & Str(GetCurrentProcessId())
-     IntOpts.pid = shell(s, vbNormalFocus)
-     If IntOpts.pid = 0 Then
-        MsgBox ("Could not open DarwinbotsIM.exe")
-        GoTo Top
-     End If
+     
+     'lets figure out IM mode
+     ChooseIM.Show vbModal, Me
+     Select Case ChooseIM.i
+     Case 0
+     
+        IntOpts.pid = shell(s, vbNormalFocus)
+        If IntOpts.pid = 0 Then
+           MsgBox ("Could not open DarwinbotsIM.exe")
+           GoTo Top
+        End If
+     
+     Case 1
+     
+        IntOpts.pid = shell(s, vbNormalFocus)
+        If IntOpts.pid = 0 Then
+           MsgBox ("Could not open DarwinbotsIM.exe")
+           GoTo Top
+        End If
+        
+        IntOpts.pid2 = shell(Replace(s, "DarwinbotsIM.exe", "DarwinbotsLIM.exe"), vbNormalFocus)
+        If IntOpts.pid2 = 0 Then
+           MsgBox ("Could not open DarwinbotsLIM.exe")
+           GoTo Top
+        End If
+        
+    Case 2
+    
+        IntOpts.pid = shell(Replace(s, "DarwinbotsIM.exe", "DarwinbotsLIM.exe"), vbNormalFocus)
+        If IntOpts.pid = 0 Then
+           MsgBox ("Could not open DarwinbotsLIM.exe")
+           GoTo Top
+        End If
+        
+    End Select
+     
      
   Else
     'Exit DarwinbotsIM
     l = CloseWindow(IntOpts.pid)
+    If IntOpts.pid2 <> 0 Then l = CloseWindow(IntOpts.pid2)
     
     InternetMode = False
     MDIForm1.F1InternetButton.value = 0 ' checked
