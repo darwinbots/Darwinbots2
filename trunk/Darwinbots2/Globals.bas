@@ -54,6 +54,8 @@ Public x_fudge As Byte
 Public FudgeEyes As Boolean
 Public FudgeAll As Boolean
 
+Public Disqualify As Byte
+
 Public StartChlr As Integer 'Botsareus 2/12/2014 Start repopulating robots with chloroplasts
 
 Public ModeChangeCycles As Long 'Botsareus 2/14/2014 Used to calculate time difference and mode change for survival

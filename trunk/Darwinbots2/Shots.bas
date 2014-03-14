@@ -175,6 +175,8 @@ Public Function newshot(n As Integer, ByVal shottype As Integer, ByVal val As Si
       'Shots(a).flash = True
       newshot = -1
     End If
+      'Botsareus 3/14/2014 Disqualify
+      If SimOpts.F1 And (Disqualify = 1 Or Disqualify = 2) Then dreason rob(n).FName, rob(n).tag, "using a virus"
   Else
     Shots(a).stored = False
   End If

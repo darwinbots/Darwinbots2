@@ -8,6 +8,7 @@ Public OutboundPath As String
 
 'This is the window handle to DarwinbotsIM
 Public pid As Long
+Public pid2 As Long
 Public Active As Boolean
 Public InternetMode As Boolean
 Public StartInInternetMode As Boolean

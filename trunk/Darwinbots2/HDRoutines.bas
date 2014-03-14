@@ -894,6 +894,7 @@ If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
       If Not EOF(1) Then Input #1, UseStepladder
       If Not EOF(1) Then Input #1, x_fudge
       If Not EOF(1) Then Input #1, StartChlr
+      If Not EOF(1) Then Input #1, Disqualify
     Close #1
 End If
 

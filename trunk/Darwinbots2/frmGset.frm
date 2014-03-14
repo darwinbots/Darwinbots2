@@ -80,7 +80,47 @@ Begin VB.Form frmGset
       Tab(2).Control(3).Enabled=   0   'False
       Tab(2).Control(4)=   "ffmFudge"
       Tab(2).Control(4).Enabled=   0   'False
-      Tab(2).ControlCount=   5
+      Tab(2).Control(5)=   "ffmDisqualification"
+      Tab(2).Control(5).Enabled=   0   'False
+      Tab(2).ControlCount=   6
+      Begin VB.Frame ffmDisqualification 
+         Caption         =   "Disqualification Rules on F1 Contest"
+         Height          =   975
+         Left            =   -72120
+         TabIndex        =   63
+         Top             =   3600
+         Width           =   3015
+         Begin VB.OptionButton optDisqua 
+            Caption         =   "F3"
+            Height          =   255
+            Index           =   2
+            Left            =   1920
+            TabIndex        =   66
+            ToolTipText     =   "Look for Disqualifications.txt in your main directory."
+            Top             =   480
+            Width           =   735
+         End
+         Begin VB.OptionButton optDisqua 
+            Caption         =   "F2"
+            Height          =   255
+            Index           =   1
+            Left            =   1200
+            TabIndex        =   65
+            ToolTipText     =   "Look for Disqualifications.txt in your main directory."
+            Top             =   480
+            Width           =   615
+         End
+         Begin VB.OptionButton optDisqua 
+            Caption         =   "None"
+            Height          =   255
+            Index           =   0
+            Left            =   240
+            TabIndex        =   64
+            Top             =   480
+            Value           =   -1  'True
+            Width           =   855
+         End
+      End
       Begin VB.Frame ffmInitChlr 
          Caption         =   "Advanced Chloroplast Options"
          Height          =   975
@@ -110,7 +150,7 @@ Begin VB.Form frmGset
          Height          =   975
          Left            =   -72120
          TabIndex        =   56
-         Top             =   3360
+         Top             =   2520
          Width           =   5535
          Begin VB.OptionButton optFudging 
             Caption         =   "All possible recognition methods"
@@ -138,7 +178,7 @@ Begin VB.Form frmGset
             TabIndex        =   57
             Top             =   480
             Value           =   -1  'True
-            Width           =   1815
+            Width           =   1095
          End
       End
       Begin VB.CheckBox chkStepladder 
@@ -146,7 +186,7 @@ Begin VB.Form frmGset
          Height          =   195
          Left            =   -72000
          TabIndex        =   55
-         Top             =   3000
+         Top             =   2160
          Width           =   5415
       End
       Begin VB.TextBox txtSourceDir 
@@ -154,7 +194,7 @@ Begin VB.Form frmGset
          Left            =   -72000
          TabIndex        =   54
          Text            =   "C:\"
-         Top             =   2040
+         Top             =   1200
          Visible         =   0   'False
          Width           =   5415
       End
@@ -163,7 +203,7 @@ Begin VB.Form frmGset
          Height          =   195
          Left            =   -72000
          TabIndex        =   52
-         Top             =   2640
+         Top             =   1800
          Width           =   1815
       End
       Begin VB.Frame ffmSunMut 
@@ -571,7 +611,7 @@ Begin VB.Form frmGset
          Height          =   375
          Left            =   -72000
          TabIndex        =   53
-         Top             =   1800
+         Top             =   960
          Visible         =   0   'False
          Width           =   1935
       End
@@ -648,15 +688,15 @@ If txtSourceDir.Visible Then
     specielist = ""
     Dim i As Integer
     For i = 0 To UBound(TmpOpts.Specie)
-        If TmpOpts.Specie(i).Veg = False And TmpOpts.Specie(i).Name <> "" Then
-            specielist = specielist & TmpOpts.Specie(i).Name & vbNewLine
+        If TmpOpts.Specie(i).Veg = False And TmpOpts.Specie(i).name <> "" Then
+            specielist = specielist & TmpOpts.Specie(i).name & vbNewLine
         End If
     Next
     'remove all nonrepopulating robots
     If specielist <> "" Then
         If MsgBox("The following robots must be removed first:" & vbCrLf & vbCrLf & specielist & vbCrLf & "Continue?", vbYesNo + vbQuestion) = vbYes Then
             For i = 0 To UBound(TmpOpts.Specie)
-                If TmpOpts.Specie(i).Veg = False And TmpOpts.Specie(i).Name <> "" Then
+                If TmpOpts.Specie(i).Veg = False And TmpOpts.Specie(i).name <> "" Then
                     optionsform.SpecList.ListIndex = i
                     optionsform.DelSpec_Click
                     i = i - 1
@@ -709,6 +749,10 @@ MsgBox "Global settings will take effect the next time DarwinBots starts.", vbIn
       
       Write #1, val(txtStartChlr.text)
       
+      For Each tmpopt In optDisqua
+        If tmpopt.value Then Write #1, tmpopt.Index
+      Next
+      
     Close #1
     
 'Botsareus 1/31/2014 Setup a league
@@ -718,6 +762,15 @@ If txtSourceDir.Visible Then
         optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set"
         Dim file_name As String
         leagueSourceDir = txtSourceDir.text
+        'add tags to files
+        Dim files As Collection
+        Set files = getfiles(leagueSourceDir)
+        For i = 1 To files.count
+            Open files(i) For Append As #1
+             Print #1, vbCrLf & "'#tag:" & extractname(files(i))
+            Close #1
+        Next
+        '
         file_name = dir$(leagueSourceDir & "\*.*")
         FileCopy leagueSourceDir & "\" & file_name, MDIForm1.MainDir & "\league\stepladder\1-" & file_name
         Kill leagueSourceDir & "\" & file_name
@@ -872,6 +925,8 @@ txtSourceDir = leagueSourceDir
 optFudging(x_fudge).value = True
 '
 txtStartChlr.text = StartChlr
+'
+optDisqua(Disqualify).value = True
 End Sub
 
 Private Sub txtBodyFix_LostFocus()

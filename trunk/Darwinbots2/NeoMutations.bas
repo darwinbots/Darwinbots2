@@ -360,10 +360,10 @@ With rob(robn)
             datahit(e2) = True
             Do
                 randomsysvar = Int(Rnd * 1000)
-            Loop Until sysvar(randomsysvar).Name <> ""
+            Loop Until sysvar(randomsysvar).name <> ""
             .DNA(e2).tipo = 1
             If .DNA(e2 + 1).tipo = 7 Then .DNA(e2).tipo = 0 'if store , inc , or dec then type 0
-            holddetail = "CopyError2 changed dna location " & e2 & " to sysvar " & IIf(.DNA(e2).tipo = 1, "*.", ".") & sysvar(randomsysvar).Name
+            holddetail = "CopyError2 changed dna location " & e2 & " to sysvar " & IIf(.DNA(e2).tipo = 1, "*.", ".") & sysvar(randomsysvar).name
             .DNA(e2).value = sysvar(randomsysvar).value 'transfears value, not adress
             
             'special cases
@@ -413,7 +413,7 @@ Private Sub PointMutation2(robn As Integer) 'Botsareus 12/10/2013
             
             Do
                 randomsysvar = Int(Rnd * 1000)
-            Loop Until sysvar(randomsysvar).Name <> ""
+            Loop Until sysvar(randomsysvar).name <> ""
             
             
             If .DNA(randompos).tipo = 1 And Int(Rnd * 2) = 0 Then 'sometimes we need to introduce more stores
@@ -430,7 +430,7 @@ Private Sub PointMutation2(robn As Integer) 'Botsareus 12/10/2013
             
               .DNA(randompos).value = sysvar(randomsysvar).value 'transfears value, not adress
             
-              holddetail = "PointMutation2 changed dna location " & randompos & " to sysvar " & IIf(.DNA(randompos).tipo = 1, "*.", ".") & sysvar(randomsysvar).Name
+              holddetail = "PointMutation2 changed dna location " & randompos & " to sysvar " & IIf(.DNA(randompos).tipo = 1, "*.", ".") & sysvar(randomsysvar).name
             
             End If
             
@@ -602,7 +602,7 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal Length 
   Dim temp As String
   Dim bp As block
   Dim tempbp As block
-  Dim Name As String
+  Dim name As String
   Dim oldname As String
   Dim t As Long
   Dim old As Long
@@ -660,13 +660,13 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal Length 
         bp.value = old
         
         tempbp = .DNA(t)
-        Parse Name, tempbp  ' Have to use a temp var because Parse() can change the arguments
+        Parse name, tempbp  ' Have to use a temp var because Parse() can change the arguments
         Parse oldname, bp
         
         .Mutations = .Mutations + 1
         .LastMut = .LastMut + 1
         .LastMutDetail = MutationType(Mtype) + " changed value of " + TipoDetok(.DNA(t).tipo) + " from " + _
-          oldname + " to " + Name + " at position" + Str(t) + " during cycle" + _
+          oldname + " to " + name + " at position" + Str(t) + " during cycle" + _
           Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
       End If
     Else
@@ -693,13 +693,13 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal Length 
         'we do nothing, it has to be in range
       End If
        tempbp = .DNA(t)
-       Parse Name, tempbp ' Have to use a temp var because Parse() can change the arguments
+       Parse name, tempbp ' Have to use a temp var because Parse() can change the arguments
        Parse oldname, bp
       .Mutations = .Mutations + 1
       .LastMut = .LastMut + 1
       
       .LastMutDetail = MutationType(Mtype) + " changed the " + TipoDetok(bp.tipo) + ": " + _
-          oldname + " to the " + TipoDetok(.DNA(t).tipo) + ": " + Name + " at position" + Str(t) + " during cycle" + _
+          oldname + " to the " + TipoDetok(.DNA(t).tipo) + ": " + name + " at position" + Str(t) + " during cycle" + _
           Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
       
     End If
@@ -888,6 +888,8 @@ Public Function delgene(n As Integer, g As Integer) As Boolean
     rob(n).mem(DnaLenSys) = rob(n).DnaLen
     rob(n).mem(GenesSys) = rob(n).genenum
     makeoccurrlist n
+    'Botsareus 3/14/2014 Disqualify
+    If SimOpts.F1 And Disqualify = 2 Then dreason rob(n).FName, rob(n).tag, "deleting a gene"
   End If
 End Function
 
@@ -910,9 +912,9 @@ If NormMut And Not skipNorm Then
         Length = rob(robfocus).DnaLen
     Else 'load dna length
         If MaxRobs = 0 Then ReDim rob(0)
-        path = TmpOpts.Specie(optionsform.CurrSpec).path & "\" & TmpOpts.Specie(optionsform.CurrSpec).Name
+        path = TmpOpts.Specie(optionsform.CurrSpec).path & "\" & TmpOpts.Specie(optionsform.CurrSpec).name
         path = Replace(path, "&#", MDIForm1.MainDir)
-        If dir(path) = "" Then path = MDIForm1.MainDir & "\Robots\" & TmpOpts.Specie(optionsform.CurrSpec).Name
+        If dir(path) = "" Then path = MDIForm1.MainDir & "\Robots\" & TmpOpts.Specie(optionsform.CurrSpec).name
         If LoadDNA(path, 0) Then
             Length = DnaLen(rob(0).DNA)
         End If
