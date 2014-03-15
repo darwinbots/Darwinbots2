@@ -24,7 +24,7 @@ Public Class Form1
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Dim c As Byte
         For Each p As Process In Process.GetProcesses
-            If LCase(p.ProcessName) = "darwinbotsim" Then
+            If p.ProcessName = "DarwinBotsIM" Then
                 c = c + 1
                 If c = 2 Then End
             End If
@@ -38,13 +38,4 @@ Public Class Form1
         Timer1.Enabled = True
     End Sub
 
-    Private Function Conv(ByVal val As Byte) As Integer
-        Return (750 * 1.5 ^ val) / (1.5 ^ 2)
-    End Function
-
-    Private Sub trbRate_Scroll(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles trbRate.Scroll
-        Dim val As Integer = Conv(trbRate.Value)
-        lblRate.Text = "Transfear rate: " & val & " Milliseconds"
-        Timer1.Interval = val
-    End Sub
 End Class
