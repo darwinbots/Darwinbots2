@@ -66,18 +66,18 @@ Begin VB.Form frmGset
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ffmSunMut"
-      Tab(1).Control(1)=   "ffmEpiReset"
+      Tab(1).Control(0)=   "ffmEpiReset"
+      Tab(1).Control(1)=   "ffmSunMut"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "lblSource"
-      Tab(2).Control(1)=   "chkTournament"
-      Tab(2).Control(2)=   "txtSourceDir"
-      Tab(2).Control(3)=   "chkStepladder"
-      Tab(2).Control(4)=   "ffmFudge"
-      Tab(2).Control(5)=   "ffmDisqualification"
+      Tab(2).Control(0)=   "ffmDisqualification"
+      Tab(2).Control(1)=   "ffmFudge"
+      Tab(2).Control(2)=   "chkStepladder"
+      Tab(2).Control(3)=   "txtSourceDir"
+      Tab(2).Control(4)=   "chkTournament"
+      Tab(2).Control(5)=   "lblSource"
       Tab(2).ControlCount=   6
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
@@ -91,9 +91,9 @@ Begin VB.Form frmGset
       Begin VB.CheckBox Check1 
          Caption         =   "Zerobot Mode"
          Height          =   255
-         Left            =   -72645
+         Left            =   -72600
          TabIndex        =   84
-         Top             =   3600
+         Top             =   4080
          Visible         =   0   'False
          Width           =   2295
       End
@@ -125,19 +125,27 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkSurvivalSimple 
          Caption         =   "Simple Survival Mode"
          Height          =   255
-         Left            =   -74685
+         Left            =   -74640
          TabIndex        =   80
-         Top             =   3600
+         Top             =   4080
          Width           =   2295
       End
       Begin VB.Frame ffmSurvival 
          Caption         =   "Survival Mode Settings"
-         Height          =   2775
+         Height          =   3135
          Left            =   -74760
          TabIndex        =   68
          Top             =   600
          Visible         =   0   'False
          Width           =   6855
+         Begin VB.CheckBox chkNoChlr 
+            Caption         =   "Disable Chloroplasts"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   85
+            Top             =   2700
+            Width           =   2295
+         End
          Begin VB.CheckBox chkNormSize 
             Caption         =   "Dynamically normalize DNA size"
             Height          =   255
@@ -230,9 +238,9 @@ Begin VB.Form frmGset
       Begin VB.CheckBox Check2 
          Caption         =   "Eco Survival Mode"
          Height          =   255
-         Left            =   -74685
+         Left            =   -74640
          TabIndex        =   67
-         Top             =   3960
+         Top             =   4440
          Visible         =   0   'False
          Width           =   2295
       End
@@ -991,6 +999,8 @@ MsgBox "Global settings will take effect the next time DarwinBots starts.", vbIn
       Write #1, val(txtCycSM)
       Write #1, val(txtLFOR)
       
+      Write #1, chkNoChlr.value = 1
+      
       'Botsareusnotdone expend for ecoIM
       
       
@@ -1238,6 +1248,8 @@ chkShowGraphs = IIf(y_graphs, 1, 0)
 chkNormSize = IIf(y_normsize, 1, 0)
 txtCycSM = y_hidePredCycl
 txtLFOR = y_LFOR
+'
+chkNoChlr.value = IIf(NoChlr, 1, 0)
 End Sub
 
 Private Sub txtBodyFix_LostFocus()

@@ -18,6 +18,7 @@ Public Type datispecie
   Name As String
   Stnrg As Integer
   Veg As Boolean
+  NoChlr As Boolean 'Botsareus 3/28/2014 Prevents robots from evolving chloroplasts
   Fixed As Boolean
   color As Long
   Colind As Integer
@@ -37,6 +38,6 @@ Public Type datispecie
   population As Integer             ' Number of this species in the sim.  Updated each cycle.
   SubSpeciesCounter As Integer      ' Using to increment the per-bot subspecies.
   Native As Boolean                 ' Indicates this species was first added locally to this sim and not teleported in from another
-  DisplayImage As image
+  DisplayImage As Image
 End Type
 

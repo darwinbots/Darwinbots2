@@ -176,6 +176,7 @@ Private Type robot
   Shape As Integer        ' shape of the robot, how many sides
   
   Veg As Boolean          ' is it a vegetable?
+  NoChlr As Boolean       ' no chloroplasts?
   
   wall As Boolean         ' is it a wall?
   Corpse As Boolean
@@ -1582,7 +1583,7 @@ Public Sub UpdateBots()
       MakeStuff t
       HandleWaste t
       Shooting t
-      ManageChlr t
+      If Not rob(t).NoChlr Then ManageChlr t 'Botsareus 3/28/2014 Disable Chloroplasts
       ManageBody t
       Shock t
       ManageBouyancy t
@@ -2176,6 +2177,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       rob(nuovo).FName = rob(n).FName
       rob(nuovo).LastOwner = rob(n).LastOwner
       rob(nuovo).Veg = rob(n).Veg
+      rob(nuovo).NoChlr = rob(n).NoChlr 'Botsareus 3/28/2014 Disable chloroplasts
       rob(nuovo).Fixed = rob(n).Fixed
       rob(nuovo).CantSee = rob(n).CantSee
       rob(nuovo).DisableDNA = rob(n).DisableDNA
@@ -2651,6 +2653,7 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       rob(nuovo).FName = rob(female).FName
       rob(nuovo).LastOwner = rob(female).LastOwner
       rob(nuovo).Veg = rob(female).Veg
+      rob(nuovo).NoChlr = rob(female).NoChlr 'Botsareus 3/28/2014 Disable chloroplasts
       rob(nuovo).Fixed = rob(female).Fixed
       rob(nuovo).CantSee = rob(female).CantSee
       rob(nuovo).DisableDNA = rob(female).DisableDNA

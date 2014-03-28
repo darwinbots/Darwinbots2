@@ -2165,6 +2165,7 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0571
@@ -2177,6 +2178,16 @@ Begin VB.Form optionsform
          Tag             =   "2010"
          Top             =   600
          Width           =   6075
+         Begin VB.CheckBox chkNoChlr 
+            Alignment       =   1  'Right Justify
+            Caption         =   "Disable Chloroplasts"
+            Height          =   210
+            Left            =   3360
+            TabIndex        =   247
+            ToolTipText     =   "Feed automatically this type (only for vegetables)"
+            Top             =   2400
+            Width           =   2430
+         End
          Begin VB.CheckBox MutEnabledCheck 
             Alignment       =   1  'Right Justify
             Caption         =   "Disable Mutations"
@@ -2307,7 +2318,7 @@ Begin VB.Form optionsform
             Left            =   3360
             TabIndex        =   91
             ToolTipText     =   "Feed automatically this type (only for vegetables)"
-            Top             =   2280
+            Top             =   2160
             Width           =   2430
          End
          Begin VB.TextBox SpecQty 
@@ -3041,6 +3052,17 @@ FWidthLab = 16000
 FHeightLab = 12000
 End Sub
 
+Private Sub chkNoChlr_Click()
+  If CurrSpec > -1 Then
+    TmpOpts.Specie(CurrSpec).NoChlr = False
+    If chkNoChlr.value = 1 Then
+        TmpOpts.Specie(CurrSpec).NoChlr = True
+        TmpOpts.Specie(CurrSpec).Veg = False
+        SpecVeg.value = 0
+    End If
+  End If
+End Sub
+
 Private Sub MaxCyclesText_LostFocus()
 MaxCyclesText.text = MaxCycles
 End Sub
@@ -3346,6 +3368,11 @@ Private Sub SpecList_Click()
     SpecVeg.value = 1
   Else
     SpecVeg.value = 0
+  End If
+  If TmpOpts.Specie(k).NoChlr Then  'Botsareus 3/28/2014 Disable chloroplasts
+    chkNoChlr.value = 1
+  Else
+    chkNoChlr.value = 0
   End If
   
   If TmpOpts.Specie(k).CantSee Then
@@ -3831,7 +3858,11 @@ End Sub
 Private Sub SpecVeg_Click()
   If CurrSpec > -1 Then
     TmpOpts.Specie(CurrSpec).Veg = False
-    If SpecVeg.value = 1 Then TmpOpts.Specie(CurrSpec).Veg = True
+    If SpecVeg.value = 1 Then
+        TmpOpts.Specie(CurrSpec).Veg = True
+        TmpOpts.Specie(CurrSpec).NoChlr = False
+        chkNoChlr.value = 0
+    End If
   End If
 End Sub
 
@@ -5596,6 +5627,11 @@ skipthisspecie4:
   Write #1, Maxrounds
   Write #1, MaxCycles
   Write #1, MaxPop
+  
+  'Botsareus 3/28/2014 Some more species data
+  For t = 0 To numSpecies - 1
+    Write #1, TmpOpts.Specie(t).NoChlr
+  Next
 
   Close 1
   Exit Sub
@@ -5926,6 +5962,11 @@ Public Sub ReadSettFromFile()
   If Not EOF(1) Then Input #1, Maxrounds
   If Not EOF(1) Then Input #1, MaxCycles
   If Not EOF(1) Then Input #1, MaxPop
+  
+  'Botsareus 3/28/2014 Some more species data
+  For t = 0 To maxsp
+    If Not EOF(1) Then Input #1, TmpOpts.Specie(t).NoChlr
+  Next
   
   If (Not EOF(1)) Then MsgBox "This settings file is a newer version than this version can read.  " + vbCrLf + _
                               "Not all the information it contains can be " + vbCrLf + _

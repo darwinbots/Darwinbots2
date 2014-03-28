@@ -2109,7 +2109,11 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     optionsform.additem MDIForm1.MainDir & "\evolution\Mutate.txt"
                     'disable mutations
                     For i = 0 To UBound(TmpOpts.Specie)
-                     If TmpOpts.Specie(i).Name = "Base.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).Name = "Base.txt" Then
+                        TmpOpts.Specie(i).Mutables.Mutations = False
+                        TmpOpts.Specie(i).NoChlr = NoChlr
+                     End If
+                     If TmpOpts.Specie(i).Name = "Mutate.txt" Then TmpOpts.Specie(i).NoChlr = NoChlr
                     Next
                     'F1 desabled
                     TmpOpts.F1 = False
