@@ -153,7 +153,9 @@
 		RMDir /r "$INSTDIR\Autosave"
 		RMDir /r "$INSTDIR\Robots"
 		RMDir /r "$INSTDIR\settings"
-		RMDir /r "$INSTDIR\LIM"
+		RMDir /r "$INSTDIR\LocalIM"
+		RMDir /r "$INSTDIR\evolution"
+		RMDir /r "$INSTDIR\league"
 		Delete $INSTDIR\Darwin2*.exe
 		Delete $INSTDIR\*.gset
 		Delete $INSTDIR\DBLaunch.exe
