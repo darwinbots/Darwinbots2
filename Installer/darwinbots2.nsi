@@ -4,7 +4,7 @@
 
 # Settings
 	Name "Darwinbots 2"
-	OutFile "Darwinbots-2-45-03-Setup.exe"
+	OutFile "Darwinbots-2-47-Setup.exe"
 	SetCompress auto
 	SetCompressor lzma
 	
@@ -78,19 +78,37 @@
 		SetOutPath "$INSTDIR"
 		# Files
 		CreateDirectory "$INSTDIR\IM"
+		CreateDirectory "$INSTDIR\LocalIM"
 		CreateDirectory "$INSTDIR\IM\inbound"
 		CreateDirectory "$INSTDIR\IM\outbound"
 		CreateDirectory "$INSTDIR\Saves"
 		CreateDirectory "$INSTDIR\Autosave"
 		CreateDirectory "$INSTDIR\Robots"
 		CreateDirectory "$INSTDIR\settings"
-		File Darwin2.45.03B.exe
+		File Darwin2.47.exe
 		File DBLaunch.exe
 		File DarwinbotsIM.exe
 		File "DB THEME GOLD.mp3"
 		File "Graph Join.exe"
 		File "Snapshot Search.exe"
+		File "Restarter.exe"
+		File "ManualSexRepro.exe"
+		File "_ssl.pyd"
+		File "bz2.pyd" 
+		File "DarwinBotsIM.exe" 
+		File "library.zip" 
+		File "python27.dll" 
+		File "select.pyd" 
+		File "unicodedata.pyd" 
+		File "w9xpopen.exe" 
+		File "_hashlib.pyd" 
+		File "_socket.pyd"
 		File License.rtf
+		SetOutPath "$INSTDIR\LocalIM"
+		File LIM\DarwinBotsIM.exe
+		File LIM\ReadMe.txt
+		SetOutPath "$INSTDIR\settings"
+		File sets\*.set
 		SetOutPath "$INSTDIR\Robots"
 		File bots\*.txt
 		
@@ -108,6 +126,7 @@
 			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Graph Join.lnk" "$INSTDIR\Graph Join.exe"
 			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Snapshot search.lnk" "$INSTDIR\Snapshot Search.exe"
+			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\ManualSexRepro.lnk" "$INSTDIR\ManualSexRepro.exe"
 
 		!insertmacro MUI_STARTMENU_WRITE_END
 	SectionEnd
@@ -134,6 +153,7 @@
 		RMDir /r "$INSTDIR\Autosave"
 		RMDir /r "$INSTDIR\Robots"
 		RMDir /r "$INSTDIR\settings"
+		RMDir /r "$INSTDIR\LIM"
 		Delete $INSTDIR\Darwin2*.exe
 		Delete $INSTDIR\*.gset
 		Delete $INSTDIR\DBLaunch.exe
@@ -141,6 +161,12 @@
 		Delete "$INSTDIR\DB THEME GOLD.mp3"
 		Delete "$INSTDIR\Graph Join.exe"
 		Delete "$INSTDIR\Snapshot Search.exe"
+		Delete "$INSTDIR\Restarter.exe"
+		Delete "$INSTDIR\ManualSexRepro.exe"
+		Delete "$INSTDIR\*.pyd"
+		Delete "$INSTDIR\library.zip"
+		Delete "$INSTDIR\python27.dll"
+		Delete "$INSTDIR\w9xpopen.exe"
 		Delete $INSTDIR\intsett.ini
 		Delete $INSTDIR\License.rtf
 		Delete $INSTDIR\Uninstall.exe
