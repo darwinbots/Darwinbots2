@@ -267,9 +267,11 @@ Private Sub CheckBotBucketForCollision(n As Integer, pos As vector)
     While Buckets(pos.x, pos.y).arr(a) <> -1
       robnumber = Buckets(pos.x, pos.y).arr(a)
       If robnumber > n Then ' only have to check bots higher than n otherwise we do it twice for each bot pair
-        distvector = VectorSub(rob(n).pos, rob(robnumber).pos)
-        dist = rob(n).radius + rob(robnumber).radius
-        If VectorMagnitudeSquare(distvector) < (dist * dist) Then Repel3 n, robnumber
+        If Not (rob(robnumber).FName = "Base.txt" And hidepred) Then
+            distvector = VectorSub(rob(n).pos, rob(robnumber).pos)
+            dist = rob(n).radius + rob(robnumber).radius
+            If VectorMagnitudeSquare(distvector) < (dist * dist) Then Repel3 n, robnumber
+        End If
       End If
       If a = Buckets(pos.x, pos.y).size Then GoTo getout
       a = a + 1
@@ -279,14 +281,14 @@ getout:
 End Sub
 
 
-Public Function AnyShapeBlocksBot(n1 As Integer, N2 As Integer) As Boolean
+Public Function AnyShapeBlocksBot(n1 As Integer, n2 As Integer) As Boolean
 Dim i As Integer
   
   AnyShapeBlocksBot = False
   
   For i = 1 To numObstacles
     If Obstacles.Obstacles(i).exist Then
-      If ShapeBlocksBot(n1, N2, i) Then
+      If ShapeBlocksBot(n1, n2, i) Then
         AnyShapeBlocksBot = True
         GoTo getout
       End If
@@ -295,7 +297,7 @@ Dim i As Integer
 getout:
 End Function
 
-Public Function ShapeBlocksBot(n1 As Integer, N2 As Integer, o As Integer) As Boolean
+Public Function ShapeBlocksBot(n1 As Integer, n2 As Integer, o As Integer) As Boolean
 Dim D1(4) As vector
 Dim P(4) As vector
 Dim P0 As vector
@@ -311,10 +313,10 @@ Dim numerator As Single
   ShapeBlocksBot = False
   
   'Cheap weed out check
-  If (Obstacles.Obstacles(o).pos.x > Max(rob(n1).pos.x, rob(N2).pos.x)) Or _
-     (Obstacles.Obstacles(o).pos.x + Obstacles.Obstacles(o).Width < Min(rob(n1).pos.x, rob(N2).pos.x)) Or _
-     (Obstacles.Obstacles(o).pos.y > Max(rob(n1).pos.y, rob(N2).pos.y)) Or _
-     (Obstacles.Obstacles(o).pos.y + Obstacles.Obstacles(o).Height < Min(rob(n1).pos.y, rob(N2).pos.y)) Then GoTo getout
+  If (Obstacles.Obstacles(o).pos.x > Max(rob(n1).pos.x, rob(n2).pos.x)) Or _
+     (Obstacles.Obstacles(o).pos.x + Obstacles.Obstacles(o).Width < Min(rob(n1).pos.x, rob(n2).pos.x)) Or _
+     (Obstacles.Obstacles(o).pos.y > Max(rob(n1).pos.y, rob(n2).pos.y)) Or _
+     (Obstacles.Obstacles(o).pos.y + Obstacles.Obstacles(o).Height < Min(rob(n1).pos.y, rob(n2).pos.y)) Then GoTo getout
   
   D1(1) = VectorSet(0, Obstacles.Obstacles(o).Width) ' top
   D1(2) = VectorSet(Obstacles.Obstacles(o).Height, 0) ' left side
@@ -327,7 +329,7 @@ Dim numerator As Single
   P(4) = VectorAdd(P(1), D1(1))
   
   P0 = rob(n1).pos
-  D0 = VectorSub(rob(N2).pos, rob(n1).pos)
+  D0 = VectorSub(rob(n2).pos, rob(n1).pos)
   For i = 1 To 4
     numerator = Cross(D0, D1(i))
     If numerator <> 0 Then
@@ -406,8 +408,8 @@ End Function
 
 'New compare routine from EricL
 'Takes into consideration movable eyes and eyes of variable width
-Public Sub CompareRobots3(n1 As Integer, N2 As Integer)
-
+Public Sub CompareRobots3(n1 As Integer, n2 As Integer)
+If (rob(n2).FName = "Base.txt" And hidepred) Then Exit Sub
       Dim ab As vector, ac As vector, ad As vector 'vector from n1 to n2
       Dim invdist As Single, sightdist As Single, eyedist As Single, distsquared As Single
       Dim edgetoedgedist As Single, percentdist As Single
@@ -423,8 +425,8 @@ Public Sub CompareRobots3(n1 As Integer, N2 As Integer)
       Dim eyespanszero As Boolean
       Dim eyesum As Long
              
-      ab = VectorSub(rob(N2).pos, rob(n1).pos)
-      edgetoedgedist = VectorMagnitude(ab) - rob(n1).radius - rob(N2).radius
+      ab = VectorSub(rob(n2).pos, rob(n1).pos)
+      edgetoedgedist = VectorMagnitude(ab) - rob(n1).radius - rob(n2).radius
       
       'Here we compute the maximum possible distance bot N1 can see.  Sight distance is a function of
       'eye width.  Narrower eyes can see farther, wider eyes not so much.  So, we find the narrowest eye
@@ -451,7 +453,7 @@ Public Sub CompareRobots3(n1 As Integer, N2 As Integer)
       
       'If Shapes are see through, then there is no reason to check if a shape blocks a bot
       If Not SimOpts.shapesAreSeeThrough Then
-        If AnyShapeBlocksBot(n1, N2) Then GoTo getout
+        If AnyShapeBlocksBot(n1, n2) Then GoTo getout
       End If
       
       invdist = VectorInvMagnitude(ab)
@@ -462,11 +464,11 @@ Public Sub CompareRobots3(n1 As Integer, N2 As Integer)
       'ac is now unit vector
       
       ad = VectorSet(ac.y, -ac.x)
-      ad = VectorScalar(ad, rob(N2).radius)
+      ad = VectorScalar(ad, rob(n2).radius)
       ad = VectorAdd(ab, ad)
       
       ac = VectorSet(-ac.y, ac.x)
-      ac = VectorScalar(ac, rob(N2).radius)
+      ac = VectorScalar(ac, rob(n2).radius)
       ac = VectorAdd(ab, ac)
             
 
@@ -586,7 +588,7 @@ Public Sub CompareRobots3(n1 As Integer, N2 As Integer)
               If a = Abs(rob(n1).mem(FOCUSEYE) + 4) Mod 9 Then
                 'This eye does have the focus
                 'Set the EYEF value and also lastopp so the lookoccur list will get populated later
-                rob(n1).lastopp = N2
+                rob(n1).lastopp = n2
                 rob(n1).mem(EYEF) = eyevalue
               End If
               'Set the distance for the eye

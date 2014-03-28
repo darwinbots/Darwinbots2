@@ -613,6 +613,9 @@ Begin VB.MDIForm MDIForm1
       Begin VB.Menu DisableArep 
          Caption         =   "Disable asexual reproduction for un-repopulating robots"
       End
+      Begin VB.Menu AutoFork 
+         Caption         =   "Enable Automatic Forking"
+      End
    End
    Begin VB.Menu Backgrounds 
       Caption         =   "View"
@@ -839,13 +842,20 @@ Begin VB.MDIForm MDIForm1
       Caption         =   "Help"
       Index           =   5
       NegotiatePosition=   3  'Right
-      Begin VB.Menu about 
-         Caption         =   "About"
-         Shortcut        =   ^A
-      End
       Begin VB.Menu DNAexp 
          Caption         =   "DNA Help"
          Shortcut        =   ^D
+      End
+      Begin VB.Menu y_info 
+         Caption         =   "Survival Info"
+         Visible         =   0   'False
+      End
+      Begin VB.Menu sep101 
+         Caption         =   "-"
+      End
+      Begin VB.Menu about 
+         Caption         =   "About"
+         Shortcut        =   ^A
       End
    End
    Begin VB.Menu TrayIconPopup 
@@ -957,6 +967,12 @@ Public exitDB As Boolean
 
 Private Sub AddTenObstacles_Click()
   AddRandomObstacles (10)
+End Sub
+
+Private Sub AutoFork_Click() 'Botsareus 3/23/2014 auto forking
+  AutoFork.Checked = Not AutoFork.Checked
+  If AutoFork.Checked Then SimOpts.SpeciationGeneticDistance = InputBox("Enter % of mutations to DNA length that constitutes forking", "Automatic Forking", SimOpts.SpeciationGeneticDistance)
+  SimOpts.EnableAutoSpeciation = AutoFork.Checked
 End Sub
 
 Private Sub AutoSpeciationMenu_Click()
@@ -1076,6 +1092,14 @@ If x_restartmode = 3 Then
     MsgBox "Can not enable Internet during stepladder league."
     Exit Sub
 End If
+If x_restartmode = 4 Or x_restartmode = 5 Then
+    MsgBox "Can not enable Internet during simple survival mode."
+    Exit Sub
+End If
+If x_restartmode = 6 Then
+    MsgBox "Can not enable Internet during survival mode contest round."
+    Exit Sub
+End If
 
   Dim i As Integer
   Dim b As Integer
@@ -1135,47 +1159,16 @@ tryagain:
      & " -out " & oq _
      & " -name " & Chr(34) & IntOpts.IName & Chr(34) _
      & " -pid " & Str(GetCurrentProcessId())
-     
-     'lets figure out IM mode
-     ChooseIM.Show vbModal, Me
-     Select Case ChooseIM.i
-     Case 0
-     
-        IntOpts.pid = shell(s, vbNormalFocus)
-        If IntOpts.pid = 0 Then
-           MsgBox ("Could not open DarwinbotsIM.exe")
-           GoTo Top
-        End If
-     
-     Case 1
-     
-        IntOpts.pid = shell(s, vbNormalFocus)
-        If IntOpts.pid = 0 Then
-           MsgBox ("Could not open DarwinbotsIM.exe")
-           GoTo Top
-        End If
-        
-        IntOpts.pid2 = shell(Replace(s, "DarwinbotsIM.exe", "DarwinbotsLIM.exe"), vbNormalFocus)
-        If IntOpts.pid2 = 0 Then
-           MsgBox ("Could not open DarwinbotsLIM.exe")
-           GoTo Top
-        End If
-        
-    Case 2
-    
-        IntOpts.pid = shell(Replace(s, "DarwinbotsIM.exe", "DarwinbotsLIM.exe"), vbNormalFocus)
-        If IntOpts.pid = 0 Then
-           MsgBox ("Could not open DarwinbotsLIM.exe")
-           GoTo Top
-        End If
-        
-    End Select
-     
+
+    IntOpts.pid = shell(s, vbNormalFocus)
+    If IntOpts.pid = 0 Then
+       MsgBox ("Could not open DarwinbotsIM.exe")
+       GoTo Top
+    End If
      
   Else
     'Exit DarwinbotsIM
     l = CloseWindow(IntOpts.pid)
-    If IntOpts.pid2 <> 0 Then l = CloseWindow(IntOpts.pid2)
     
     InternetMode = False
     MDIForm1.F1InternetButton.value = 0 ' checked
@@ -1430,7 +1423,7 @@ End Sub
 
 Sub fixcam() 'Botsareus 2/23/2013 When simulation starts the screen is normailized
 'Botsareus 2/9/3014 Based on collected data we need to figure out fudging here Botsareusnotdone expend for evo modes
-If SimOpts.F1 Then
+If SimOpts.F1 Or x_restartmode > 3 Then
     Select Case x_fudge
     Case 1: FudgeEyes = True
     Case 2: FudgeAll = True
@@ -1443,6 +1436,13 @@ If startnovid Then 'turn off vedio as requested
      Form1.Label1.Visible = True
      startnovid = False
 End If
+'Botsareus 3/19/2014  auto. load some graphs for evo mode, may need to be expended to other restart modes
+If y_graphs And (x_restartmode = 4 Or x_restartmode = 5) Then
+    Form1.NewGraph POPULATION_GRAPH, "Populations"
+    Form1.NewGraph MUTATIONS_GRAPH, "Average_Mutations"
+    Form1.NewGraph ENERGY_SPECIES_GRAPH, "Total_Energy_per_Species_x1000-"
+End If
+'
 If MDIForm1.WindowState <> 2 Then Exit Sub
 If screenratiofix = False Then Exit Sub
 Form1.visiblew = Screen.Width / Screen.Height * 4 / 3 * Form1.visibleh
@@ -1820,6 +1820,7 @@ Private Sub simload(Optional path As String)
         MDIForm1.Objects.Enabled = False
         MDIForm1.inssp.Enabled = False
         MDIForm1.DisableArep.Enabled = False
+        MDIForm1.AutoFork.Enabled = False
     Else
         If Command$ = "" Then 'Botsareus 11/23/2013 Do not prompt for internet mode when loading by command line
         If MsgBox("Would you like to connect to Internet Mode?", vbYesNo + vbExclamation, MBwarning) = vbYes Then
@@ -1949,10 +1950,10 @@ strMsgSendData = "Please go to " & MDIForm1.MainDir & " and give the administrat
 "saves\lastautosave.sim" & vbCrLf & vbCrLf & _
 "If you don't see any or all of these file(s) let the administrator know they are missing." & vbCrLf & vbCrLf & _
 "If you where running a league please give the following files if they exsist:" & vbCrLf & vbCrLf & _
-"league\test.txt" & vbCrLf & _
+"league\Test.txt" & vbCrLf & _
 "league\robotA.txt" & vbCrLf & _
 "league\robotB.txt" & vbCrLf & vbCrLf & _
-"If you where running survival_evolution or eco_survival_evolution please give the administrator the \survival\ folder."
+"If you where running evolution please give the administrator the \evolution\ folder (subfolders not required)."
 'Botsareus 5/8/2013 If the program didcrash and autosave prompt to enter safemode
 strMsgEnterDiagMode = "Warning: Diagnostic mode does not check for errors by user generated events. If the error happened immediacy after you manipulated the simulation. Please press NO and tell what you did to the administrator. Otherwise, it is recommended that you run diagnostic mode." & vbCrLf & vbCrLf & _
 "Do you want to run diagnostic mode?"
@@ -2081,9 +2082,40 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                   Dim files As Collection
                   Dim seeded As Collection
                   Dim i As Byte
-  If Not (x_restartmode = 0 Or x_restartmode > 4) Then
+  If Not (x_restartmode = 0 Or x_restartmode = 5) Then
         If Not simalreadyrunning Then
             Select Case x_restartmode
+            Case 6
+                'setup evo test round
+                    SimOpts = TmpOpts
+                    'load robot
+                    optionsform.additem MDIForm1.MainDir & "\evolution\Base.txt"
+                    optionsform.additem MDIForm1.MainDir & "\evolution\Test.txt"
+                    'disable mutations
+                    For i = 0 To UBound(TmpOpts.Specie)
+                     If TmpOpts.Specie(i).Name = "Base.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).Name = "Test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                    Next
+                    'F1 enabled
+                    TmpOpts.F1 = True
+                    'new seed and run sim
+                    chseedstartnew = True
+                    optionsform.StartNew_Click
+            Case 4
+                'setup evo
+                    SimOpts = TmpOpts
+                    'load robot
+                    optionsform.additem MDIForm1.MainDir & "\evolution\Base.txt"
+                    optionsform.additem MDIForm1.MainDir & "\evolution\Mutate.txt"
+                    'disable mutations
+                    For i = 0 To UBound(TmpOpts.Specie)
+                     If TmpOpts.Specie(i).Name = "Base.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                    Next
+                    'F1 desabled
+                    TmpOpts.F1 = False
+                    'new seed and run sim
+                    chseedstartnew = True
+                    optionsform.StartNew_Click
             Case 3
                 If UseStepladder Then leagueSourceDir = MDIForm1.MainDir & "\league\Tournament_Results"
                 'setup a league round
@@ -2110,7 +2142,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                         MkDir MDIForm1.MainDir & "\league\round0\"
                         movefilemulti MDIForm1.MainDir & "\league\seeded", MDIForm1.MainDir & "\league\round0", nextlowestmultof2(files.count)
                         'reset files
-                        Kill MDIForm1.MainDir & "\league\test.txt"
+                        Kill MDIForm1.MainDir & "\league\Test.txt"
                         Open MDIForm1.MainDir & "\league\robotA.txt" For Append As #1
                          Print #1, "0"
                         Close #1
@@ -2122,18 +2154,18 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     End If
                     SimOpts = TmpOpts
                     'copy robot
-                    FileCopy files(x_filenumber), MDIForm1.MainDir & "\league\test.txt"
+                    FileCopy files(x_filenumber), MDIForm1.MainDir & "\league\Test.txt"
                     'add tag to robot
-                    Open MDIForm1.MainDir & "\league\test.txt" For Append As #1
+                    Open MDIForm1.MainDir & "\league\Test.txt" For Append As #1
                      Print #1, vbCrLf & "'#tag:" & extractname(files(x_filenumber))
                     Close #1
                     'now update file number
                     x_filenumber = x_filenumber + 1
                     'load robot
-                    optionsform.additem MDIForm1.MainDir & "\league\test.txt"
+                    optionsform.additem MDIForm1.MainDir & "\league\Test.txt"
                     'disable mutations
                     For i = 0 To UBound(TmpOpts.Specie)
-                     If TmpOpts.Specie(i).Name = "test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).Name = "Test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                     Next
                     'F1 desabled
                     TmpOpts.F1 = False
@@ -2302,6 +2334,9 @@ If x_restartmode > 0 Then
                 End If
                 '
                 Open App.path & "\Safemode.gset" For Output As #1
+                 Write #1, False
+                Close #1
+                Open App.path & "\autosaved.gset" For Output As #1
                  Write #1, False
                 Close #1
                 End
@@ -2510,6 +2545,15 @@ End Sub
 Private Sub waste_Click()
   Gridmode = 1
   'DispGrid
+End Sub
+
+Private Sub y_info_Click()
+MsgBox "Target DNA size: " & IIf(y_normsize, curr_dna_size, "N/A") & vbCrLf & _
+        "Next DNA size change: " & IIf(y_normsize, target_dna_size, "N/A") & vbCrLf & _
+        "Reduction unit: " & LFOR & vbCrLf & _
+        "On/Off cycles: " & hidePredCycl & _
+        IIf(x_restartmode <> 6, vbCrLf & "Current Handicap: " & energydifXP & " - " & energydifXP2 & " = " & (energydifXP - energydifXP2), "") _
+        , vbInformation, "Survival information"
 End Sub
 
 Private Sub ZoomLock_Click()

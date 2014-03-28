@@ -9,8 +9,8 @@ Attribute VB_Name = "Common"
 Option Explicit
 
 Public Type vector
-  x As Single
-  y As Single
+  X As Single
+  Y As Single
 End Type
 
 Declare Function GetInputState Lib "user32" () As Long
@@ -29,6 +29,22 @@ a = a * 2
 Loop Until a > value
 nextlowestmultof2 = a / 2
 End Function
+
+Public Function TargetDNASize(ByVal size As Integer) As Integer 'Botsareus 3/16/2014
+Dim max As Integer
+Dim i As Integer
+Dim overload As Double
+max = 200
+For i = 1 To size
+If i > max Then
+    overload = (5000 - max) / 4800
+    If overload < 0 Then overload = 0
+    max = max + 10 + overload * 200
+End If
+Next
+TargetDNASize = max
+End Function
+
 
 Public Function Random(low, hi) As Long
   Random = Int((hi - low + 1) * Rnd + low)
@@ -85,26 +101,26 @@ End Function
 
 'Vectors.  Wow does this make stuff easier
 Public Function Dot(V1 As vector, V2 As vector) As Single
-  Dot = V1.x * V2.x + V1.y * V2.y
+  Dot = V1.X * V2.X + V1.Y * V2.Y
 End Function
 
 Public Function Cross(V1 As vector, V2 As vector) As Single
-  Cross = V1.x * V2.y - V1.y * V2.x
+  Cross = V1.X * V2.Y - V1.Y * V2.X
 End Function
 
 Public Function VectorAdd(V1 As vector, V2 As vector) As vector
-  VectorAdd.x = V1.x + V2.x
-  VectorAdd.y = V1.y + V2.y
+  VectorAdd.X = V1.X + V2.X
+  VectorAdd.Y = V1.Y + V2.Y
 End Function
 
 Public Function VectorSub(V1 As vector, V2 As vector) As vector
-  VectorSub.x = V1.x - V2.x
-  VectorSub.y = V1.y - V2.y
+  VectorSub.X = V1.X - V2.X
+  VectorSub.Y = V1.Y - V2.Y
 End Function
 
 Public Function VectorScalar(V1 As vector, k As Single) As vector
-  VectorScalar.x = V1.x * k
-  VectorScalar.y = V1.y * k
+  VectorScalar.X = V1.X * k
+  VectorScalar.Y = V1.Y * k
 End Function
 
 
@@ -113,8 +129,8 @@ Public Function VectorUnit(V1 As vector) As vector 'unit vector.  Called vector 
   
   mag = VectorInvMagnitude(V1)
   
-  VectorUnit.x = V1.x * mag
-  VectorUnit.y = V1.y * mag
+  VectorUnit.X = V1.X * mag
+  VectorUnit.Y = V1.Y * mag
 
 End Function
 
@@ -123,8 +139,8 @@ Public Function VectorMagnitude(V1 As vector) As Single
   ' But it gives better numerical behavior
   Dim minVal As Single
   Dim maxVal As Single
-  minVal = Min(Abs(V1.x), Abs(V1.y))
-  maxVal = Max(Abs(V1.x), Abs(V1.y))
+  minVal = Min(Abs(V1.X), Abs(V1.Y))
+  maxVal = max(Abs(V1.X), Abs(V1.Y))
   If maxVal < 0.00001 Then
     VectorMagnitude = 0
   Else
@@ -146,38 +162,38 @@ Public Function VectorInvMagnitude(V1 As vector) As Single
 End Function
 
 Public Function VectorMagnitudeSquare(V1 As vector) As Single
-  VectorMagnitudeSquare = V1.x * V1.x + V1.y * V1.y
+  VectorMagnitudeSquare = V1.X * V1.X + V1.Y * V1.Y
 End Function
 
-Public Function VectorSet(ByVal x As Single, ByVal y As Single) As vector
-  VectorSet.x = x
-  VectorSet.y = y
+Public Function VectorSet(ByVal X As Single, ByVal Y As Single) As vector
+  VectorSet.X = X
+  VectorSet.Y = Y
 End Function
 
-Public Function VectorMax(ByRef x As vector, ByRef y As vector) As vector
-    VectorMax.x = Max(x.x, y.x)
-    VectorMax.y = Max(x.y, y.y)
+Public Function VectorMax(ByRef X As vector, ByRef Y As vector) As vector
+    VectorMax.X = max(X.X, Y.X)
+    VectorMax.Y = max(X.Y, Y.Y)
 End Function
 
-Public Function VectorMin(ByRef x As vector, ByRef y As vector) As vector
-    VectorMin.x = Min(x.x, y.x)
-    VectorMin.y = Min(x.y, y.y)
+Public Function VectorMin(ByRef X As vector, ByRef Y As vector) As vector
+    VectorMin.X = Min(X.X, Y.X)
+    VectorMin.Y = Min(X.Y, Y.Y)
 End Function
 
-Public Function Max(ByVal x As Single, ByVal y As Single) As Single
-    If (x > y) Then
-        Max = x
+Public Function max(ByVal X As Single, ByVal Y As Single) As Single
+    If (X > Y) Then
+        max = X
         Exit Function
     End If
     
-    Max = y
+    max = Y
 End Function
 
-Public Function Min(ByVal x As Single, ByVal y As Single) As Single
-    If (x < y) Then
-        Min = x
+Public Function Min(ByVal X As Single, ByVal Y As Single) As Single
+    If (X < Y) Then
+        Min = X
         Exit Function
     End If
     
-    Min = y
+    Min = Y
 End Function

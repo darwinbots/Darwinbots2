@@ -70,16 +70,16 @@ parray(0) = 1
         Next i
 'calculate dna matrix
 Dim result As String
-Dim y As block
+Dim Y As block
 Dim y_tipo As Byte
 Dim y_value As Byte
 Dim count As Byte
 
 For y_tipo = 0 To 8
  For y_value = 0 To 13
-  y.tipo = y_tipo + 2
-  y.value = y_value + 1
-  Parse result, y
+  Y.tipo = y_tipo + 2
+  Y.value = y_value + 1
+  Parse result, Y
   If result <> "" Then
    dnamatrix(y_tipo, y_value) = count
    count = count + 1

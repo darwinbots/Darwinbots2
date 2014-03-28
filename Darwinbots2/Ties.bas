@@ -351,7 +351,8 @@ Public Sub Update_Ties(t As Integer)
                 rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l * 0.01          'tied robot receives waste
                 rob(.Ties(k).pnt).radius = FindRadius(rob(.Ties(k).pnt).body)
                 .nrg = .nrg - l                                                       'tying robot gives up energy
-              If SimOpts.F1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "giving energy to opponent"
+                If SimOpts.F1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "giving energy to opponent"
+                If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 1 Then KillRobot t
               End If
               
               'Taking nrg
@@ -364,7 +365,8 @@ Public Sub Update_Ties(t As Integer)
                     l = 0 ' Can't taken nrg from a bot that has none
                   End If
                 If SimOpts.F1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "taking energy from opponent"
-                End If
+                If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 1 Then KillRobot t
+              End If
                 
                 'Poison
                 ptag = Abs(l / 4)

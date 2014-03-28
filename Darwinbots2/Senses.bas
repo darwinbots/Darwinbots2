@@ -124,33 +124,33 @@ Public Sub EraseSenses(n As Integer)
   End With
 End Sub
 
-Public Function BasicProximity(n As Integer, Optional force As Boolean = False) As Integer 'returns .lastopp
-  Dim counter As Integer
-  Dim u As vector
-  Dim dotty As Long, crossy As Long
-  Dim x As Integer
-  
-  'until I get some better data structures, this will ahve to do
-  
-  rob(n).lastopp = 0
-  rob(n).lastopptype = 0 ' set the default type of object seen to a bot.
-  rob(n).mem(EYEF) = 0
-  For x = EyeStart + 1 To EyeEnd - 1
-    rob(n).mem(x) = 0
-  Next x
-  
-  'We have to populate eyes for every bot, even for those without .eye sysvars
-  'since they could evolve indirect addressing of the eye sysvars.
-  For counter = 1 To MaxRobs
-    If n <> counter And rob(counter).exist Then
-       CompareRobots3 n, counter
-    End If
-  Next counter
-  
-  If SimOpts.shapesAreVisable And rob(n).exist Then CompareShapes n, 12
-      
-  BasicProximity = rob(n).lastopp ' return the index of the last viewed object
-End Function
+'Public Function BasicProximity(n As Integer, Optional force As Boolean = False) As Integer 'returns .lastopp
+'  Dim counter As Integer
+'  Dim u As vector
+'  Dim dotty As Long, crossy As Long
+'  Dim x As Integer
+'
+'  'until I get some better data structures, this will ahve to do
+'
+'  rob(n).lastopp = 0
+'  rob(n).lastopptype = 0 ' set the default type of object seen to a bot.
+'  rob(n).mem(EYEF) = 0
+'  For x = EyeStart + 1 To EyeEnd - 1
+'    rob(n).mem(x) = 0
+'  Next x
+'
+'  'We have to populate eyes for every bot, even for those without .eye sysvars
+'  'since they could evolve indirect addressing of the eye sysvars.
+'  For counter = 1 To MaxRobs
+'    If n <> counter And rob(counter).exist Then
+'       CompareRobots3 n, counter
+'    End If
+'  Next counter
+'
+'  If SimOpts.shapesAreVisable And rob(n).exist Then CompareShapes n, 12
+'
+'  BasicProximity = rob(n).lastopp ' return the index of the last viewed object
+'End Function
 
 'Returns the index into the Specie array to which a given bot conforms
 Public Function SpeciesFromBot(n As Integer) As Integer

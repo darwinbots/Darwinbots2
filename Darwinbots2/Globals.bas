@@ -45,6 +45,9 @@ Public autosaved As Boolean
 'Botsareus 1/5/2014 Copy of Obstacle array
 Public xObstacle() As Obstacle
 
+
+'Variables below prefixed x_ are used for league and evolution, y_ are used only for evolution
+
 'Botsareus 1/31/2014 Restart modes
 Public x_restartmode As Byte
 Public x_filenumber As Integer
@@ -59,6 +62,24 @@ Public Disqualify As Byte
 Public StartChlr As Integer 'Botsareus 2/12/2014 Start repopulating robots with chloroplasts
 
 Public ModeChangeCycles As Long 'Botsareus 2/14/2014 Used to calculate time difference and mode change for survival
+
+Public y_robdir As String
+Public y_graphs As Boolean
+Public y_normsize As Boolean
+Public y_hidePredCycl As Integer
+Public y_LFOR As Single
+
+'actual evolution globals
+
+Public curr_dna_size As Integer
+Public hidePredCycl As Integer
+Public Init_hidePredCycl As Integer
+Public hidePredOffset As Integer
+Public LFOR As Single
+Public LFORdir As Boolean 'direction
+Public LFORcorr As Single 'correction
+Public hidepred As Boolean
+Public target_dna_size As Integer
 
 ' var structure, to store the correspondance name<->value
 Public Type var

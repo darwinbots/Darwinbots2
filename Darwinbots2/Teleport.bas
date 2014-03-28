@@ -378,6 +378,8 @@ Dim randomV As vector
 Dim MaxBotsPerCyclePerTeleporter As Integer
 Dim temp As Boolean
 
+If SimOpts.SpeciesNum > 45 Then Exit Function 'Botsareus 3/25/2014 keeps amount of species below 50
+
   'MaxBotsPerCyclePerTeleporter = 10
 
 'Form1.SecTimer.Enabled = False

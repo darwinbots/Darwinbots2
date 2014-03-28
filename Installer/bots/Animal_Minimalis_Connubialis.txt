@@ -1,0 +1,72 @@
+'Animal_Minimalis
+'By: Botsareus based on by Numsgil
+'Good for mutation sims and for
+'newbies to see how a basic bot works.
+'Contains everything necessary for it
+'to survive and reproduce.
+'Sexrepro version
+
+' Gene 1 Food Finder
+cond
+ *.eye5 0 >
+ *.refeye *.myeye !=
+start
+ *.refveldx .dx store
+ *.refvelup 30 add .up store
+stop
+
+' Gene 2 Mate Finder
+cond
+ *.eye5 0 >
+ *.refeye *.myeye =
+ *.nrg 20000 >
+start
+ *.refveldx .dx store
+ *.refvelup 30 add .up store
+stop
+
+' Gene 3 Eat Food
+cond
+ *.eye5 50 >
+ *.refeye *.myeye !=
+start
+-1 .shoot store
+ *.refvelup .up store
+stop
+
+' Gene 4 Shoot Sperm
+cond
+ *.eye5 50 >
+ *.refeye *.myeye =
+ *.nrg 20000 >
+start
+-8 .shoot store
+ *.refvelup .up store
+stop
+
+' Gene 5 Avoiding Family
+cond
+ *.eye5 0 =
+ *.refeye *.myeye = or
+ *.nrg 20000 < and 'don't spin if time for sex repro
+start
+ 314 rnd .aimdx store
+stop
+
+' Gene 6 Look for Family
+cond
+ *.refeye *.myeye !=
+ *.nrg 20000 >
+start
+ 314 rnd .aimdx store
+100 rnd .up store
+stop
+
+' Gene 7 Reproduce
+cond
+ *.nrg 20000 >
+start
+ 10 .sexrepro store 'changed to sex repro
+stop
+
+end
