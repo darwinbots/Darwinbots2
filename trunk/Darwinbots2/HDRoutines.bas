@@ -799,6 +799,17 @@ Public Sub SaveSimulation(path As String)
    Next k
    
    Put #1, , SimOpts.NoWShotDecay 'Botsareus 9/28/2013
+   
+   'evo stuff
+   Put #1, , energydif
+   Put #1, , energydifX
+   Put #1, , energydifXP
+   Put #1, , ModeChangeCycles
+   Put #1, , hidePredOffset
+   Put #1, , hidepred
+   Put #1, , energydif2
+   Put #1, , energydifX2
+   Put #1, , energydifXP2
        
     Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     
@@ -835,6 +846,9 @@ valNormMut = 1071
 valMaxNormMut = 1071
 Dim holdmaindir As String
 leagueSourceDir = Left$(App.path, 3)
+'
+y_hidePredCycl = 1500
+y_LFOR = 2
 
 'see if maindir overwrite exisits
 If dir(App.path & "\Maindir.gset") <> "" Then
@@ -895,6 +909,12 @@ If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
       If Not EOF(1) Then Input #1, x_fudge
       If Not EOF(1) Then Input #1, StartChlr
       If Not EOF(1) Then Input #1, Disqualify
+      '
+      If Not EOF(1) Then Input #1, y_robdir
+      If Not EOF(1) Then Input #1, y_graphs
+      If Not EOF(1) Then Input #1, y_normsize
+      If Not EOF(1) Then Input #1, y_hidePredCycl
+      If Not EOF(1) Then Input #1, y_LFOR
     Close #1
 End If
 
@@ -918,6 +938,30 @@ If dir(App.path & "\autosaved.gset") <> "" Then
       Input #1, autosaved
     Close #1
 End If
+
+'Botsareus 3/16/2014 If autosaved, we change restartmode, this forces system to run in diagnostic mode
+'The difference between x_restartmode 0 and 5 is that 5 uses hidepred settings
+If autosaved And x_restartmode = 4 Then x_restartmode = 5
+
+'Botsareus 3/19/2014 Load data for evo mode
+If x_restartmode = 4 Or x_restartmode = 5 Or x_restartmode = 6 Then
+    Open MDIForm1.MainDir & "\evolution\data.gset" For Input As #1
+        Input #1, LFOR   'LFOR init
+        Input #1, LFORdir  'dir
+        Input #1, LFORcorr  'corr
+        '
+        Input #1, hidePredCycl  'hidePredCycl
+        '
+        Input #1, curr_dna_size  'curr_dna_size
+        Input #1, target_dna_size   'target_dna_size
+        '
+        Input #1, Init_hidePredCycl
+    Close #1
+End If
+
+'Botsareus 3/22/2014 Initial hidepred offset is normal
+
+hidePredOffset = hidePredCycl / 6
 
 'If we are not using safe mode assume simulation is not runnin'
 If UseSafeMode = False Then simalreadyrunning = False
@@ -1313,8 +1357,6 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
     If Not EOF(1) Then Get #1, , SimOpts.SpeciationGenerationalDistance
     If Not EOF(1) Then Get #1, , SimOpts.SpeciationGeneticDistance
     If Not EOF(1) Then Get #1, , SimOpts.EnableAutoSpeciation
-    
-    SimOpts.SpeciationMinimumPopulation = 10
     If Not EOF(1) Then Get #1, , SimOpts.SpeciationMinimumPopulation
     
     SimOpts.SpeciationForkInterval = 5000
@@ -1386,6 +1428,17 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
     SimOpts.NoWShotDecay = False 'Load information about not decaying waste shots
     If Not EOF(1) Then Get #1, , SimOpts.NoWShotDecay 'EricL 6/8/2006 Added this
     
+       'evo stuff
+   If Not EOF(1) Then Get #1, , energydif
+   If Not EOF(1) Then Get #1, , energydifX
+   If Not EOF(1) Then Get #1, , energydifXP
+   If Not EOF(1) Then Get #1, , ModeChangeCycles
+   If Not EOF(1) Then Get #1, , hidePredOffset
+   If Not EOF(1) Then Get #1, , hidepred
+   If Not EOF(1) Then Get #1, , energydif2
+   If Not EOF(1) Then Get #1, , energydifX2
+   If Not EOF(1) Then Get #1, , energydifXP2
+    
     Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     
   Close 1
@@ -1394,6 +1447,7 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
    
   'EricL 3/28/2006 This line insures that all the simulation dialog options get set to match the loaded sim
   TmpOpts = SimOpts
+  
   Form1.MousePointer = vbArrow
 End Sub
 

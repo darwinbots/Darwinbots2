@@ -3800,12 +3800,12 @@ End Sub
 
 
 Public Function SwapSeries(i As Integer, t As Integer)
-Dim X As Integer
-  For X = 0 To MaxData
-     data(X, MaxItems) = data(X, i)
-     data(X, i) = data(X, t)
-     data(X, t) = data(X, MaxItems)
-  Next X
+Dim x As Integer
+  For x = 0 To MaxData
+     data(x, MaxItems) = data(x, i)
+     data(x, i) = data(x, t)
+     data(x, t) = data(x, MaxItems)
+  Next x
   Label1(MaxItems).Caption = Label1(i).Caption
   Shape3(MaxItems).FillColor = Shape3(i).FillColor
   popnum(MaxItems).Caption = popnum(i).Caption
@@ -3886,6 +3886,12 @@ Private Sub Form_Activate()
   
   'Botsareus 5/31/2013 Special graph info
   graphvisible(WhichGraphAmI) = True
+  
+  'Botsareus 3/19/2014 Auto save
+  If y_graphs And (x_restartmode = 4 Or x_restartmode = 5) Then
+    graphsave(WhichGraphAmI) = True
+    chk_GDsave.value = 1
+  End If
   
   'If grafico.WindowState = 0 Then
   '  Me.Top = FTop
@@ -4005,7 +4011,7 @@ graphleft(WhichGraphAmI) = Left
 graphtop(WhichGraphAmI) = Top
   
   Dim k, P As Integer
-  Dim t, X As Integer
+  Dim t, x As Integer
   Dim maxv As Single
   Dim xunit As Single, yunit As Single
   maxv = -1000
@@ -4054,22 +4060,22 @@ graphtop(WhichGraphAmI) = Top
   Wend
   
   If t > 10 Then
-    For X = (MaxSeries - 1) To 0 Step -1
-      If Sum(X) = 0 Then
-        DelSeries (X)
+    For x = (MaxSeries - 1) To 0 Step -1
+      If Sum(x) = 0 Then
+        DelSeries (x)
       End If
-    Next X
+    Next x
   End If
   
   P = Pivot - 1
   If P < 0 Then P = MaxData
   
   If t > 50 Then
-   For X = (MaxSeries - 1) To 0 Step -1
-      If data(P, X) = 0 Then
-        DelSeries (X)
+   For x = (MaxSeries - 1) To 0 Step -1
+      If data(P, x) = 0 Then
+        DelSeries (x)
       End If
-    Next X
+    Next x
   End If
     
   maxy = maxv
@@ -4096,8 +4102,8 @@ graphtop(WhichGraphAmI) = Top
         Print #100, strCGraph
         'write headers
         strCGraph = ""
-        For X = 0 To MaxSeries - 1
-            strCGraph = strCGraph & Shape3(X).FillColor & ":" & Label1(X).Caption & ","
+        For x = 0 To MaxSeries - 1
+            strCGraph = strCGraph & Shape3(x).FillColor & ":" & Label1(x).Caption & ","
         Next
         Print #100, strCGraph
         Dim k2, t2 As Integer

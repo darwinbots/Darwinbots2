@@ -1254,7 +1254,7 @@ Public Sub ExecRobs()
   For t = 1 To MaxRobs
     If t Mod 250 = 0 Then DoEvents
     'If rob(t).exist And Not rob(t).wall And Not rob(t).Corpse Then
-    If rob(t).exist And Not rob(t).Corpse And Not rob(t).DisableDNA Then
+    If rob(t).exist And Not rob(t).Corpse And Not rob(t).DisableDNA And Not (rob(t).FName = "Base.txt" And hidepred) Then
       ExecuteDNA t
       If Not (rob(t).console Is Nothing) And DisplayActivations Then
          rob(t).console.textout ""

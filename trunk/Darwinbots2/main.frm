@@ -966,7 +966,7 @@ Public Sub DrawAllRobs()
   
   If noeyeskin Then
     For a = 1 To MaxRobs
-      If rob(a).exist Then
+      If rob(a).exist And Not (rob(a).FName = "Base.txt" And hidepred) Then
         r = rob(a).radius
         If rob(a).pos.x + r > visibleLeft And rob(a).pos.x - r < visibleRight And _
            rob(a).pos.y + r > visibleTop And rob(a).pos.y - r < visibleBottom Then
@@ -977,7 +977,7 @@ Public Sub DrawAllRobs()
   Else
     FillColor = BackColor
     For a = 1 To MaxRobs
-      If rob(a).exist Then
+      If rob(a).exist And Not (rob(a).FName = "Base.txt" And hidepred) Then
          r = rob(a).radius
          If rob(a).pos.x + r > visibleLeft And rob(a).pos.x - r < visibleRight And _
             rob(a).pos.y + r > visibleTop And rob(a).pos.y - r < visibleBottom Then
@@ -991,7 +991,7 @@ Public Sub DrawAllRobs()
   DrawStyle = 0
   If dispskin And Not noeyeskin Then
     For a = 1 To MaxRobs
-      If rob(a).exist Then
+      If rob(a).exist And Not (rob(a).FName = "Base.txt" And hidepred) Then
         If rob(a).pos.x + r > visibleLeft And rob(a).pos.x - r < visibleRight And _
            rob(a).pos.y + r > visibleTop And rob(a).pos.y - r < visibleBottom Then
            DrawRobSkin a
@@ -1004,7 +1004,7 @@ Public Sub DrawAllRobs()
   
   If Not noeyeskin Then
     For a = 1 To MaxRobs
-     If rob(a).exist Then
+     If rob(a).exist And Not (rob(a).FName = "Base.txt" And hidepred) Then
        If rob(a).pos.x + r > visibleLeft And rob(a).pos.x - r < visibleRight And _
           rob(a).pos.y + r > visibleTop And rob(a).pos.y - r < visibleBottom Then
           DrawRobAim a
@@ -1033,7 +1033,7 @@ Public Sub DrawAllTies()
   PixRobSize = PixelsPerTwip * RobSize
   
   For t = 1 To MaxRobs
-    If rob(t).exist Then
+    If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
       If rob(t).pos.x > visibleLeft And rob(t).pos.x < visibleRight And _
          rob(t).pos.y > visibleTop And rob(t).pos.y < visibleBottom Then
          DrawRobTiesCol t, PixelsPerTwip * rob(t).radius * 2, rob(t).radius
@@ -1182,8 +1182,6 @@ MDIForm1.menuupdate
   
   MDIForm1.DisableTies.Checked = SimOpts.DisableTies
   MDIForm1.DisableArep.Checked = SimOpts.DisableTypArepro
-  
-  
   
   'SimOpts.MutCurrMult = 1 'EricL 4/1/2006 Commented out as it was overriding saved values
   'SimOpts.TotRunCycle = -1 'EricL 4/7/2006 Now initialized in Options Dialog Start New button Click
@@ -1407,6 +1405,8 @@ Sub startloaded()
   
   MDIForm1.DisableTies.Checked = SimOpts.DisableTies
   MDIForm1.DisableArep.Checked = SimOpts.DisableTypArepro
+  
+  MDIForm1.AutoFork.Checked = SimOpts.EnableAutoSpeciation
     
   Timer2.Enabled = True
   SecTimer.Enabled = True
@@ -1498,25 +1498,6 @@ Public Sub cyccaption(ByVal num As Single)
   MDIForm1.infos num, TotalRobotsDisplayed, totnvegsDisplayed, TotalChlr, SimOpts.TotBorn, SimOpts.TotRunCycle, SimOpts.TotRunTime  'Botsareus 8/25/2013 Mod to send TotalChlr
 End Sub
 
-' calculates the total number of robots
-Private Function totrobs() As Integer
-  totrobs = 0
-  Dim t As Integer
-  For t = 1 To MaxRobs
-    If rob(t).exist Then
-      totrobs = totrobs + 1
-    End If
-  Next t
-End Function
-
-' transfers focus to the parent robot
-Sub parentfocus()
-  Dim t As Integer
-  For t = 1 To MaxRobs
-    If rob(robfocus).parent = rob(t).AbsNum And rob(t).exist = True Then robfocus = t
-  Next t
-End Sub
-
 ' which rob has been clicked?
 Private Function whichrob(x As Single, y As Single) As Integer
   Dim dist As Double, pist As Double
@@ -1525,7 +1506,7 @@ Private Function whichrob(x As Single, y As Single) As Integer
   dist = 10000
   Dim nd As node
   For t = 1 To MaxRobs
-    If rob(t).exist Then
+    If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
       pist = Abs(rob(t).pos.x - x) ^ 2 + Abs(rob(t).pos.y - y) ^ 2
       If Abs(rob(t).pos.x - x) < rob(t).radius And Abs(rob(t).pos.y - y) < rob(t).radius And pist < dist And rob(t).exist Then
         whichrob = t
@@ -1698,7 +1679,7 @@ Dim rst As Boolean
 rst = True
 tmprob_c = 0
     For a = 1 To MaxRobs
-      If rob(a).exist And rob(a).highlight Then
+      If rob(a).exist And rob(a).highlight And Not (rob(a).FName = "Base.txt" And hidepred) Then
         If a = robfocus Then rst = False
         tmprob_c = tmprob_c + 1
         If tmprob_c < 51 Then
@@ -2855,7 +2836,7 @@ Private Function eldest() As Integer
   Dim mxr As Integer
   mxa = 0
   For t = 1 To MaxRobs
-    If rob(t).exist And rob(t).age > mxa Then
+    If rob(t).exist And rob(t).age > mxa And Not (rob(t).FName = "Base.txt" And hidepred) Then
       mxa = rob(t).age
       mxr = t
     End If
@@ -2878,7 +2859,7 @@ sPopulation = (IIf(intFindBestV2 < 100, 100, 200 - intFindBestV2)) / 100
   Dim Mx As Double
   Mx = 0
   For t = 1 To MaxRobs
-    If rob(t).exist And Not rob(t).Veg And Not rob(t).FName = "Corpse" Then
+    If rob(t).exist And Not rob(t).Veg And Not rob(t).FName = "Corpse" And Not (rob(t).FName = "Base.txt" And hidepred) Then
       TotalOffspring = 1
       s = score(t, 1, 10, 0) + rob(t).nrg + rob(t).body * 10 'Botsareus 5/22/2013 Advanced fit test
       s = (TotalOffspring ^ sPopulation) * (s ^ sEnergy)

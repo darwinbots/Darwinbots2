@@ -32,11 +32,16 @@ Function extractname(path As String) As String
   End If
 End Function
 
-Function extractexactname(Name As String) As String
+Function extractexactname(Name As String) As String 'Botsareus 3/16/2014 Bug fix
 'Botsareus 12/11/2013 Extracts the name portion of fname
 Dim sp() As String
 sp = Split(Name, ".")
-extractexactname = sp(0)
+Dim t As String
+Dim i As Byte
+For i = 0 To UBound(sp) - 1
+t = t & sp(i) & IIf(i = UBound(sp) - 1, "", ".")
+Next
+extractexactname = t
 End Function
 
 Function relpath(path As String) As String

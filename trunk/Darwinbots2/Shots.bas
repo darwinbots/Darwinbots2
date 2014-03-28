@@ -177,6 +177,7 @@ Public Function newshot(n As Integer, ByVal shottype As Integer, ByVal val As Si
     End If
       'Botsareus 3/14/2014 Disqualify
       If SimOpts.F1 And (Disqualify = 1 Or Disqualify = 2) Then dreason rob(n).FName, rob(n).tag, "using a virus"
+      If Not SimOpts.F1 And x_restartmode > 3 And (Disqualify = 1 Or Disqualify = 2) Then KillRobot n
   Else
     Shots(a).stored = False
   End If
@@ -420,7 +421,7 @@ Public Sub CompactShots()
   For i = 1 To maxshotarray
     If Shots(i).exist Then
       If Shots(i).stored Then
-        If rob(Shots(i).parent).exist Then
+        If rob(Shots(i).parent).exist And Not (rob(Shots(i).parent).FName = "Base.txt" And hidepred) Then
           rob(Shots(i).parent).virusshot = j
         Else
           Shots(i).exist = False
@@ -978,7 +979,7 @@ Private Function NewShotCollision(shotnum As Long) As Integer
     'Make sure the bot is eligable to be hit by the shot.  It has to exist, it can't have been the one who
     'fired the shot, it can't be a wall bot and it has to be close enough that an impact is possible.  Note that for perf reasons we
     'ignore edge cases here where the field is a torus and a shot wraps around so it's possible to miss collisons in such cases.
-    If rob(robnum).exist And (Shots(shotnum).parent <> robnum) And _
+    If rob(robnum).exist And (Shots(shotnum).parent <> robnum) And Not (rob(robnum).FName = "Base.txt" And hidepred) And _
      (Abs(Shots(shotnum).opos.x - rob(robnum).pos.x) < MaxBotShotSeperation And Abs(Shots(shotnum).opos.y - rob(robnum).pos.y) < MaxBotShotSeperation) Then
         
         r = rob(robnum).radius ' + 5 ' Tweak the bot radius up a bit to handle the issue with bots appearing a little larger than then are

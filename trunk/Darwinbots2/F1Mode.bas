@@ -389,6 +389,9 @@ won:
           Form1.Active = False
           Form1.SecTimer.Enabled = False
           Select Case x_restartmode 'all new league components start with "x_"
+          Case 6
+            If Winner = "Test" Then UpdateWonF1
+            If Winner = "Base" Then UpdateLostF1
           Case 0
             MsgBox Winner & " has won.", , "F1 mode"
           Case 2
@@ -501,11 +504,15 @@ Close #1
 shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
 End Sub
 
-Public Sub dreason(ByVal name As String, ByVal tag As String, ByVal reason As String)
+Public Sub dreason(ByVal Name As String, ByVal tag As String, ByVal reason As String)
+
+'format the tag
+Dim blank As String * 50
+If Left(tag, 45) = Left(blank, 45) Then tag = "" Else tag = "(" & Trim(Left(tag, 45)) & ")"
 
 'update list
 Open MDIForm1.MainDir & "\Disqualifications.txt" For Append As #1
-    Print #1, "Robot """ & name & """(" & Trim(tag) & ") has been disqualified for " & reason & "."
+    Print #1, "Robot """ & Name & """" & tag & " has been disqualified for " & reason & "."
 Close #1
 
     Dim t As Integer
@@ -513,7 +520,7 @@ Close #1
 'kill species
 For t = 1 To MaxRobs
     If Not rob(t).Veg And Not rob(t).Corpse And rob(t).exist Then
-        If rob(t).FName = name Then KillRobot t
+        If rob(t).FName = Name Then KillRobot t
     End If
 Next t
 End Sub

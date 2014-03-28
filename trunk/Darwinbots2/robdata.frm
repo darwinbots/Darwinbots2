@@ -55,7 +55,6 @@ Begin VB.Form datirob
          _ExtentX        =   11562
          _ExtentY        =   11827
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"robdata.frx":0E42
@@ -626,14 +625,6 @@ Private Sub Command3_Click()
   Consoleform.openconsole
 End Sub
 
-Private Sub Command4_Click()
-  parentele.mostra
-End Sub
-
-Private Sub Command5_Click()
-  Consoleform.openconsole
-End Sub
-
 Private Sub Command1_Click()
   Label2.Caption = Str(Form1.discendenti(robfocus, 0))
 End Sub
@@ -794,9 +785,5 @@ End Sub
 Private Sub repro_Click(Index As Integer)
   Reproduce -1, 50
   Form1.Redraw
-End Sub
-
-Private Sub toparent_Click()
-  Form1.parentfocus
 End Sub
 

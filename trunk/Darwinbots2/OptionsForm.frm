@@ -114,45 +114,39 @@ Begin VB.Form optionsform
       TabCaption(2)   =   "Physics and Costs"
       TabPicture(2)   =   "OptionsForm.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Frame20"
-      Tab(2).Control(1)=   "Frame21"
+      Tab(2).Control(0)=   "Frame21"
+      Tab(2).Control(1)=   "Frame20"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Mutations"
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "Frame15"
-      Tab(3).Control(1)=   "Frame13"
-      Tab(3).Control(2)=   "Frame14"
-      Tab(3).Control(3)=   "DisableMutationsCheck"
+      Tab(3).Control(0)=   "DisableMutationsCheck"
+      Tab(3).Control(1)=   "Frame14"
+      Tab(3).Control(2)=   "Frame13"
+      Tab(3).Control(3)=   "Frame15"
       Tab(3).ControlCount=   4
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Label19"
-      Tab(4).Control(0).Enabled=   0   'False
-      Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(1).Enabled=   0   'False
-      Tab(4).Control(2)=   "Frame7"
-      Tab(4).Control(2).Enabled=   0   'False
-      Tab(4).Control(3)=   "btnSetF1"
-      Tab(4).Control(3).Enabled=   0   'False
-      Tab(4).Control(4)=   "btnSetF2"
-      Tab(4).Control(4).Enabled=   0   'False
-      Tab(4).Control(5)=   "btnSetSB"
-      Tab(4).Control(5).Enabled=   0   'False
+      Tab(4).Control(0)=   "btnSetSB"
+      Tab(4).Control(1)=   "btnSetF2"
+      Tab(4).Control(2)=   "btnSetF1"
+      Tab(4).Control(3)=   "Frame7"
+      Tab(4).Control(4)=   "Restart"
+      Tab(4).Control(5)=   "Label19"
       Tab(4).ControlCount=   6
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Label41"
+      Tab(5).Control(0)=   "Simulazione"
       Tab(5).Control(1)=   "Label42"
-      Tab(5).Control(2)=   "Simulazione"
+      Tab(5).Control(2)=   "Label41"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "Frame10"
-      Tab(6).Control(1)=   "Frame4"
+      Tab(6).Control(0)=   "Frame4"
+      Tab(6).Control(1)=   "Frame10"
       Tab(6).ControlCount=   2
       Begin VB.CommandButton btnSetSB 
          Caption         =   "Set SB settings"
@@ -2171,7 +2165,6 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0571
@@ -3525,6 +3518,13 @@ Sub additem(path As String)
     
   Randomize 'Botsareus 4/27/2013 Added randomize here so we have interesting colors
   TmpOpts.Specie(k).color = IIf(UseOldColor, RGB(Rnd * 200 + 55, Rnd * 200 + 55, Rnd * 255), RGB(Rnd * 255, Rnd * 255, Rnd * 255))
+  
+  'Special overwrites for unique robot names
+  If TmpOpts.Specie(k).Name = "Base.txt" Then TmpOpts.Specie(k).color = vbBlue
+  If TmpOpts.Specie(k).Name = "Mutate.txt" Then TmpOpts.Specie(k).color = vbRed
+  If TmpOpts.Specie(k).Name = "robotA.txt" Then TmpOpts.Specie(k).color = RGB(255, 128, 0)
+  If TmpOpts.Specie(k).Name = "robotB.txt" Then TmpOpts.Specie(k).color = RGB(0, 128, 255)
+  If TmpOpts.Specie(k).Name = "Test.txt" Then TmpOpts.Specie(k).color = vbRed
   
   Cerchio.FillColor = TmpOpts.Specie(k).color 'Botsareus 4/27/2013 Update ze color on load speicies
   Cerchio.BorderColor = TmpOpts.Specie(k).color
@@ -4970,7 +4970,7 @@ If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 
   'Botsareus 5/7/2013 Safemode component
   Form1.lblSafeMode.Visible = False
   
-  If x_restartmode = 0 Or x_restartmode > 4 Then
+  If x_restartmode = 0 Or x_restartmode = 4 Or x_restartmode = 5 Then  'Botsareusnotdone expend to other modes
     MDIForm1.Objects.Enabled = True
     MDIForm1.inssp.Enabled = True
     MDIForm1.DisableArep.Enabled = True
@@ -4979,6 +4979,9 @@ If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 
     MDIForm1.inssp.Enabled = False
     MDIForm1.DisableArep.Enabled = False
   End If
+  MDIForm1.AutoFork.Enabled = x_restartmode = 0
+  
+  If x_restartmode = 4 Or x_restartmode = 5 Or x_restartmode = 6 Then MDIForm1.y_info.Visible = True
   
   If dir(MDIForm1.MainDir + "\saves\localcopy.sim") <> "" Then Kill (MDIForm1.MainDir + "\saves\localcopy.sim")
   If dir(MDIForm1.MainDir + "\saves\lastautosave.sim") <> "" Then Kill (MDIForm1.MainDir + "\saves\lastautosave.sim")
@@ -5593,7 +5596,7 @@ skipthisspecie4:
   Write #1, Maxrounds
   Write #1, MaxCycles
   Write #1, MaxPop
-'
+
   Close 1
   Exit Sub
 fine:
@@ -5943,47 +5946,6 @@ Public Sub ReadSettFromFile()
   TmpOpts.Daytime = True ' EricL 3/21/2006 - this is a bettter place for this than in MDIForm_Load
   
 End Sub
-
-'
-'
-' S P E C I E S     S E T T I N G S
-'------------------------------------
-'
-'
-'
-'  Species buttons
-'
-
-
-'
-' Skin and mutrates
-'
-
-
-'
-' List management
-'
-
-'
-'   Species attributes
-'
-
-'
-'
-'   G E N E R A L    S E T T I N G S
-'------------------------------------
-'
-'
-
-'
-'   P H Y S I C S    S E T T I N G S
-'-------------------------------------
-'
-
-'
-'  C O S T S   S E T T I N G S
-'------------------------------
-'
 
 Private Sub Prop_Lostfocus()
   TmpOpts.EnergyProp = val(Prop.text) / 100

@@ -179,6 +179,33 @@ fine:
         
     Delta = CLng(.LastMut) - Delta 'Botsareus 9/4/2012 Moved delta check before overflow reset to fix an error where robot info is not being updated
   
+    'auto forking
+    If SimOpts.EnableAutoSpeciation Then
+        If .Mutations > .DnaLen * SimOpts.SpeciationGeneticDistance / 100 Then
+                Dim robname As String
+                Dim splitname() As String
+                'generate new specie name
+                SimOpts.SpeciationForkInterval = SimOpts.SpeciationForkInterval + 1
+                'remove old nick name
+                splitname = Split(.FName, ")")
+                'if it is a nick name only
+                If Left(splitname(0), 1) = "(" And IsNumeric(Right(splitname(0), Len(splitname(0)) - 1)) Then
+                    robname = splitname(1)
+                Else
+                    robname = .FName
+                End If
+                    robname = "(" & SimOpts.SpeciationForkInterval & ")" & .FName
+                'do we have room for new specie?
+                If SimOpts.SpeciesNum < 49 Then
+                    .FName = robname
+                    .Mutations = 0
+                    AddSpecie robn, False
+                Else
+                    SimOpts.SpeciationForkInterval = SimOpts.SpeciationForkInterval - 1
+                End If
+        End If
+    End If
+  
     If .Mutations > 32000 Then .Mutations = 32000  'Botsareus 5/31/2012 Prevents mutations overflow
     If .LastMut > 32000 Then .LastMut = 32000
   
@@ -360,10 +387,10 @@ With rob(robn)
             datahit(e2) = True
             Do
                 randomsysvar = Int(Rnd * 1000)
-            Loop Until sysvar(randomsysvar).name <> ""
+            Loop Until sysvar(randomsysvar).Name <> ""
             .DNA(e2).tipo = 1
             If .DNA(e2 + 1).tipo = 7 Then .DNA(e2).tipo = 0 'if store , inc , or dec then type 0
-            holddetail = "CopyError2 changed dna location " & e2 & " to sysvar " & IIf(.DNA(e2).tipo = 1, "*.", ".") & sysvar(randomsysvar).name
+            holddetail = "CopyError2 changed dna location " & e2 & " to sysvar " & IIf(.DNA(e2).tipo = 1, "*.", ".") & sysvar(randomsysvar).Name
             .DNA(e2).value = sysvar(randomsysvar).value 'transfears value, not adress
             
             'special cases
@@ -413,7 +440,7 @@ Private Sub PointMutation2(robn As Integer) 'Botsareus 12/10/2013
             
             Do
                 randomsysvar = Int(Rnd * 1000)
-            Loop Until sysvar(randomsysvar).name <> ""
+            Loop Until sysvar(randomsysvar).Name <> ""
             
             
             If .DNA(randompos).tipo = 1 And Int(Rnd * 2) = 0 Then 'sometimes we need to introduce more stores
@@ -430,7 +457,7 @@ Private Sub PointMutation2(robn As Integer) 'Botsareus 12/10/2013
             
               .DNA(randompos).value = sysvar(randomsysvar).value 'transfears value, not adress
             
-              holddetail = "PointMutation2 changed dna location " & randompos & " to sysvar " & IIf(.DNA(randompos).tipo = 1, "*.", ".") & sysvar(randomsysvar).name
+              holddetail = "PointMutation2 changed dna location " & randompos & " to sysvar " & IIf(.DNA(randompos).tipo = 1, "*.", ".") & sysvar(randomsysvar).Name
             
             End If
             
@@ -602,7 +629,7 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal Length 
   Dim temp As String
   Dim bp As block
   Dim tempbp As block
-  Dim name As String
+  Dim Name As String
   Dim oldname As String
   Dim t As Long
   Dim old As Long
@@ -660,13 +687,13 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal Length 
         bp.value = old
         
         tempbp = .DNA(t)
-        Parse name, tempbp  ' Have to use a temp var because Parse() can change the arguments
+        Parse Name, tempbp  ' Have to use a temp var because Parse() can change the arguments
         Parse oldname, bp
         
         .Mutations = .Mutations + 1
         .LastMut = .LastMut + 1
         .LastMutDetail = MutationType(Mtype) + " changed value of " + TipoDetok(.DNA(t).tipo) + " from " + _
-          oldname + " to " + name + " at position" + Str(t) + " during cycle" + _
+          oldname + " to " + Name + " at position" + Str(t) + " during cycle" + _
           Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
       End If
     Else
@@ -693,13 +720,13 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal Length 
         'we do nothing, it has to be in range
       End If
        tempbp = .DNA(t)
-       Parse name, tempbp ' Have to use a temp var because Parse() can change the arguments
+       Parse Name, tempbp ' Have to use a temp var because Parse() can change the arguments
        Parse oldname, bp
       .Mutations = .Mutations + 1
       .LastMut = .LastMut + 1
       
       .LastMutDetail = MutationType(Mtype) + " changed the " + TipoDetok(bp.tipo) + ": " + _
-          oldname + " to the " + TipoDetok(.DNA(t).tipo) + ": " + name + " at position" + Str(t) + " during cycle" + _
+          oldname + " to the " + TipoDetok(.DNA(t).tipo) + ": " + Name + " at position" + Str(t) + " during cycle" + _
           Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
       
     End If
@@ -890,6 +917,7 @@ Public Function delgene(n As Integer, g As Integer) As Boolean
     makeoccurrlist n
     'Botsareus 3/14/2014 Disqualify
     If SimOpts.F1 And Disqualify = 2 Then dreason rob(n).FName, rob(n).tag, "deleting a gene"
+    If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 2 Then KillRobot n
   End If
 End Function
 
@@ -912,9 +940,9 @@ If NormMut And Not skipNorm Then
         Length = rob(robfocus).DnaLen
     Else 'load dna length
         If MaxRobs = 0 Then ReDim rob(0)
-        path = TmpOpts.Specie(optionsform.CurrSpec).path & "\" & TmpOpts.Specie(optionsform.CurrSpec).name
+        path = TmpOpts.Specie(optionsform.CurrSpec).path & "\" & TmpOpts.Specie(optionsform.CurrSpec).Name
         path = Replace(path, "&#", MDIForm1.MainDir)
-        If dir(path) = "" Then path = MDIForm1.MainDir & "\Robots\" & TmpOpts.Specie(optionsform.CurrSpec).name
+        If dir(path) = "" Then path = MDIForm1.MainDir & "\Robots\" & TmpOpts.Specie(optionsform.CurrSpec).Name
         If LoadDNA(path, 0) Then
             Length = DnaLen(rob(0).DNA)
         End If

@@ -570,7 +570,7 @@ End Function
 Private Sub crossover(ByRef rob1() As block2, ByRef rob2() As block2, ByRef Outdna() As block)
 Dim i As Integer 'layer
 Dim n1 As Integer 'start pos
-Dim N2 As Integer
+Dim n2 As Integer
 Dim nn As Integer
 Dim res1 As Integer 'result1
 Dim res2 As Integer
@@ -585,7 +585,7 @@ Do
 'diff search
 
 n1 = res1 + resn - nn
-N2 = res2 + resn - nn
+n2 = res2 + resn - nn
 
 'presets
 i = 0
@@ -597,11 +597,11 @@ Else
 End If
 
 res1 = scanfromn(rob1, n1, 0)
-res2 = scanfromn(rob2, N2, i)
+res2 = scanfromn(rob2, n2, i)
 
 
 'subloop
-If res1 - n1 > 0 And res2 - N2 > 0 Then 'run both sides
+If res1 - n1 > 0 And res2 - n2 > 0 Then 'run both sides
     If Int(Rnd * 2) = 0 Then 'which side?
         ReDim Preserve Outdna(upperbound + res1 - n1)
         For a = n1 To res1 - 1
@@ -609,10 +609,10 @@ If res1 - n1 > 0 And res2 - N2 > 0 Then 'run both sides
             Outdna(upperbound + 1 + a - n1).value = rob1(a).value
         Next
     Else
-        ReDim Preserve Outdna(upperbound + res2 - N2)
-        For a = N2 To res2 - 1
-            Outdna(upperbound + 1 + a - N2).tipo = rob2(a).tipo
-            Outdna(upperbound + 1 + a - N2).value = rob2(a).value
+        ReDim Preserve Outdna(upperbound + res2 - n2)
+        For a = n2 To res2 - 1
+            Outdna(upperbound + 1 + a - n2).tipo = rob2(a).tipo
+            Outdna(upperbound + 1 + a - n2).value = rob2(a).value
         Next
     End If
 ElseIf res1 - n1 > 0 Then 'run one side
@@ -623,12 +623,12 @@ ElseIf res1 - n1 > 0 Then 'run one side
             Outdna(upperbound + 1 + a - n1).value = rob1(a).value
         Next
     End If
-ElseIf res2 - N2 > 0 Then 'run other side
+ElseIf res2 - n2 > 0 Then 'run other side
     If Int(Rnd * 2) = 0 Then
-        ReDim Preserve Outdna(upperbound + res2 - N2)
-        For a = N2 To res2 - 1
-            Outdna(upperbound + 1 + a - N2).tipo = rob2(a).tipo
-            Outdna(upperbound + 1 + a - N2).value = rob2(a).value
+        ReDim Preserve Outdna(upperbound + res2 - n2)
+        For a = n2 To res2 - 1
+            Outdna(upperbound + 1 + a - n2).tipo = rob2(a).tipo
+            Outdna(upperbound + 1 + a - n2).value = rob2(a).value
         Next
     End If
 End If
@@ -877,7 +877,7 @@ Private Function iceil(x As Single) As Integer
     iceil = x
 End Function
 
-Private Sub makeshell(n)
+Private Sub makeshell(n As Integer)
 Dim oldshell As Single
 Dim Cost As Single
 Dim Delta As Single
@@ -920,10 +920,11 @@ Dim shellNrgConvRate As Single
 getout:
     'Botsareus 3/14/2014 Disqualify
     If SimOpts.F1 And Disqualify = 2 Then dreason .FName, .tag, "making shell"
+    If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 2 Then KillRobot n
   End With
 End Sub
 
-Private Sub makeslime(n)
+Private Sub makeslime(n As Integer)
 Dim oldslime As Single
 Dim Cost As Single
 Dim Delta As Single
@@ -967,6 +968,7 @@ Dim slimeNrgConvRate As Single
 getout:
     'Botsareus 3/14/2014 Disqualify
     If SimOpts.F1 And Disqualify = 2 Then dreason .FName, .tag, "making slime"
+    If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 2 Then KillRobot n
   End With
 End Sub
 
@@ -1120,7 +1122,7 @@ Dim i As Integer
     TotalRobots = TotalRobots + 1
     
     'Update the number of bots in each species
-    While SimOpts.Specie(i).name <> rob(n).FName And i < SimOpts.SpeciesNum
+    While SimOpts.Specie(i).Name <> rob(n).FName And i < SimOpts.SpeciesNum
         i = i + 1
     Wend
     
@@ -1405,6 +1407,7 @@ Private Sub FireTies(ByVal n As Integer)
         maketie n, rob(n).lastopp, rob(n).radius + rob(rob(n).lastopp).radius + RobSize * 2, -20, rob(n).mem(mtie)
         'Botsareus 3/14/2014 Disqualify
         If SimOpts.F1 And Disqualify = 2 Then dreason rob(n).FName, rob(n).tag, "making a tie"
+        If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 2 Then KillRobot n
       End If
       
     End If
@@ -1475,7 +1478,7 @@ Public Sub UpdateBots()
   
   'Need to do this first as NetForces can update bots later in the loop
   For t = 1 To MaxRobs
-    If rob(t).exist Then
+    If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
       If numTeleporters > 0 Then CheckTeleporters t
     End If
   Next t
@@ -1484,14 +1487,14 @@ Public Sub UpdateBots()
   'Only calculate mass due to fuild displacement if the sim medium has density.
   If SimOpts.Density <> 0 Then
     For t = 1 To MaxRobs
-      If rob(t).exist Then AddedMass t
+      If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then AddedMass t
     Next t
   End If
   
   'this loops is for pre update
   For t = 1 To MaxRobs
     If t Mod 250 = 0 Then DoEvents
-    If rob(t).exist Then
+    If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
       If (rob(t).Corpse = False) Then Upkeep t ' No upkeep costs if you are dead!
       If ((rob(t).Corpse = False) And (rob(t).DisableDNA = False)) Then Poisons t
       ManageFixed t
@@ -1525,7 +1528,7 @@ Public Sub UpdateBots()
     i = i + 1
   Wend
   For t = 1 To MaxRobs
-    If rob(t).exist Then UpdateCounters t ' Counts the number of bots and decays body...
+    If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then UpdateCounters t ' Counts the number of bots and decays body...
   Next t
   
   DoEvents
@@ -1533,7 +1536,7 @@ Public Sub UpdateBots()
   For t = 1 To MaxRobs
     If t Mod 250 = 0 Then DoEvents
      
-    If rob(t).exist Then
+    If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
         Update_Ties t                    ' Carries out all tie routines
              
         'EricL Transfer genetic meomory locations for newborns through the birth tie during their first 15 cycles
@@ -1574,7 +1577,7 @@ Public Sub UpdateBots()
     If t Mod 250 = 0 Then DoEvents
     UpdateTieAngles t                ' Updates .tielen and .tieang.  Have to do this here after all bot movement happens above.
   
-    If Not rob(t).Corpse And Not rob(t).DisableDNA And rob(t).exist Then
+    If Not rob(t).Corpse And Not rob(t).DisableDNA And rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
       Mutate t
       MakeStuff t
       HandleWaste t
@@ -1587,7 +1590,7 @@ Public Sub UpdateBots()
       WriteSenses t
       FireTies t
     End If
-    If Not rob(t).Corpse And rob(t).exist Then
+    If Not rob(t).Corpse And rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
       Ageing t      ' Even bots with disabled DNA age...
       ManageDeath t ' Even bots with disabled DNA can die...
     End If
@@ -1744,6 +1747,7 @@ Private Sub robshoot(n As Integer)
     newshot n, shtype, value, 1
     'Botsareus 3/14/2014 Disqualify
     If SimOpts.F1 And Disqualify = 2 Then dreason rob(n).FName, rob(n).tag, "firing an info shot"
+    If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 2 Then KillRobot n
   Case -1 ' Nrg request Feeding Shot
     If rob(n).Multibot Then
       value = 20 + (rob(n).body / 5) * (rob(n).numties + 1)
@@ -1989,6 +1993,7 @@ Public Sub storevenom(n As Integer)
 getout:
     'Botsareus 3/14/2014 Disqualify
     If SimOpts.F1 And Disqualify = 2 Then dreason .FName, .tag, "making venom"
+    If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 2 Then KillRobot n
   End With
 End Sub
 ' Robot n converts some of his energy to poison
@@ -2028,6 +2033,7 @@ Public Sub storepoison(n As Integer)
 getout:
     'Botsareus 3/14/2014 Disqualify
     If SimOpts.F1 And Disqualify = 2 Then dreason .FName, .tag, "making poison"
+    If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 2 Then KillRobot n
   End With
  
 End Sub
@@ -2043,6 +2049,8 @@ End Sub
 ' ties parent and son, and the miracle of birth is accomplished
 Public Sub Reproduce(n As Integer, per As Integer)
 If reprofix Then If per < 3 Then rob(n).nrg = 3 'Botsareus 4/27/2013 hurt greedy robots
+
+If rob(n).body < 5 Then Exit Sub 'Botsareus 3/27/2014 An attempt to prevent 'robot bursts'
 
 If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
   Dim sondist As Long
@@ -2218,13 +2226,23 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
         With rob(nuovo)
             Dim MratesMax As Long
             MratesMax = IIf(NormMut, CLng(.DnaLen) * CLng(valMaxNormMut), 2000000000)
+            'dynamic mutation overload correction
+            Dim dmoc As Double
+            dmoc = 1 + (rob(nuovo).DnaLen - curr_dna_size) / 500
+            If Not y_normsize Or (x_restartmode < 4) Then dmoc = 1  'Botsareusnotdone expend to other restart modes
+            '
             Dim mrep As Byte
             For mrep = 0 To (Int(3 * Rnd) + 1) * -(rob(n).mem(mrepro) > 0)   '2x to 4x
                 For t = 1 To 10
                  If t = 9 Then GoTo skip 'ignore PM2 mutation here
                  If .Mutables.mutarray(t) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
                  If Rnd < DeltaMainChance / 100 Then
-                  If DeltaMainExp <> 0 Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
+                    If DeltaMainExp <> 0 Then
+                        '
+                        If Not (t = MinorDeletionUP Or t = MajorDeletionUP) Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * dmoc 'dynamic mutation overload correction
+                        '
+                        .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
+                    End If
                   .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rnd * 2 - 1) * DeltaMainLn
                   If .Mutables.mutarray(t) < 1 Then .Mutables.mutarray(t) = 1
                   If .Mutables.mutarray(t) > MratesMax Then .Mutables.mutarray(t) = MratesMax
@@ -2314,6 +2332,8 @@ End Sub
 Public Function SexReproduce(female As Integer)
 If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Botsareus 4/27/2013 hurt greedy robots
 
+If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to prevent 'robot bursts'
+
   Dim sondist As Long
   Dim nuovo As Integer
   Dim nnrg As Single, nwaste As Single, npwaste As Single, nchloroplasts As Single   'Botsareus 8/24/2013 nchloroplasts
@@ -2374,7 +2394,10 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
     
     'Botsareus 3/14/2014 Disqualify
     If SimOpts.F1 And Disqualify = 2 Then dreason rob(female).FName, rob(female).tag, "attempting to reproduce sexually"
-    
+    If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 2 Then
+        KillRobot female
+        GoTo getout
+    End If
       'Do the crossover.  The sperm DNA is on the mom's bot structure
       'Botsareus 4/2/2013 Crossover fix
       
@@ -2679,11 +2702,21 @@ If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).nrg = 3 'Bots
         With rob(nuovo)
             Dim MratesMax As Long
             MratesMax = IIf(NormMut, CLng(.DnaLen) * CLng(valMaxNormMut), 2000000000)
+            'dynamic mutation overload correction
+            Dim dmoc As Double
+            dmoc = 1 + (rob(nuovo).DnaLen - curr_dna_size) / 500
+            If Not y_normsize Or (x_restartmode < 4) Then dmoc = 1  'Botsareusnotdone expend to other restart modes
+            '
             For t = 1 To 10
              If t = 9 Then GoTo skip 'ignore PM2 mutation here
              If .Mutables.mutarray(t) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
              If Rnd < DeltaMainChance / 100 Then
-              If DeltaMainExp <> 0 Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
+                If DeltaMainExp <> 0 Then
+                    '
+                    If Not (t = MinorDeletionUP Or t = MajorDeletionUP) Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * dmoc 'dynamic mutation overload correction
+                    '
+                    .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
+                End If
               .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rnd * 2 - 1) * DeltaMainLn
               If .Mutables.mutarray(t) < 1 Then .Mutables.mutarray(t) = 1
               If .Mutables.mutarray(t) > MratesMax Then .Mutables.mutarray(t) = MratesMax
@@ -2772,7 +2805,7 @@ Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
   simplecoll = False
   
   For t = 1 To MaxRobs
-    If rob(t).exist Then
+    If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
       If Abs(rob(t).pos.x - x) < rob(t).radius + rob(k).radius And _
         Abs(rob(t).pos.y - y) < rob(t).radius + rob(k).radius Then
         If k <> t Then
