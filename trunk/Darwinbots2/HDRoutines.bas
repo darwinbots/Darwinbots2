@@ -915,6 +915,8 @@ If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
       If Not EOF(1) Then Input #1, y_normsize
       If Not EOF(1) Then Input #1, y_hidePredCycl
       If Not EOF(1) Then Input #1, y_LFOR
+      '
+      If Not EOF(1) Then Input #1, NoChlr
     Close #1
 End If
 
@@ -1750,6 +1752,10 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     
     If FileContinue(n) Then Get #n, , usesunbelt
     
+    'Botsareus 3/28/2014 Write if disable chloroplasts
+    
+    If FileContinue(n) Then Get #n, , .NoChlr
+    
     'read in any future data here
     
 OldFile:
@@ -2003,6 +2009,10 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     'Botsareus 1/28/2014 Write if robot is using sunbelt
     
     Put #n, , sunbelt
+    
+    'Botsareus 3/28/2014 Write if disable chloroplasts
+    
+    Put #n, , .NoChlr
     
     'write any future data here
     

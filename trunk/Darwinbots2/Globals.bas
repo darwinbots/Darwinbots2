@@ -69,6 +69,8 @@ Public y_normsize As Boolean
 Public y_hidePredCycl As Integer
 Public y_LFOR As Single
 
+Public NoChlr As Boolean
+
 'actual evolution globals
 
 Public curr_dna_size As Integer

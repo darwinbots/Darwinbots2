@@ -1448,6 +1448,7 @@ Private Sub loadrobs()
         SimOpts.Specie(k).Native = True
       End If
       rob(a).Veg = SimOpts.Specie(k).Veg
+      rob(a).NoChlr = SimOpts.Specie(k).NoChlr
       rob(a).Fixed = SimOpts.Specie(k).Fixed
       If rob(a).Fixed Then rob(a).mem(216) = 1
       rob(a).pos.x = Random(SimOpts.Specie(k).Poslf * CSng(SimOpts.FieldWidth - 60#), SimOpts.Specie(k).Posrg * CSng(SimOpts.FieldWidth - 60#))
