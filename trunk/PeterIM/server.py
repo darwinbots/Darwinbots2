@@ -23,7 +23,7 @@ class ConnectedClient:
     def _readHeader(self):
         # 5 reserved for filesize
         # 32 reserved for name
-        print self.fase
+        # print self.fase
         headerInMemory=""        
         if self.header_size ==0:
             self.header_size = 38
@@ -35,7 +35,7 @@ class ConnectedClient:
             rec = self.client.recv(self.header_size)
             headerInMemory+=rec
             self.header_size -= len(rec)
-        print headerInMemory
+        # print headerInMemory
         if self.header_size > 0:
             raise Exception("Corrupt header")
             return
@@ -44,6 +44,7 @@ class ConnectedClient:
         self.status = headerInMemory[37]
         self.fileInMemory=""
         self.lengthNextBot = length
+        global theTotalMemory
         theTotalMemory += length
         if self.status in ['B','S']:
             self.fase =1
@@ -114,7 +115,7 @@ class ConnectedClient:
         self.nextRecvFile= False
 
     def _sendFile(self):
-        print self.sendCounter,len(self.sendData)        
+        # print self.sendCounter,len(self.sendData)        
         self.sendCounter += self.client.send(self.sendData[self.sendCounter:])
         if self.sendCounter != len(self.sendData):
             self.nextRecvFile= False            
@@ -145,7 +146,7 @@ class ServerControl:
                 #     socketsInLine+=1
                 # else:
                 #     socketsInLine=0                    
-                print inputready, outputready
+                # print inputready, outputready
                 for sock in inputready:
                     # new connection
                     if  sock == server:
@@ -205,7 +206,9 @@ class ServerControl:
                 #     bannedIP = max(d.iterkeys(), key=(lambda key: d[key]))
                 #     print "%s has been banned, too many connections" % bannedIP
                 #     bannedIPs.append(bannedIP)
-                #print 'totalMemory',theTotalMemory                
+                #print 'totalMemory',theTotalMemory   
+                global theTotalMemory
+
                 if theTotalMemory >20000000 :
                     totalMemory=0
                     totalMemory2=0                
