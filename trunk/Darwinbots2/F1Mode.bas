@@ -269,10 +269,10 @@ Static setoldpop As Boolean
         Dim erase2 As Integer
         If PopArray(1).population > PopArray(2).population Then
             erase1 = MaxPop - PopArray(1).population
-            erase2 = erase1 * PopArray(2).population / PopArray(1).population
+            erase2 = erase1 * (PopArray(2).population / PopArray(1).population)
         Else
             erase2 = MaxPop - PopArray(2).population
-            erase1 = erase2 * PopArray(1).population / PopArray(2).population
+            erase1 = erase2 * (PopArray(1).population / PopArray(2).population)
         End If
         Dim l As Integer 'loop each erase
         Dim calcminenergy As Single

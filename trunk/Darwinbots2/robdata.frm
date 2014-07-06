@@ -55,6 +55,7 @@ Begin VB.Form datirob
          _ExtentX        =   11562
          _ExtentY        =   11827
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"robdata.frx":0E42
@@ -618,7 +619,7 @@ Dim poz As Double
     poz = Abs(poz)
     If poz > 32000 Then poz = 32000
 Visible = True
-dnatext.text = DetokenizeDNA(robfocus, False, CInt(poz))
+dnatext.text = DetokenizeDNA(robfocus, CInt(poz))
 End Sub
 
 Private Sub Command3_Click()
@@ -641,7 +642,7 @@ Private Sub dnashow_Click()
   Frame2.Width = 4695 + 8055
   enlarged = True
   If rob(robfocus).exist Then
-    dnatext.text = DetokenizeDNA(robfocus, False) ', CInt(poz))
+    dnatext.text = DetokenizeDNA(robfocus) ', CInt(poz))
   Else
     dnatext.text = "This Robot is dead.  No DNA available."
   End If
@@ -706,11 +707,11 @@ Private Function GiveMutationDetails(robfocus) As String
 End Function
 
 Private Sub robtag_DblClick() 'Botsareus 1/28/2014 Enter short description for robot
-    SetWindowPos hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
+    SetWindowPos hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
     rob(robfocus).tag = InputBox("Enter short description for robot. Can not be more then 45 characters long.", , Left(rob(robfocus).tag, 45))
     rob(robfocus).tag = Left(replacechars(rob(robfocus).tag), 45)
     robtag.Caption = rob(robfocus).tag
-    SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
+    SetWindowPos hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
 End Sub
 
 Private Sub ShrinkWin_Click()
@@ -722,12 +723,12 @@ End Sub
 
 Public Sub RefreshDna()
   If enlarged Then
-    dnatext.text = DetokenizeDNA(robfocus, False)
+    dnatext.text = DetokenizeDNA(robfocus)
   End If
 End Sub
 
 Sub Form_Load()
-  SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
+  SetWindowPos hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
   strings Me
   rage.Caption = "Age (cycles)" 'EricL 4/13/2006 Override resource file because I don't have a resource editor handy :)
   Me.Width = 3255

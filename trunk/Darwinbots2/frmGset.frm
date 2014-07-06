@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmGset 
    BorderStyle     =   4  'Fixed ToolWindow
@@ -72,38 +72,72 @@ Begin VB.Form frmGset
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "ffmDisqualification"
-      Tab(2).Control(1)=   "ffmFudge"
-      Tab(2).Control(2)=   "chkStepladder"
-      Tab(2).Control(3)=   "txtSourceDir"
-      Tab(2).Control(4)=   "chkTournament"
-      Tab(2).Control(5)=   "lblSource"
-      Tab(2).ControlCount=   6
+      Tab(2).Control(0)=   "chkAddarob"
+      Tab(2).Control(1)=   "ffmDisqualification"
+      Tab(2).Control(2)=   "ffmFudge"
+      Tab(2).Control(3)=   "chkStepladder"
+      Tab(2).Control(4)=   "txtSourceDir"
+      Tab(2).Control(5)=   "chkTournament"
+      Tab(2).Control(6)=   "lblSource"
+      Tab(2).ControlCount=   7
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "Check1"
-      Tab(3).Control(1)=   "ffmZeroBot"
-      Tab(3).Control(2)=   "chkSurvivalSimple"
-      Tab(3).Control(3)=   "ffmSurvival"
-      Tab(3).Control(4)=   "Check2"
-      Tab(3).ControlCount=   5
-      Begin VB.CheckBox Check1 
+      Tab(3).Control(0)=   "Check2"
+      Tab(3).Control(1)=   "ffmEvoCommon"
+      Tab(3).Control(2)=   "chkZBmode"
+      Tab(3).Control(3)=   "ffmZeroBot"
+      Tab(3).Control(4)=   "chkSurvivalSimple"
+      Tab(3).Control(5)=   "ffmSurvival"
+      Tab(3).ControlCount=   6
+      Begin VB.CheckBox chkAddarob 
+         Caption         =   "Add a single robot to existing league"
+         Height          =   195
+         Left            =   -70200
+         TabIndex        =   87
+         Top             =   2160
+         Visible         =   0   'False
+         Width           =   5415
+      End
+      Begin VB.CheckBox Check2 
+         Caption         =   "Eco Survival Mode"
+         Height          =   255
+         Left            =   -71040
+         TabIndex        =   67
+         Top             =   4080
+         Visible         =   0   'False
+         Width           =   2295
+      End
+      Begin VB.Frame ffmEvoCommon 
+         Caption         =   "Common Evolution Settings"
+         Height          =   855
+         Left            =   -67680
+         TabIndex        =   85
+         Top             =   1800
+         Width           =   2175
+         Begin VB.CheckBox chkNoChlr 
+            Caption         =   "Disable Chloroplasts"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   86
+            Top             =   360
+            Width           =   1935
+         End
+      End
+      Begin VB.CheckBox chkZBmode 
          Caption         =   "Zerobot Mode"
          Height          =   255
          Left            =   -72600
          TabIndex        =   84
          Top             =   4080
-         Visible         =   0   'False
          Width           =   2295
       End
       Begin VB.Frame ffmZeroBot 
          Caption         =   "Zerobot settings"
          Height          =   1095
-         Left            =   -67725
+         Left            =   -67680
          TabIndex        =   81
-         Top             =   840
-         Visible         =   0   'False
+         Top             =   600
          Width           =   2175
          Begin VB.TextBox txtZlength 
             Height          =   375
@@ -132,20 +166,11 @@ Begin VB.Form frmGset
       End
       Begin VB.Frame ffmSurvival 
          Caption         =   "Survival Mode Settings"
-         Height          =   3135
+         Height          =   2775
          Left            =   -74760
          TabIndex        =   68
          Top             =   600
-         Visible         =   0   'False
          Width           =   6855
-         Begin VB.CheckBox chkNoChlr 
-            Caption         =   "Disable Chloroplasts"
-            Height          =   255
-            Left            =   120
-            TabIndex        =   85
-            Top             =   2700
-            Width           =   2295
-         End
          Begin VB.CheckBox chkNormSize 
             Caption         =   "Dynamically normalize DNA size"
             Height          =   255
@@ -235,17 +260,8 @@ Begin VB.Form frmGset
             Width           =   5535
          End
       End
-      Begin VB.CheckBox Check2 
-         Caption         =   "Eco Survival Mode"
-         Height          =   255
-         Left            =   -74640
-         TabIndex        =   67
-         Top             =   4440
-         Visible         =   0   'False
-         Width           =   2295
-      End
       Begin VB.Frame ffmDisqualification 
-         Caption         =   "Disqualification Rules on F1 Contest"
+         Caption         =   "Disqualification Rules on Contest"
          Height          =   975
          Left            =   -72120
          TabIndex        =   63
@@ -343,7 +359,7 @@ Begin VB.Form frmGset
          End
       End
       Begin VB.CheckBox chkStepladder 
-         Caption         =   "Stepladder league"
+         Caption         =   "Stepladder league     (click for more options)"
          Height          =   195
          Left            =   -72000
          TabIndex        =   55
@@ -425,7 +441,7 @@ Begin VB.Form frmGset
          End
          Begin VB.TextBox txtDevLn 
             Height          =   285
-            Left            =   6435
+            Left            =   6480
             TabIndex        =   40
             Top             =   1440
             Width           =   615
@@ -526,7 +542,7 @@ Begin VB.Form frmGset
             Width           =   1695
          End
          Begin VB.Label lblMmean 
-            Caption         =   "Mean/Stddev:    Exponential(10^) ± 1/   XXXX  ± Liner"
+            Caption         =   "Mean/Stddev:    Multiply by (10 ^ ± 1/   XXXX   ) ± Liner"
             Height          =   375
             Left            =   2520
             TabIndex        =   39
@@ -534,7 +550,7 @@ Begin VB.Form frmGset
             Width           =   4335
          End
          Begin VB.Label lblMmain 
-            Caption         =   "Probablity:    Exponential(10^) ± 1/   XXXX    ± Liner"
+            Caption         =   "Probablity:    Multiply by (10 ^ ± 1/   XXXX   ) ± Liner"
             Height          =   375
             Left            =   2520
             TabIndex        =   36
@@ -793,6 +809,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 'Botsareus 3/15/2013 The global settings form
+Dim robpath As String
 
 Private Sub btnBrowseRob_Click()
 On Error GoTo fine
@@ -819,11 +836,11 @@ MsgBox "Survival mode consists of a base species and a mutating species. The bas
 " This is a handicap for the Base species. Because, a negative value means mutating species are losing energy." & vbCrLf _
 & vbCrLf & "Formula1:" & vbCrLf _
 & "new_value = ((Average energy gain with Base.txt on (species average, time average)) minus " & _
-"(Average energy gain with Base.txt off (species average, time average))) / (LFOR * 100) " & vbCrLf & _
+"(Average energy gain with Base.txt off (species average, time average))) / (LFOR / 3) " & vbCrLf & _
 "If new_value is less then old_value then current_value = new_value else current_value = (old_value * 9 + new_value) / 10 " _
 & vbCrLf & "Formula 2:" & vbCrLf _
 & "((Average energy gain last on/off cycle (species average, time average)) minus " & _
-"(Average energy gain this on/off cycle (species average, time average))) / (LFOR * 50) " & vbCrLf & _
+"(Average energy gain this on/off cycle (species average, time average))) / (LFOR / 3) * 2 " & vbCrLf & _
 "Result = Formula1 minus Formula2 or just Formula1 if Formula2 is greater then zero. Result takes full effect after 6 on/off cycles." _
 & vbCrLf & vbCrLf & "For current simulation's data go to the help menu." _
 & vbCrLf & vbCrLf & "www.darwinbots.com", vbInformation, "Dev. By: Paul Kononov a.k.a. Botsareus"
@@ -899,7 +916,8 @@ If txtSourceDir.Visible Then
     End If
 End If
 
-If chkSurvivalSimple.value = 1 Then '2/16/2014 Evolution modes Botsareusnotdone need to expend to other evolution modes later
+'2/16/2014 Evolution modes Botsareusnotdone need to expend to other evolution modes later
+If chkSurvivalSimple.value = 1 Then
     If txtCD <> MDIForm1.MainDir Then
         MsgBox "Can not start a evolution mode while changing main directory.", vbCritical
         txtCD = MDIForm1.MainDir
@@ -911,6 +929,43 @@ If chkSurvivalSimple.value = 1 Then '2/16/2014 Evolution modes Botsareusnotdone 
     End If
     If dir(txtRob) = "" And Right(txtRob, 1) <> "\" Then
         MsgBox "Please use a valid file name for robot.", vbCritical
+        Exit Sub
+    End If
+    If FolderExists(MDIForm1.MainDir & "\evolution") Then
+        If MsgBox("The current evolution mode will be restarted. Continue?", vbYesNo + vbQuestion) = vbYes Then
+            RecursiveRmDir MDIForm1.MainDir & "\evolution"
+        Else
+            Exit Sub
+        End If
+    End If
+    'the folders
+    RecursiveMkDir MDIForm1.MainDir & "\evolution"
+    RecursiveMkDir MDIForm1.MainDir & "\evolution\stages"
+    'generate list of species that are not repopulating
+    For i = 0 To UBound(TmpOpts.Specie)
+        If TmpOpts.Specie(i).Veg = False And TmpOpts.Specie(i).Name <> "" Then
+            specielist = specielist & TmpOpts.Specie(i).Name & vbNewLine
+        End If
+    Next
+    'remove all nonrepopulating robots
+    If specielist <> "" Then
+        If MsgBox("The following robots must be removed first:" & vbCrLf & vbCrLf & specielist & vbCrLf & "Continue?", vbYesNo + vbQuestion) = vbYes Then
+            For i = 0 To UBound(TmpOpts.Specie)
+                If TmpOpts.Specie(i).Veg = False And TmpOpts.Specie(i).Name <> "" Then
+                    optionsform.SpecList.ListIndex = i
+                    optionsform.DelSpec_Click
+                    i = i - 1
+                End If
+            Next
+        Else
+            Exit Sub
+        End If
+    End If
+End If
+If chkZBmode.value Then
+    If txtCD <> MDIForm1.MainDir Then
+        MsgBox "Can not start zerobot evolution mode while changing main directory.", vbCritical
+        txtCD = MDIForm1.MainDir
         Exit Sub
     End If
     If FolderExists(MDIForm1.MainDir & "\evolution") Then
@@ -976,7 +1031,7 @@ MsgBox "Global settings will take effect the next time DarwinBots starts.", vbIn
       Write #1, val(txtWTC)
       Write #1, val(sldMain)
       Write #1, val(sldDev)
-      Write #1, txtSourceDir
+      Write #1, IIf(chkAddarob.value = 1, MDIForm1.MainDir & "\league\singlerob", txtSourceDir)
       Write #1, (chkStepladder = 1 And chkTournament = 1)
       
       Dim tmpopt As OptionButton
@@ -992,7 +1047,6 @@ MsgBox "Global settings will take effect the next time DarwinBots starts.", vbIn
       
       'evolution
       
-      'Botsareusnotdone expend for other modes (0 = none, 1 = simple, 2 = zerobot, 3 = eco)
       Write #1, txtRob
       Write #1, chkShowGraphs.value = 1
       Write #1, chkNormSize.value = 1 'Botsareusnotsone norm size auto disabled for eco
@@ -1001,7 +1055,9 @@ MsgBox "Global settings will take effect the next time DarwinBots starts.", vbIn
       
       Write #1, chkNoChlr.value = 1
       
-      'Botsareusnotdone expend for ecoIM
+      Write #1, val(txtZlength)
+      
+      'Botsareusnotsone other evo modes
       
       
     Close #1
@@ -1012,21 +1068,38 @@ If txtSourceDir.Visible Then
     If chkStepladder = 1 And chkTournament = 0 Then
         optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set"
         Dim file_name As String
-        leagueSourceDir = txtSourceDir.text
-        'add tags to files
         Dim files As Collection
-        Set files = getfiles(leagueSourceDir)
-        For i = 1 To files.count
-            Open files(i) For Append As #1
-             Print #1, vbCrLf & "'#tag:" & extractname(files(i))
+        If chkAddarob = 1 Then 'Botsareus 6/28/2014 Just add one robot
+            Set files = getfiles(txtSourceDir.text)
+            'move all robots
+            For i = 1 To files.count
+                FileCopy files(i), MDIForm1.MainDir & "\league\stepladder\" & extractname(files(i))
+            Next
+            'move a single robot
+            MkDir MDIForm1.MainDir & "\league\singlerob"
+            FileCopy robpath, MDIForm1.MainDir & "\league\singlerob\" & extractname(robpath)
+            Open MDIForm1.MainDir & "\league\singlerob\" & extractname(robpath) For Append As #1
+             Print #1, vbCrLf & "'#tag:" & extractname(robpath)
             Close #1
-        Next
-        '
-        file_name = dir$(leagueSourceDir & "\*.*")
-        FileCopy leagueSourceDir & "\" & file_name, MDIForm1.MainDir & "\league\stepladder\1-" & file_name
-        Kill leagueSourceDir & "\" & file_name
-        x_filenumber = 0
-        populateladder
+            leagueSourceDir = MDIForm1.MainDir & "\league\singlerob"
+            x_filenumber = 0
+            populateladder
+        Else
+            leagueSourceDir = txtSourceDir.text
+            'add tags to files
+            Set files = getfiles(leagueSourceDir)
+            For i = 1 To files.count
+                Open files(i) For Append As #1
+                 Print #1, vbCrLf & "'#tag:" & extractname(files(i))
+                Close #1
+            Next
+            '
+            file_name = dir$(leagueSourceDir & "\*.*")
+            FileCopy leagueSourceDir & "\" & file_name, MDIForm1.MainDir & "\league\stepladder\1-" & file_name
+            Kill leagueSourceDir & "\" & file_name
+            x_filenumber = 0
+            populateladder
+        End If
     Else
         optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
         Open App.path & "\restartmode.gset" For Output As #1
@@ -1043,7 +1116,8 @@ If txtSourceDir.Visible Then
     End If
 End If
 
-If chkSurvivalSimple.value = 1 Then '2/16/2014 Evolution modes Botsareusnotdone need to expend to other evolution modes later
+ '2/16/2014 Evolution modes Botsareusnotdone need to expend to other evolution modes later
+If chkSurvivalSimple.value = 1 Then
     'let us init basic survival evolution mode
     'copy robots
     FileCopy txtRob, MDIForm1.MainDir & "\evolution\Base.txt"
@@ -1068,7 +1142,7 @@ If chkSurvivalSimple.value = 1 Then '2/16/2014 Evolution modes Botsareusnotdone 
     Open MDIForm1.MainDir & "\evolution\data.gset" For Output As #1
         Write #1, val(txtLFOR) 'LFOR init
         Write #1, True 'dir
-        Write #1, 1 'corr
+        Write #1, 5 'corr
         '
         Write #1, val(txtCycSM) 'hidePredCycl
         '
@@ -1076,6 +1150,8 @@ If chkSurvivalSimple.value = 1 Then '2/16/2014 Evolution modes Botsareusnotdone 
         Write #1, TargetDNASize(Length) 'target_dna_size
         '
         Write #1, val(txtCycSM) 'Init hidePredCycl
+        '
+        Write #1, 0 'stgwins
     Close #1
     'other
     optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
@@ -1091,9 +1167,54 @@ If chkSurvivalSimple.value = 1 Then '2/16/2014 Evolution modes Botsareusnotdone 
     Close #1
     shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
 End If
+'4/14/2014
+If chkZBmode.value = 1 Then
+    'first we need to generate the zb file
+    Open MDIForm1.MainDir & "\evolution\Base.txt" For Output As #1
+        Dim zerocount As Integer
+        For zerocount = 1 To val(txtZlength)
+            Write #1, 0
+        Next
+    Close #1
+    FileCopy MDIForm1.MainDir & "\evolution\Base.txt", MDIForm1.MainDir & "\evolution\Mutate.txt"
+    FileCopy MDIForm1.MainDir & "\evolution\Base.txt", MDIForm1.MainDir & "\evolution\stages\stage0.txt"
+    optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
+    'other
+    Open App.path & "\restartmode.gset" For Output As #1
+        Write #1, 7
+        Write #1, 0
+    Close #1
+    Open App.path & "\Safemode.gset" For Output As #1
+     Write #1, False
+    Close #1
+    Open App.path & "\autosaved.gset" For Output As #1
+     Write #1, False
+    Close #1
+    shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+End If
 
 'unload
 Unload Me
+End Sub
+
+Private Sub chkAddarob_Click()
+If chkAddarob.value Then
+If MsgBox("Make sure all robots in source dir. have a prefix ""1-"" ""2-"" etc. and #tag metadata contains name of robot.", vbOKCancel) = vbCancel Then GoTo fine:
+On Error GoTo fine
+  optionsform.CommonDialog1.FileName = ""
+  optionsform.CommonDialog1.Filter = "Dna file(*.txt)|*.txt" 'Botsareus 1/11/2013 DNA only
+  optionsform.CommonDialog1.InitDir = MDIForm1.MainDir + "\robots"
+  optionsform.CommonDialog1.DialogTitle = WSchoosedna
+  optionsform.CommonDialog1.ShowOpen
+  If optionsform.CommonDialog1.FileName <> "" Then 'Botsareus 1/11/2013 Do not insert robot if filename is blank
+   robpath = optionsform.CommonDialog1.FileName
+  Else
+    GoTo fine
+  End If
+End If
+Exit Sub
+fine:
+chkAddarob.value = 0
 End Sub
 
 Private Sub chkDelta2_Click()
@@ -1128,22 +1249,28 @@ Private Sub chkStepladder_Click()
 If chkStepladder.value = 1 Then
     lblSource.Visible = True
     txtSourceDir.Visible = True
-    'Botsareusnotdone need to expend for other modes
     chkSurvivalSimple.value = 0
+    chkZBmode.value = 0
 Else
     If Not chkTournament.value = 1 Then
         lblSource.Visible = False
         txtSourceDir.Visible = False
     End If
 End If
+'default chloroplasts
+txtStartChlr = 16000
+chkAddarob.Visible = chkStepladder.value = 1 And chkTournament.value = 0
 End Sub
 
 Private Sub chkSurvivalSimple_Click()
-ffmSurvival.Visible = chkSurvivalSimple.value = 1
 If chkSurvivalSimple.value = 1 Then
     chkStepladder.value = 0
     chkTournament.value = 0
+    chkZBmode.value = 0
 End If
+ffmZeroBot.Visible = chkSurvivalSimple.value = 0
+'default chloroplasts
+If chkNoChlr Then txtStartChlr = 16000 'default chloroplasts
 End Sub
 
 Private Sub chkTournament_Click()
@@ -1153,6 +1280,7 @@ If chkTournament.value = 1 Then
     txtSourceDir.Visible = True
     'Botsareusnotdone need to expend for other modes
     chkSurvivalSimple.value = 0
+    chkZBmode.value = 0
 Else
     chkStepladder.Caption = "Stepladder league"
     If Not chkStepladder.value = 1 Then
@@ -1160,6 +1288,9 @@ Else
         txtSourceDir.Visible = False
     End If
 End If
+'default chloroplasts
+txtStartChlr = 16000
+chkAddarob.Visible = chkStepladder.value = 1 And chkTournament.value = 0
 End Sub
 
 Private Sub chkUseCD_Click()
@@ -1169,6 +1300,19 @@ If chkUseCD.value = 1 Then
 Else
  txtCD.Enabled = False
 End If
+End Sub
+
+Private Sub chkZBmode_Click()
+If chkZBmode.value = 1 Then
+    chkStepladder.value = 0
+    chkTournament.value = 0
+    chkSurvivalSimple.value = 0
+    chkNormSize.value = 0
+    chkShowGraphs.value = 0
+    
+End If
+ffmSurvival.Visible = chkZBmode.value = 0
+If chkNoChlr Then txtStartChlr = 16000 'default chloroplasts
 End Sub
 
 Private Sub Form_Load()
@@ -1250,6 +1394,8 @@ txtCycSM = y_hidePredCycl
 txtLFOR = y_LFOR
 '
 chkNoChlr.value = IIf(NoChlr, 1, 0)
+'
+txtZlength = y_zblen
 End Sub
 
 Private Sub txtBodyFix_LostFocus()
@@ -1281,8 +1427,8 @@ End Sub
 Private Sub txtLFOR_LostFocus()
 'make sure the value is sane
 txtLFOR = Abs(val(txtLFOR))
-If txtLFOR < 0.1 Then txtLFOR = 0.1
-If txtLFOR > 50 Then txtLFOR = 50
+If txtLFOR < 0.01 Then txtLFOR = 0.01
+If txtLFOR > 100 Then txtLFOR = 100
 End Sub
 
 Private Sub txtMainExp_LostFocus()
@@ -1342,4 +1488,12 @@ Private Sub txtWTC_Change()
 'make sure the value is sane
 txtWTC = Abs(val(txtWTC))
 If txtWTC > 100 Then txtWTC = 100
+End Sub
+
+
+Private Sub txtZlength_LostFocus()
+'make sure the value is sane
+txtZlength = Abs(Int(val(txtZlength)))
+If txtZlength > 32000 Then txtZlength = 32000
+If txtZlength < 4 Then txtZlength = 4
 End Sub

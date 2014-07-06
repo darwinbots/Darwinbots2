@@ -46,6 +46,16 @@ Begin VB.Form grafico
    End
    Begin VB.Label secret_exit 
       BackStyle       =   0  'Transparent
+      Caption         =   "T"
+      BeginProperty Font 
+         Name            =   "Wingdings 2"
+         Size            =   6.75
+         Charset         =   2
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       Height          =   375
       Left            =   0
       TabIndex        =   140
@@ -3628,10 +3638,6 @@ Dim SerName(MaxItems) As String
 Dim Sum(MaxItems) As Single
 Dim Pivot As Integer
 Dim MaxSeries As Byte
-Dim FTop As Long
-Dim FLeft As Long
-Dim FWidth As Long
-Dim FHeight As Long
 Dim maxy As Single
 
 Dim secretunloadoverwrite As Boolean 'Botsareus 6/29/2013
@@ -3800,12 +3806,12 @@ End Sub
 
 
 Public Function SwapSeries(i As Integer, t As Integer)
-Dim x As Integer
-  For x = 0 To MaxData
-     data(x, MaxItems) = data(x, i)
-     data(x, i) = data(x, t)
-     data(x, t) = data(x, MaxItems)
-  Next x
+Dim X As Integer
+  For X = 0 To MaxData
+     data(X, MaxItems) = data(X, i)
+     data(X, i) = data(X, t)
+     data(X, t) = data(X, MaxItems)
+  Next X
   Label1(MaxItems).Caption = Label1(i).Caption
   Shape3(MaxItems).FillColor = Shape3(i).FillColor
   popnum(MaxItems).Caption = popnum(i).Caption
@@ -3892,32 +3898,20 @@ Private Sub Form_Activate()
     graphsave(WhichGraphAmI) = True
     chk_GDsave.value = 1
   End If
-  
-  'If grafico.WindowState = 0 Then
-  '  Me.Top = FTop
-  '  Me.left = FLeft
-  '  Me.Height = FHeight
-  '  Me.width = FWidth
-  'End If
+
 End Sub
 
 Private Sub Form_Load()
 Dim t As Integer
-
   For t = 0 To MaxItems
     Label1(t).Visible = False
     Shape3(t).Visible = False
     popnum(t).Visible = False
     popnum(t).Height = 255
   Next t
-  SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
-  If FHeight = 0 Then FHeight = 4000
- ' If FWidth = 0 Then FWidth = 5900
- If FWidth = 0 Then FWidth = 6500
-  Me.Top = FTop
-  Me.Left = FLeft
-  Me.Height = FHeight
-  Me.Width = FWidth
+  SetWindowPos hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
+  Me.Height = 4000
+  Me.Width = 8400
   XLabel.Caption = Str(SimOpts.chartingInterval) + " cycles per data point"
 End Sub
 
@@ -3968,10 +3962,6 @@ On Error GoTo patch 'Botsareus 10/12/2013 Attempt to fix a 380 error viea patch
     chk_GDsave.Left = ResetButton.Left + ResetButton.Width + 30
     XLabel.Top = Me.Height - XLabel.Height - 550
     RedrawGraph
-    FTop = Me.Top
-    FLeft = Me.Left
-    FHeight = Me.Height
-    FWidth = Me.Width
   End If
 patch:
 End Sub
@@ -3998,20 +3988,17 @@ Public Sub NewPoints()
   Next t
   
   RedrawGraph
-  FTop = Me.Top
-  FLeft = Me.Left
-  FHeight = Me.Height
-  FWidth = Me.Width
 End Sub
 
 Public Sub RedrawGraph()
 BackColor = chartcolor 'Botsareus 4/37/2013 Set Chart Skin
+chk_GDsave.BackColor = chartcolor
 'Botsareus 5/31/2013 Special graph info
-graphleft(WhichGraphAmI) = Left
-graphtop(WhichGraphAmI) = Top
+If Left <> Screen.Width Then graphleft(WhichGraphAmI) = Left 'A little mod here not to update graph position if invisible mode
+If Top <> Screen.Height Then graphtop(WhichGraphAmI) = Top
   
   Dim k, P As Integer
-  Dim t, x As Integer
+  Dim t, X As Integer
   Dim maxv As Single
   Dim xunit As Single, yunit As Single
   maxv = -1000
@@ -4060,22 +4047,22 @@ graphtop(WhichGraphAmI) = Top
   Wend
   
   If t > 10 Then
-    For x = (MaxSeries - 1) To 0 Step -1
-      If Sum(x) = 0 Then
-        DelSeries (x)
+    For X = (MaxSeries - 1) To 0 Step -1
+      If Sum(X) = 0 Then
+        DelSeries (X)
       End If
-    Next x
+    Next X
   End If
   
   P = Pivot - 1
   If P < 0 Then P = MaxData
   
-  If t > 50 Then
-   For x = (MaxSeries - 1) To 0 Step -1
-      If data(P, x) = 0 Then
-        DelSeries (x)
+  If t > 50 Or SimOpts.EnableAutoSpeciation Then 'Botsareus attempt to fix forking issue, may lead to graph instability
+   For X = (MaxSeries - 1) To 0 Step -1
+      If data(P, X) = 0 Then
+        DelSeries (X)
       End If
-    Next x
+    Next X
   End If
     
   maxy = maxv
@@ -4102,8 +4089,8 @@ graphtop(WhichGraphAmI) = Top
         Print #100, strCGraph
         'write headers
         strCGraph = ""
-        For x = 0 To MaxSeries - 1
-            strCGraph = strCGraph & Shape3(x).FillColor & ":" & Label1(x).Caption & ","
+        For X = 0 To MaxSeries - 1
+            strCGraph = strCGraph & Shape3(X).FillColor & ":" & Label1(X).Caption & ","
         Next
         Print #100, strCGraph
         Dim k2, t2 As Integer

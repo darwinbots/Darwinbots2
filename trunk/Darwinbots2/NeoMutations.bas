@@ -16,6 +16,8 @@ Public Const TranslocationUP As Integer = 8
 Public Const P2UP As Integer = 9 'Botsareus 12/10/2013 new mutation rates
 Public Const CE2UP As Integer = 10
 
+Private overtime As Long 'Botsareus 6/11/2014 Causes the loop to stop at some point
+
 
 Private Function MutationType(thing As Integer) As String
   MutationType = ""
@@ -69,6 +71,7 @@ Public Function MakeSpace(ByRef DNA() As block, ByVal beginning As Long, ByVal L
   For t = DNALength To beginning + 1 Step -1
     DNA(t + Length) = DNA(t)
     EraseUnit DNA(t)
+    overtime = overtime - 1
   Next t
 getout:
 End Function
@@ -115,6 +118,9 @@ Public Sub Mutate(ByVal robn As Integer, Optional reproducing As Boolean = False
     
     ismutating = True 'Botsareus 2/2/2013 Tells the parseor to ignore debugint and debugbool while the robot is mutating
     If Not reproducing Then
+    
+      overtime = UBound(rob(robn).DNA) * 30
+    
       If .Mutables.mutarray(PointUP) > 0 Then PointMutation robn
       If .Mutables.mutarray(DeltaUP) > 0 And Not Delta2 Then DeltaMut robn
       If .Mutables.mutarray(P2UP) > 0 And sunbelt Then PointMutation2 robn
@@ -158,19 +164,18 @@ skip:
       End If
       
     Else
-      Dim timee As Long
-      timee = Timer
+    
+      overtime = UBound(rob(robn).DNA) * 30
       If .Mutables.mutarray(CopyErrorUP) > 0 Then CopyError robn
-      If Timer - 4 > timee Then GoTo fine 'safe
+      If overtime < 0 Then Exit Sub
       If .Mutables.mutarray(CE2UP) > 0 And sunbelt Then CopyError2 robn
-      If Timer - 4 > timee Then GoTo fine 'safe
-      If .Mutables.mutarray(InsertionUP) > 0 Then Insertion robn, Timer
-      If Timer - 4 > timee Then GoTo fine 'safe
+      If overtime < 0 Then Exit Sub
+      If .Mutables.mutarray(InsertionUP) > 0 Then Insertion robn
+      If overtime < 0 Then Exit Sub
       If .Mutables.mutarray(ReversalUP) > 0 Then Reversal robn
-      If Timer - 4 > timee Then GoTo fine 'safe
+      If overtime < 0 Then Exit Sub
       If .Mutables.mutarray(TranslocationUP) > 0 And sunbelt Then Translocation robn 'Botsareus Translocation and Amplification still bugy, but I want them.
-      If .Mutables.mutarray(AmplificationUP) > 0 And sunbelt Then Amplification robn, Timer 'We pass timer to amplification to terminate an endless loop
-fine:
+      If .Mutables.mutarray(AmplificationUP) > 0 And sunbelt Then Amplification robn
       If .Mutables.mutarray(MajorDeletionUP) > 0 Then MajorDeletion robn
       If .Mutables.mutarray(MinorDeletionUP) > 0 Then MinorDeletion robn
     End If
@@ -181,7 +186,7 @@ fine:
   
     'auto forking
     If SimOpts.EnableAutoSpeciation Then
-        If .Mutations > .DnaLen * SimOpts.SpeciationGeneticDistance / 100 Then
+        If CDbl(.Mutations) > CDbl(.DnaLen) * CDbl(SimOpts.SpeciationGeneticDistance / 100) Then
                 Dim robname As String
                 Dim splitname() As String
                 'generate new specie name
@@ -225,12 +230,14 @@ getout:
   End With
 End Sub
 
-Private Sub Amplification(robn As Integer, timee As Long) 'Botsareus 12/10/2013
+Private Sub Amplification(robn As Integer) 'Botsareus 12/10/2013
 On Error GoTo getout:
   '1. pick a spot (1 to .dnalen - 1)
   '2. Run a length, copied to a temporary location
-  '3.  Pick a new spot (1 to .dnalen - 1)
+  '3. Pick a new spot (1 to .dnalen - 1)
   '4. Insert copied DNA
+    
+  overtime = UBound(rob(robn).DNA) * 30
   
   Dim t As Long
   Dim Length As Long
@@ -243,7 +250,7 @@ On Error GoTo getout:
   t = 1
   Do
   t = t + 1
-   If Timer - 4 > timee Then Exit Sub 'Botsareus 12/10/2013 safety exit
+    overtime = overtime - 1
     If Rnd < 1 / (.Mutables.mutarray(AmplificationUP) / SimOpts.MutCurrMult) Then
       Length = Gauss(.Mutables.StdDev(AmplificationUP), .Mutables.Mean(AmplificationUP))
       Length = Length Mod UBound(.DNA)
@@ -261,7 +268,7 @@ On Error GoTo getout:
         
         second = 0
         For counter = t - Length To t + Length
-          If Timer - 4 > timee Then Exit Sub 'safe
+          overtime = overtime - 1
           tempDNA(second) = .DNA(counter)
           second = second + 1
         Next counter
@@ -273,7 +280,7 @@ On Error GoTo getout:
         MakeSpace .DNA(), start, UBound(tempDNA) + 1
 
         For counter = start + 1 To start + UBound(tempDNA) + 1
-         If Timer - 4 > timee Then Exit Sub 'Botsareus 12/10/2013 safety exit
+         overtime = overtime - 1
          .DNA(counter) = tempDNA(counter - start - 1)
         Next counter
              
@@ -282,6 +289,8 @@ On Error GoTo getout:
         .LastMut = .LastMut + 1
         .LastMutDetail = "Amplification copied a series at" + Str(t) + Str(Length * 2 + 1) + "bps long to " + Str(start) + " during cycle" + _
           Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
+          
+           If overtime < 0 Then Exit Sub
        
       End If
     End If
@@ -367,7 +376,7 @@ skip:
 getout:
 End Sub
 
-Private Sub CopyError2(robn As Integer) 'botschange full redo of delta mutation, now called CopyError2
+Private Sub CopyError2(robn As Integer) 'Just like Copyerror but effects only special chars
 Dim DNASize As Integer
 Dim e As Integer 'counter
 Dim e2 As Integer 'update generator (our position)
@@ -380,7 +389,7 @@ With rob(robn)
     Dim datahit() As Boolean 'operation repeat prevention
     ReDim datahit(DNASize)
     For e = 0 To DNASize
-        If Rnd < (1 / (.Mutables.mutarray(CE2UP) * 28 / 300)) Then   'chance
+        If Rnd < (1 / (.Mutables.mutarray(CE2UP) / SimOpts.MutCurrMult * 28 / 300)) Then    'chance
             Do
                 e2 = Int(Rnd * (DNASize + 1))
             Loop Until datahit(e2) = False
@@ -547,7 +556,7 @@ Private Sub PointMutWhereAndWhen(randval As Single, robn As Integer, Optional of
   Dim result As Single
   
   Dim mutation_rate As Single
- 
+  
   'If randval = 0 Then randval = 0.0001
   With rob(robn)
     If .DnaLen = 1 Then GoTo getout ' avoid divide by 0 below
@@ -663,6 +672,8 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal Length 
 
         .Mutations = .Mutations + 1
         .LastMut = .LastMut + 1
+        overtime = overtime - 1: If overtime < 0 And Mtype <> InsertionUP Then Exit Sub
+        
         .LastMutDetail = MutationType(Mtype) + " changed " + TipoDetok(.DNA(t).tipo) + " from" + Str(old) + " to" + Str(.DNA(t).value) + " at position" + Str(t) + " during cycle" + Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
         
       Else
@@ -687,11 +698,16 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal Length 
         bp.value = old
         
         tempbp = .DNA(t)
-        Parse Name, tempbp  ' Have to use a temp var because Parse() can change the arguments
+        
+        Name = ""
+        oldname = ""
+        Parse Name, tempbp    ' Have to use a temp var because Parse() can change the arguments
         Parse oldname, bp
         
         .Mutations = .Mutations + 1
         .LastMut = .LastMut + 1
+        overtime = overtime - 1: If overtime < 0 And Mtype <> InsertionUP Then Exit Sub
+        
         .LastMutDetail = MutationType(Mtype) + " changed value of " + TipoDetok(.DNA(t).tipo) + " from " + _
           oldname + " to " + Name + " at position" + Str(t) + " during cycle" + _
           Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
@@ -720,10 +736,14 @@ Private Sub ChangeDNA(robn As Integer, ByVal nth As Long, Optional ByVal Length 
         'we do nothing, it has to be in range
       End If
        tempbp = .DNA(t)
+       
+       Name = ""
+       oldname = ""
        Parse Name, tempbp ' Have to use a temp var because Parse() can change the arguments
        Parse oldname, bp
       .Mutations = .Mutations + 1
       .LastMut = .LastMut + 1
+      overtime = overtime - 1: If overtime < 0 And Mtype <> InsertionUP Then Exit Sub
       
       .LastMutDetail = MutationType(Mtype) + " changed the " + TipoDetok(bp.tipo) + ": " + _
           oldname + " to the " + TipoDetok(.DNA(t).tipo) + ": " + Name + " at position" + Str(t) + " during cycle" + _
@@ -735,7 +755,7 @@ getout:
   End With
 End Sub
 
-Private Sub Insertion(robn As Integer, timee As Long)
+Private Sub Insertion(robn As Integer)
   Dim location As Integer
   Dim Length As Integer
   Dim accum As Long
@@ -744,7 +764,7 @@ Private Sub Insertion(robn As Integer, timee As Long)
   With rob(robn)
   For t = 1 To (.DnaLen - 1)
     If Rnd < 1 / (.Mutables.mutarray(InsertionUP) / SimOpts.MutCurrMult) Then
-     If Timer - 4 > timee Then Exit Sub 'Botsareus 12/21/2013 safety exit
+      If overtime < 0 Then Exit Sub
       If .Mutables.Mean(InsertionUP) = 0 Then .Mutables.Mean(InsertionUP) = 1
       Do
         Length = Gauss(.Mutables.StdDev(InsertionUP), .Mutables.Mean(InsertionUP))
@@ -798,10 +818,12 @@ Private Sub Reversal(robn As Integer)
             .DNA(counter) = .DNA(t + Length - second)
             .DNA(t + Length - second) = tempblock
             second = second + 1
+            overtime = overtime - 1 'No changedna? no problem
           Next counter
           
           .Mutations = .Mutations + 1
           .LastMut = .LastMut + 1
+          
           .LastMutDetail = "Reversal of" + Str(Length * 2 + 1) + "bps centered at " + Str(t) + " during cycle" + _
             Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
          

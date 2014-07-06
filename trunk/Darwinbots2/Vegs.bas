@@ -165,9 +165,9 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
  
   For t = 1 To MaxRobs
     If rob(t).nrg > 0 And rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
-    
+
       If SimOpts.Pondmode Then
-        depth = (rob(t).pos.y / 2000) + 1
+        depth = (rob(t).pos.Y / 2000) + 1
         If depth < 1 Then depth = 1
         tok = (SimOpts.LightIntensity / depth ^ SimOpts.Gradient) * daymod 'Botsareus 3/26/2013 No longer add one, robots get fed more accuratly
       Else

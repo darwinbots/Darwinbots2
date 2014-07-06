@@ -331,6 +331,13 @@ Private Type robot
   spermDNAlen As Integer
   
   tag As String * 50
+  
+  monitor_r As Integer
+  monitor_g As Integer
+  monitor_b As Integer
+  
+  multibot_time As Byte
+  restrictions As Byte
 
 End Type
 
@@ -367,60 +374,11 @@ Private Type block2
 End Type
 
 Private Type block3
-  nucli As Double
+  nucli As Integer
   match As Integer
 End Type
 
-Private iinc As Integer 'used simply to update the next match
 
-'si = start index, ei = end index, iinc = layer
-Private Sub FindLongestSequences(ByRef rob1() As block3, ByRef rob2() As block3, si1 As Integer, ei1 As Integer, si2 As Integer, ei2 As Integer)
-'Step1 What index range is smaller?
-Dim searchlen As Integer
-searchlen = ei1 - si1
-If ei2 - si2 < searchlen Then searchlen = ei2 - si2
-'Step2 Recrusivelly sweep from largest to shortest searchlen until match is found
-Dim mylen As Integer
-For mylen = (searchlen + 1) To 1 Step -1
-
-    'Step2A The sweep itself
-    Dim sweep1 As Integer
-    Dim sweep2 As Integer
-    
-    For sweep1 = si1 To ei1 - (mylen - 1)
-        For sweep2 = si2 To ei2 - (mylen - 1)
-        
-            'the match algo
-            Dim lenloop As Integer
-            Dim allmatch As Boolean 'are all values the same for this sweep?
-            allmatch = True
-            For lenloop = 0 To mylen - 1
-                If rob1(lenloop + sweep1).nucli <> rob2(lenloop + sweep2).nucli Then
-                    allmatch = False
-                    Exit For
-                End If
-            Next
-            If allmatch Then
-            'match is found, goto step3
-                iinc = iinc + 1
-                For lenloop = 0 To mylen - 1
-                    rob1(lenloop + sweep1).match = iinc
-                    rob2(lenloop + sweep2).match = iinc
-                Next
-                GoTo step3
-            End If
-        Next
-    Next
-    
-    
-Next
-Exit Sub
-step3:
-'find lefthand subsequance
-If sweep1 > si1 And sweep2 > si2 Then FindLongestSequences rob1, rob2, si1, sweep1 - 1, si2, sweep2 - 1
-'find righthand subsequance
-If sweep1 + (mylen - 1) < ei1 And sweep2 + (mylen - 1) < ei2 Then FindLongestSequences rob1, rob2, sweep1 + mylen, ei1, sweep2 + mylen, ei2
-End Sub
 Private Function scanfromn(ByRef rob() As block2, ByVal n As Integer, ByRef layer As Integer)
 Dim a As Integer
 For a = n To UBound(rob)
@@ -445,126 +403,136 @@ Next
 GeneticDistance = diffcount / (UBound(rob1) + UBound(rob2) + 2)
 End Function
 
-Public Function DoGeneticDistanceSimple(r1 As Integer, r2 As Integer) As Single 'Botsareus 2/26/2014 The new genetic distance using Levenshtein
-Dim dna1_length As Long, dna2_length As Long
-Dim i As Integer, j As Integer
+Private Sub simplematch(ByRef r1() As block3, ByRef r2() As block3)
+Dim newmatch As Boolean
+Dim inc As Integer
 
-'Actual length
-dna1_length = UBound(rob(r1).DNA)
-dna2_length = UBound(rob(r2).DNA)
+Dim ei1 As Integer
+Dim ei2 As Integer
+ei1 = UBound(r1)
+ei2 = UBound(r2)
 
-'Adjusted length calculator
-Dim stp As Byte
-stp = (dna1_length + dna2_length) / 1250
-If stp < 1 Then stp = 1
+'the list of variables in r1
+Dim matchlist1() As Integer
+ReDim matchlist1(0)
 
-Dim dna1(1875) As Integer
-Dim dna2(1875) As Integer
+'the list of variables in r2
+Dim matchlist2() As Integer
+ReDim matchlist2(0)
 
-'Adjusted length copy
-For i = 0 To dna1_length Step stp
- dna1(i / stp) = DNAtoInt(rob(r1).DNA(i).tipo, rob(r1).DNA(i).value)
-Next
+Dim count As Integer
+count = 0
 
-For j = 0 To dna2_length Step stp
- dna2(j / stp) = DNAtoInt(rob(r2).DNA(j).tipo, rob(r2).DNA(j).value)
-Next
-      
-'Set adjusted length
-dna1_length = dna1_length / stp
-dna2_length = dna2_length / stp
+'add data to match list until letters match to each other on opposite sides
+Dim loopr1 As Integer
+Dim loopr2 As Integer
+Dim loopold As Integer
+Dim laststartmatch1 As Integer
+Dim laststartmatch2 As Integer
 
-Dim MaxL As Integer
-Dim min1 As Integer, min2 As Integer, min3 As Integer, minmin As Integer
-Dim distance() As Integer
-ReDim distance(dna1_length, dna2_length) As Integer
+loopr1 = 0
+loopr2 = 0
+laststartmatch1 = 0
+laststartmatch2 = 0
 
-distance(0, 0) = 0
-For i = 1 To dna1_length
-    For j = 1 To dna2_length
-        If dna1(i) = dna2(j) Then
-            distance(i, j) = distance(i - 1, j - 1)
-        Else
-            min1 = distance(i - 1, j) + 1
-            min2 = distance(i, j - 1) + 1
-            min3 = distance(i - 1, j - 1) + 1
-            If min2 < min1 Then
-                If min2 < min3 Then minmin = min2 Else minmin = min3
-            Else
-                If min1 < min3 Then minmin = min1 Else minmin = min3
+Do
+
+'keep building until both sides max out
+If loopr1 > ei1 Then loopr1 = ei1
+If loopr2 > ei2 Then loopr2 = ei2
+
+    matchlist1(count) = r1(loopr1).nucli
+    matchlist2(count) = r2(loopr2).nucli
+    
+    count = count + 1
+    ReDim Preserve matchlist1(count)
+    ReDim Preserve matchlist2(count)
+
+    'does anything match
+    Dim match As Boolean
+    Dim matchr2 As Boolean
+    match = False
+    
+    For loopold = 0 To count - 1
+            If r2(loopr2).nucli = matchlist1(loopold) Then
+                matchr2 = True
+                match = True
+                Exit For
             End If
-            distance(i, j) = minmin
-        End If
+            If r1(loopr1).nucli = matchlist2(loopold) Then
+                matchr2 = False
+                match = True
+                Exit For
+            End If
     Next
-Next
+    
+    If match Then
+        If matchr2 Then
+            loopr1 = loopold + laststartmatch1
+        Else
+            loopr2 = loopold + laststartmatch2
+        End If
+        
+        'start matching
+        
+        Do
+            If r2(loopr2).nucli = r1(loopr1).nucli Then
+                'increment only in newmatch
+                If newmatch = False Then inc = inc + 1
+                newmatch = True
+                r1(loopr1).match = inc
+                r2(loopr2).match = inc
+            Else
+                newmatch = False
+                'no more match
+                laststartmatch1 = loopr1
+                laststartmatch2 = loopr2
+                loopr1 = loopr1 - 1
+                loopr2 = loopr2 - 1
+                Exit Do
+            End If
+            loopr1 = loopr1 + 1
+            loopr2 = loopr2 + 1
+        Loop Until loopr1 > ei1 Or loopr2 > ei2
+        
+        'reset match list so it will not get too long
+        ReDim matchlist1(0)
+        ReDim matchlist2(0)
+        count = 0
+    End If
+    
 
-MaxL = dna1_length: If dna2_length > MaxL Then MaxL = dna2_length
-DoGeneticDistanceSimple = distance(dna1_length, dna2_length) / MaxL
-End Function
+loopr1 = loopr1 + 1
+loopr2 = loopr2 + 1
+
+Loop Until loopr1 > ei1 And loopr2 > ei2
+End Sub
 
 Public Function DoGeneticDistance(r1 As Integer, r2 As Integer) As Single
-Dim c As Integer
 Dim t As Integer
-Dim t2 As Integer
-Dim t_max As Integer
-Dim mult As Double
-      'Map to nucli
 
-        'step range calulated
-        Dim stp As Byte
-        stp = (UBound(rob(r1).DNA) + UBound(rob(r2).DNA)) / 500
-        If stp = 0 Then stp = 1
-        If stp > 64 Then stp = 64
-        
-        Dim ndna1() As block3
-        Dim ndna2() As block3
-        Dim length1 As Integer
-        Dim length2 As Integer
-        length1 = -Int(-UBound(rob(r1).DNA) / stp)  'round up
-        length2 = -Int(-UBound(rob(r2).DNA) / stp)
-        ReDim ndna1(length1)
-        ReDim ndna2(length2)
-        
-        'map to nucli
-        
-          If stp = 1 Then
-      
-            'if step is 1 then normal nucli
-            For t = 0 To UBound(rob(r1).DNA)
-             ndna1(t).nucli = (rob(r1).DNA(t).tipo * (2 ^ 16)) Or rob(r1).DNA(t).value
-            Next
-            For t = 0 To UBound(rob(r2).DNA)
-             ndna2(t).nucli = (rob(r2).DNA(t).tipo * (2 ^ 16)) Or rob(r2).DNA(t).value
-            Next
-       
-          Else
-           'else calc the product of primes from dna
-           c = 0
-           For t = 0 To UBound(rob(r1).DNA) Step stp
-            mult = DNAtoSmallPnumber(rob(r1).DNA(t).tipo, rob(r1).DNA(t).value)
-            t_max = IIf(t + stp - 1 > UBound(rob(r1).DNA), UBound(rob(r1).DNA), t + stp - 1)
-            For t2 = t + 1 To t_max
-             mult = mult * DNAtoSmallPnumber(rob(r1).DNA(t2).tipo, rob(r1).DNA(t2).value)
-            Next
-            ndna1(c).nucli = mult
-            c = c + 1
-           Next
-           
-           c = 0
-           For t = 0 To UBound(rob(r2).DNA) Step stp
-            mult = DNAtoSmallPnumber(rob(r2).DNA(t).tipo, rob(r2).DNA(t).value)
-            t_max = IIf(t + stp - 1 > UBound(rob(r2).DNA), UBound(rob(r2).DNA), t + stp - 1)
-            For t2 = t + 1 To t_max
-             mult = mult * DNAtoSmallPnumber(rob(r2).DNA(t2).tipo, rob(r2).DNA(t2).value)
-            Next
-            ndna2(c).nucli = mult
-            c = c + 1
-           Next
-          End If
+Dim ndna1() As block3
+Dim ndna2() As block3
+Dim length1 As Integer
+Dim length2 As Integer
+length1 = UBound(rob(r1).DNA)
+length2 = UBound(rob(r2).DNA)
+ReDim ndna1(length1)
+ReDim ndna2(length2)
+
+'map to nucli
+
+'if step is 1 then normal nucli
+For t = 0 To UBound(rob(r1).DNA)
+ ndna1(t).nucli = DNAtoInt(rob(r1).DNA(t).tipo, rob(r1).DNA(t).value)
+Next
+For t = 0 To UBound(rob(r2).DNA)
+ ndna2(t).nucli = DNAtoInt(rob(r2).DNA(t).tipo, rob(r2).DNA(t).value)
+Next
       
 'Step3 Figure out genetic distance
-iinc = 0
-FindLongestSequences ndna1, ndna2, 0, UBound(ndna1), 0, UBound(ndna2)
+simplematch ndna1, ndna2
+
 DoGeneticDistance = GeneticDistance(ndna1, ndna2)
 End Function
 
@@ -863,9 +831,9 @@ Public Sub UpdatePosition(ByVal n As Integer)
   .mem(dirsx) = 0
   
   .mem(velscalar) = iceil(Sqr(vt))
-  .mem(vel) = iceil(Cos(.aim) * .vel.x + Sin(.aim) * .vel.y * -1)
+  .mem(vel) = iceil(Cos(.aim) * .vel.X + Sin(.aim) * .vel.Y * -1)
   .mem(veldn) = .mem(vel) * -1
-  .mem(veldx) = iceil(Sin(.aim) * .vel.x + Cos(.aim) * .vel.y)
+  .mem(veldx) = iceil(Sin(.aim) * .vel.X + Cos(.aim) * .vel.Y)
   .mem(velsx) = .mem(veldx) * -1
   
   .mem(masssys) = .mass
@@ -873,9 +841,9 @@ Public Sub UpdatePosition(ByVal n As Integer)
   End With
 End Sub
 
-Private Function iceil(x As Single) As Integer
-    If (Abs(x) > 32000) Then x = Sgn(x) * 32000
-    iceil = x
+Private Function iceil(X As Single) As Integer
+    If (Abs(X) > 32000) Then X = Sgn(X) * 32000
+    iceil = X
 End Function
 
 Private Sub makeshell(n As Integer)
@@ -1028,11 +996,11 @@ Private Sub Upkeep(n As Integer)
   End With
 End Sub
 
-Public Function genelength(n As Integer, P As Integer) As Long
+Public Function genelength(n As Integer, p As Integer) As Long
   'measures the length of gene p in robot n
   Dim pos As Long
  
-  pos = genepos(rob(n).DNA(), P)
+  pos = genepos(rob(n).DNA(), p)
   genelength = GeneEnd(rob(n).DNA(), pos) - pos + 1
   
 End Function
@@ -1209,6 +1177,14 @@ End Sub
 
 
 Private Sub ChangeChlr(t As Integer) 'Panda 8/15/2013 change the number of chloroplasts
+'Botsareus 4/14/2014 Special code to evolve zerobots w/o chlroroplasts
+If x_restartmode = 7 Or x_restartmode = 8 Then
+ If NoChlr And Not rob(t).Veg Then
+    KillRobot t
+    Exit Sub
+ End If
+End If
+
 
 With rob(t)
  
@@ -1420,11 +1396,11 @@ Private Sub FireTies(ByVal n As Integer)
 End Sub
 
 Private Sub DeleteSpecies(i As Integer)
-  Dim x As Integer
+  Dim X As Integer
   
-  For x = i To SimOpts.SpeciesNum - 1
-    SimOpts.Specie(x) = SimOpts.Specie(x + 1)
-  Next x
+  For X = i To SimOpts.SpeciesNum - 1
+    SimOpts.Specie(X) = SimOpts.Specie(X + 1)
+  Next X
   SimOpts.Specie(SimOpts.SpeciesNum - 1).Native = False ' Do this just in case
   SimOpts.SpeciesNum = SimOpts.SpeciesNum - 1
    
@@ -1454,7 +1430,7 @@ Public Sub UpdateBots()
   Dim z As Integer
   Dim q As Integer
   Dim ti As Single
-  Dim x As Integer
+  Dim X As Integer
   Dim staticV As vector
     
   rp = 1
@@ -1720,7 +1696,7 @@ Private Sub robshoot(n As Integer)
       multiplier = Log(multiplier / 2) / Log(2)
     ElseIf valmode = True Then
       multiplier = 1
-      Cost = (SimOpts.Costs(SHOTCOST) * SimOpts.Costs(COSTMULTIPLIER) / (rob(n).numties + 1))
+      Cost = (SimOpts.Costs(SHOTCOST) * SimOpts.Costs(COSTMULTIPLIER) / (IIf(rob(n).numties < 0, 0, rob(n).numties) + 1)) 'Botsareus 6/12/2014 Bug fix
     End If
   
     If Cost > rob(n).nrg And Cost > 2 And rob(n).nrg > 2 And valmode Then
@@ -2091,9 +2067,10 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
   
   tempnrg = rob(n).nrg
   If tempnrg > 0 Then
-    nx = rob(n).pos.x + absx(rob(n).aim, sondist, 0, 0, 0)
-    ny = rob(n).pos.y + absy(rob(n).aim, sondist, 0, 0, 0)
+    nx = rob(n).pos.X + absx(rob(n).aim, sondist, 0, 0, 0)
+    ny = rob(n).pos.Y + absy(rob(n).aim, sondist, 0, 0, 0)
     tests = tests Or simplecoll(nx, ny, n)
+    tests = tests Or Not rob(n).exist 'Botsareus 6/4/2014 Can not reproduce from a dead robot
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
     If Not tests Then
   '    If MaxRobs = 500 Then MsgBox "Maxrobs = 500 in Reproduce, about to call posto"
@@ -2124,11 +2101,11 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       Erase rob(nuovo).mem
       Erase rob(nuovo).Ties
       
-      rob(nuovo).pos.x = rob(n).pos.x + absx(rob(n).aim, sondist, 0, 0, 0)
-      rob(nuovo).pos.y = rob(n).pos.y + absy(rob(n).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.X = rob(n).pos.X + absx(rob(n).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.Y = rob(n).pos.Y + absy(rob(n).aim, sondist, 0, 0, 0)
       rob(nuovo).exist = True
-      rob(nuovo).BucketPos.x = -2
-      rob(nuovo).BucketPos.y = -2
+      rob(nuovo).BucketPos.X = -2
+      rob(nuovo).BucketPos.Y = -2
       UpdateBotBucket nuovo
       rob(nuovo).vel = rob(n).vel
       rob(nuovo).color = rob(n).color
@@ -2232,6 +2209,16 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
             Dim dmoc As Double
             dmoc = 1 + (rob(nuovo).DnaLen - curr_dna_size) / 500
             If Not y_normsize Or (x_restartmode < 4) Then dmoc = 1  'Botsareusnotdone expend to other restart modes
+            'zerobot stabilization
+            If x_restartmode = 7 Or x_restartmode = 8 Then
+                If .FName = "Mutate.txt" Then
+                    'normalize child
+                    .Mutables.mutarray(PointUP) = .Mutables.mutarray(PointUP) * 1.75
+                    If .Mutables.mutarray(PointUP) > MratesMax Then .Mutables.mutarray(PointUP) = MratesMax
+                    .Mutables.mutarray(P2UP) = .Mutables.mutarray(P2UP) * 1.75
+                    If .Mutables.mutarray(P2UP) > MratesMax Then .Mutables.mutarray(P2UP) = MratesMax
+                End If
+            End If
             '
             Dim mrep As Byte
             For mrep = 0 To (Int(3 * Rnd) + 1) * -(rob(n).mem(mrepro) > 0)   '2x to 4x
@@ -2241,7 +2228,11 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
                  If Rnd < DeltaMainChance / 100 Then
                     If DeltaMainExp <> 0 Then
                         '
-                        If Not (t = MinorDeletionUP Or t = MajorDeletionUP) Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * dmoc 'dynamic mutation overload correction
+                        If (t = CopyErrorUP Or t = TranslocationUP Or t = ReversalUP Or t = CE2UP) Then
+                          .Mutables.mutarray(t) = .Mutables.mutarray(t) * (dmoc + 2) / 3
+                        Else
+                          If Not (t = MinorDeletionUP Or t = MajorDeletionUP) Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * dmoc 'dynamic mutation overload correction
+                        End If
                         '
                         .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
                     End If
@@ -2303,6 +2294,11 @@ skip:
       rob(n).onrg = rob(n).nrg 'saves parent from dying from shock after giving birth
       rob(nuovo).mass = nbody / 1000 + rob(nuovo).shell / 200
       rob(nuovo).mem(timersys) = rob(n).mem(timersys) 'epigenetic timer
+      
+      'A little hack here to remain in control of reproduced robots
+      If MDIForm1.pbOn Then
+        If n = robfocus Or rob(n).highlight Then rob(nuovo).highlight = True
+      End If
                 
       'Successfully reproduced
       rob(n).mem(Repro) = 0
@@ -2344,11 +2340,6 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
   Dim ny As Long
   Dim t As Integer
   
-           Dim mult As Double 'cross over
-           Dim t_max As Integer
-           Dim t2 As Integer
-           Dim c As Integer
-  
   Dim tests As Boolean
   Dim i As Integer
   Dim per As Single
@@ -2388,9 +2379,10 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
   
   tempnrg = rob(female).nrg
   If tempnrg > 0 Then
-    nx = rob(female).pos.x + absx(rob(female).aim, sondist, 0, 0, 0)
-    ny = rob(female).pos.y + absy(rob(female).aim, sondist, 0, 0, 0)
+    nx = rob(female).pos.X + absx(rob(female).aim, sondist, 0, 0, 0)
+    ny = rob(female).pos.Y + absy(rob(female).aim, sondist, 0, 0, 0)
     tests = tests Or simplecoll(nx, ny, female)
+    tests = tests Or Not rob(female).exist 'Botsareus 6/4/2014 Can not reproduce from a dead robot
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
     If Not tests Then
     
@@ -2402,6 +2394,7 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
     End If
       'Do the crossover.  The sperm DNA is on the mom's bot structure
       'Botsareus 4/2/2013 Crossover fix
+      'Botsareus 5/24/2014 Crossover fix
       
       'Step1 Copy both dnas into block2
       
@@ -2421,91 +2414,44 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       Next
       
       'Step2 map nucli
-      
-      'figure out stp
-      Dim stp As Byte
-      stp = (UBound(dna1) + UBound(dna2)) / 500
-      If stp = 0 Then stp = 1
-      If stp > 64 Then stp = 64
-      
+        
         Dim ndna1() As block3
         Dim ndna2() As block3
         Dim length1 As Integer
         Dim length2 As Integer
-        length1 = -Int(-UBound(dna1) / stp) 'round up
-        length2 = -Int(-UBound(dna2) / stp)
+        length1 = UBound(dna1)
+        length2 = UBound(dna2)
         ReDim ndna1(length1)
         ReDim ndna2(length2)
-      
-        'map to nucli
         
-          If stp = 1 Then
+        'map to nucli
       
-            'if step is 1 then normal nucli
             For t = 0 To UBound(dna1)
-             ndna1(t).nucli = (dna1(t).tipo * (2 ^ 16)) Or dna1(t).value
+             ndna1(t).nucli = DNAtoInt(dna1(t).tipo, dna1(t).value)
             Next
             For t = 0 To UBound(dna2)
-             ndna2(t).nucli = (dna2(t).tipo * (2 ^ 16)) Or dna2(t).value
+             ndna2(t).nucli = DNAtoInt(dna2(t).tipo, dna2(t).value)
             Next
-       
-          Else
-           'else calc the product of primes from dna
-           
-           c = 0
-           For t = 0 To UBound(dna1) Step stp
-            mult = DNAtoSmallPnumber(dna1(t).tipo, dna1(t).value)
-            t_max = IIf(t + stp - 1 > UBound(dna1), UBound(dna1), t + stp - 1)
-            For t2 = t + 1 To t_max
-             mult = mult * DNAtoSmallPnumber(dna1(t2).tipo, dna1(t2).value)
-            Next
-            ndna1(c).nucli = mult
-            c = c + 1
-           Next
-
-           c = 0
-           For t = 0 To UBound(dna2) Step stp
-            mult = DNAtoSmallPnumber(dna2(t).tipo, dna2(t).value)
-            t_max = IIf(t + stp - 1 > UBound(dna2), UBound(dna2), t + stp - 1)
-            For t2 = t + 1 To t_max
-             mult = mult * DNAtoSmallPnumber(dna2(t2).tipo, dna2(t2).value)
-            Next
-            ndna2(c).nucli = mult
-            c = c + 1
-           Next
-           
-          End If
 
       'Step3 Check longest sequences
 
-      iinc = 0
-      FindLongestSequences ndna1, ndna2, 0, UBound(ndna1), 0, UBound(ndna2)
+      simplematch ndna1, ndna2
       
-      'If robot is too unsimiler then do not reproduce and block sex reproduction for 32 cycles
+      'If robot is too unsimiler then do not reproduce and block sex reproduction for 8 cycles
       
       If GeneticDistance(ndna1, ndna2) > 0.6 Then
-        rob(female).fertilized = -42
+        rob(female).fertilized = -18
         Exit Function
       End If
       
       'Step4 map back
       
-        c = 0
-        For t = 0 To UBound(dna1) Step stp
-            t_max = IIf(t + stp - 1 > UBound(dna1), UBound(dna1), t + stp - 1)
-            For t2 = t To t_max
-                dna1(t2).match = ndna1(c).match
-            Next
-            c = c + 1
+        For t = 0 To UBound(dna1)
+            dna1(t).match = ndna1(t).match
         Next
         
-        c = 0
-        For t = 0 To UBound(dna2) Step stp
-            t_max = IIf(t + stp - 1 > UBound(dna2), UBound(dna2), t + stp - 1)
-            For t2 = t To t_max
-                dna2(t2).match = ndna2(c).match
-            Next
-            c = c + 1
+        For t = 0 To UBound(dna2)
+            dna2(t).match = ndna2(t).match
         Next
         
 '      'debug
@@ -2590,11 +2536,11 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       Erase rob(nuovo).mem
       Erase rob(nuovo).Ties
       
-      rob(nuovo).pos.x = rob(female).pos.x + absx(rob(female).aim, sondist, 0, 0, 0)
-      rob(nuovo).pos.y = rob(female).pos.y + absy(rob(female).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.X = rob(female).pos.X + absx(rob(female).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.Y = rob(female).pos.Y + absy(rob(female).aim, sondist, 0, 0, 0)
       rob(nuovo).exist = True
-      rob(nuovo).BucketPos.x = -2
-      rob(nuovo).BucketPos.y = -2
+      rob(nuovo).BucketPos.X = -2
+      rob(nuovo).BucketPos.Y = -2
       UpdateBotBucket nuovo
       
       rob(nuovo).vel = rob(female).vel
@@ -2709,6 +2655,16 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
             Dim dmoc As Double
             dmoc = 1 + (rob(nuovo).DnaLen - curr_dna_size) / 500
             If Not y_normsize Or (x_restartmode < 4) Then dmoc = 1  'Botsareusnotdone expend to other restart modes
+            'zerobot stabilization
+            If x_restartmode = 7 Or x_restartmode = 8 Then
+                If .FName = "Mutate.txt" Then
+                    'normalize child
+                    .Mutables.mutarray(PointUP) = .Mutables.mutarray(PointUP) * 1.75
+                    If .Mutables.mutarray(PointUP) > MratesMax Then .Mutables.mutarray(PointUP) = MratesMax
+                    .Mutables.mutarray(P2UP) = .Mutables.mutarray(P2UP) * 1.75
+                    If .Mutables.mutarray(P2UP) > MratesMax Then .Mutables.mutarray(P2UP) = MratesMax
+                End If
+            End If
             '
             For t = 1 To 10
              If t = 9 Then GoTo skip 'ignore PM2 mutation here
@@ -2716,8 +2672,11 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
              If Rnd < DeltaMainChance / 100 Then
                 If DeltaMainExp <> 0 Then
                     '
-                    If Not (t = MinorDeletionUP Or t = MajorDeletionUP) Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * dmoc 'dynamic mutation overload correction
-                    '
+                    If (t = CopyErrorUP Or t = TranslocationUP Or t = ReversalUP Or t = CE2UP) Then
+                      .Mutables.mutarray(t) = .Mutables.mutarray(t) * (dmoc + 2) / 3
+                    Else
+                      If Not (t = MinorDeletionUP Or t = MajorDeletionUP) Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * dmoc 'dynamic mutation overload correction
+                    End If                    '
                     .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
                 End If
               .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rnd * 2 - 1) * DeltaMainLn
@@ -2756,6 +2715,11 @@ skip:
       rob(female).onrg = rob(female).nrg 'saves mother from dying from shock after giving birth
       rob(nuovo).mass = nbody / 1000 + rob(nuovo).shell / 200
       rob(nuovo).mem(timersys) = rob(female).mem(timersys) 'epigenetic timer
+      
+      'A little hack here to remain in control of reproduced robots
+      If MDIForm1.pbOn Then
+        If female = robfocus Or rob(female).highlight Then rob(nuovo).highlight = True
+      End If
       
       rob(female).mem(SEXREPRO) = 0 ' sucessfully reproduced, so reset .sexrepro
       rob(female).fertilized = -1           ' Set to -1 so spermDNA space gets reclaimed next cycle
@@ -2801,7 +2765,7 @@ Public Sub DoGeneticMemory(t As Integer)
 End Sub
 
 ' verifies rapidly if a field position is already occupied
-Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
+Public Function simplecoll(X As Long, Y As Long, k As Integer) As Boolean
   Dim t As Integer
   Dim radius As Long
   
@@ -2809,8 +2773,8 @@ Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
   
   For t = 1 To MaxRobs
     If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
-      If Abs(rob(t).pos.x - x) < rob(t).radius + rob(k).radius And _
-        Abs(rob(t).pos.y - y) < rob(t).radius + rob(k).radius Then
+      If Abs(rob(t).pos.X - X) < rob(t).radius + rob(k).radius And _
+        Abs(rob(t).pos.Y - Y) < rob(t).radius + rob(k).radius Then
         If k <> t Then
           simplecoll = True
           GoTo getout
@@ -2821,21 +2785,21 @@ Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
   
   'EricL Can't reproduce into or across a shape
   For t = 1 To numObstacles
-    If Not ((Obstacles.Obstacles(t).pos.x > Max(rob(k).pos.x, x)) Or _
-           (Obstacles.Obstacles(t).pos.x + Obstacles.Obstacles(t).Width < Min(rob(k).pos.x, x)) Or _
-           (Obstacles.Obstacles(t).pos.y > Max(rob(k).pos.y, y)) Or _
-           (Obstacles.Obstacles(t).pos.y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.y, y))) Then
+    If Not ((Obstacles.Obstacles(t).pos.X > Max(rob(k).pos.X, X)) Or _
+           (Obstacles.Obstacles(t).pos.X + Obstacles.Obstacles(t).Width < Min(rob(k).pos.X, X)) Or _
+           (Obstacles.Obstacles(t).pos.Y > Max(rob(k).pos.Y, Y)) Or _
+           (Obstacles.Obstacles(t).pos.Y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.Y, Y))) Then
        simplecoll = True
        GoTo getout
     End If
   Next t
   
   If SimOpts.Dxsxconnected = False Then
-    If x < rob(k).radius + smudgefactor Or x + rob(k).radius + smudgefactor > SimOpts.FieldWidth Then simplecoll = True
+    If X < rob(k).radius + smudgefactor Or X + rob(k).radius + smudgefactor > SimOpts.FieldWidth Then simplecoll = True
   End If
   
   If SimOpts.Updnconnected = False Then
-    If y < rob(k).radius + smudgefactor Or y + rob(k).radius + smudgefactor > SimOpts.FieldHeight Then simplecoll = True
+    If Y < rob(k).radius + smudgefactor Or Y + rob(k).radius + smudgefactor > SimOpts.FieldHeight Then simplecoll = True
   End If
 getout:
 End Function
@@ -2845,7 +2809,7 @@ Public Function posto() As Integer
   Dim newsize As Long
   Dim t As Integer
   Dim foundone As Boolean
-  Dim x As Long
+  Dim X As Long
   
   t = 1
   foundone = False
@@ -2904,8 +2868,21 @@ End Function
 
 ' Kill Bill
 Public Sub KillRobot(n As Integer)
+'robfocus to next highlighted robot on kill robot for playerbot mode
+If n = robfocus And MDIForm1.pbOn Then
+  Dim t As Integer
+  For t = 1 To MaxRobs
+    With rob(t)
+     If .exist And .highlight And t <> n Then
+        robfocus = t
+     End If
+    End With
+  Next
+End If
+
+
  Dim newsize As Long
- Dim x As Long
+ Dim X As Long
  
   If n = -1 Then n = robfocus
   
