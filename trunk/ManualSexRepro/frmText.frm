@@ -76,8 +76,6 @@ Dim baddata As Boolean
 Dim dna1() As block2
 Dim dna2() As block2
 
-Dim iinc As Integer
-
 Private Sub Form_Load()
 LoadSysVars
 End Sub
@@ -176,9 +174,8 @@ If Not baddata Then
              ndna2(t).nucli = (dna2(t).tipo * (2 ^ 16)) Or dna2(t).value
             Next
       
-      'Find longest sequance
-      iinc = 0
-      FindLongestSequences ndna1, ndna2, 0, UBound(ndna1), 0, UBound(ndna2)
+      'Find matching sequances
+      simplematch ndna1, ndna2
       
       'map back
       
@@ -384,57 +381,110 @@ End Sub
 '----------------------
 
 
+Private Sub simplematch(ByRef r1() As block3, ByRef r2() As block3)
+Dim newmatch As Boolean
+Dim inc As Integer
 
-'si = start index, ei = end index, iinc = layer
-Private Sub FindLongestSequences(ByRef rob1() As block3, ByRef rob2() As block3, si1 As Integer, ei1 As Integer, si2 As Integer, ei2 As Integer)
-'Step1 What index range is smaller?
-Dim searchlen As Integer
-searchlen = ei1 - si1
-If ei2 - si2 < searchlen Then searchlen = ei2 - si2
-'Step2 Recrusivelly sweep from largest to shortest searchlen until match is found
-Dim mylen As Integer
-For mylen = (searchlen + 1) To 1 Step -1
+Dim ei1 As Integer
+Dim ei2 As Integer
+ei1 = UBound(r1)
+ei2 = UBound(r2)
 
-    'Step2A The sweep itself
-    Dim sweep1 As Integer
-    Dim sweep2 As Integer
+'the list of variables in r1
+Dim matchlist1() As Double
+ReDim matchlist1(0)
+
+'the list of variables in r2
+Dim matchlist2() As Double
+ReDim matchlist2(0)
+
+Dim count As Integer
+count = 0
+
+'add data to match list until letters match to each other on opposite sides
+Dim loopr1 As Integer
+Dim loopr2 As Integer
+Dim loopold As Integer
+Dim laststartmatch1 As Integer
+Dim laststartmatch2 As Integer
+
+loopr1 = 0
+loopr2 = 0
+laststartmatch1 = 0
+laststartmatch2 = 0
+
+Do
+
+'keep building until both sides max out
+If loopr1 > ei1 Then loopr1 = ei1
+If loopr2 > ei2 Then loopr2 = ei2
+
+    matchlist1(count) = r1(loopr1).nucli
+    matchlist2(count) = r2(loopr2).nucli
     
-    For sweep1 = si1 To ei1 - (mylen - 1)
-        For sweep2 = si2 To ei2 - (mylen - 1)
-        
-            'the match algo
-            Dim lenloop As Integer
-            Dim allmatch As Boolean 'are all values the same for this sweep?
-            allmatch = True
-            For lenloop = 0 To mylen - 1
-                If rob1(lenloop + sweep1).nucli <> rob2(lenloop + sweep2).nucli Then
-                    allmatch = False
-                    Exit For
-                End If
-            Next
-            If allmatch Then
-            'match is found, goto step3
-                iinc = iinc + 1
-                For lenloop = 0 To mylen - 1
-                    rob1(lenloop + sweep1).match = iinc
-                    rob2(lenloop + sweep2).match = iinc
-                Next
-                GoTo step3
+    count = count + 1
+    ReDim Preserve matchlist1(count)
+    ReDim Preserve matchlist2(count)
+
+    'does anything match
+    Dim match As Boolean
+    Dim matchr2 As Boolean
+    match = False
+    
+    For loopold = 0 To count - 1
+            If r2(loopr2).nucli = matchlist1(loopold) Then
+                matchr2 = True
+                match = True
+                Exit For
             End If
-        Next
+            If r1(loopr1).nucli = matchlist2(loopold) Then
+                matchr2 = False
+                match = True
+                Exit For
+            End If
     Next
     
-Caption = "Calculating... (" & CInt(100 - (ei1 - si1 + ei2 - si2) / (UBound(rob1) + UBound(rob2)) * 100) & "." & CInt(100 - mylen / (searchlen + 1) * 100) & "%)"
-DoEvents
-Next
-Exit Sub
-step3:
-'find lefthand subsequance
-If sweep1 > si1 And sweep2 > si2 Then FindLongestSequences rob1, rob2, si1, sweep1 - 1, si2, sweep2 - 1
-'find righthand subsequance
-If sweep1 + (mylen - 1) < ei1 And sweep2 + (mylen - 1) < ei2 Then FindLongestSequences rob1, rob2, sweep1 + mylen, ei1, sweep2 + mylen, ei2
-End Sub
+    If match Then
+        If matchr2 Then
+            loopr1 = loopold + laststartmatch1
+        Else
+            loopr2 = loopold + laststartmatch2
+        End If
+        
+        'start matching
+        
+        Do
+            If r2(loopr2).nucli = r1(loopr1).nucli Then
+                'increment only in newmatch
+                If newmatch = False Then inc = inc + 1
+                newmatch = True
+                r1(loopr1).match = inc
+                r2(loopr2).match = inc
+            Else
+                newmatch = False
+                'no more match
+                laststartmatch1 = loopr1
+                laststartmatch2 = loopr2
+                loopr1 = loopr1 - 1
+                loopr2 = loopr2 - 1
+                Exit Do
+            End If
+            loopr1 = loopr1 + 1
+            loopr2 = loopr2 + 1
+        Loop Until loopr1 > ei1 Or loopr2 > ei2
+        
+        'reset match list so it will not get too long
+        ReDim matchlist1(0)
+        ReDim matchlist2(0)
+        count = 0
+    End If
+    
 
+loopr1 = loopr1 + 1
+loopr2 = loopr2 + 1
+
+Loop Until loopr1 > ei1 And loopr2 > ei2
+End Sub
 
 Private Function scanfromn(ByRef rob() As block2, ByVal n As Integer, ByRef layer As Integer)
 Dim a As Integer

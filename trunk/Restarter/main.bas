@@ -180,5 +180,5 @@ Sub Main()
 wait 2
 KillApp Command$
 wait 2
-Shell Command$, vbNormalFocus
+Shell trimexe(Command$) & ".exe"
 End Sub
