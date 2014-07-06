@@ -2296,7 +2296,7 @@ skip:
       rob(nuovo).mem(timersys) = rob(n).mem(timersys) 'epigenetic timer
       
       'A little hack here to remain in control of reproduced robots
-      If MDIForm1.pbOn Then
+      If MDIForm1.pbOn.Checked Then
         If n = robfocus Or rob(n).highlight Then rob(nuovo).highlight = True
       End If
                 
@@ -2717,7 +2717,7 @@ skip:
       rob(nuovo).mem(timersys) = rob(female).mem(timersys) 'epigenetic timer
       
       'A little hack here to remain in control of reproduced robots
-      If MDIForm1.pbOn Then
+      If MDIForm1.pbOn.Checked Then
         If female = robfocus Or rob(female).highlight Then rob(nuovo).highlight = True
       End If
       
@@ -2869,7 +2869,7 @@ End Function
 ' Kill Bill
 Public Sub KillRobot(n As Integer)
 'robfocus to next highlighted robot on kill robot for playerbot mode
-If n = robfocus And MDIForm1.pbOn Then
+If n = robfocus And MDIForm1.pbOn.Checked Then
   Dim t As Integer
   For t = 1 To MaxRobs
     With rob(t)

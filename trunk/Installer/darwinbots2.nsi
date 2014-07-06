@@ -4,7 +4,7 @@
 
 # Settings
 	Name "Darwinbots 2"
-	OutFile "Darwinbots-2-47-Setup.exe"
+	OutFile "Darwinbots-2-47-02-Setup.exe"
 	SetCompress auto
 	SetCompressor lzma
 	
@@ -85,7 +85,7 @@
 		CreateDirectory "$INSTDIR\Autosave"
 		CreateDirectory "$INSTDIR\Robots"
 		CreateDirectory "$INSTDIR\settings"
-		File Darwin2.47.exe
+		File Darwin2.47.02.exe
 		File DBLaunch.exe
 		File DarwinbotsIM.exe
 		File "DB THEME GOLD.mp3"
@@ -104,6 +104,7 @@
 		File "_hashlib.pyd" 
 		File "_socket.pyd"
 		File License.rtf
+		File keys.txt
 		SetOutPath "$INSTDIR\LocalIM"
 		File LIM\DarwinBotsIM.exe
 		File LIM\ReadMe.txt
@@ -111,7 +112,8 @@
 		File sets\*.set
 		SetOutPath "$INSTDIR\Robots"
 		File bots\*.txt
-		
+		SetOutPath "$INSTDIR\Robots\F1league"
+		File bots\league\*.txt
 		# Store Install Folder
 		WriteRegStr HKCU "Software\Darwinbots2" "InstallLocation" $INSTDIR
 		
