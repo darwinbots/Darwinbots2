@@ -128,12 +128,18 @@ Begin VB.Form optionsform
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "btnSetSB"
-      Tab(4).Control(1)=   "btnSetF2"
-      Tab(4).Control(2)=   "btnSetF1"
-      Tab(4).Control(3)=   "Frame7"
-      Tab(4).Control(4)=   "Restart"
-      Tab(4).Control(5)=   "Label19"
+      Tab(4).Control(0)=   "Label19"
+      Tab(4).Control(0).Enabled=   0   'False
+      Tab(4).Control(1)=   "Restart"
+      Tab(4).Control(1).Enabled=   0   'False
+      Tab(4).Control(2)=   "Frame7"
+      Tab(4).Control(2).Enabled=   0   'False
+      Tab(4).Control(3)=   "btnSetF1"
+      Tab(4).Control(3).Enabled=   0   'False
+      Tab(4).Control(4)=   "btnSetF2"
+      Tab(4).Control(4).Enabled=   0   'False
+      Tab(4).Control(5)=   "btnSetSB"
+      Tab(4).Control(5).Enabled=   0   'False
       Tab(4).ControlCount=   6
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
@@ -2889,13 +2895,13 @@ Dim multx As Long
 Dim multy As Long
 
 'Windows declarations
-Private Declare Function SetCapture Lib "user32" (ByVal hwnd As Long) As Long
+Private Declare Function SetCapture Lib "user32" (ByVal hWnd As Long) As Long
 Private Declare Function ClipCursor Lib "user32" (lpRect As Any) As Long
 Private Declare Function ReleaseCapture Lib "user32" () As Long
-Private Declare Function GetWindowRect Lib "user32" (ByVal hwnd As Long, lpRect As RECT) As Long
+Private Declare Function GetWindowRect Lib "user32" (ByVal hWnd As Long, lpRect As RECT) As Long
 Private Declare Function GetCursorPos Lib "user32" (lpPoint As POINTAPI) As Long
-Private Declare Function GetDC Lib "user32" (ByVal hwnd As Long) As Long
-Private Declare Function ReleaseDC Lib "user32" (ByVal hwnd As Long, ByVal hdc As Long) As Long
+Private Declare Function GetDC Lib "user32" (ByVal hWnd As Long) As Long
+Private Declare Function ReleaseDC Lib "user32" (ByVal hWnd As Long, ByVal hdc As Long) As Long
 Private Declare Function SelectObject Lib "gdi32" (ByVal hdc As Long, ByVal hObject As Long) As Long
 Private Declare Function DeleteObject Lib "gdi32" (ByVal hObject As Long) As Long
 Private Declare Function GetStockObject Lib "gdi32" (ByVal nIndex As Long) As Long
@@ -2983,7 +2989,7 @@ Private Sub btnSetF1_Click() 'Botsareus 2/5/2014 New way to set league settings
     TmpOpts.FieldWidth = 9237
     TmpOpts.FieldHeight = 6928
     TmpOpts.FieldSize = 1
-    TmpOpts.MaxEnergy = 80           ' Veggy nrg per cycle
+    TmpOpts.MaxEnergy = 40           ' Veggy nrg per cycle
     TmpOpts.MaxPopulation = 25       ' Veggy max population
     TmpOpts.MinVegs = 10
     TmpOpts.Pondmode = False
@@ -3039,8 +3045,8 @@ End Sub
 
 Private Sub btnSetF2_Click() 'Botsareus 2/5/2014 New way to set league settings
 btnSetF1_Click
-TmpOpts.MaxEnergy = 60 ' Veggy nrg per cycle
-MaxNRGText.text = 60
+TmpOpts.MaxEnergy = 30 ' Veggy nrg per cycle
+MaxNRGText.text = 30
 End Sub
 
 Private Sub btnSetSB_Click()
@@ -4079,10 +4085,10 @@ Public Sub DragBegin(ctl As Control)
     'we set the mouse capture to the form and will process mouse
     'movement from the applicable form events
     ReleaseCapture  'This appears needed before calling SetCapture
-    SetCapture hwnd
+    SetCapture hWnd
     
     'Limit cursor movement within form
-    GetWindowRect hwnd, rc
+    GetWindowRect hWnd, rc
     ClipCursor rc
 End Sub
 
@@ -4220,9 +4226,9 @@ Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As In
     'In order to detect mouse movement over any part of the form,
     'we set the mouse capture to the form and will process mouse
     'movement from the applicable form events
-    SetCapture hwnd
+    SetCapture hWnd
     'Limit cursor movement within form
-    GetWindowRect hwnd, rc
+    GetWindowRect hWnd, rc
     ClipCursor rc
 End Sub
 
@@ -4250,9 +4256,9 @@ Private Sub Robplacline_MouseDown(Index As Integer, Button As Integer, Shift As 
     'In order to detect mouse movement over any part of the form,
     'we set the mouse capture to the form and will process mouse
     'movement from the applicable form events
-    SetCapture hwnd
+    SetCapture hWnd
     'Limit cursor movement within form
-    GetWindowRect hwnd, rc
+    GetWindowRect hWnd, rc
     ClipCursor rc
 End Sub
 
@@ -5001,7 +5007,7 @@ If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 
   'Botsareus 5/7/2013 Safemode component
   Form1.lblSafeMode.Visible = False
   
-  If x_restartmode = 0 Or x_restartmode = 4 Or x_restartmode = 5 Then  'Botsareusnotdone expend to other modes
+  If x_restartmode = 0 Or x_restartmode = 4 Or x_restartmode = 7 Then    'Botsareusnotdone expend for eco evo
     MDIForm1.Objects.Enabled = True
     MDIForm1.inssp.Enabled = True
     MDIForm1.DisableArep.Enabled = True

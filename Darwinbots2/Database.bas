@@ -84,7 +84,7 @@ Public Sub Snapshot()
         Print #3, CStr(s); v; CStr(rob(rn).nrg + rob(rn).body * 10); v; .chloroplasts;
         d = ""
         savingtofile = True
-        d = DetokenizeDNA(rn, False)
+        d = DetokenizeDNA(rn)
         savingtofile = False
         Print #3, d;
       End With
@@ -123,7 +123,7 @@ Public Sub AddRecord(rn As Integer)
 
   d = ""
   savingtofile = True
-  d = d + DetokenizeDNA(rn, False)
+  d = d + DetokenizeDNA(rn)
   savingtofile = False
   Print #2, d
   End With

@@ -51,7 +51,7 @@ Public Sub UpdateSim()
   Dim k As Integer 'robots moved last attempt
   Dim k2 As Integer 'robots moved total
   '
-  If usehidepred Then 'Botsareusnotdone may need to be expended to other restartmodes
+  If usehidepred Then
     'Count species for end of evo
     Base_count = 0
     Mutate_count = 0
@@ -73,19 +73,18 @@ Public Sub UpdateSim()
           Form1.Active = False
           Form1.SecTimer.Enabled = False
      End If
-    '
     If ModeChangeCycles > (hidePredCycl / 1.2 + hidePredOffset) Then
       'calculate new energy handycap
       energydif2 = energydif2 + energydif / ModeChangeCycles 'inverse handycap
       If hidepred Then
         Dim holdXP As Double
-        holdXP = (energydifX - (energydif / ModeChangeCycles)) / (LFOR * 100)
+        holdXP = (energydifX - (energydif / ModeChangeCycles)) / (LFOR / 3)
         If holdXP < energydifXP Then energydifXP = holdXP Else energydifXP = (energydifXP * 9 + holdXP) / 10
         
         'inverse handycap
-        energydifXP2 = (energydifX2 - energydif2) / (LFOR * 100)
+        energydifXP2 = (energydifX2 - energydif2) / (LFOR / 3)
         If energydifXP2 > 0 Then energydifXP2 = 0
-        If energydifXP2 < -0.75 Then energydifXP2 = -0.75
+        If (energydifXP - energydifXP2) > 0.1 Then energydifXP2 = energydifXP - 0.1
         energydifX2 = energydif2
         energydif2 = 0
       End If
@@ -101,13 +100,13 @@ Public Sub UpdateSim()
              If rob(t).exist And rob(t).FName = "Base.txt" Then
                   For i = 1 To MaxRobs
                       If rob(i).exist And rob(i).FName = "Mutate.txt" Then
-                        If ((rob(i).pos.x - rob(t).pos.x) ^ 2 + (rob(i).pos.y - rob(t).pos.y) ^ 2) ^ 0.5 < avgsize Then
+                        If ((rob(i).pos.X - rob(t).pos.X) ^ 2 + (rob(i).pos.Y - rob(t).pos.Y) ^ 2) ^ 0.5 < avgsize Then
                         'if the distance between the robots is less then avgsize then move mutate robot out of the way
                             With rob(i)
                                 'tie mod
                                 Dim pozdif As vector
-                                pozdif.x = 9237 * Rnd - .pos.x
-                                pozdif.y = 6928 * Rnd - .pos.y
+                                pozdif.X = 9237 * Rnd - .pos.X
+                                pozdif.Y = 6928 * Rnd - .pos.Y
                                 If .numties > 0 Then
                                     Dim clist(50) As Integer, tk As Integer
                                     clist(0) = i
@@ -115,13 +114,13 @@ Public Sub UpdateSim()
                                     'move multibot
                                     tk = 1
                                     While clist(tk) > 0
-                                        rob(clist(tk)).pos.x = rob(clist(tk)).pos.x + pozdif.x
-                                        rob(clist(tk)).pos.y = rob(clist(tk)).pos.y + pozdif.y
+                                        rob(clist(tk)).pos.X = rob(clist(tk)).pos.X + pozdif.X
+                                        rob(clist(tk)).pos.Y = rob(clist(tk)).pos.Y + pozdif.Y
                                         tk = tk + 1
                                     Wend
                                 End If
-                                .pos.x = .pos.x + pozdif.x
-                                .pos.y = .pos.y + pozdif.y
+                                .pos.X = .pos.X + pozdif.X
+                                .pos.Y = .pos.Y + pozdif.Y
                             End With
                             k = k + 1
                             k2 = k2 + 1
@@ -224,8 +223,15 @@ Public Sub UpdateSim()
     For t = 1 To MaxRobs
      If rob(t).exist Then
          If rob(t).FName = "Mutate.txt" And hidepred Then
-             rob(t).nrg = rob(t).nrg + (energydifXP - energydifXP2) * IIf(SimOpts.TotRunCycle < (hidePredCycl * 12), SimOpts.TotRunCycle / (hidePredCycl * 12), 1) / 10
-             rob(t).body = rob(t).body + (energydifXP - energydifXP2) * IIf(SimOpts.TotRunCycle < (hidePredCycl * 12), SimOpts.TotRunCycle / (hidePredCycl * 12), 1)
+            If rob(t).LastMut > 0 Then '4/17/2014 New rule from Botsareus, only handycap fresh robots
+             'we only handycap one value type per run as robots can select body or energy at startup to trick the system
+             If x_filenumber Mod 2 = 1 Then rob(t).nrg = rob(t).nrg + (energydifXP - energydifXP2) * IIf(SimOpts.TotRunCycle < (CLng(hidePredCycl) * CLng(8)), SimOpts.TotRunCycle / (CLng(hidePredCycl) * CLng(8)), 1)
+             If x_filenumber Mod 2 = 0 Then rob(t).body = rob(t).body + (energydifXP - energydifXP2) * IIf(SimOpts.TotRunCycle < (CLng(hidePredCycl) * CLng(8)), SimOpts.TotRunCycle / (CLng(hidePredCycl) * CLng(8)), 1)
+            Else
+             'we only handycap one value type per run as robots can select body or energy at startup to trick the system
+             If x_filenumber Mod 2 = 1 Then rob(t).nrg = rob(t).nrg + (energydifXP - energydifXP2) * IIf(SimOpts.TotRunCycle < (CLng(hidePredCycl) * CLng(8)), SimOpts.TotRunCycle / (CLng(hidePredCycl) * CLng(8)), 1) / 2
+             If x_filenumber Mod 2 = 0 Then rob(t).body = rob(t).body + (energydifXP - energydifXP2) * IIf(SimOpts.TotRunCycle < (CLng(hidePredCycl) * CLng(8)), SimOpts.TotRunCycle / (CLng(hidePredCycl) * CLng(8)), 1) / 2
+            End If
          End If
      End If
     Next t
@@ -236,11 +242,15 @@ Public Sub UpdateSim()
   i = 0
   For t = 1 To MaxRobs
         If rob(t).FName = "Mutate.txt" And rob(t).exist Then
-            i = i + 1
-            avrnrgStart = avrnrgStart + rob(t).nrg * 10 + rob(t).body
+            If rob(t).LastMut > 0 Then '4/17/2014 New rule from Botsareus, only handycap fresh robots
+                i = i + 1
+                avrnrgStart = avrnrgStart + IIf(x_filenumber Mod 2 = 1, rob(t).nrg, rob(t).body)
+            End If
         End If
   Next t
-  If i > 0 Then avrnrgStart = avrnrgStart / i
+   If i > 0 Then
+    avrnrgStart = avrnrgStart / i
+   End If
   End If
   
   ExecRobs
@@ -256,6 +266,33 @@ Public Sub UpdateSim()
       If (rob(t).DisableDNA = False) Then EraseSenses t
     End If
   Next t
+  
+  'it is time for some overwrites by playerbot mode
+   For t = 1 To MaxRobs
+    With rob(t)
+     If .exist Then
+      If t = robfocus Or .highlight Then
+       If Not (Mouse_loc.X = 0 And Mouse_loc.Y = 0) Then .mem(SetAim) = angnorm(angle(.pos.X, .pos.Y, Mouse_loc.X, Mouse_loc.Y)) * 200
+       For i = 1 To UBound(PB_keys)
+        If PB_keys(i).Active <> PB_keys(i).Invert Then .mem(PB_keys(i).memloc) = PB_keys(i).value
+       Next
+      End If
+     End If
+    End With
+   Next t
+  
+  'okay, time to store some values for RGB monitor
+  If MDIForm1.MonitorOn Then
+    For t = 1 To MaxRobs
+      If rob(t).exist Then
+       With frmMonitorSet
+        rob(t).monitor_r = rob(t).mem(.Monitor_mem_r)
+        rob(t).monitor_g = rob(t).mem(.Monitor_mem_g)
+        rob(t).monitor_b = rob(t).mem(.Monitor_mem_b)
+       End With
+      End If
+    Next t
+  End If
   
   updateshots
   UpdateBots
@@ -283,14 +320,16 @@ Public Sub UpdateSim()
   i = 0
   For t = 1 To MaxRobs
         If rob(t).FName = "Mutate.txt" And rob(t).exist Then
-            i = i + 1
-            avrnrgEnd = avrnrgEnd + rob(t).nrg * 10 + rob(t).body
+            If rob(t).LastMut > 0 Then '4/17/2014 New rule from Botsareus, only handycap fresh robots
+                i = i + 1
+                avrnrgEnd = avrnrgEnd + IIf(x_filenumber Mod 2 = 1, rob(t).nrg, rob(t).body)
+            End If
         End If
   Next t
-  If i > 0 Then
+   If i > 0 Then
     avrnrgEnd = avrnrgEnd / i
     energydif = energydif - avrnrgStart + avrnrgEnd
-  End If
+   End If
   End If
   
   'Kill some robots to prevent out of memory
@@ -303,7 +342,9 @@ Public Sub UpdateSim()
     Dim calcminenergy As Single
     Dim selectrobot As Integer
     Dim maxdel As Long
-    maxdel = 500 * (CLng(TotalRobotsDisplayed) * 425 / totlen)
+    
+    maxdel = 1500 * (CLng(TotalRobotsDisplayed) * 425 / totlen)
+    
     For i = 0 To maxdel
         calcminenergy = 320000 'only erase robots with lowest energy
         For t = 1 To MaxRobs
@@ -319,14 +360,16 @@ Public Sub UpdateSim()
   End If
   
   'Botsareus 5/6/2013 The safemode system
-  If UseSafeMode And (x_restartmode = 0 Or x_restartmode = 4 Or x_restartmode = 5) Then 'special modes does not apply, may need to expended to other restart modes
+  If UseSafeMode Then 'special modes does not apply, may need to expended to other restart modes
     If SimOpts.TotRunCycle Mod 2000 = 0 And SimOpts.TotRunCycle > 0 Then
-     SaveSimulation MDIForm1.MainDir + "\saves\lastautosave.sim"
-     'Botsareus 5/13/2013 delete local copy
-     If dir(MDIForm1.MainDir + "\saves\localcopy.sim") <> "" Then Kill (MDIForm1.MainDir + "\saves\localcopy.sim")
-     Open App.path & "\autosaved.gset" For Output As #1
-      Write #1, True
-     Close #1
+      If x_restartmode = 0 Or x_restartmode = 4 Or x_restartmode = 6 Or x_restartmode = 7 Or x_restartmode = 8 Then
+        SaveSimulation MDIForm1.MainDir + "\saves\lastautosave.sim"
+        'Botsareus 5/13/2013 delete local copy
+        If dir(MDIForm1.MainDir + "\saves\localcopy.sim") <> "" Then Kill (MDIForm1.MainDir + "\saves\localcopy.sim")
+        Open App.path & "\autosaved.gset" For Output As #1
+         Write #1, True
+        Close #1
+      End If
     End If
   End If
   
@@ -345,4 +388,109 @@ Public Sub UpdateSim()
         shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
     End If
   End If
+  
+ 
+  'Z E R O B O T
+'evo mode
+If x_restartmode = 7 Or x_restartmode = 8 Then
+  If SimOpts.TotRunCycle Mod 50 = 0 And SimOpts.TotRunCycle > 0 Then
+      Form1.fittest
+  End If
+  Base_count = 0
+  Mutate_count = 0
+  Dim spppos As Integer
+  Static reduce As Byte
+  'count robots for repop
+  For t = 1 To MaxRobs
+      If rob(t).exist Then
+          If rob(t).FName = "Base.txt" Then Base_count = Base_count + 1
+          If rob(t).FName = "Mutate.txt" Then Mutate_count = Mutate_count + 1
+      End If
+  Next t
+  If Base_count < Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / 160 / (1 + reduce / 5) Then
+    'figure out specie pos
+    For spppos = 0 To UBound(TmpOpts.Specie)
+        If TmpOpts.Specie(spppos).Name = "Base.txt" Then Exit For
+    Next
+    If spppos < 78 Then 'make sure specie is still alive
+    For Base_count = 0 To Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / 160 / (1 + reduce / 5)
+     aggiungirob spppos, Random(60, SimOpts.FieldWidth - 60), Random(60, SimOpts.FieldHeight - 60)
+    Next
+    reduce = reduce + 1
+    End If
+  End If
+  If Mutate_count < Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / 160 / (1 + reduce / 5) Then
+    'figure out specie pos
+    For spppos = 0 To UBound(TmpOpts.Specie)
+        If TmpOpts.Specie(spppos).Name = "Mutate.txt" Then Exit For
+    Next
+    If spppos < 78 Then 'make sure specie is still alive
+    For Mutate_count = 0 To Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / 160 / (1 + reduce / 5)
+     aggiungirob spppos, Random(60, SimOpts.FieldWidth - 60), Random(60, SimOpts.FieldHeight - 60)
+    Next
+    reduce = reduce + 1
+    End If
+  End If
+  If reduce = 50 Then
+    'at some point it has to stop
+    'Restart
+        Dim dbnnxtmut As Integer
+        Dim dbnnxtbase As Integer
+        '
+        Do
+            dbnnxtmut = Int(x_filenumber - 15 + Rnd * 16)
+        Loop Until dbnnxtmut >= 0 And dbnnxtmut <= x_filenumber
+        '
+        Do
+            dbnnxtbase = Int(x_filenumber - 15 + Rnd * 16)
+        Loop Until dbnnxtbase >= 0 And dbnnxtbase <= x_filenumber
+        '
+        logevo "A restart is needed. New Base: " & dbnnxtbase & " New Mutate: " & dbnnxtmut
+        FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & dbnnxtbase & ".txt", MDIForm1.MainDir & "\evolution\Base.txt"
+        FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & dbnnxtmut & ".txt", MDIForm1.MainDir & "\evolution\Mutate.txt"
+        If dbnnxtmut = 0 Then
+            If dir(MDIForm1.MainDir & "\evolution\Mutate.mrate") <> "" Then Kill MDIForm1.MainDir & "\evolution\Mutate.mrate"
+        Else
+            FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & dbnnxtmut & ".mrate", MDIForm1.MainDir & "\evolution\Mutate.mrate"
+        End If
+        '
+    DisplayActivations = False
+    Form1.Active = False
+    Form1.SecTimer.Enabled = False
+    '
+    Open App.path & "\Safemode.gset" For Output As #1
+     Write #1, False
+    Close #1
+    Open App.path & "\autosaved.gset" For Output As #1
+     Write #1, False
+    Close #1
+    shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+  End If
+End If
+
+Static totnrgnvegs As Double
+Dim cmptotnrgnvegs As Double
+
+'test mode
+If x_restartmode = 9 Then
+  If SimOpts.TotRunCycle = 1 Then 'record starting energy
+    For t = 1 To MaxRobs
+        If rob(t).exist Then
+            If rob(t).FName = "Test.txt" Then totnrgnvegs = totnrgnvegs + rob(t).nrg + rob(t).body * 10
+        End If
+    Next t
+  End If
+  If SimOpts.TotRunCycle = 2000 Then 'ending energy must be more
+    For t = 1 To MaxRobs
+        If rob(t).exist Then
+            If rob(t).FName = "Test.txt" Then cmptotnrgnvegs = cmptotnrgnvegs + rob(t).nrg + rob(t).body * 10
+        End If
+    Next t
+    If totnvegsDisplayed > 15 And cmptotnrgnvegs > totnrgnvegs Then  'did population x3?
+        ZBpassedtest
+    Else
+        ZBfailedtest
+    End If
+  End If
+End If
 End Sub

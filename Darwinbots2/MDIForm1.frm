@@ -5,10 +5,10 @@ Begin VB.MDIForm MDIForm1
    AutoShowChildren=   0   'False
    BackColor       =   &H00400000&
    Caption         =   "DarwinBots"
-   ClientHeight    =   6345
+   ClientHeight    =   6495
    ClientLeft      =   3630
    ClientTop       =   2655
-   ClientWidth     =   13785
+   ClientWidth     =   14295
    Icon            =   "MDIForm1.frx":0000
    LinkTopic       =   "MDIForm1"
    Picture         =   "MDIForm1.frx":08CA
@@ -107,8 +107,8 @@ Begin VB.MDIForm MDIForm1
       Left            =   0
       TabIndex        =   1
       Top             =   0
-      Width           =   13785
-      _ExtentX        =   24315
+      Width           =   14295
+      _ExtentX        =   25215
       _ExtentY        =   741
       ButtonWidth     =   609
       ButtonHeight    =   582
@@ -267,15 +267,15 @@ Begin VB.MDIForm MDIForm1
                EndProperty
                BeginProperty ButtonMenu14 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "maxgeneticdistance"
-                  Text            =   "(Slow) Genetic Distance (Maximum)"
+                  Text            =   "(Selective) Genetic Distance"
                EndProperty
                BeginProperty ButtonMenu15 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "maxgenerationaldistance"
-                  Text            =   "Generational Distance (Maximum)"
+                  Text            =   "Generational Distance"
                EndProperty
                BeginProperty ButtonMenu16 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Key             =   "simplegeneticdistance"
-                  Text            =   "(Slow) Simple Genetic Distance  (Maximum)"
+                  Text            =   "(Slow) Genetic Distance"
                EndProperty
                BeginProperty ButtonMenu17 {66833FEE-8583-11D1-B16A-00C0F0283628} 
                   Enabled         =   0   'False
@@ -334,7 +334,7 @@ Begin VB.MDIForm MDIForm1
          Left            =   10200
          Picture         =   "MDIForm1.frx":6FB6
          Style           =   1  'Graphical
-         TabIndex        =   10
+         TabIndex        =   8
          ToolTipText     =   "Toggles the Sun"
          Top             =   0
          Width           =   375
@@ -346,42 +346,16 @@ Begin VB.MDIForm MDIForm1
          Left            =   10680
          Picture         =   "MDIForm1.frx":76BF
          Style           =   1  'Graphical
-         TabIndex        =   9
+         TabIndex        =   7
          ToolTipText     =   "Toggles Internet Mode"
          Top             =   0
          Width           =   375
       End
-      Begin VB.CommandButton Report 
-         BackColor       =   &H80000004&
-         Enabled         =   0   'False
-         Height          =   375
-         Left            =   14160
-         Picture         =   "MDIForm1.frx":7A31
-         Style           =   1  'Graphical
-         TabIndex        =   8
-         ToolTipText     =   "Zoom out"
-         Top             =   0
-         Visible         =   0   'False
-         Width           =   375
-      End
-      Begin VB.CommandButton Profile 
-         Enabled         =   0   'False
-         Height          =   375
-         Left            =   13800
-         Picture         =   "MDIForm1.frx":7FBB
-         Style           =   1  'Graphical
-         TabIndex        =   7
-         TabStop         =   0   'False
-         ToolTipText     =   "Zoom in"
-         Top             =   0
-         Visible         =   0   'False
-         Width           =   375
-      End
       Begin VB.CheckBox ZoomLock 
-         DownPicture     =   "MDIForm1.frx":8545
+         DownPicture     =   "MDIForm1.frx":7A31
          Height          =   375
          Left            =   9000
-         Picture         =   "MDIForm1.frx":8887
+         Picture         =   "MDIForm1.frx":7D73
          Style           =   1  'Graphical
          TabIndex        =   6
          ToolTipText     =   "Locks and unlocks being able to lock at areas outside of the arena."
@@ -391,7 +365,7 @@ Begin VB.MDIForm MDIForm1
       Begin VB.PictureBox F1Piccy 
          Height          =   375
          Left            =   11160
-         Picture         =   "MDIForm1.frx":8969
+         Picture         =   "MDIForm1.frx":7E55
          ScaleHeight     =   315
          ScaleWidth      =   315
          TabIndex        =   5
@@ -401,9 +375,9 @@ Begin VB.MDIForm MDIForm1
       Begin VB.ComboBox Combo1 
          Height          =   315
          IntegralHeight  =   0   'False
-         ItemData        =   "MDIForm1.frx":8D39
+         ItemData        =   "MDIForm1.frx":8225
          Left            =   4800
-         List            =   "MDIForm1.frx":8D3B
+         List            =   "MDIForm1.frx":8227
          Style           =   2  'Dropdown List
          TabIndex        =   4
          ToolTipText     =   "Select the species for robot insertion"
@@ -414,7 +388,7 @@ Begin VB.MDIForm MDIForm1
          BackColor       =   &H80000004&
          Height          =   375
          Left            =   9720
-         Picture         =   "MDIForm1.frx":8D3D
+         Picture         =   "MDIForm1.frx":8229
          Style           =   1  'Graphical
          TabIndex        =   3
          ToolTipText     =   "Zoom out"
@@ -424,7 +398,7 @@ Begin VB.MDIForm MDIForm1
       Begin VB.CommandButton czin 
          Height          =   375
          Left            =   9360
-         Picture         =   "MDIForm1.frx":92C7
+         Picture         =   "MDIForm1.frx":87B3
          Style           =   1  'Graphical
          TabIndex        =   2
          TabStop         =   0   'False
@@ -438,9 +412,9 @@ Begin VB.MDIForm MDIForm1
       Height          =   270
       Left            =   0
       TabIndex        =   0
-      Top             =   6075
-      Width           =   13785
-      _ExtentX        =   24315
+      Top             =   6225
+      Width           =   14295
+      _ExtentX        =   25215
       _ExtentY        =   476
       _Version        =   393216
       BeginProperty Panels {8E3867A5-8586-11D1-B16A-00C0F0283628} 
@@ -562,7 +536,7 @@ Begin VB.MDIForm MDIForm1
          Caption         =   "Autosave..."
          Shortcut        =   {F4}
       End
-      Begin VB.Menu P 
+      Begin VB.Menu p 
          Caption         =   "-"
          Index           =   3
       End
@@ -616,6 +590,16 @@ Begin VB.MDIForm MDIForm1
       Begin VB.Menu AutoFork 
          Caption         =   "Enable Automatic Forking"
       End
+      Begin VB.Menu Sep80 
+         Caption         =   "-"
+      End
+      Begin VB.Menu pbsett 
+         Caption         =   "Settings for PlayerBot Mode..."
+      End
+      Begin VB.Menu pbOn 
+         Caption         =   "Enable PlayerBot Mode"
+         Shortcut        =   {F11}
+      End
    End
    Begin VB.Menu Backgrounds 
       Caption         =   "View"
@@ -647,12 +631,12 @@ Begin VB.MDIForm MDIForm1
       End
       Begin VB.Menu sep98 
          Caption         =   "-"
-         Visible         =   0   'False
       End
-      Begin VB.Menu InvokeLens 
-         Caption         =   "Lens..."
-         Enabled         =   0   'False
-         Visible         =   0   'False
+      Begin VB.Menu MonitorSettings 
+         Caption         =   "Settings for RGB Memory Monitor..."
+      End
+      Begin VB.Menu MonitorOn 
+         Caption         =   "RGB Memory Monitor"
       End
    End
    Begin VB.Menu popup 
@@ -673,7 +657,7 @@ Begin VB.MDIForm MDIForm1
          Caption         =   "Change Color"
          Shortcut        =   ^C
       End
-      Begin VB.Menu sep 
+      Begin VB.Menu Sep 
          Caption         =   "-"
          Index           =   14
       End
@@ -724,12 +708,6 @@ Begin VB.MDIForm MDIForm1
    End
    Begin VB.Menu Objects 
       Caption         =   "Objects"
-      Begin VB.Menu SpeciesMenu 
-         Caption         =   "Species"
-         Begin VB.Menu AutoSpeciationMenu 
-            Caption         =   "Speciation..."
-         End
-      End
       Begin VB.Menu ShotsMenu 
          Caption         =   "Shots"
          Begin VB.Menu DontDecayNrgShots 
@@ -899,7 +877,7 @@ Attribute VB_Exposed = False
 ' Modifications by Purple Youko and Numsgil - 2004, 2005
 ' Post V2.42 modifications copyright (c) 2006, 2007 Eric Lockard  eric@sulaadventures.com
 '
-' Post V2.45 modifications copyright (c) 2012, 2013 Paul Kononov:
+' Post V2.45 modifications copyright (c) 2012, 2013, 2014 Paul Kononov:
 '______________________________________________1$$$___108033_____$$______________________________
 '____1$$$$$$$3________________011_______________$$__$$$$$$$$$$8_1$_________1$$$1__8$$$1_______3$$
 '____3$$811$$$0______________1$$3_______________0___$$$$__1$$$8____________0$$$__1$$$$______0$$8_
@@ -935,6 +913,8 @@ Option Explicit
 'Botsareus 3/15/2013 got rid of screen save code (was broken)
 'Botsareus 4/17/2013 Added a bunch of new components
 
+Private lockswitch As Byte
+
 Public zoomval As Integer
 'Public startdir As String 'Botsareus 5/10/2013 startdir does not look like it is ever used, disabeling
 Public MainDir As String
@@ -961,7 +941,6 @@ Public displayMovementVectorsToggle As Boolean
 Public SaveWithoutMutations As Boolean
 
 Public HandlingMenuItem As Boolean ' global used to prevent recursion between internet mode button and menu
-Dim pro As Object
 
 Public exitDB As Boolean
 
@@ -970,9 +949,13 @@ Private Sub AddTenObstacles_Click()
 End Sub
 
 Private Sub AutoFork_Click() 'Botsareus 3/23/2014 auto forking
+On Error GoTo b:
   AutoFork.Checked = Not AutoFork.Checked
   If AutoFork.Checked Then SimOpts.SpeciationGeneticDistance = InputBox("Enter % of mutations to DNA length that constitutes forking", "Automatic Forking", SimOpts.SpeciationGeneticDistance)
   SimOpts.EnableAutoSpeciation = AutoFork.Checked
+Exit Sub
+b:
+AutoFork.Checked = False
 End Sub
 
 Private Sub AutoSpeciationMenu_Click()
@@ -1098,6 +1081,14 @@ If x_restartmode = 4 Or x_restartmode = 5 Then
 End If
 If x_restartmode = 6 Then
     MsgBox "Can not enable Internet during survival mode contest round."
+    Exit Sub
+End If
+If x_restartmode = 7 Or x_restartmode = 8 Then
+    MsgBox "Can not enable Internet during zerobot mode."
+    Exit Sub
+End If
+If x_restartmode = 9 Then
+    MsgBox "Can not enable Internet during zerobot testing."
     Exit Sub
 End If
 
@@ -1332,6 +1323,16 @@ Dim closestAncestor As Long
   Next t
 End Sub
 
+
+
+Private Sub MonitorOn_Click()
+If frmMonitorSet.overwrite Then MonitorOn.Checked = Not MonitorOn.Checked Else MsgBox "Please configure monitor settings first.", vbInformation
+End Sub
+
+Private Sub MonitorSettings_Click()
+frmMonitorSet.Show vbModal
+End Sub
+
 Private Sub NewTeleportMenu_Click()
   TeleportForm.teleporterFormMode = 0
   TeleportForm.Show
@@ -1344,13 +1345,21 @@ Private Sub pause_Click()
       MDIForm1.unpause.Enabled = True
 End Sub
 
-Private Sub PolarIce_Click()
-  Obstacles.DrawPolarIceMaze
+Private Sub pbOn_Click()
+pbOn.Checked = Not pbOn.Checked
+If pbOn.Checked Then
+    Mouse_loc.X = 0
+    Mouse_loc.Y = 0
+End If
+Form1.PlayerBot.Visible = pbOn.Checked
 End Sub
 
-Private Sub Profile_Click()
-  Set pro = CreateObject("PROFILER.Profile.1")
-  pro.Instrument ""
+Private Sub pbsett_Click()
+frmPBMode.Show vbModal
+End Sub
+
+Private Sub PolarIce_Click()
+  Obstacles.DrawPolarIceMaze
 End Sub
 
 Private Sub Recording_Click()
@@ -1364,10 +1373,6 @@ End Sub
 Private Sub removepiccy_Click() 'Botsareus 3/24/2012 Added code that deletes the background picture
 Form1.PiccyMode = False
 Form1.Picture = Nothing
-End Sub
-
-Private Sub Report_Click()
-  pro.Report
 End Sub
 
 Private Sub robinf_Click()
@@ -1422,7 +1427,7 @@ Toolbar1.Refresh 'Botsareus 1/11/2013 Force toolbar to refresh
 End Sub
 
 Sub fixcam() 'Botsareus 2/23/2013 When simulation starts the screen is normailized
-'Botsareus 2/9/3014 Based on collected data we need to figure out fudging here Botsareusnotdone expend for evo modes
+'Botsareus 2/9/3014 Based on collected data we need to figure out fudging here
 If SimOpts.F1 Or x_restartmode > 3 Then
     Select Case x_fudge
     Case 1: FudgeEyes = True
@@ -1430,13 +1435,14 @@ If SimOpts.F1 Or x_restartmode > 3 Then
     End Select
     optMaxCycles = MaxCycles 'Botsareus 2/14/2014 Move max cycles to optimized max cycles
 End If
+pbOn.Enabled = Not SimOpts.F1
 Form1.BackColor = backgcolor 'Botsareus 4/27/2013 Set back ground skin color
 If startnovid Then 'turn off vedio as requested
      visualize = False
      Form1.Label1.Visible = True
      startnovid = False
 End If
-'Botsareus 3/19/2014  auto. load some graphs for evo mode, may need to be expended to other restart modes
+'Botsareus 3/19/2014  auto. load some graphs for evo mode, Botsareusnotdone need to expend for eco evo later
 If y_graphs And (x_restartmode = 4 Or x_restartmode = 5) Then
     Form1.NewGraph POPULATION_GRAPH, "Populations"
     Form1.NewGraph MUTATIONS_GRAPH, "Average_Mutations"
@@ -1445,7 +1451,12 @@ End If
 '
 If MDIForm1.WindowState <> 2 Then Exit Sub
 If screenratiofix = False Then Exit Sub
-Form1.visiblew = Screen.Width / Screen.Height * 4 / 3 * Form1.visibleh
+
+'the bloody screen ratio fix took me 4ever - Bots Sometime in June 2014
+lockswitch = 0
+Form1.visiblew = Form1.Width / Form1.Height * 4 / 3 * Form1.visibleh
+ZoomLock.value = 0
+ZoomOut
 ZoomLock.value = 1
 ZoomOut
 ZoomIn
@@ -1471,7 +1482,7 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
       DisplayActivations = False
       Form1.Active = True
       Form1.SecTimer.Enabled = True
-      Form1.unfocus
+      If Not pbOn.Checked Then Form1.unfocus
       Form1.pausefix = False  'Botsareus 3/15/2013 Figure out if simulation must start paused
     Case "stop"
       DisplayActivations = False
@@ -1564,7 +1575,7 @@ Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
   "simnrg= Total Energy_per Species" & vbCrLf & _
   "specidiv= Species Diversity" & vbCrLf & _
   "maxgd= Max Generational Distance" & vbCrLf & _
-  "verysimpgenetic= Genetic Distance" & vbCrLf & vbCrLf & _
+  "simpgenetic= Selective Genetic Distance" & vbCrLf & vbCrLf & _
   "Supported operators: add sub div mult pow" & vbCrLf & "Please use reverse polish notation."
 
   Select Case ButtonMenu.key
@@ -1654,20 +1665,20 @@ Private Sub costi_Click()
   optionsform.Show vbModal
 End Sub
 
-Private Sub czin_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czin_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = True
   ZoomInPremuto
 End Sub
 
-Private Sub czin_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czin_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = False
 End Sub
 
 Public Sub ZoomIn()
   If Form1.visiblew > RobSize * 4 Then
     If robfocus > 0 Then
-      xc = rob(robfocus).pos.x
-      yc = rob(robfocus).pos.y
+      xc = rob(robfocus).pos.X
+      yc = rob(robfocus).pos.Y
     Else
       xc = Form1.visiblew / 2 + Form1.ScaleLeft
       yc = Form1.visibleh / 2 + Form1.ScaleTop
@@ -1680,12 +1691,25 @@ Public Sub ZoomIn()
     Form1.ScaleLeft = xc - Form1.ScaleWidth / 2
     Form1.Redraw
   End If
+  
+ If ZoomLock.value = 1 Then
+    If lockswitch = 0 Then
+        Dim ratio As Double
+        ratio = Form1.TwipHeight / Form1.twipWidth
+        Dim expectedscreenratio  As Double
+        expectedscreenratio = 9645 / 15300
+        Dim actualscreenratio As Double
+        actualscreenratio = Form1.Height / Form1.Width
+        Form1.visiblew = Form1.visiblew * ratio * expectedscreenratio / actualscreenratio * 1.065
+        lockswitch = 1
+    End If
+  End If
 End Sub
 
 Public Sub Follow() 'Botsareus 11/29/2013 Zoom follow selected robot
     If robfocus > 0 And Form1.visiblew < 6000 And visualize Then
-      xc = rob(robfocus).pos.x
-      yc = rob(robfocus).pos.y
+      xc = rob(robfocus).pos.X
+      yc = rob(robfocus).pos.Y
       Form1.ScaleTop = yc - Form1.ScaleHeight / 2
       Form1.ScaleLeft = xc - Form1.ScaleWidth / 2
   End If
@@ -1705,7 +1729,7 @@ Private Sub ZoomOutPremuto()
   Wend
 End Sub
 
-Private Sub czo_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czo_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = True
   ZoomOutPremuto
 End Sub
@@ -1717,12 +1741,13 @@ Public Sub ZoomOut()
   'EricL Prevents zooming out too far from causing an overflow
   If Form1.visiblew >= 10000000 Then Exit Sub
   If Form1.visibleh >= 10000000 Then Exit Sub
+
   
   xc = Form1.visiblew / 2 + Form1.ScaleLeft
   yc = Form1.visibleh / 2 + Form1.ScaleTop
   
-  Form1.visiblew = Form1.visiblew / 0.95 '0.98039
-  Form1.visibleh = Form1.visibleh / 0.95 '0.98039
+  Form1.visiblew = Form1.visiblew / 0.95
+  Form1.visibleh = Form1.visibleh / 0.95
   
   If Form1.visiblew > SimOpts.FieldWidth And ZoomLock.value = 0 Then
     Form1.visiblew = SimOpts.FieldWidth
@@ -1752,10 +1777,23 @@ Public Sub ZoomOut()
   
   Form1.ScaleHeight = Form1.visibleh
   Form1.ScaleWidth = Form1.visiblew
+  
+  If ZoomLock.value = 1 Then
+    If lockswitch = 0 Then
+        Dim ratio As Double
+        ratio = Form1.TwipHeight / Form1.twipWidth
+        Dim expectedscreenratio  As Double
+        expectedscreenratio = 9645 / 15300
+        Dim actualscreenratio As Double
+       actualscreenratio = Form1.Height / Form1.Width
+        Form1.visiblew = Form1.visiblew * ratio * expectedscreenratio / actualscreenratio * 1.065
+        lockswitch = 1
+    End If
+  End If
   Form1.Redraw
 End Sub
 
-Private Sub czo_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czo_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
  AspettaFlag = False
 End Sub
 
@@ -1934,6 +1972,14 @@ MsgBox "Saving sim failed.  " + Err.Description, vbOKOnly
 End Sub
 
 Private Sub MDIForm_Load()
+'Botsareus 6/16/2014 Starting positions for graphs so they are less annoying
+Dim k As Byte
+For k = 1 To NUMGRAPHS
+   graphleft(k) = Screen.Width - 8400
+   graphtop(k) = Screen.Height - 4800
+Next k
+'Botsareus 7/5/2014 Intialize array for player bot mode
+ReDim PB_keys(0)
 
 calc_dnamatrix
 'Botsareus 5/8/2013 Safemode strings are declared here (sorry, no Italian version)
@@ -2082,9 +2128,44 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                   Dim files As Collection
                   Dim seeded As Collection
                   Dim i As Byte
-  If Not (x_restartmode = 0 Or x_restartmode = 5) Then
+  If Not (x_restartmode = 0 Or x_restartmode = 5 Or x_restartmode = 8) Then
         If Not simalreadyrunning Then
             Select Case x_restartmode
+            Case 9
+                    SimOpts = TmpOpts
+                    optionsform.additem MDIForm1.MainDir & "\evolution\Test.txt"
+                    'disable mutations
+                    For i = 0 To UBound(TmpOpts.Specie)
+                     If TmpOpts.Specie(i).Name = "Test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                    Next
+                    'F1 desabled
+                    TmpOpts.F1 = False
+                    'new seed and run sim
+                    chseedstartnew = True
+                    optionsform.StartNew_Click
+                    Exit Sub
+            Case 7
+                'setup a zb evo
+                    SimOpts = TmpOpts
+                    'load robot
+                    optionsform.additem MDIForm1.MainDir & "\evolution\Base.txt"
+                    optionsform.additem MDIForm1.MainDir & "\evolution\Mutate.txt"
+                    'disable mutations
+                    For i = 0 To UBound(TmpOpts.Specie)
+                     If TmpOpts.Specie(i).Name = "Base.txt" Then
+                        TmpOpts.Specie(i).Mutables.Mutations = False
+                        TmpOpts.Specie(i).qty = Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / 80
+                     End If
+                     If TmpOpts.Specie(i).Name = "Mutate.txt" Then TmpOpts.Specie(i).qty = Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / 80
+                    Next
+                    'Randomize find best
+                    Randomize
+                    intFindBestV2 = Choose(Int(Rnd * 5) + 1, 0, 0, 0, 0, 200)
+                    'F1 desabled
+                    TmpOpts.F1 = False
+                    'new seed and run sim
+                    chseedstartnew = True
+                    optionsform.StartNew_Click
             Case 6
                 'setup evo test round
                     SimOpts = TmpOpts
@@ -2329,7 +2410,8 @@ If x_restartmode > 0 Then
         Case vbCancel
             Cancel = 1
             Exit Sub
-        Case vbYes: Kill App.path & "\restartmode.gset"
+        Case vbYes
+            Kill App.path & "\restartmode.gset"
         Case vbNo
                 'special case restore restart mode
                 If x_restartmode = 2 Then

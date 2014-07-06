@@ -6,80 +6,25 @@ Option Explicit
 'DNA go in here
 '''''''''''''''''''''''''''''''''''''''''''''''
 
-'Botsareus 2/26/2014 special code to convert between DNA and an integer with max length of 6541
-'and then to a prime with max length of 65536 for genetic crossover
-'65536 = MaxDouble ^ (500 / 32000)
+'Botsareus 2/26/2014 special code to convert between DNA and an integer
 'NOTE: ALL THIS CODE MAY NEED TO BE MODED IF COMMANDS CHANGE!
 Dim dnamatrix(8, 13) As Byte
-Dim parray(6541) As Long
 
 Public savingtofile As Boolean 'make sure that when we are saving to file do not normalize custome sysvars
 
 Public Sub calc_dnamatrix()
-'generate array of prime numbers
-Dim max_ As Long
-Dim is_prime() As Boolean
-Dim i As Long
-Dim j As Long
-Dim max_i As Long
-Dim max_j As Long
-Dim tot  As Integer
-
-tot = 0
-parray(0) = 1
-
-        ' Make an array big enough.
-        max_ = 65536
-        ReDim is_prime(0 To max_)
-
-        ' Assume all of the odd numbers are prime.
-        ' Ignore the even numbers.
-        For i = 3 To max_ Step 2
-            is_prime(i) = True
-        Next i
-
-        ' Use Euler's Sieve.
-        ' See
-        ' http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes.
-        max_i = Sqr(max_) + 1
-        For i = 3 To max_i
-            ' Only use i if it is prime.
-            If (is_prime(i)) Then
-                ' Decide where we need to stop.
-                max_j = max_ \ i
-                If (max_j Mod 2 = 0) Then max_j = max_j - 1 _
-                    ' Make it odd.
-
-                ' "Cross out" multiples of i starting
-                ' with i * max_j and ending with i * i.
-                For j = max_j To i Step -2
-                    ' Only use j if it is prime.
-                    If (is_prime(j)) Then
-                        ' "Cross out" i * j.
-                        is_prime(i * j) = False
-                    End If
-                Next j
-            End If
-        Next i
-
-        For i = 3 To max_ Step 2
-            If (is_prime(i)) Then
-                tot = tot + 1
-                parray(tot) = i
-            End If
-        Next i
 'calculate dna matrix
 Dim result As String
-Dim Y As block
+Dim y As block
 Dim y_tipo As Byte
 Dim y_value As Byte
 Dim count As Byte
 
 For y_tipo = 0 To 8
  For y_value = 0 To 13
-  Y.tipo = y_tipo + 2
-  Y.value = y_value + 1
-  Parse result, Y
+  y.tipo = y_tipo + 2
+  y.value = y_value + 1
+  Parse result, y
   If result <> "" Then
    dnamatrix(y_tipo, y_value) = count
    count = count + 1
@@ -108,30 +53,6 @@ ElseIf tipo > 1 Then
  'other types
  DNAtoInt = 32691 + dnamatrix(tipo - 2, value - 1) 'dnamatrix adds max of 76 because we have 76 commands
 End If
-End Function
-
-Public Function DNAtoSmallPnumber(ByVal tipo As Integer, ByVal value As Integer) As Long
-'make value sane
-If value > 32000 Then value = 32000
-If value < -32000 Then value = -32000
-'figure out conversion
-If tipo < 2 Then
-
- If Abs(value) < 1000 Then  '0 to 999
-  DNAtoSmallPnumber = Abs(value)
- Else '1000 to 32000
-  DNAtoSmallPnumber = 985 + Abs(value) / 51
- End If
-
- If value > 0 Then DNAtoSmallPnumber = DNAtoSmallPnumber + 1616
- 
- If tipo = 1 Then DNAtoSmallPnumber = DNAtoSmallPnumber + 3232
-ElseIf tipo > 1 Then
- 'other types
- DNAtoSmallPnumber = 6465 + dnamatrix(tipo - 2, value - 1) 'dnamatrix adds max of 76 because we have 76 commands
-End If
-
-DNAtoSmallPnumber = parray(DNAtoSmallPnumber)
 End Function
 
 ' loads the dna and parses it
@@ -1478,7 +1399,7 @@ Public Sub LoadSysVars()
 
 End Sub
 
-Public Function DetokenizeDNA(n As Integer, forHash As Boolean, Optional Position As Integer) As String
+Public Function DetokenizeDNA(n As Integer, Optional Position As Integer) As String
   Dim temp As String, t As Long
   Dim tempint As Integer
   Dim converttosysvar As Boolean
@@ -1527,7 +1448,7 @@ Public Function DetokenizeDNA(n As Integer, forHash As Boolean, Optional Positio
       End If
     End With
        
-    If gene <> lastgene And Not forHash Then 'Botsareus 5/28/2013 Small bug fix: '0' no longer on top of dna
+    If gene <> lastgene Then  'Botsareus 5/28/2013 Small bug fix: '0' no longer on top of dna
       If gene > 1 Then
         temp = temp + vbCrLf
         temp = temp + "''''''''''''''''''''''''  "
