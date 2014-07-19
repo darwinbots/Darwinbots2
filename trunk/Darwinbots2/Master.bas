@@ -142,7 +142,7 @@ Public Sub UpdateSim()
   If SimOpts.MutOscill Then
    With SimOpts
     'Botsareus 8/3/2013 a more frindly mut oscill
-    Dim fullrange As Integer
+    Dim fullrange As Long
     fullrange = .TotRunCycle Mod (.MutCycMax + .MutCycMin)
     If fullrange < .MutCycMax Then
      .MutCurrMult = 20 ^ Sin(fullrange / .MutCycMax * PI)

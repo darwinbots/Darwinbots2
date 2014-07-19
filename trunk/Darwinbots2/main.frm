@@ -315,7 +315,7 @@ Private tmppos(50) As tmppostyp
 Public cyc As Integer          ' cycles/second
 Dim minutescount As Integer
 Public dispskin As Boolean  ' skin drawing enabled?
-Public active As Boolean    ' sim running?
+Public Active As Boolean    ' sim running?
 Public visiblew As Single     ' field visible portion (for zoom)
 Public visibleh As Long
 
@@ -353,7 +353,7 @@ If PlayerBot.Visible Then
     Dim i As Integer
     For i = 1 To UBound(PB_keys)
         With PB_keys(i)
-         If .key = KeyCode Then .active = True
+         If .key = KeyCode Then .Active = True
         End With
     Next
 End If
@@ -364,7 +364,7 @@ If PlayerBot.Visible Then
     Dim i As Integer
     For i = 1 To UBound(PB_keys)
         With PB_keys(i)
-         If .key = KeyCode Then .active = False
+         If .key = KeyCode Then .Active = False
         End With
     Next
 End If
@@ -1328,8 +1328,8 @@ MDIForm1.menuupdate
  ' maxshots = 0
  ' MaxAbsNum = 0
   loadrobs
-  If Form1.active Then Timer2.Enabled = True
-  If Form1.active Then SecTimer.Enabled = True
+  If Form1.Active Then Timer2.Enabled = True
+  If Form1.Active Then SecTimer.Enabled = True
   SimOpts.TotRunTime = 0
   setfeed
   If MDIForm1.visualize Then DrawAllRobs
@@ -1440,7 +1440,7 @@ Sub startloaded()
   If SimOpts.FieldHeight > 32000 Then yDivisor = SimOpts.FieldHeight / 32000
   
   MDIForm1.visualize = True
-  active = True
+  Active = True
   MaxMem = 1000
   maxfieldsize = SimOpts.FieldWidth * 2
   robfocus = 0
@@ -1575,7 +1575,9 @@ Private Sub loadrobs()
     Next t
 bypassThisSpecies:
     k = k + 1
+    MDIForm1.Caption = "Loading... " & Int((cc - 1) * 100 / SimOpts.SpeciesNum) & "% Please wait..."
   Next cc
+  MDIForm1.Caption = MDIForm1.BaseCaption
 End Sub
 
 ' calls main form status bar update
@@ -1638,9 +1640,9 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
       End If
       Form1.ScaleTop = st
       Form1.ScaleLeft = sl
-      Form1.refresh
+      Form1.Refresh
       Redraw
-      Form1.refresh
+      Form1.Refresh
       Exit Sub
     End If
   End If
@@ -1654,21 +1656,21 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
         rob(tmppos(a).n).pos = VectorSet(X - tmppos(a).X, Y - tmppos(a).Y)
         rob(tmppos(a).n).vel = VectorSet(0, 0)
     Next
-    If Not active Then Redraw
+    If Not Active Then Redraw
     Exit Sub
   End If
   
   If Button = 1 And obstaclefocus > 0 Then
   ' Obstacles.Obstacles(obstaclefocus).pos = VectorSet(x - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.x), y - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.y))
    Obstacles.Obstacles(obstaclefocus).pos = VectorSet(X - (Obstacles.Obstacles(obstaclefocus).Width / 2), Y - (Obstacles.Obstacles(obstaclefocus).Height / 2))
-    If Not active Then Redraw
+    If Not Active Then Redraw
     Exit Sub
   End If
   
   If Button = 1 And teleporterFocus > 0 Then
   ' Obstacles.Obstacles(obstaclefocus).pos = VectorSet(x - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.x), y - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.y))
    Teleport.Teleporters(teleporterFocus).pos = VectorSet(X - (Teleport.Teleporters(teleporterFocus).Width / 2), Y - (Teleport.Teleporters(teleporterFocus).Height / 2))
-    If Not active Then Redraw
+    If Not Active Then Redraw
     Exit Sub
   End If
   
@@ -2042,7 +2044,7 @@ Private Sub main()
   
   'clocks = GetTickCount
   Do
-    If active Then
+    If Active Then
       
       If MDIForm1.ignoreerror = True Then
         On Error Resume Next
@@ -2098,7 +2100,7 @@ Private Sub main()
     If Not camfix Then
         MDIForm1.fixcam 'Botsareus 2/23/2013 normalizes screen
         camfix = True
-        Form1.active = Not pausefix 'Botsareus 3/6/2013 allowes starting a simulation paused
+        Form1.Active = Not pausefix 'Botsareus 3/6/2013 allowes starting a simulation paused
         Form1.SecTimer.Enabled = Not pausefix
     End If
   Loop

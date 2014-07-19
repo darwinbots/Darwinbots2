@@ -3,7 +3,7 @@ Object = "{FE0065C0-1B7B-11CF-9D53-00AA003C9CB6}#1.1#0"; "COMCT232.OCX"
 Begin VB.Form EnergyForm 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Energy Management"
-   ClientHeight    =   4200
+   ClientHeight    =   4620
    ClientLeft      =   2760
    ClientTop       =   3750
    ClientWidth     =   5610
@@ -11,22 +11,32 @@ Begin VB.Form EnergyForm
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   4200
+   ScaleHeight     =   4620
    ScaleWidth      =   5610
    ShowInTaskbar   =   0   'False
    Begin VB.Frame Frame1 
       Caption         =   "Incoming Energy"
-      Height          =   3495
+      Height          =   3975
       Left            =   120
       TabIndex        =   1
       Top             =   120
       Width           =   5415
+      Begin VB.CheckBox chkRnd 
+         Caption         =   "Randomize the Sun On Period"
+         Enabled         =   0   'False
+         Height          =   255
+         Left            =   1320
+         TabIndex        =   17
+         ToolTipText     =   "A cycle of light and darkness. Veggies are not fed or repopulated during night time."
+         Top             =   840
+         Width           =   2475
+      End
       Begin VB.Frame Frame2 
          Caption         =   "Thresholds"
          Height          =   2535
          Left            =   120
          TabIndex        =   6
-         Top             =   840
+         Top             =   1320
          Width           =   5175
          Begin VB.OptionButton ThresholdMode 
             Caption         =   "Advance Sun to Dawn / Dusk"
@@ -104,7 +114,7 @@ Begin VB.Form EnergyForm
             Value           =   100
             AutoBuddy       =   -1  'True
             BuddyControl    =   "SunDownThreshold"
-            BuddyDispid     =   196611
+            BuddyDispid     =   196614
             OrigLeft        =   3600
             OrigTop         =   840
             OrigRight       =   3855
@@ -128,7 +138,7 @@ Begin VB.Form EnergyForm
             Value           =   100
             AutoBuddy       =   -1  'True
             BuddyControl    =   "SunUpThreshold"
-            BuddyDispid     =   196610
+            BuddyDispid     =   196615
             OrigLeft        =   3600
             OrigTop         =   1320
             OrigRight       =   3855
@@ -180,7 +190,7 @@ Begin VB.Form EnergyForm
          Value           =   100
          AutoBuddy       =   -1  'True
          BuddyControl    =   "DNLength"
-         BuddyDispid     =   196612
+         BuddyDispid     =   196617
          OrigLeft        =   3600
          OrigTop         =   360
          OrigRight       =   3855
@@ -206,7 +216,7 @@ Begin VB.Form EnergyForm
       Height          =   375
       Left            =   2160
       TabIndex        =   0
-      Top             =   3720
+      Top             =   4200
       Width           =   1215
    End
 End
@@ -237,11 +247,16 @@ Attribute VB_Exposed = False
 Option Explicit
 'Botsareus 6/12/2012 form's icon change
 
+Private Sub chkRnd_Click() 'Botsareus 7/15/2014 Randomize the Sun On Cycles
+    TmpOpts.SunOnRnd = chkRnd.value * True
+End Sub
+
 Private Sub DNCheck_Click()
   TmpOpts.DayNight = DNCheck.value * True
   If TmpOpts.DayNight = False Then TmpOpts.Daytime = True
   DNLength.Enabled = DNCheck.value * True
   DNCycleUpDn.Enabled = DNCheck.value * True
+  chkRnd.Enabled = DNCheck.value * True
 End Sub
 
 Private Sub DNLength_Change()
@@ -265,6 +280,7 @@ Private Sub Form_Load()
   SunDownUpDn.Enabled = TmpOpts.SunDown * True
   SunDown.value = TmpOpts.SunDown * True
   ThresholdMode(TmpOpts.SunThresholdMode).value = True
+  chkRnd.value = TmpOpts.SunOnRnd * True
 End Sub
 
 Private Sub OKButton_Click()

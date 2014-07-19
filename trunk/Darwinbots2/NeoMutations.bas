@@ -119,7 +119,7 @@ Public Sub Mutate(ByVal robn As Integer, Optional reproducing As Boolean = False
     ismutating = True 'Botsareus 2/2/2013 Tells the parseor to ignore debugint and debugbool while the robot is mutating
     If Not reproducing Then
     
-      overtime = UBound(rob(robn).DNA) * 30
+      overtime = Sqr(UBound(rob(robn).DNA)) * 948
     
       If .Mutables.mutarray(PointUP) > 0 Then PointMutation robn
       If .Mutables.mutarray(DeltaUP) > 0 And Not Delta2 Then DeltaMut robn
@@ -165,7 +165,7 @@ skip:
       
     Else
     
-      overtime = UBound(rob(robn).DNA) * 30
+      overtime = Sqr(UBound(rob(robn).DNA)) * 948
       If .Mutables.mutarray(CopyErrorUP) > 0 Then CopyError robn
       If overtime < 0 Then Exit Sub
       If .Mutables.mutarray(CE2UP) > 0 And sunbelt Then CopyError2 robn
@@ -237,7 +237,7 @@ On Error GoTo getout:
   '3. Pick a new spot (1 to .dnalen - 1)
   '4. Insert copied DNA
     
-  overtime = UBound(rob(robn).DNA) * 30
+  overtime = Sqr(UBound(rob(robn).DNA)) * 948
   
   Dim t As Long
   Dim Length As Long
@@ -295,7 +295,7 @@ On Error GoTo getout:
       End If
     End If
 skip:
-  Loop Until t = UBound(.DNA) - 1
+  Loop Until t >= UBound(.DNA) - 1
   
         'add "end" to end of the DNA
         .DNA(UBound(.DNA)).tipo = 10

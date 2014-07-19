@@ -204,6 +204,8 @@ Public Type SimOptions
   SpeciationGenerationalDistance As Integer
   SpeciationMinimumPopulation As Integer
   SpeciationForkInterval As Long
+  
+  SunOnRnd As Boolean
      
 End Type
 

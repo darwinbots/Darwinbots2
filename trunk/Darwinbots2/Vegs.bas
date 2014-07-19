@@ -116,7 +116,7 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
       SimOpts.DayNightCycleCounter = SimOpts.DayNightCycleCounter + 1
       If SimOpts.DayNightCycleCounter > SimOpts.CycleLength Then
         SimOpts.Daytime = Not SimOpts.Daytime
-        SimOpts.DayNightCycleCounter = 0
+        SimOpts.DayNightCycleCounter = IIf(SimOpts.SunOnRnd And SimOpts.Daytime, SimOpts.CycleLength * Rnd, 0)
       End If
       If SimOpts.Daytime Then
         FeedThisCycle = True

@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmGset 
    BorderStyle     =   4  'Fixed ToolWindow
@@ -83,12 +83,18 @@ Begin VB.Form frmGset
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "Check2"
+      Tab(3).Control(0)=   "chkSurvivalEco"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "ffmEvoCommon"
+      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).Control(2)=   "chkZBmode"
+      Tab(3).Control(2).Enabled=   0   'False
       Tab(3).Control(3)=   "ffmZeroBot"
+      Tab(3).Control(3).Enabled=   0   'False
       Tab(3).Control(4)=   "chkSurvivalSimple"
+      Tab(3).Control(4).Enabled=   0   'False
       Tab(3).Control(5)=   "ffmSurvival"
+      Tab(3).Control(5).Enabled=   0   'False
       Tab(3).ControlCount=   6
       Begin VB.CheckBox chkAddarob 
          Caption         =   "Add a single robot to existing league"
@@ -99,21 +105,20 @@ Begin VB.Form frmGset
          Visible         =   0   'False
          Width           =   5415
       End
-      Begin VB.CheckBox Check2 
+      Begin VB.CheckBox chkSurvivalEco 
          Caption         =   "Eco Survival Mode"
          Height          =   255
          Left            =   -71040
          TabIndex        =   67
          Top             =   4080
-         Visible         =   0   'False
          Width           =   2295
       End
       Begin VB.Frame ffmEvoCommon 
          Caption         =   "Common Evolution Settings"
          Height          =   855
-         Left            =   -67680
+         Left            =   -66600
          TabIndex        =   85
-         Top             =   1800
+         Top             =   4080
          Width           =   2175
          Begin VB.CheckBox chkNoChlr 
             Caption         =   "Disable Chloroplasts"
@@ -138,6 +143,7 @@ Begin VB.Form frmGset
          Left            =   -67680
          TabIndex        =   81
          Top             =   600
+         Visible         =   0   'False
          Width           =   2175
          Begin VB.TextBox txtZlength 
             Height          =   375
@@ -170,19 +176,21 @@ Begin VB.Form frmGset
          Left            =   -74760
          TabIndex        =   68
          Top             =   600
+         Visible         =   0   'False
          Width           =   6855
          Begin VB.CheckBox chkNormSize 
             Caption         =   "Dynamically normalize DNA size"
             Height          =   255
-            Left            =   120
+            Left            =   240
             TabIndex        =   76
             Top             =   2400
+            Visible         =   0   'False
             Width           =   2655
          End
          Begin VB.CheckBox chkIM 
-            Caption         =   "Internet mode enabled"
+            Caption         =   "Start with IM on"
             Height          =   255
-            Left            =   120
+            Left            =   3000
             TabIndex        =   75
             Top             =   2400
             Visible         =   0   'False
@@ -407,6 +415,7 @@ Begin VB.Form frmGset
             Height          =   285
             Left            =   6960
             TabIndex        =   48
+            ToolTipText     =   "Oscillation between type and value"
             Top             =   1920
             Width           =   615
          End
@@ -522,6 +531,7 @@ Begin VB.Form frmGset
             Height          =   495
             Left            =   5760
             TabIndex        =   47
+            ToolTipText     =   "Oscillation between type and value"
             Top             =   1800
             Width           =   1095
          End
@@ -916,8 +926,8 @@ If txtSourceDir.Visible Then
     End If
 End If
 
-'2/16/2014 Evolution modes Botsareusnotdone need to expend to other evolution modes later
-If chkSurvivalSimple.value = 1 Then
+'2/16/2014 Evolution modes
+If chkSurvivalSimple.value = 1 Or chkSurvivalEco.value = 1 Then
     If txtCD <> MDIForm1.MainDir Then
         MsgBox "Can not start a evolution mode while changing main directory.", vbCritical
         txtCD = MDIForm1.MainDir
@@ -927,7 +937,7 @@ If chkSurvivalSimple.value = 1 Then
         MsgBox "Robot source directory can not be the same as evolution engine directory.", vbCritical
         Exit Sub
     End If
-    If dir(txtRob) = "" And Right(txtRob, 1) <> "\" Then
+    If dir(txtRob) = "" Or txtRob = "" Then
         MsgBox "Please use a valid file name for robot.", vbCritical
         Exit Sub
     End If
@@ -1116,20 +1126,39 @@ If txtSourceDir.Visible Then
     End If
 End If
 
- '2/16/2014 Evolution modes Botsareusnotdone need to expend to other evolution modes later
-If chkSurvivalSimple.value = 1 Then
+ '2/16/2014 Evolution modes
+If chkSurvivalSimple.value = 1 Or chkSurvivalEco.value = 1 Then
     'let us init basic survival evolution mode
     'copy robots
-    FileCopy txtRob, MDIForm1.MainDir & "\evolution\Base.txt"
-    FileCopy txtRob, MDIForm1.MainDir & "\evolution\Mutate.txt"
-    FileCopy txtRob, MDIForm1.MainDir & "\evolution\stages\stage0.txt"
+    If chkSurvivalSimple.value = 1 Then
+        FileCopy txtRob, MDIForm1.MainDir & "\evolution\Base.txt"
+        FileCopy txtRob, MDIForm1.MainDir & "\evolution\Mutate.txt"
+        FileCopy txtRob, MDIForm1.MainDir & "\evolution\stages\stage0.txt"
+    Else
+        Dim ecocount As Byte
+        For ecocount = 1 To 15
+             MkDir MDIForm1.MainDir & "\evolution\baserob" & ecocount
+             FileCopy txtRob, MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt"
+             MkDir MDIForm1.MainDir & "\evolution\mutaterob" & ecocount
+             FileCopy txtRob, MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.txt"
+             MkDir MDIForm1.MainDir & "\evolution\stages\stagerob" & ecocount
+             FileCopy txtRob, MDIForm1.MainDir & "\evolution\stages\stagerob" & ecocount & "\stage0.txt"
+        Next
+    End If
     'generate mrate filename
     Dim mratefn As String
     mratefn = extractpath(txtRob) & "\" & extractexactname(extractname(txtRob)) & ".mrate"
     If dir(mratefn) <> "" Then
         'copy mrates
-        FileCopy mratefn, MDIForm1.MainDir & "\evolution\Mutate.mrate"
-        FileCopy mratefn, MDIForm1.MainDir & "\evolution\stages\stage0.mrate"
+        If chkSurvivalSimple.value = 1 Then
+            FileCopy mratefn, MDIForm1.MainDir & "\evolution\Mutate.mrate"
+            FileCopy mratefn, MDIForm1.MainDir & "\evolution\stages\stage0.mrate"
+        Else
+            For ecocount = 1 To 15
+             FileCopy mratefn, MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.mrate"
+             FileCopy mratefn, MDIForm1.MainDir & "\evolution\stages\stagerob" & ecocount & "\stage0.mrate"
+            Next
+        End If
     End If
     'calculate robot's size
     Dim Length As Integer
@@ -1153,6 +1182,14 @@ If chkSurvivalSimple.value = 1 Then
         '
         Write #1, 0 'stgwins
     Close #1
+    'for eco evo
+    If chkSurvivalEco.value = 1 Then
+        Open App.path & "\im.gset" For Output As #1
+            Write #1, chkIM.value
+        Close #1
+    Else
+        If dir(App.path & "\im.gset") <> "" Then Kill App.path & "\im.gset"
+    End If
     'other
     optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
     Open App.path & "\restartmode.gset" For Output As #1
@@ -1250,6 +1287,7 @@ If chkStepladder.value = 1 Then
     lblSource.Visible = True
     txtSourceDir.Visible = True
     chkSurvivalSimple.value = 0
+    chkSurvivalEco.value = 0
     chkZBmode.value = 0
 Else
     If Not chkTournament.value = 1 Then
@@ -1262,15 +1300,33 @@ txtStartChlr = 16000
 chkAddarob.Visible = chkStepladder.value = 1 And chkTournament.value = 0
 End Sub
 
+Private Sub chkSurvivalEco_Click()
+If chkSurvivalEco.value = 1 Then
+    chkStepladder.value = 0
+    chkTournament.value = 0
+    chkZBmode.value = 0
+    chkSurvivalSimple.value = 0
+    chkIM.Visible = True
+    chkNormSize.Visible = False
+    chkNormSize.value = 0
+End If
+ffmSurvival.Visible = chkSurvivalEco.value = 1
+'default chloroplasts
+txtStartChlr = 16000 'default chloroplasts
+End Sub
+
 Private Sub chkSurvivalSimple_Click()
 If chkSurvivalSimple.value = 1 Then
     chkStepladder.value = 0
     chkTournament.value = 0
     chkZBmode.value = 0
+    chkSurvivalEco.value = 0
+    chkNormSize.Visible = True
+    chkIM.Visible = False
 End If
-ffmZeroBot.Visible = chkSurvivalSimple.value = 0
+ffmSurvival.Visible = chkSurvivalSimple.value = 1
 'default chloroplasts
-If chkNoChlr Then txtStartChlr = 16000 'default chloroplasts
+txtStartChlr = 16000 'default chloroplasts
 End Sub
 
 Private Sub chkTournament_Click()
@@ -1278,9 +1334,9 @@ If chkTournament.value = 1 Then
     chkStepladder.Caption = "Stepladder league (starts between 16 and 24 robots)"
     lblSource.Visible = True
     txtSourceDir.Visible = True
-    'Botsareusnotdone need to expend for other modes
     chkSurvivalSimple.value = 0
     chkZBmode.value = 0
+    chkSurvivalEco.value = 0
 Else
     chkStepladder.Caption = "Stepladder league"
     If Not chkStepladder.value = 1 Then
@@ -1309,10 +1365,10 @@ If chkZBmode.value = 1 Then
     chkSurvivalSimple.value = 0
     chkNormSize.value = 0
     chkShowGraphs.value = 0
-    
+    chkSurvivalEco.value = 0
 End If
-ffmSurvival.Visible = chkZBmode.value = 0
-If chkNoChlr Then txtStartChlr = 16000 'default chloroplasts
+ffmZeroBot.Visible = chkZBmode.value = 1
+txtStartChlr = 16000 'default chloroplasts
 End Sub
 
 Private Sub Form_Load()
@@ -1396,6 +1452,8 @@ txtLFOR = y_LFOR
 chkNoChlr.value = IIf(NoChlr, 1, 0)
 '
 txtZlength = y_zblen
+'
+If y_eco_im > 0 Then chkIM.value = y_eco_im - 1
 End Sub
 
 Private Sub txtBodyFix_LostFocus()
