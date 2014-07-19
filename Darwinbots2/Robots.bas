@@ -337,7 +337,8 @@ Private Type robot
   monitor_b As Integer
   
   multibot_time As Byte
-  restrictions As Byte
+  death_by_chlr As Byte
+  dq As Byte
 
 End Type
 
@@ -2208,7 +2209,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
             'dynamic mutation overload correction
             Dim dmoc As Double
             dmoc = 1 + (rob(nuovo).DnaLen - curr_dna_size) / 500
-            If Not y_normsize Or (x_restartmode < 4) Then dmoc = 1  'Botsareusnotdone expend to other restart modes
+            If Not y_normsize Or (x_restartmode < 4) Then dmoc = 1
             'zerobot stabilization
             If x_restartmode = 7 Or x_restartmode = 8 Then
                 If .FName = "Mutate.txt" Then
@@ -2654,7 +2655,7 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
             'dynamic mutation overload correction
             Dim dmoc As Double
             dmoc = 1 + (rob(nuovo).DnaLen - curr_dna_size) / 500
-            If Not y_normsize Or (x_restartmode < 4) Then dmoc = 1  'Botsareusnotdone expend to other restart modes
+            If Not y_normsize Or (x_restartmode < 4) Then dmoc = 1
             'zerobot stabilization
             If x_restartmode = 7 Or x_restartmode = 8 Then
                 If .FName = "Mutate.txt" Then

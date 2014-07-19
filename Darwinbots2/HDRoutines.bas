@@ -242,7 +242,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As file
+  Dim robotFile As File
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -445,7 +445,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As file
+  Dim fileToDelete As File
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -814,6 +814,9 @@ Public Sub SaveSimulation(path As String)
    Put #1, , energydif2
    Put #1, , energydifX2
    Put #1, , energydifXP2
+   
+   'some mor simopts stuff
+   Put #1, , SimOpts.SunOnRnd
        
     Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     
@@ -867,6 +870,15 @@ If dir(App.path & "\Maindir.gset") <> "" Then
 End If
 
 leagueSourceDir = MDIForm1.MainDir & "\Robots\F1league"
+
+'see if eco exsists
+y_eco_im = 0
+If dir(App.path & "\im.gset") <> "" Then
+  Open App.path & "\im.gset" For Input As #1
+    Input #1, y_eco_im
+  Close #1
+  y_eco_im = y_eco_im + 1
+End If
 
 'see if restartmode exisit
 
@@ -974,6 +986,8 @@ If x_restartmode = 4 Or x_restartmode = 5 Or x_restartmode = 6 Then
         '
         Input #1, y_Stgwins
     Close #1
+Else
+    y_eco_im = 0
 End If
 
 'Botsareus 3/22/2014 Initial hidepred offset is normal
@@ -984,6 +998,7 @@ hidePredOffset = hidePredCycl / 6
 If UseSafeMode = False Then simalreadyrunning = False
 
 If simalreadyrunning = False Then autosaved = False
+
 End Sub
 
 
@@ -1455,6 +1470,9 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
    If Not EOF(1) Then Get #1, , energydif2
    If Not EOF(1) Then Get #1, , energydifX2
    If Not EOF(1) Then Get #1, , energydifXP2
+   
+        'some more simopts stuff
+   If Not EOF(1) Then Get #1, , SimOpts.SunOnRnd
     
     Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     
@@ -1763,6 +1781,17 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     
     'Read if robot is using sunbelt
     
+    If Not .Veg Then
+     If y_eco_im > 0 And Form1.lblSaving.Visible = False Then
+      If Right(.tag, 5) <> Left(.nrg & .nrg, 5) Then
+        .dq = 2
+      End If
+      If .FName <> "Mutate.txt" And .FName <> "Base.txt" Then
+        .dq = 2
+      End If
+     End If
+    End If
+    
     Dim usesunbelt As Boolean 'sunbelt mutations
     
     If FileContinue(n) Then Get #n, , usesunbelt
@@ -2019,6 +2048,15 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     
     'Botsareus 1/28/2014 Write robot tag
     
+    Dim blank As String * 50
+    
+    If Not .Veg Then
+     If y_eco_im > 0 And Form1.lblSaving.Visible = False And .dq <> 2 Then
+      If Left(.tag, 45) = Left(blank, 45) Then .tag = "Please create a description."
+      .tag = Left(.tag, 45) & Left(.nrg & .nrg, 5)
+     End If
+    End If
+    
     Put #n, , .tag
     
     'Botsareus 1/28/2014 Write if robot is using sunbelt
@@ -2061,6 +2099,7 @@ Sub salvarob(n As Integer, path As String, Optional nombox As Boolean)
   'Botsareus 12/11/2013 Save mrates file
   Save_mrates rob(n).Mutables, extractpath(path) & "\" & extractexactname(extractname(path)) & ".mrate"
   
+  If y_eco_im > 0 Then Exit Sub 'Under eco restart mode you will not be able to rename a robot
   If Not nombox Then
     If MsgBox("Do you want to change robot's name to " + extractname(path) + " ?", vbYesNo, "Robot DNA saved") = vbYes Then
       rob(n).FName = extractname(path)
@@ -2230,7 +2269,7 @@ Private Sub SaveShot(n As Integer, t As Long)
     Put #n, , .fromveg     ' does shot come from veg?
     Put #n, , CInt(Len(.FromSpecie))
     Put #n, , .FromSpecie  ' Which species fired the shot
-    Put #n, , .Memloc      ' Memory location for custom poison and venom
+    Put #n, , .memloc      ' Memory location for custom poison and venom
     Put #n, , .Memval      ' Value to insert into custom venom location
     
     ' Somewhere to store genetic code for a virus or sperm
@@ -2282,7 +2321,7 @@ Private Sub LoadShot(n As Integer, t As Long)
     Get #n, , k: .FromSpecie = Space(k)
     Get #n, , .FromSpecie  ' Which species fired the shot
     
-    Get #n, , .Memloc      ' Memory location for custom poison and venom
+    Get #n, , .memloc      ' Memory location for custom poison and venom
     Get #n, , .Memval      ' Value to insert into custom venom location
 
     

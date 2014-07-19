@@ -95,22 +95,54 @@ End If
 
 'next stage
 x_filenumber = x_filenumber + 1
-FileCopy MDIForm1.MainDir & "\evolution\Test.txt", MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".txt"
-FileCopy MDIForm1.MainDir & "\evolution\Test.mrate", MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".mrate"
+
+If y_eco_im > 0 Then
+    Dim ecocount As Byte
+    For ecocount = 1 To 15
+        FileCopy MDIForm1.MainDir & "\evolution\testrob" & ecocount & "\Test.txt", MDIForm1.MainDir & "\evolution\stages\stagerob" & ecocount & "\stage" & x_filenumber & ".txt"
+        FileCopy MDIForm1.MainDir & "\evolution\testrob" & ecocount & "\Test.mrate", MDIForm1.MainDir & "\evolution\stages\stagerob" & ecocount & "\stage" & x_filenumber & ".mrate"
+    Next
+Else
+    FileCopy MDIForm1.MainDir & "\evolution\Test.txt", MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".txt"
+    FileCopy MDIForm1.MainDir & "\evolution\Test.mrate", MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".mrate"
+End If
 
 'kill main dir robots
-Kill MDIForm1.MainDir & "\evolution\Base.txt"
-Kill MDIForm1.MainDir & "\evolution\Mutate.txt"
-If dir(MDIForm1.MainDir & "\evolution\Mutate.mrate") <> "" Then Kill MDIForm1.MainDir & "\evolution\Mutate.mrate"
+If y_eco_im > 0 Then
+    For ecocount = 1 To 15
+        RecursiveRmDir MDIForm1.MainDir & "\evolution\baserob" & ecocount
+        RecursiveRmDir MDIForm1.MainDir & "\evolution\mutaterob" & ecocount
+    Next
+Else
+    Kill MDIForm1.MainDir & "\evolution\Base.txt"
+    Kill MDIForm1.MainDir & "\evolution\Mutate.txt"
+    If dir(MDIForm1.MainDir & "\evolution\Mutate.mrate") <> "" Then Kill MDIForm1.MainDir & "\evolution\Mutate.mrate"
+End If
 
 'copy robots
-FileCopy MDIForm1.MainDir & "\evolution\Test.txt", MDIForm1.MainDir & "\evolution\Base.txt"
-FileCopy MDIForm1.MainDir & "\evolution\Test.txt", MDIForm1.MainDir & "\evolution\Mutate.txt"
-FileCopy MDIForm1.MainDir & "\evolution\Test.mrate", MDIForm1.MainDir & "\evolution\Mutate.mrate"
+If y_eco_im > 0 Then
+    For ecocount = 1 To 15
+        MkDir MDIForm1.MainDir & "\evolution\baserob" & ecocount
+        MkDir MDIForm1.MainDir & "\evolution\mutaterob" & ecocount
+        FileCopy MDIForm1.MainDir & "\evolution\testrob" & ecocount & "\Test.txt", MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt"
+        FileCopy MDIForm1.MainDir & "\evolution\testrob" & ecocount & "\Test.txt", MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.txt"
+        FileCopy MDIForm1.MainDir & "\evolution\testrob" & ecocount & "\Test.mrate", MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.mrate"
+    Next
+Else
+    FileCopy MDIForm1.MainDir & "\evolution\Test.txt", MDIForm1.MainDir & "\evolution\Base.txt"
+    FileCopy MDIForm1.MainDir & "\evolution\Test.txt", MDIForm1.MainDir & "\evolution\Mutate.txt"
+    FileCopy MDIForm1.MainDir & "\evolution\Test.mrate", MDIForm1.MainDir & "\evolution\Mutate.mrate"
+End If
 
 'kill test robot
-Kill MDIForm1.MainDir & "\evolution\Test.txt"
-Kill MDIForm1.MainDir & "\evolution\Test.mrate"
+If y_eco_im > 0 Then
+    For ecocount = 1 To 15
+        RecursiveRmDir MDIForm1.MainDir & "\evolution\testrob" & ecocount
+    Next
+Else
+    Kill MDIForm1.MainDir & "\evolution\Test.txt"
+    Kill MDIForm1.MainDir & "\evolution\Test.mrate"
+End If
 End Sub
 
 Private Sub Decrease_Difficulty()
@@ -128,10 +160,87 @@ If hidePredCycl > 15000 Then hidePredCycl = 15000
 End Sub
 
 Public Sub UpdateWonEvo(ByVal bestrob As Integer) 'passing best robot
-If rob(bestrob).Mutations > 0 Then
+If rob(bestrob).Mutations > 0 And (totnvegsDisplayed >= 15 Or y_eco_im = 0) Then
     logevo "Evolving robot changed, testing robot."
     'F1 mode init
-    salvarob bestrob, MDIForm1.MainDir & "\evolution\Test.txt", True
+    If y_eco_im = 0 Then
+        salvarob bestrob, MDIForm1.MainDir & "\evolution\Test.txt", True
+    Else
+
+        'The Eco Calc
+        
+        'Step1 disable simulation execution
+        DisplayActivations = False
+        Form1.Active = False
+        Form1.SecTimer.Enabled = False
+        
+        'Step2 calculate cumelative genetic distance
+        Form1.GraphLab.Visible = True
+      
+          Dim maxgdi() As Single
+          ReDim maxgdi(MaxRobs)
+          
+          Dim t As Integer
+          Dim t2 As Integer
+          
+          For t = 1 To MaxRobs
+           If rob(t).exist And Not rob(t).Veg And Not rob(t).FName = "Corpse" And Not (rob(t).FName = "Base.txt" And hidepred) Then
+           
+                    'calculate cumelative genetic distance
+                    For t2 = 1 To MaxRobs
+                     If t <> t2 Then
+                      If rob(t2).exist And Not rob(t2).Corpse And rob(t2).FName = rob(t).FName Then  ' Must exist, and be of same species
+                        maxgdi(t) = maxgdi(t) + DoGeneticDistance(t, t2)
+                        DoEvents
+                      End If
+                     End If
+                    Next t2
+                    Form1.GraphLab.Caption = "Calculating eco result: " & Int(t / MaxRobs * 100) & "%"
+           End If
+          Next
+          
+          Form1.GraphLab.Visible = False
+        
+         'step3 calculate robots
+          
+          Dim ecocount As Byte
+          
+        For ecocount = 1 To 15
+          
+            Dim sPopulation As Double
+            Dim sEnergy As Double
+            sEnergy = (IIf(intFindBestV2 > 100, 100, intFindBestV2)) / 100
+            sPopulation = (IIf(intFindBestV2 < 100, 100, 200 - intFindBestV2)) / 100
+            
+              Dim s As Double
+              Dim Mx As Double
+              Dim fit As Integer
+              
+              Mx = 0
+              fit = 0
+              For t = 1 To MaxRobs
+                If rob(t).exist And Not rob(t).Veg And Not rob(t).FName = "Corpse" And Not (rob(t).FName = "Base.txt" And hidepred) Then
+                  
+                    Form1.TotalOffspring = 1
+                    s = Form1.score(t, 1, 10, 0) + rob(t).nrg + rob(t).body * 10  'Botsareus 5/22/2013 Advanced fit test
+                    s = (Form1.TotalOffspring ^ sPopulation) * (s ^ sEnergy)
+                    s = s * maxgdi(t)
+                    If s >= Mx Then
+                      Mx = s
+                      fit = t
+                    End If
+                  
+                End If
+              Next t
+              
+              'save and kill the robot
+              MkDir MDIForm1.MainDir & "\evolution\testrob" & ecocount
+              salvarob fit, MDIForm1.MainDir & "\evolution\testrob" & ecocount & "\Test.txt", True
+              rob(fit).exist = False
+              
+        Next
+      
+    End If
     x_restartmode = 6
 Else
     logevo "Evolving robot never changed, increasing difficulty."
@@ -153,7 +262,7 @@ Public Sub UpdateWonF1()
 Dim currenttest As Integer
 y_Stgwins = y_Stgwins + 1
 currenttest = x_filenumber - y_Stgwins * (x_filenumber ^ (1 / 3))
-If currenttest < 0 Or x_filenumber = 0 Then 'check for x_filenumber is zero here to prevent endless loop
+If currenttest < 0 Or x_filenumber = 0 Or y_eco_im > 0 Then 'check for x_filenumber is zero here to prevent endless loop
     logevo "Evolving robot won all tests, setting up stage " & (x_filenumber + 1)
     Next_Stage 'Robot won, go to next stage
     x_restartmode = 4
@@ -167,8 +276,17 @@ End Sub
 
 Public Sub UpdateLostF1()
 logevo "Evolving robot lost the test, increasing difficulty."
-Kill MDIForm1.MainDir & "\evolution\Test.txt"
-Kill MDIForm1.MainDir & "\evolution\Test.mrate"
+
+If y_eco_im > 0 Then
+        Dim ecocount As Byte
+        For ecocount = 1 To 15
+            RecursiveRmDir MDIForm1.MainDir & "\evolution\testrob" & ecocount
+        Next
+Else
+    Kill MDIForm1.MainDir & "\evolution\Test.txt"
+    Kill MDIForm1.MainDir & "\evolution\Test.mrate"
+End If
+
 'reset base robot
 FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".txt", MDIForm1.MainDir & "\evolution\Base.txt"
 y_Stgwins = 0

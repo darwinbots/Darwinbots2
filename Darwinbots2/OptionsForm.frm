@@ -129,24 +129,18 @@ Begin VB.Form optionsform
       TabPicture(4)   =   "OptionsForm.frx":0070
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "Label19"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "Restart"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).Control(2)=   "Frame7"
-      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).Control(3)=   "btnSetF1"
-      Tab(4).Control(3).Enabled=   0   'False
       Tab(4).Control(4)=   "btnSetF2"
-      Tab(4).Control(4).Enabled=   0   'False
       Tab(4).Control(5)=   "btnSetSB"
-      Tab(4).Control(5).Enabled=   0   'False
       Tab(4).ControlCount=   6
       TabCaption(5)   =   "Internet"
       TabPicture(5)   =   "OptionsForm.frx":008C
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Simulazione"
+      Tab(5).Control(0)=   "Label41"
       Tab(5).Control(1)=   "Label42"
-      Tab(5).Control(2)=   "Label41"
+      Tab(5).Control(2)=   "Simulazione"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Recording"
       TabPicture(6)   =   "OptionsForm.frx":00A8
@@ -1966,6 +1960,13 @@ Begin VB.Form optionsform
          Tag             =   "31100"
          Top             =   480
          Width           =   3885
+         Begin VB.TextBox txtInttServ 
+            Height          =   285
+            Left            =   240
+            TabIndex        =   248
+            Top             =   3240
+            Width           =   3015
+         End
          Begin VB.TextBox IntName 
             Height          =   285
             Left            =   240
@@ -1986,6 +1987,14 @@ Begin VB.Form optionsform
             TabIndex        =   230
             Top             =   720
             Width           =   3135
+         End
+         Begin VB.Label Label45 
+            Caption         =   "Server IP"
+            Height          =   255
+            Left            =   240
+            TabIndex        =   249
+            Top             =   2880
+            Width           =   1095
          End
          Begin VB.Label Label40 
             Caption         =   "User Name"
@@ -2030,7 +2039,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Prop"
-            BuddyDispid     =   196753
+            BuddyDispid     =   196755
             OrigLeft        =   4260
             OrigTop         =   2760
             OrigRight       =   4500
@@ -2081,7 +2090,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Fixed"
-            BuddyDispid     =   196752
+            BuddyDispid     =   196754
             OrigLeft        =   4245
             OrigTop         =   2340
             OrigRight       =   4485
@@ -2171,7 +2180,6 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0571
@@ -2395,7 +2403,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "SpecQty"
-            BuddyDispid     =   196771
+            BuddyDispid     =   196774
             OrigLeft        =   2310
             OrigTop         =   525
             OrigRight       =   2550
@@ -2417,7 +2425,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   1000
             BuddyControl    =   "SpecNrg"
-            BuddyDispid     =   196773
+            BuddyDispid     =   196776
             OrigLeft        =   1560
             OrigTop         =   240
             OrigRight       =   1800
@@ -2679,7 +2687,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoSimTxt"
-            BuddyDispid     =   196800
+            BuddyDispid     =   196803
             OrigLeft        =   3360
             OrigTop         =   360
             OrigRight       =   3600
@@ -2699,7 +2707,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "AutoRobTxt"
-            BuddyDispid     =   196797
+            BuddyDispid     =   196800
             OrigLeft        =   3120
             OrigTop         =   240
             OrigRight       =   3375
@@ -2910,8 +2918,8 @@ Private Declare Function SetROP2 Lib "gdi32" (ByVal hdc As Long, ByVal nDrawMode
 Private Declare Function Rectangle Lib "gdi32" (ByVal hdc As Long, ByVal x1 As Long, ByVal y1 As Long, ByVal x2 As Long, ByVal y2 As Long) As Long
 
 Private Type POINTAPI
-    x As Long
-    y As Long
+    X As Long
+    Y As Long
 End Type
 
 Private Type RECT
@@ -3069,6 +3077,23 @@ Private Sub chkNoChlr_Click()
   End If
 End Sub
 
+Private Sub CyclesHi_LostFocus()
+Dim pass As Long
+pass = val(CyclesHi.text)
+If pass > 500000 Then pass = 500000
+If pass < 0 Then pass = 0
+CyclesHi = pass
+End Sub
+
+Private Sub CyclesLo_LostFocus()
+Dim pass As Long
+pass = val(CyclesLo.text)
+If pass > 500000 Then pass = 500000
+If pass < 0 Then pass = 0
+CyclesLo = pass
+End Sub
+
+
 Private Sub MaxCyclesText_LostFocus()
 MaxCyclesText.text = MaxCycles
 End Sub
@@ -3087,7 +3112,7 @@ Private Sub txtMinRounds_LostFocus()
     optMinRounds = MinRounds
 End Sub
 
-Private Sub CorpseCheck_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub CorpseCheck_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If CorpseCheck.value = 1 Then 'Botsareus 1/17/2013 set default values
     TmpOpts.DecayType = 3
     TmpOpts.Decay = 75
@@ -3635,25 +3660,25 @@ End Sub
 
 Private Sub ShowSkin(k As Integer)
   Dim t As Integer
-  Dim x As Long
-  Dim y As Long
-  x = Cerchio.Left + Cerchio.Width / 2
-  y = Cerchio.Top + Cerchio.Height / 2
+  Dim X As Long
+  Dim Y As Long
+  X = Cerchio.Left + Cerchio.Width / 2
+  Y = Cerchio.Top + Cerchio.Height / 2
   multx = Cerchio.Width / 120
   multy = Cerchio.Height / 120
   Me.AutoRedraw = True
-  Line7.x1 = TmpOpts.Specie(k).Skin(0) * multx * Cos(TmpOpts.Specie(k).Skin(1) / 100) + x
-  Line7.y1 = TmpOpts.Specie(k).Skin(0) * multy * Sin(TmpOpts.Specie(k).Skin(1) / 100) + y
-  Line7.x2 = TmpOpts.Specie(k).Skin(2) * multx * Cos(TmpOpts.Specie(k).Skin(3) / 100) + x
-  Line7.y2 = TmpOpts.Specie(k).Skin(2) * multy * Sin(TmpOpts.Specie(k).Skin(3) / 100) + y
+  Line7.x1 = TmpOpts.Specie(k).Skin(0) * multx * Cos(TmpOpts.Specie(k).Skin(1) / 100) + X
+  Line7.y1 = TmpOpts.Specie(k).Skin(0) * multy * Sin(TmpOpts.Specie(k).Skin(1) / 100) + Y
+  Line7.x2 = TmpOpts.Specie(k).Skin(2) * multx * Cos(TmpOpts.Specie(k).Skin(3) / 100) + X
+  Line7.y2 = TmpOpts.Specie(k).Skin(2) * multy * Sin(TmpOpts.Specie(k).Skin(3) / 100) + Y
   Line8.x1 = Line7.x2
   Line8.y1 = Line7.y2
-  Line8.x2 = TmpOpts.Specie(k).Skin(4) * multx * Cos(TmpOpts.Specie(k).Skin(5) / 100) + x
-  Line8.y2 = TmpOpts.Specie(k).Skin(4) * multy * Sin(TmpOpts.Specie(k).Skin(5) / 100) + y
+  Line8.x2 = TmpOpts.Specie(k).Skin(4) * multx * Cos(TmpOpts.Specie(k).Skin(5) / 100) + X
+  Line8.y2 = TmpOpts.Specie(k).Skin(4) * multy * Sin(TmpOpts.Specie(k).Skin(5) / 100) + Y
   Line9.x1 = Line8.x2
   Line9.y1 = Line8.y2
-  Line9.x2 = TmpOpts.Specie(k).Skin(6) * multx * Cos(TmpOpts.Specie(k).Skin(7) / 100) + x
-  Line9.y2 = TmpOpts.Specie(k).Skin(6) * multy * Sin(TmpOpts.Specie(k).Skin(7) / 100) + y
+  Line9.x2 = TmpOpts.Specie(k).Skin(6) * multx * Cos(TmpOpts.Specie(k).Skin(7) / 100) + X
+  Line9.y2 = TmpOpts.Specie(k).Skin(6) * multy * Sin(TmpOpts.Specie(k).Skin(7) / 100) + Y
 End Sub
 
 'Botsareus 4/37/2013 Do not need this one also
@@ -3699,17 +3724,17 @@ robname = Replace(TmpOpts.Specie(k).Name, ".txt", "")
 Dim newR As Double
 Dim nextR As Double
 Dim nameR As Double
-Dim x As Long
+Dim X As Long
 
 Dim dbls() As Double
 
 ReDim dbls(Len(robname) - 1)
-For x = 1 To Len(robname)
-dbls(x - 1) = Rnd(-Asc(Mid(robname, x, 1)))
+For X = 1 To Len(robname)
+dbls(X - 1) = Rnd(-Asc(Mid(robname, X, 1)))
 Next 'pre seeds
 
-For x = 1 To Len(robname)
-newR = dbls(x - 1)
+For X = 1 To Len(robname)
+newR = dbls(X - 1)
 nextR = Rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
 Next 'randomize by name
 
@@ -3723,12 +3748,12 @@ nextR = 0
     Randomize 0
     
     ReDim dbls(UBound(rob(0).DNA))
-    For x = 0 To UBound(rob(0).DNA)
-    dbls(x) = Rnd(-(angle(0, 0, Rnd(-rob(0).DNA(x).value) - 0.5, Rnd(-rob(0).DNA(x).tipo) - 0.5)))
+    For X = 0 To UBound(rob(0).DNA)
+    dbls(X) = Rnd(-(angle(0, 0, Rnd(-rob(0).DNA(X).value) - 0.5, Rnd(-rob(0).DNA(X).tipo) - 0.5)))
     Next 'pre seeds
     
-    For x = 0 To UBound(rob(0).DNA)
-    newR = dbls(x)
+    For X = 0 To UBound(rob(0).DNA)
+    newR = dbls(X)
     nextR = Rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
     Next 'randomize by dna
     
@@ -3990,14 +4015,14 @@ Private Sub PosReset_Click()
 
 End Sub
 
-Private Sub Initial_Position_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Initial_Position_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   If Button = vbLeftButton Then
     DragBegin Initial_Position
     PaintObstacles
   End If
 End Sub
 
-Private Sub IPB_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub IPB_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   If Button = vbLeftButton Then
     DragBegin Initial_Position
     PaintObstacles
@@ -4068,8 +4093,8 @@ Public Sub DragBegin(ctl As Control)
     m_DragRect.TwipsToScreen m_CurrCtl
     
     'Make initial mouse position relative to control
-    m_DragPoint.x = m_DragPoint.x - m_DragRect.Left
-    m_DragPoint.y = m_DragPoint.y - m_DragRect.Top
+    m_DragPoint.X = m_DragPoint.X - m_DragRect.Left
+    m_DragPoint.Y = m_DragPoint.Y - m_DragRect.Top
     
     'Force redraw of form without sizing handles
     'before drawing dragging rectangle
@@ -4101,7 +4126,7 @@ End Sub
 
 'To handle all mouse message anywhere on the form, we set the mouse
 'capture to the form. Mouse movement is processed here
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selected
 
     Dim nWidth As Single, nHeight As Single
@@ -4116,8 +4141,8 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
         'Hide existing rectangle
         DrawDragRect
         'Update drag rectangle coordinates
-        m_DragRect.Left = pt.x - m_DragPoint.x
-        m_DragRect.Top = pt.y - m_DragPoint.y
+        m_DragRect.Left = pt.X - m_DragPoint.X
+        m_DragRect.Top = pt.Y - m_DragPoint.Y
         m_DragRect.Right = m_DragRect.Left + nWidth
         m_DragRect.Bottom = m_DragRect.Top + nHeight
         'Draw new rectangle
@@ -4130,25 +4155,25 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
         'Action depends on handle being dragged
         Select Case m_DragHandle
             Case 0
-                m_DragRect.Left = pt.x
-                m_DragRect.Top = pt.y
+                m_DragRect.Left = pt.X
+                m_DragRect.Top = pt.Y
             Case 2
-                m_DragRect.Right = pt.x
-                m_DragRect.Top = pt.y
+                m_DragRect.Right = pt.X
+                m_DragRect.Top = pt.Y
             Case 4
-                m_DragRect.Right = pt.x
-                m_DragRect.Bottom = pt.y
+                m_DragRect.Right = pt.X
+                m_DragRect.Bottom = pt.Y
             Case 6
-                m_DragRect.Left = pt.x
-                m_DragRect.Bottom = pt.y
+                m_DragRect.Left = pt.X
+                m_DragRect.Bottom = pt.Y
             Case 9
-                m_DragRect.Top = pt.y
+                m_DragRect.Top = pt.Y
             Case 10
-                m_DragRect.Bottom = pt.y
+                m_DragRect.Bottom = pt.Y
             Case 11
-                m_DragRect.Left = pt.x
+                m_DragRect.Left = pt.X
             Case 12
-                m_DragRect.Right = pt.x
+                m_DragRect.Right = pt.X
         End Select
         'Draw new rectangle
         DrawDragRect
@@ -4157,7 +4182,7 @@ End Sub
 
 'To handle all mouse message anywhere on the form, we set the mouse
 'capture to the form. Mouse up is processed here
-Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selected
 
     If Button = vbLeftButton Then
@@ -4202,7 +4227,7 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
 End Sub
 
 'Process MouseDown over handles
-Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
     Dim i As Integer
     Dim rc As RECT
 
@@ -4232,7 +4257,7 @@ Private Sub picHandle_MouseDown(Index As Integer, Button As Integer, Shift As In
     ClipCursor rc
 End Sub
 
-Private Sub Robplacline_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Robplacline_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
     Dim i As Integer
     Dim rc As RECT
 
@@ -4838,8 +4863,8 @@ Dim o As Integer
 For o = 1 To UBound(xObstacle)
 If xObstacle(o).exist Then
 With xObstacle(o)
- .pos.x = .pos.x / SimOpts.FieldWidth
- .pos.y = .pos.y / SimOpts.FieldHeight
+ .pos.X = .pos.X / SimOpts.FieldWidth
+ .pos.Y = .pos.Y / SimOpts.FieldHeight
  .Width = .Width / SimOpts.FieldWidth
  .Height = .Height / SimOpts.FieldHeight
 End With
@@ -4854,7 +4879,7 @@ Dim o As Integer
 For o = 1 To UBound(xObstacle)
 If xObstacle(o).exist Then
 With xObstacle(o)
- IPB.Line (.pos.x * IPB.ScaleWidth, .pos.y * IPB.ScaleHeight)-((.pos.x + .Width) * IPB.ScaleWidth, (.pos.y + .Height) * IPB.ScaleHeight), .color, BF
+ IPB.Line (.pos.X * IPB.ScaleWidth, .pos.Y * IPB.ScaleHeight)-((.pos.X + .Width) * IPB.ScaleWidth, (.pos.Y + .Height) * IPB.ScaleHeight), .color, BF
 End With
 End If
 Next
@@ -4952,6 +4977,7 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
   IntOpts.IName = Trim(IntName.text)
   IntOpts.InboundPath = inboundPathText.text
   IntOpts.OutboundPath = outboundPathText.text
+  IntOpts.ServIP = txtInttServ.text
   SaveInternetSett
   
   'These change values while a sim is running.
@@ -5007,7 +5033,7 @@ If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 
   'Botsareus 5/7/2013 Safemode component
   Form1.lblSafeMode.Visible = False
   
-  If x_restartmode = 0 Or x_restartmode = 4 Or x_restartmode = 7 Then    'Botsareusnotdone expend for eco evo
+  If x_restartmode = 0 Or x_restartmode = 4 Or x_restartmode = 7 Then
     MDIForm1.Objects.Enabled = True
     MDIForm1.inssp.Enabled = True
     MDIForm1.DisableArep.Enabled = True
@@ -5221,6 +5247,7 @@ End If
   IntName.text = IntOpts.IName
   inboundPathText.text = IntOpts.InboundPath
   outboundPathText.text = IntOpts.OutboundPath
+  txtInttServ.text = IntOpts.ServIP
   If inboundPathText.text = "" Then inboundPathText.text = MDIForm1.MainDir + "\IM\inbound"
   If outboundPathText.text = "" Then outboundPathText.text = MDIForm1.MainDir + "\IM\outbound"
   
@@ -5621,10 +5648,10 @@ skipthisspecie4:
     Write #1, .color
     Write #1, .Width
     Write #1, .Height
-    Write #1, .vel.x
-    Write #1, .vel.y
-    Write #1, .pos.x
-    Write #1, .pos.y
+    Write #1, .vel.X
+    Write #1, .vel.Y
+    Write #1, .pos.X
+    Write #1, .pos.Y
   End With
   End If
   Next
@@ -5638,6 +5665,15 @@ skipthisspecie4:
   For t = 0 To numSpecies - 1
     Write #1, TmpOpts.Specie(t).NoChlr
   Next
+  
+  'Botsareus 7/15/2014 Some more variables
+  Write #1, TmpOpts.SunOnRnd
+  
+  'Botsareus 7/18/2014 Some more settings exposed for Testlund
+  Write #1, MDIForm1.displayResourceGuagesToggle
+  Write #1, MDIForm1.displayMovementVectorsToggle
+  Write #1, MDIForm1.displayShotImpactsToggle
+  Write #1, MDIForm1.showVisionGridToggle
 
   Close 1
   Exit Sub
@@ -5955,10 +5991,10 @@ Public Sub ReadSettFromFile()
     If Not EOF(1) Then Input #1, .color
     If Not EOF(1) Then Input #1, .Width
     If Not EOF(1) Then Input #1, .Height
-    If Not EOF(1) Then Input #1, .vel.x
-    If Not EOF(1) Then Input #1, .vel.y
-    If Not EOF(1) Then Input #1, .pos.x
-    If Not EOF(1) Then Input #1, .pos.y
+    If Not EOF(1) Then Input #1, .vel.X
+    If Not EOF(1) Then Input #1, .vel.Y
+    If Not EOF(1) Then Input #1, .pos.X
+    If Not EOF(1) Then Input #1, .pos.Y
     .exist = True
   End With
   Next
@@ -5973,6 +6009,24 @@ Public Sub ReadSettFromFile()
   For t = 0 To maxsp
     If Not EOF(1) Then Input #1, TmpOpts.Specie(t).NoChlr
   Next
+  
+  'Botsareus 7/15/2014 Some more variables
+  If Not EOF(1) Then Input #1, TmpOpts.SunOnRnd
+  
+  'Botsareus 7/18/2014 Some more settings exposed for Testlund
+  If Not EOF(1) Then Input #1, check
+  MDIForm1.displayResourceGuagesToggle = check
+  MDIForm1.DisplayResourceGuages.Checked = check
+  If Not EOF(1) Then Input #1, check
+  MDIForm1.displayMovementVectorsToggle = check
+  MDIForm1.DisplayMovementVectors.Checked = check
+  If Not EOF(1) Then Input #1, check
+  MDIForm1.displayShotImpactsToggle = check
+  MDIForm1.DisplayShotImpacts.Checked = check
+  If Not EOF(1) Then Input #1, check
+  MDIForm1.showVisionGridToggle = check
+  MDIForm1.ShowVisionGrid.Checked = check
+
   
   If (Not EOF(1)) Then MsgBox "This settings file is a newer version than this version can read.  " + vbCrLf + _
                               "Not all the information it contains can be " + vbCrLf + _
@@ -6142,6 +6196,7 @@ On Error GoTo fine
   Print #1, IntName.text
   Print #1, inboundPathText.text
   Print #1, outboundPathText.text
+  Print #1, txtInttServ.text
   
   Close 1
   Exit Sub
@@ -6159,6 +6214,8 @@ Public Sub IntSettLoad()
     Input #1, IntOpts.IName
     Input #1, IntOpts.InboundPath
     Input #1, IntOpts.OutboundPath
+    IntOpts.ServIP = "Default"
+    If Not EOF(1) Then Input #1, IntOpts.ServIP
     
     Close 1
   End If

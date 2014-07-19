@@ -1075,7 +1075,7 @@ If x_restartmode = 3 Then
     MsgBox "Can not enable Internet during stepladder league."
     Exit Sub
 End If
-If x_restartmode = 4 Or x_restartmode = 5 Then
+If (x_restartmode = 4 Or x_restartmode = 5) And y_eco_im = 0 Then
     MsgBox "Can not enable Internet during simple survival mode."
     Exit Sub
 End If
@@ -1149,7 +1149,8 @@ tryagain:
      & " -in " & iq _
      & " -out " & oq _
      & " -name " & Chr(34) & IntOpts.IName & Chr(34) _
-     & " -pid " & Str(GetCurrentProcessId())
+     & " -pid " & Str(GetCurrentProcessId()) _
+     & " -server " & Chr(34) & IIf(IsValidIp(IntOpts.ServIP), IntOpts.ServIP, "74.14.179.28") & Chr(34)
 
     IntOpts.pid = shell(s, vbNormalFocus)
     If IntOpts.pid = 0 Then
@@ -1436,13 +1437,15 @@ If SimOpts.F1 Or x_restartmode > 3 Then
     optMaxCycles = MaxCycles 'Botsareus 2/14/2014 Move max cycles to optimized max cycles
 End If
 pbOn.Enabled = Not SimOpts.F1
+inssp.Enabled = y_eco_im = 0
+If y_eco_im = 2 And Not F1Internet.Checked And Not SimOpts.F1 Then F1Internet_Click 'Botsareus 7/12/2014 For eco evo this activates the internet
 Form1.BackColor = backgcolor 'Botsareus 4/27/2013 Set back ground skin color
 If startnovid Then 'turn off vedio as requested
      visualize = False
      Form1.Label1.Visible = True
      startnovid = False
 End If
-'Botsareus 3/19/2014  auto. load some graphs for evo mode, Botsareusnotdone need to expend for eco evo later
+'Botsareus 3/19/2014  auto. load some graphs for evo mode
 If y_graphs And (x_restartmode = 4 Or x_restartmode = 5) Then
     Form1.NewGraph POPULATION_GRAPH, "Populations"
     Form1.NewGraph MUTATIONS_GRAPH, "Average_Mutations"
@@ -1640,7 +1643,7 @@ Private Sub Toolbar1_ButtonMenuClick(ByVal ButtonMenu As MSComctlLib.ButtonMenu)
 End Sub
 
 Private Sub about_Click()
-  frmAbout.Show
+    frmAbout.Show
 End Sub
 
 Private Sub autos_Click()
@@ -2170,12 +2173,26 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                 'setup evo test round
                     SimOpts = TmpOpts
                     'load robot
-                    optionsform.additem MDIForm1.MainDir & "\evolution\Base.txt"
-                    optionsform.additem MDIForm1.MainDir & "\evolution\Test.txt"
+                    If y_eco_im > 0 Then
+                        Dim ecocount As Byte
+                        For ecocount = 1 To 15
+                            optionsform.additem MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt"
+                            optionsform.additem MDIForm1.MainDir & "\evolution\testrob" & ecocount & "\Test.txt"
+                            MDIForm1.Caption = "Loading... " & Int((ecocount - 1) * 100 / 15) & "% Please wait..."
+                        Next
+                        MDIForm1.Caption = MDIForm1.BaseCaption
+                    Else
+                        optionsform.additem MDIForm1.MainDir & "\evolution\Base.txt"
+                        optionsform.additem MDIForm1.MainDir & "\evolution\Test.txt"
+                    End If
                     'disable mutations
                     For i = 0 To UBound(TmpOpts.Specie)
                      If TmpOpts.Specie(i).Name = "Base.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                      If TmpOpts.Specie(i).Name = "Test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If y_eco_im > 0 Then
+                        If TmpOpts.Specie(i).Name = "Base.txt" Then TmpOpts.Specie(i).qty = 1
+                        If TmpOpts.Specie(i).Name = "Test.txt" Then TmpOpts.Specie(i).qty = 1
+                     End If
                     Next
                     'F1 enabled
                     TmpOpts.F1 = True
@@ -2186,8 +2203,17 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                 'setup evo
                     SimOpts = TmpOpts
                     'load robot
-                    optionsform.additem MDIForm1.MainDir & "\evolution\Base.txt"
-                    optionsform.additem MDIForm1.MainDir & "\evolution\Mutate.txt"
+                    If y_eco_im > 0 Then
+                        For ecocount = 1 To 15
+                            optionsform.additem MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt"
+                            optionsform.additem MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.txt"
+                            MDIForm1.Caption = "Loading... " & Int((ecocount - 1) * 100 / 15) & "% Please wait..."
+                        Next
+                        MDIForm1.Caption = MDIForm1.BaseCaption
+                    Else
+                        optionsform.additem MDIForm1.MainDir & "\evolution\Base.txt"
+                        optionsform.additem MDIForm1.MainDir & "\evolution\Mutate.txt"
+                    End If
                     'disable mutations
                     For i = 0 To UBound(TmpOpts.Specie)
                      If TmpOpts.Specie(i).Name = "Base.txt" Then
@@ -2195,6 +2221,10 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                         TmpOpts.Specie(i).NoChlr = NoChlr
                      End If
                      If TmpOpts.Specie(i).Name = "Mutate.txt" Then TmpOpts.Specie(i).NoChlr = NoChlr
+                      If y_eco_im > 0 Then
+                        If TmpOpts.Specie(i).Name = "Base.txt" Then TmpOpts.Specie(i).qty = 1
+                        If TmpOpts.Specie(i).Name = "Mutate.txt" Then TmpOpts.Specie(i).qty = 1
+                      End If
                     Next
                     'F1 desabled
                     TmpOpts.F1 = False

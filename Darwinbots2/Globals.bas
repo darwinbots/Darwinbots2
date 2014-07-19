@@ -83,6 +83,8 @@ Public y_LFOR As Single
 Public y_Stgwins As Integer
 Public y_zblen As Integer
 
+Public y_eco_im As Byte
+
 Public NoChlr As Boolean
 
 'actual evolution globals
