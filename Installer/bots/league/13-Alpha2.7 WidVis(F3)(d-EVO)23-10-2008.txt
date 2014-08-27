@@ -1,0 +1,221 @@
+'My DNA code for an F3 Bot
+'name : Alpha 2.7
+'created by : d-EV0
+'class : F3
+
+cond
+ *.121 1 !=
+start
+
+ 15 .eye4width store
+ 10 .eye4dir store
+
+ 15 .eye6width store
+ -10 .eye6dir store
+
+ 60 .eye3width store
+ 50 .eye3dir store
+
+
+ 60 .eye7width store
+ -50 .eye7dir store
+
+ 115 .eye2width store
+ 140 .eye2dir store
+
+ 115 .eye8width store
+ -140 .eye8dir store
+
+ 200 .eye1width store
+ 300 .eye1dir store
+
+ 200 .eye9width store
+ -300 .eye9dir store
+
+ *.121 1 =
+stop
+
+cond
+ *.nrg 3500 >
+start
+ 100 .strbody store
+ *.body 10000  >
+ 10 .repro store
+stop
+
+
+' TARGETTING ENEMY
+
+cond
+ *.eye6 *.eye2 >=
+ *.eye6 *.eye3 >=
+ *.eye6 *.eye4 >=
+ *.eye6 *.eye5 >=
+ *.eye6 *.eye1 >=
+ *.eye6 *.eye7 >=
+ *.eye6 *.eye8 >=
+ *.eye6 *.eye9 >=
+ *.eye6 0 >
+start
+ 35
+ .aimdx
+ store
+stop
+
+cond
+ *.eye7 *.eye2 >=
+ *.eye7 *.eye3 >=
+ *.eye7 *.eye4 >=
+ *.eye7 *.eye5 >=
+ *.eye7 *.eye6 >=
+ *.eye7 *.eye1 >=
+ *.eye7 *.eye8 >=
+ *.eye7 *.eye9 >=
+ *.eye7 0 >
+start
+ 70
+ .aimdx
+ store
+stop
+
+cond
+ *.eye8 *.eye2 >=
+ *.eye8 *.eye3 >=
+ *.eye8 *.eye4 >=
+ *.eye8 *.eye5 >=
+ *.eye8 *.eye6 >=
+ *.eye8 *.eye7 >=
+ *.eye8 *.eye1 >=
+ *.eye8 *.eye9 >=
+ *.eye8 0 >
+start
+ 105
+ .aimdx
+ store
+stop
+
+cond
+ *.eye9 *.eye2 >=
+ *.eye9 *.eye3 >=
+ *.eye9 *.eye4 >=
+ *.eye9 *.eye5 >=
+ *.eye9 *.eye6 >=
+ *.eye9 *.eye7 >=
+ *.eye9 *.eye8 >=
+ *.eye9 *.eye1 >=
+ *.eye9 0 >
+start
+ 140
+ .aimdx
+ store
+
+cond
+ *.eye1 *.eye2 >=
+ *.eye1 *.eye3 >=
+ *.eye1 *.eye4 >=
+ *.eye1 *.eye5 >=
+ *.eye1 *.eye6 >=
+ *.eye1 *.eye7 >=
+ *.eye1 *.eye8 >=
+ *.eye1 *.eye9 >=
+ *.eye1 0 >
+start
+ 140
+ .aimsx
+ store
+stop
+
+cond
+ *.eye2 *.eye1 >=
+ *.eye2 *.eye3 >=
+ *.eye2 *.eye4 >=
+ *.eye2 *.eye5 >=
+ *.eye2 *.eye6 >=
+ *.eye2 *.eye7 >=
+ *.eye2 *.eye8 >=
+ *.eye2 *.eye9 >=
+ *.eye2 0 >
+start
+ 105
+ .aimsx
+ store
+stop
+
+cond
+ *.eye3 *.eye2 >=
+ *.eye3 *.eye1 >=
+ *.eye3 *.eye4 >=
+ *.eye3 *.eye5 >=
+ *.eye3 *.eye6 >=
+ *.eye3 *.eye7 >=
+ *.eye3 *.eye8 >=
+ *.eye3 *.eye9 >=
+ *.eye3 0 >
+start
+ 70
+ .aimsx
+ store
+stop
+
+cond
+ *.eye4 *.eye2 >=
+ *.eye4 *.eye3 >=
+ *.eye4 *.eye1 >=
+ *.eye4 *.eye5 >=
+ *.eye4 *.eye6 >=
+ *.eye4 *.eye7 >=
+ *.eye4 *.eye8 >=
+ *.eye4 *.eye9 >=
+ *.eye4 0 >
+start
+ 35
+ .aimsx
+ store
+stop
+
+cond
+ *.refeye *.myeye !=
+ *.eye5 *.eye1 >=
+ *.eye5 *.eye2 >=
+ *.eye5 *.eye3 >=
+ *.eye5 *.eye4 >=
+ *.eye5 *.eye6 >=
+ *.eye5 *.eye7 >=
+ *.eye5 *.eye8 >=
+ *.eye5 *.eye9 >=
+ *.eye5 0 >
+start
+ *.refveldx .dx store
+ *.refvelup 40 add .up store
+stop
+
+cond
+ *.refeye *.myeye !=
+ *.eye5 7 >
+start
+ *.refxpos *.refypos angle .setaim store
+ *.refxpos *.refypos angle *.refaim *.refvel mult 40 *.refxpos *.xpos sub 2 pow *.refypos *.ypos sub 2 pow add sqr div mult 60 *.focuseye mult mult .aimdx store
+ *.refxpos *.refypos angle `(*.refaim *.aim sub abs mult) .aimshoot store
+ -8 .shootval store
+ *.refshell sgn -1 add 5 mult -1 add .shoot store
+ *.refvelup .up store
+stop
+
+cond
+ *.eye5 0 =
+start
+ 30
+ .up
+ store
+stop
+
+cond
+ *.refeye *.myeye =
+start
+ 140
+ .aimdx
+ store
+stop
+
+end
+'#tag:Alpha2.7 WidVis(F3)(d-EVO)23-10-2008.txt

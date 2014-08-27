@@ -1,0 +1,414 @@
+'Caterpillar
+'Moves by extending and retracting ties.
+'V0.1 kind of in development. That is also the reason the bot is also filled with useless genes, and ineffiecient.
+'If anyone is interested in the way it moves it is under the head "'moving with ties, yes with ties."
+'It will win the MB-league, but having much trouble doing it. Some changes broke the original design, I don't know what changes yet.
+'Made by Peter
+'Made 04-11-08
+
+def time 100
+def head 101
+def move 102
+def Mvel 971
+def maxlengh 972
+def stiftie 973
+def phycics 974
+def angle 104
+
+'Split MB
+cond
+*.nrg 5000 >
+*.body 2000 >
+start
+.deltie inc
+stop
+
+'first ever bot
+cond
+*.maxlengh 0 =
+start
+1000 .maxlengh store
+100 .stiftie store
+stop
+
+'reproduce
+cond
+*.numties 0 =
+*.robage 0 !=
+start
+50 .repro store
+1 .head store
+1 .tout3 store
+stop
+
+'birth turn
+cond
+*.trefage *.refage =
+*.robage 2 >
+start
+628 .aimdx store
+stop
+
+cond
+*.robage 0 =
+start
+.shoot .ploc store 
+.tie inc
+14 .time store
+628 .angle store
+-30 .eye1width store
+157 .eye1dir store
+-30 .eye9width store
+-157 .eye9dir store
+stop
+
+'I'm old and no MB, strange.
+cond
+*.robage 1 >
+*.numties 0 =
+start
+100 .aimdx store
+stop
+
+'Head-change
+cond
+*.edge 1 =
+*.refkills 1 add *.in6 =
+*.eye5 0 !=
+and
+or
+*.reftype 1 =
+or
+*.head 0 !=
+and
+start
+500 .aimdx store
+'0 .head store
+'0 .tout3 store
+stop
+
+cond
+*.99 0 !=
+start
+.99 dec
+stop
+
+cond
+*.robage 2 >
+*.tin3 0 =
+*.head 0 =
+start
+1 .head store
+1 .tout3 store
+10 .99 store
+stop
+
+'MB-sharing stuff
+cond
+*.numties 1 =
+*.trefage *.tin1 =
+start
+.tienum inc
+*.stiftie .stifftie store
+50 .sharenrg store
+stop
+
+cond
+*.eye1 0 =
+*.eye2 0 =
+*.eye3 0 =
+*.eye4 0 =
+*.eye5 0 =
+*.eye6 0 =
+*.eye7 0 =
+*.eye8 0 =
+*.eye9 0 =
+start
+'*.angle
+628 .fixang store
+stop
+
+cond
+*.head 1 =
+*.eye2 0 =
+*.eye3 0 =
+*.eye4 0 =
+*.eye5 0 =
+*.eye6 0 =
+*.eye7 0 =
+*.eye8 0 =
+start
+0 .move store
+0 .tout2 store
+*.eye1 0 !=
+400 .aimsx store
+-350 .angle store
+*.eye9 0 !=
+*.eye1 0 =
+and
+-400 .aimsx store
+'350 .angle store
+'200 .maxlengh store
+'*.maxvel *.phycics ++ 2 sub .dx
+stop
+
+'direction
+cond
+*.eye5 0 =
+start
+*.eye2 0 !=
+45 .aimsx store
+*.eye8 0 !=
+-45 .aimsx store
+*.eye3 0 !=
+30 .aimsx store
+*.eye7 0 !=
+-30 .aimsx store
+*.eye4 0 !=
+15 .aimsx store
+*.eye6 0 !=
+-15 .aimsx store
+stop
+
+'moving with ties, yes with ties.
+
+
+'second step body
+cond
+*.move 1 !=
+*.head 0 =
+*.trefage *.time mod *.time 2 div >
+start
+*.maxlengh .fixlen store
+1 .fixpos store
+stop
+
+'second step head
+cond
+*.move 1 !=
+*.head 0 !=
+*.trefage *.time mod *.time 2 div >
+start
+0 .fixpos store
+'*.eye9 *.eye1 sub 2 mult .aimdx store
+stop
+
+'first step body
+cond
+*.move 1 !=
+*.head 0 =
+*.trefage *.time mod *.time 2 div <
+start
+1 .fixlen store
+0 .fixpos store
+stop
+
+'second step head
+cond
+*.move 1 !=
+*.head 0 !=
+*.trefage *.time mod *.time 2 div <
+start
+1 .fixpos store
+stop
+
+'Different phycics section
+'just a try to let it survive in F1-conditions
+'It stays bad with weak phycics, it needs friction for stability.
+cond
+*.tielen 1000 >
+start
+1 .phycics store
+'10 .stifftie store
+stop
+
+cond
+*.phycics 1 =
+start
+200 .maxlengh store
+50 .stiftie store
+stop
+
+cond
+*.phycics 0 =
+*.eye1 0 =
+*.eye2 0 =
+*.eye3 0 =
+*.eye4 0 =
+*.eye5 0 =
+*.eye6 0 =
+*.eye7 0 =
+*.eye8 0 =
+*.eye9 0 =
+start
+1000 .maxlengh store
+stop
+
+'Shooting section
+cond
+*.reftype 0 =
+*.eye5 0 >
+*.eye5 40 <
+*.refkills 1 add *.in6 !=
+start
+100 .maxlengh store
+*.refxpos *.refypos angle .setaim store
+-10 .shootval store
+-6 .shoot store
+0 .tout2 store
+0 .move store
+'1 .fixlen store 'added line
+stop
+
+cond
+*.eye5 45 >
+*.refeye 0 =
+*.pain 100 <
+and
+start
+1 .fixpos store
+1 .fixlen store
+stop
+
+cond
+*.eye5 39 >
+*.refkills 1 add *.in6 !=
+*.reftype 0 =
+start
+100 .maxlengh store
+1 .tout2 store
+1 .move store
+*.refxpos *.refypos angle .setaim store
+8 .shootval store
+*.refpoison *.refshell =>
+-6 .shoot store
+*.refpoison *.refshell <
+-1 .shoot store
+stop
+
+'Did you, did you just shoot at me.
+cond
+*.shflav 0 !=
+*.shflav -2 !=
+start
+*.shang .aimshoot store
+25 .shootval store
+0 .shflav store
+*.refpoison *.refshell =>
+-6 .shoot store
+*.refpoison *.refshell <
+-1 .shoot store
+stop
+
+
+
+'body
+cond
+*.nrg 500 >
+*.nrg *.body >
+start
+100 .strbody store
+stop
+
+cond
+*.nrg 200 <
+start
+100 .fdbody store
+stop
+
+'?onspec
+cond
+start
+*.kills 1 add .out6 store
+.tout1 inc
+*.tin2 .move store
+stop
+
+'let it move, for now.
+cond
+'*.eye1 0 =
+'*.eye5 0 =
+'*.eye9 0 =
+'*.refkills 1 add *.in6 =
+1 1 =
+'or
+start
+0 .move store
+0 .tout2 store
+stop
+
+'Sight communication
+cond
+*.edge 1 !=
+*.refkills 1 add *.in6 !=
+or
+*.reftype 1 !=
+or
+*.head 0 =
+and
+*.eye5 0 !=
+start
+*.eye5 .tout4 store
+stop
+
+'order body
+cond
+*.head 0 =!
+start
+*.aimsx .tout5 store
+stop
+
+'body move
+cond
+*.head 0 =
+start
+*.tin5 .aimsx store
+stop
+
+'defence
+
+cond
+*.vloc .shoot !=
+start
+-2 .venval store
+.shoot .vloc store
+stop
+
+'poison reloading
+cond
+*.numties 0 !=
+*.poison 400 <
+*.nrg 1100 >
+start
+100 .strpoison store
+stop
+
+'increasing shell
+cond
+*.numties 0 !=
+*.shell 250 <
+*.nrg 1500 >
+start
+100 .mkshell store
+stop
+
+cond
+*.numties 1 >
+start
+*.tiepres .deltie store
+stop
+
+'look veggie, waste.
+cond
+*.waste 100 >
+*.refeye 0 =
+*.reftie 0 =
+start
+*.waste .shootval store
+-4 .shoot store
+stop
+
+'the end
+end
+
+'#tag:Caterpillar(Peter)(F2_MB)04-11-08.txt

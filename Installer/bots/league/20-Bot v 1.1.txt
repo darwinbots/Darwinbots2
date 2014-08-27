@@ -1,0 +1,206 @@
+def enemysighted 50
+def foodxpos 51
+def foodypos 52
+
+cond
+start
+-8 .shootval store
+stop
+
+cond
+*.body 50 <
+*.nrg 200 >
+start
+100 .strbody store
+stop
+
+cond
+*.body 50 >
+start
+10 .fdbody store
+stop
+
+'eye5 goes all around, eye1 now points forward
+'eye1 at 0
+'eye2 at 157 right
+'eye3 at 314
+'eye4 at 471
+'eye6 at 628
+'eye7 at 785
+'eye8 at 942
+'eye9 at 1099
+'cond
+'start
+'1221 .eye5width store
+'157 .eye1width store
+'157 .eye2width store
+'157 .eye3width store
+'157 .eye4width store
+'157 .eye6width store
+'157 .eye7width store
+'157 .eye8width store '35
+'157 .eye9width store
+'-140 .eye1dir store '0
+'-262 .eye2dir store '1
+'-384 .eye3dir store '2
+'-506 .eye4dir store '3
+'-593 .eye6dir store '4
+'-715 .eye7dir store '5
+'-837 .eye8dir store '6
+'-959 .eye9dir store '7
+'stop
+
+cond
+start
+*.tiepres .deltie store
+stop
+
+cond
+start
+359 .aimsx store
+*.maxvel .up store
+stop
+
+'I've arrived at the spot, but no food...better stop looking.
+cond
+*.foodxpos 100 + *.xpos >= *.foodxpos 100 - *.xpos > |
+*.foodypos 100 + *.ypos >= *.foodypos 100 - *.ypos > |
+*.enemysighted 0 =
+start
+0 .out1 store
+0 .out2 store
+0 .out3 store
+0 .foodxpos store
+0 .foodypos store
+0 .shoot store
+stop
+
+'Oh no, lost sight of it!
+cond
+*.refshoot *.myshoot = *.eye5 0 = |
+*.enemysighted 1 =
+start
+0 .out1 store
+0 .out2 store
+0 .out3 store
+0 .enemysighted store
+0 .shoot store
+0 .foodxpos store
+0 .foodypos store
+stop
+
+'cond
+'*.eye5 0 >
+'start
+'0 .aimsx store
+'*.maxvel .up store
+'stop
+
+'Someone's telling me where the food is!
+cond
+*.refshoot *.myshoot =
+*.enemysighted 0 =
+*.in1 0 !=
+*.in2 0 !=
+start
+*.in2 .out2 store
+*.in3 .out3 store
+*.in2 .foodxpos store
+*.in3 .foodypos store
+0 .aimsx store
+0 .shoot store
+stop
+
+cond
+*.refshoot *.myshoot =
+start
+0 .out1 store
+0 .fixpos store
+stop
+
+cond
+*.foodxpos 0 !=
+*.foodypos 0 !=
+*.enemysighted 0 =
+start
+*.foodxpos *.foodypos angle .setaim store
+0 .aimsx store
+*.maxvel .up store
+0 .shoot store
+stop
+
+'Let the chase begin!
+cond
+*.eye5 0 !=
+*.refshoot *.myshoot !=
+start
+1 .out1 store
+*.refxpos .out2 store
+*.refypos .out3 store
+1 .enemysighted store
+*.refxpos *.refypos angle .setaim store
+0 .aimsx store
+*.maxvel .up store
+0 .fixpos store
+0 .foodxpos store
+0 .foodypos store
+stop
+
+cond
+*.eye5 75 >
+*.refshoot *.myshoot !=
+start
+1 .fixpos store
+stop
+
+cond
+*.eye5 0 !=
+*.refshoot *.myshoot !=
+start
+-6 .shoot store
+stop
+
+cond
+*.eye5 25 < 
+*.refshoot *.myshoot !=
+start
+0 .fixpos store
+0 .aimsx store
+'*.refxpos *.refypos angle .setaim store
+*maxvel .up store
+stop
+
+cond
+*.eye5 25 >
+*.refshoot *.myshoot =
+1 0 =
+start
+*.maxvel .down store
+0 .fixpos store
+0 .up store
+0 .shoot store
+stopd
+
+'Reproduce
+cond 
+*.nrg 1000 >
+*.fixpos 0 !=
+start
+50 .repro store
+0 .fixpos store
+0 .aimsx store
+0 .up store
+*.maxvel .dn store
+stop
+
+cond 
+*.nrg 1000 >
+*.fixpos 0 =
+start
+0 .aimsx store
+50 .repro store
+stop
+
+end
+*.refxpos *.refypos angle .setaim store
+'#tag:Bot v 1.1.txt

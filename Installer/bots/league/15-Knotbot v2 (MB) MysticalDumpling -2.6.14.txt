@@ -1,0 +1,125 @@
+'Revamped Knotbot w/ processing
+
+def havnrg 21
+def stillneednrg 22
+def seenothing 23
+
+'tout1, tout2 conspec
+'tout3- ask for nrg
+'tout4- X-cord of target
+'tout5- Y-cord of target
+
+cond
+*.robage 0 =
+start
+123 .tout1 store
+-32000 32000 rnd .tout2 store
+stop
+
+start
+.tie inc
+stop
+
+cond
+*.body 200 >
+*.nrg 9100 > or
+start
+50 .repro store
+stop
+
+cond
+*.tin1 *.tout1 !=
+*.tin2 *.tout2 = or
+*.numties 0 >
+start
+*.eyef 50 <
+0 .seenothing store
+*.trefxpos *.trefypos angle .setaim store
+*.refvelup 30 add .up store
+*.refveldx .dx store
+0 .fixpos store
+clearbool
+*.eyef 50 >
+-6 .shoot store
+.fixpos inc
+stop
+
+cond
+*.myup *.refup =
+*.eye5 0 = or
+start
+0 .fixpos store
+.seenothing inc
+stop
+
+'Get rid of waste
+cond
+*.waste 100 >
+start
+*.waste .shootval store
+-4 .shoot store
+stop
+
+'=====================================
+'Social Aspects
+'=====================================
+'Can I give nrg?
+cond
+*.nrg 7500 >
+start
+.havnrg inc
+stop
+
+'Do I need nrg?
+cond
+*.nrg 500 <
+*.multi 1 =
+start
+.tout3 inc
+.stillneednrg inc
+stop
+
+'Do I still need nrg
+cond
+*.nrg 2000 >
+*.stillneednrg 0 >
+start
+0 .stillneednrg store
+stop
+
+cond
+*.stillneednrg 0 =
+start
+0 .tout3 store
+stop
+
+'Donate nrg
+cond
+*.tout3 0 >
+*.havnrg 0 >
+start
+-2 .sharenrg store
+stop
+
+'Do I see something interesting?
+cond
+*.eyef 0 >
+*.myup *.refup !=
+start
+*.refxpos .tout4 store
+*.refypos .tout5 store
+stop
+
+'If I see nothing interesting, head towards the target
+cond
+*.seenothing 0 >
+*.tin4 *.tin5 mult 0 !=
+start
+*.tin4 *.tin5 angle .setaim store
+20 .up store
+*.tin4 .tout4 store
+*.tin5 .tout5 store
+stop
+
+
+'#tag:Knotbot v2 (MB) MysticalDumpling -2.6.14.txt

@@ -1,0 +1,218 @@
+'multiply3
+'
+'originaly made for the F1 internet mode for a fast reproduction
+'Then I found out it was doing pretty good in the leagues, so 
+'here it is. With some 'little' chances for the league.
+
+def loc2 51
+def val2 52
+cond
+*.eye5 0 >
+*.refshoot *.myshoot !=
+*.refeye *.myeye !=
+*.loc2 0 =
+start
+.memloc .memloc store
+*.memval .loc2 store
+stop
+cond
+*.eye5 0 >
+*.refshoot *.myshoot !=
+*.refeye *.myeye !=
+*.loc2 0 !=
+start
+*.loc2 .memloc store
+*.memval .val2 store
+stop
+
+cond
+*.val20 !=
+*.loc2 0 !=
+start
+*.val2 *.loc2 store
+stop
+
+cond
+*.shflav 0 !=
+*.refpoison *.refshell <
+start
+*.shang .aimshoot store
+32 .shootval store
+-1 .shoot store
+0 .shflav store
+stop
+cond
+*.shflav 0 !=
+*.refpoison *.refshell >
+start
+*.shang .aimshoot store
+32 .shootval store
+-6 .shoot store
+0 .shflav store
+stop
+cond
+*.shflav 0 !=
+start
+*.shang .aimshoot store
+25 .shootval store
+-3 .shoot store
+0 .shflav store
+stop
+cond
+*.robage 0 =
+start
+.tie inc
+.shoot .memloc store
+.venval -2
+.shoot .vloc store
+.myeye .ploc store 
+stop
+cond
+*.robage 1 = 
+start 
+.deltie inc 
+stop
+cond
+*.eye5 0 >
+*.refeye *.myeye !=
+*.refshoot *.myshoot !=
+*.eye5 50 <
+start
+*.refxpos *.refypos angle .setaim store
+*.refveldx .dx store
+*.refvelup 30 add .up store
+stop
+cond
+ *.eye5 0 = 
+ *.refeye *.myeye = or
+*.refshoot *.myshoot = or
+start
+ 10 .up store
+*.eye9 *.eye1 sub 4 mult .aimdx store
+*.eye4 *.eye6 sub .aimsx store
+stop
+cond
+*.eye5 25 >
+*.refeye *.myeye !=
+*.memval -2 !=
+*.refeye 0 !=
+start
+50 .shootval store
+-3 .shoot store
+stop
+cond
+*.eye5 25 >
+*.refeye *.myeye !=
+*.refshoot *.myshoot !=
+*.refpoison *.refshell =>
+and
+and
+and
+start
+16 .shootval store
+-6 .shoot store
+stop
+cond
+*.eye5 25 >
+*.refeye *.myeye !=
+*.refpoison *.refshell <
+start
+16 .shootval store
+-1 .shoot store
+stop
+cond
+*.eye1 = 0
+*.eye2 = 0
+*.eye3 = 0
+*.eye4 = 0
+*.eye5 = 0
+*.eye6 = 0
+*.eye7 = 0
+*.eye8 = 0
+*.eye9 = 0
+start
+100 .up store
+stop
+cond
+*.waste 100 >
+start
+*.waste .shootval store
+-4 .shoot store
+stop
+cond
+*.nrg 5000 >
+start
+50 .repro store
+100 .strbody store
+stop
+cond
+*.paralyzed 100 >
+*.poisoned  100 > or
+*.pwaste 1000 > or
+start
+99 .repro store
+stop
+
+cond
+-2 *.shoot = 
+start
+0 .shoot store
+stop
+
+ cond
+ *.nrg 4000 >
+ *.body 500 <
+ start
+ 100 .strbody store
+ stop
+cond
+*.tiepres 0 >
+start
+*.tiepres .tienum store
+.tieval .tieloc store
+1000 .tieval store
+stop
+cond
+*.venom 200 <
+*.nrg 1500 >
+start
+100 .strvenom store
+stop
+cond
+*.poison 400 <
+*.nrg 1500 >
+start
+100 .strpoison store
+stop
+cond
+*.shell 250 <
+*.nrg 1500 >
+start
+100 .mkshell store
+stop
+cond
+*.nrg 100 <
+start
+100 .fdbody store
+stop
+cond
+*.nrg 250 <
+*.pain 50 > and
+start
+250 .sx store
+stop
+cond
+*.fixed 0 !=
+start
+0 .fixpos store
+stop
+cond
+*.genes 27 !=
+*.sexrepro 0 != or
+*.mrepro 0 != or
+start
+0 .repro store
+0 .sexrepro store
+0 .mrepro store
+stop
+'#tag:multiply3 (F2)(peter) -18.9.07.txt

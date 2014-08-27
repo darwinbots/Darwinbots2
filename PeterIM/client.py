@@ -19,11 +19,11 @@ args = vars(parser.parse_args())
 inbound = args['in'] if args['in']!= None else 'inbound'
 outbound = args['out'] if args['out']!= None else 'outbound'
 name = args['name'] if args['name']!= None else 'NO_NAME'
-waittime = args['waittime'] if args['waittime']!= None else 10
+waittime = int(args['waittime']) if args['waittime']!= None else 10
 server = args['server'] if args['server']!= None else "82.72.32.181"
-port = args['port'] if args['port']!= None else 21013
+port = int(args['port']) if args['port']!= None else 21013
 hybrid = args['n'] if args['n']!= None else 0
-maxinbound = args['maxinbound'] if args['maxinbound']!= None else 25
+maxinbound = int(args['maxinbound']) if args['maxinbound']!= None else 25
 
 class Client(socket):
 
@@ -108,8 +108,8 @@ class Client(socket):
         LENGTH_SIZE = 5
         length = self.decode_length(self.recv(LENGTH_SIZE))
         if  length==0:
+            print 'server got no bots'
             if self.status == "R":
-                print 'server got no bots'
                 time.sleep(waittime)
                 self.currentInbound+=100
             return
@@ -141,7 +141,7 @@ class Client(socket):
             print "received %s send %s" % (self.totalReceived, self.totalSend)
 
     def decode_length(self, l):
-        print "decode_length(%s)" % l
+        # print l
         return int(l)
 
 counter=0

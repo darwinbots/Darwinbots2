@@ -1,0 +1,61 @@
+'Topic: Short-bots thread  
+'Henk
+
+' Schoonmaker
+' bot for 6 gene bot league. Quite strong
+' what you call "Klein maar fijn"
+' in dutch.
+
+' Engage tie to foe
+cond
+*.eye5 50 >
+*.in1 157 !=
+start
+77 .tie store
+-1 .shoot store
+stop
+
+' Eat foe
+cond
+*.numties 0 >
+start
+77 .tienum store
+-1000 .tieval store
+-1 .tieloc store
+1 .deltie store
+50 .repro store
+stop
+
+' Initiate
+cond
+*.robage 0 =
+start
+1 .tie store
+157 .out1 store
+stop
+
+' Reproduce
+cond
+*.nrg 5000 >
+start
+50 .repro store
+628 .aimsx store
+stop
+
+' Follow
+cond
+*.eye3 *.eye7 !=
+start
+*.eye7 *.eye3 sub 2 mult .aimdx store
+stop
+
+' All kinds of things, without specific conditions to run
+cond
+*.numties 0 =
+start
+40 *.vel sub .up store
+*.in1 .aimdx store
+100 *.slime sub .mkslime store
+stop
+end
+'#tag:Schoonmaker (6G)(Henk)-04.03.04.txt

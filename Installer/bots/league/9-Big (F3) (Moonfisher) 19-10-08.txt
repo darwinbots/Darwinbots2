@@ -1,0 +1,92 @@
+'Big v1.0 (F3) 19-10-08
+'by Moonfisher
+'Not that clever... just goes ahead and shoots stuff, and grows big.
+'The eyes are from excalibur.
+
+def movebody 5000
+def maxbody 10000
+def x 10
+
+cond
+start
+.deltie inc
+
+*.memloc .dnalen !=
+.dnalen .memloc store
+
+*.nrg 500 <
+*.body 100 > and
+100 .fdbody store
+
+*.nrg 2000 >
+*.body *.nrg 4 div < and
+*.body .maxbody < and
+*.nrg 4 div *.body sub 10 mult .strbody store
+
+*.eye5 0 !=
+*.dnalen *.memval != and
+10 .shootval store
+*.refxpos *.refypos angle .setaim store
+*.refveldx .dx store
+*.refxpos *.xpos sub abs *.refypos *.ypos sub abs pyth 5 div 30 sub 0 floor 100 ceil *.refvelup add .up store
+
+dupbool
+*.refnrg *.refbody < and
+-1 .shoot store
+
+dropbool
+dupbool
+*.refnrg *.refbody >= and
+-6 .shoot store
+
+dropbool
+not
+*.body .movebody < and
+*.maxvel .up store
+*.robage 50 <
+*.timer 30 mod 20 < or and
+dupbool
+*.eye9 *.eye1 != and
+*.eye1 *.eye9 sub sgn 139 .x add mult .aimsx store
+dropbool
+dupbool
+*.eye8 *.eye2 != and
+*.eye2 *.eye8 sub sgn 104 .x add mult .aimsx store
+dropbool
+dupbool
+*.eye7 *.eye3 != and
+*.eye3 *.eye7 sub sgn 70 .x add mult .aimsx store
+dropbool
+dupbool
+*.eye6 *.eye4 != and
+*.eye4 *.eye6 sub sgn 35 .x add mult .aimsx store
+
+*.eye5 0 !=
+*.dnalen *.memval = and
+*.body .movebody < and
+150 .aimsx store
+
+*.eye5 0 =
+*.dnalen *.memval = or
+*.body .movebody >= and
+30 .aimsx store
+
+*.shflav 0 !=
+*.shang .aimshoot store
+-6 .shoot store
+10 .shootval store
+0 .shflav store
+
+*.eye5 0 =
+*.memval *.dnalen = or
+*.nrg 30000 > and 
+*.body .maxbody 3000 sub > 
+*.totalmyspecies 10 < or and
+*.aim 314 add .setaim store
+50 .repro store
+
+*.robage 10 <
+*.body 1500 > and
+*.maxvel .dx store
+stop
+'#tag:Big (F3) (Moonfisher) 19-10-08.txt
