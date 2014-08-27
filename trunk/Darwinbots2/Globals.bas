@@ -59,6 +59,22 @@ Public xObstacle() As Obstacle
 
 
 'Variables below prefixed x_ are used for league and evolution, y_ are used only for evolution
+'Variables prefixed _res_ are used for restriction overwrites
+Public x_res_kill_chlr As Byte
+Public x_res_kill_mb As Boolean
+Public x_res_other As Byte
+'
+Public y_res_kill_chlr As Byte
+Public y_res_kill_mb As Boolean
+Public y_res_kill_dq As Boolean
+Public y_res_other As Byte
+'
+Public x_res_kill_mb_veg As Boolean
+Public x_res_other_veg As Byte
+'
+Public y_res_kill_mb_veg As Boolean
+Public y_res_kill_dq_veg As Boolean
+Public y_res_other_veg As Byte
 
 'Botsareus 1/31/2014 Restart modes
 Public x_restartmode As Byte
@@ -84,8 +100,6 @@ Public y_Stgwins As Integer
 Public y_zblen As Integer
 
 Public y_eco_im As Byte
-
-Public NoChlr As Boolean
 
 'actual evolution globals
 

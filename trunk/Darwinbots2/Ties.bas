@@ -106,8 +106,8 @@ Public Sub UpdateTieAngles(t As Integer)
   While k > 0
     If rob(t).Ties(k).Port = whichTie Then
        n = rob(t).Ties(k).pnt  ' The bot number of the robot on the other end of the tie
-       tieAngle = angle(rob(t).pos.x, rob(t).pos.y, rob(n).pos.x, rob(n).pos.y)
-       dist = Sqr((rob(t).pos.x - rob(n).pos.x) ^ 2 + (rob(t).pos.y - rob(n).pos.y) ^ 2)
+       tieAngle = angle(rob(t).pos.X, rob(t).pos.Y, rob(n).pos.X, rob(n).pos.Y)
+       dist = Sqr((rob(t).pos.X - rob(n).pos.X) ^ 2 + (rob(t).pos.Y - rob(n).pos.Y) ^ 2)
        'Overflow prevention.  Very long ties can happen for one cycle when bots wrap in torridal fields
        If dist > 32000 Then dist = 32000
        rob(t).mem(TIEANG) = -CInt(AngDiff(angnorm(tieAngle), angnorm(rob(t).aim)) * 200)
@@ -136,6 +136,8 @@ Public Sub Update_Ties(t As Integer)
     'this routine addresses all ties. not just ones that match .tienum
     k = 1
     .vbody = .body
+    Dim atleast1tie As Boolean
+    atleast1tie = False
     While .Ties(k).pnt > 0 'while there is a tie that points to another robot that this bot created.
       If .Multibot Then
         If Not .Ties(k).back Then
@@ -155,15 +157,22 @@ Public Sub Update_Ties(t As Integer)
             shareslime t, k
             .Ties(k).sharing = True    'yellow ties
           End If
-          If .mem(sharechlr) > 0 Then  'Panda 8/31/2013 code to share chloroplasts
+          If .mem(sharechlr) > 0 And .Chlr_Share_Delay = 0 And Not rob(t).NoChlr Then    'Panda 8/31/2013 code to share chloroplasts 'Botsareus 8/16/2014 chloroplast sharing disable
             sharechloroplasts t, k
             .Ties(k).sharing = True   'yellow ties
           End If
         End If
         .vbody = .vbody + rob(.Ties(k).pnt).body
+        If .FName = rob(.Ties(k).pnt).FName Then atleast1tie = True
       End If
       k = k + 1
     Wend
+    If .multibot_time > 0 Then
+        If atleast1tie Then .multibot_time = .multibot_time + 1
+        If Not atleast1tie Then .multibot_time = .multibot_time - 1
+        If .multibot_time > 210 Then .multibot_time = 210
+        If .multibot_time < 10 Then rob(t).Dead = True 'safe kill robot
+    End If
     
     ' Zero out the sharing sysvars
     .mem(830) = 0
@@ -294,8 +303,8 @@ Public Sub Update_Ties(t As Integer)
         Dim dist As Single
         Dim tieAngle As Single
         n = .Ties(k).pnt
-        tieAngle = angle(.pos.x, .pos.y, rob(n).pos.x, rob(n).pos.y)
-        dist = Sqr((.pos.x - rob(n).pos.x) ^ 2 + (.pos.y - rob(n).pos.y) ^ 2)
+        tieAngle = angle(.pos.X, .pos.Y, rob(n).pos.X, rob(n).pos.Y)
+        dist = Sqr((.pos.X - rob(n).pos.X) ^ 2 + (.pos.Y - rob(n).pos.Y) ^ 2)
         If dist > 32000 Then dist = 32000 'Botsareus 1/24/2014 Bug fix here
         .mem(483 + k) = CInt(dist - .radius - rob(n).radius)
         .mem(479 + k) = angnorm(angnorm(tieAngle) - angnorm(.aim)) * 200
@@ -351,8 +360,8 @@ Public Sub Update_Ties(t As Integer)
                 rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l * 0.01          'tied robot receives waste
                 rob(.Ties(k).pnt).radius = FindRadius(rob(.Ties(k).pnt).body)
                 .nrg = .nrg - l                                                       'tying robot gives up energy
-                If SimOpts.F1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "giving energy to opponent"
-                If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 1 Then KillRobot t
+                If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "giving energy to opponent"
+                If Not SimOpts.F1 And .dq = 1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then rob(t).Dead = True 'safe kill robot
               End If
               
               'Taking nrg
@@ -364,8 +373,8 @@ Public Sub Update_Ties(t As Integer)
                   Else
                     l = 0 ' Can't taken nrg from a bot that has none
                   End If
-                If SimOpts.F1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "taking energy from opponent"
-                If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 1 Then KillRobot t
+                If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "taking energy from opponent"
+                If Not SimOpts.F1 And .dq = 1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then rob(t).Dead = True 'safe kill robot
               End If
                 
                 'Poison
@@ -700,9 +709,9 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
     .mem(trefvelyoursx) = rob(.Ties(k).pnt).mem(velsx)
     .mem(trefvelyourdx) = rob(.Ties(k).pnt).mem(veldx)
                 
-    .mem(trefvelmyup) = rob(.Ties(k).pnt).vel.x * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.y * -1 - .mem(velup) 'gives velocity from mybots frame of reference
+    .mem(trefvelmyup) = rob(.Ties(k).pnt).vel.X * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.Y * -1 - .mem(velup) 'gives velocity from mybots frame of reference
     .mem(trefvelmydn) = .mem(trefvelmyup) * -1
-    .mem(trefvelmydx) = rob(.Ties(k).pnt).vel.y * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.x - .mem(veldx)
+    .mem(trefvelmydx) = rob(.Ties(k).pnt).vel.Y * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.X - .mem(veldx)
     .mem(trefvelmysx) = .mem(trefvelmydx) * -1
     .mem(trefvelscalar) = rob(.Ties(k).pnt).mem(velscalar)
    ' .mem(trefbody) = rob(.Ties(k).pnt).body
@@ -875,19 +884,19 @@ Public Function maketie(ByVal a As Integer, ByVal b As Integer, c As Long, last 
   
   If rob(b).Slime > 0 Then rob(b).Slime = rob(b).Slime - 20
   If rob(b).Slime < 0 Then rob(b).Slime = 0 'cost to slime layer when attacked
-  rob(a).nrg = rob(a).nrg - (SimOpts.Costs(TIECOST) * SimOpts.Costs(COSTMULTIPLIER)) / (rob(a).numties + 1) 'Tie cost to form tie
+  rob(a).nrg = rob(a).nrg - (SimOpts.Costs(TIECOST) * SimOpts.Costs(COSTMULTIPLIER)) / (IIf(rob(a).numties < 0, 0, rob(a).numties) + 1) 'Tie cost to form tie
 getout:
 End Function
 
 ' searches a tie in rob t pointing to rob p
 ' returns tie number (j) of the tie pointing to the specified robot
-Public Function srctie(t As Integer, P As Integer) As Integer
+Public Function srctie(t As Integer, p As Integer) As Integer
   Dim j As Integer
   j = 1
   srctie = 0
   With rob(t)
   While .Ties(j).pnt > 0 And srctie = 0
-    If .Ties(j).pnt = P And .Ties(j).last < 1 Then
+    If .Ties(j).pnt = p And .Ties(j).last < 1 Then
       srctie = j
     End If
     j = j + 1
@@ -906,9 +915,9 @@ Public Sub regang(t As Integer, j As Integer)
       .Ties(j).k = 0.05 ' was 0.05
       .Ties(j).type = 3
       n = .Ties(j).pnt
-      angl = angle(.pos.x, .pos.y, rob(n).pos.x, rob(n).pos.y)
+      angl = angle(.pos.X, .pos.Y, rob(n).pos.X, rob(n).pos.Y)
     '  angl = angnorm(angl)
-      dist = Sqr((.pos.x - rob(n).pos.x) ^ 2 + (.pos.y - rob(n).pos.y) ^ 2)
+      dist = Sqr((.pos.X - rob(n).pos.X) ^ 2 + (.pos.Y - rob(n).pos.Y) ^ 2)
       If .Ties(j).back = False Then
         .Ties(j).ang = AngDiff(angnorm(angl), angnorm(rob(t).aim)) ' only fix the angle of the bot that created the tie
         .Ties(j).angreg = True

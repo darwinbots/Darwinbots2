@@ -185,17 +185,16 @@ If rob(bestrob).Mutations > 0 And (totnvegsDisplayed >= 15 Or y_eco_im = 0) Then
           
           For t = 1 To MaxRobs
            If rob(t).exist And Not rob(t).Veg And Not rob(t).FName = "Corpse" And Not (rob(t).FName = "Base.txt" And hidepred) Then
-           
                     'calculate cumelative genetic distance
                     For t2 = 1 To MaxRobs
                      If t <> t2 Then
                       If rob(t2).exist And Not rob(t2).Corpse And rob(t2).FName = rob(t).FName Then  ' Must exist, and be of same species
                         maxgdi(t) = maxgdi(t) + DoGeneticDistance(t, t2)
-                        DoEvents
                       End If
                      End If
                     Next t2
                     Form1.GraphLab.Caption = "Calculating eco result: " & Int(t / MaxRobs * 100) & "%"
+                    DoEvents
            End If
           Next
           
@@ -285,12 +284,11 @@ If y_eco_im > 0 Then
 Else
     Kill MDIForm1.MainDir & "\evolution\Test.txt"
     Kill MDIForm1.MainDir & "\evolution\Test.mrate"
+    'reset base robot
+    FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".txt", MDIForm1.MainDir & "\evolution\Base.txt"
+    y_Stgwins = 0
+    '
 End If
-
-'reset base robot
-FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".txt", MDIForm1.MainDir & "\evolution\Base.txt"
-y_Stgwins = 0
-'
 x_restartmode = 4
 Increase_Difficulty 'Robot lost, might as well have never mutated
 exportdata

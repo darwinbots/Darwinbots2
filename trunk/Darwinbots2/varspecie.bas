@@ -39,5 +39,8 @@ Public Type datispecie
   SubSpeciesCounter As Integer      ' Using to increment the per-bot subspecies.
   Native As Boolean                 ' Indicates this species was first added locally to this sim and not teleported in from another
   DisplayImage As Image
+  '
+  kill_mb As Boolean
+  dq_kill As Boolean
 End Type
 

@@ -72,6 +72,7 @@ Public Type SimOptions
   BlockedVegs As Boolean
   DisableTies As Boolean
   DisableTypArepro As Boolean
+  DisableFixing As Boolean
   PopLimMethod As Integer
   
   'toroidal is updnconnected = dxsxconected = true
@@ -206,6 +207,8 @@ Public Type SimOptions
   SpeciationForkInterval As Long
   
   SunOnRnd As Boolean
+  
+  Tides As Integer
      
 End Type
 
