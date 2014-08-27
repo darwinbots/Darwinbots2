@@ -94,7 +94,7 @@ Begin VB.Form Form1
       TabIndex        =   3
       Top             =   4200
       Visible         =   0   'False
-      Width           =   1935
+      Width           =   4935
    End
    Begin VB.Label BoyLabl 
       BackStyle       =   0  'Transparent
@@ -202,13 +202,6 @@ Begin VB.Form Form1
       Top             =   6600
       Visible         =   0   'False
       Width           =   11520
-   End
-   Begin VB.Image EnvMap 
-      Height          =   1005
-      Left            =   3840
-      Top             =   120
-      Visible         =   0   'False
-      Width           =   1005
    End
    Begin VB.Label Label1 
       BackColor       =   &H80000007&
@@ -501,6 +494,34 @@ Function GetTwipHeight() As Single
 End Function
 
 Private Sub DrawArena()
+    'Botsareus 8/16/2014 Draw Sun
+    Dim sunstart As Long
+    Dim sunstop As Long
+    Dim sunadd As Long
+    Dim colr As Long
+    colr = vbYellow
+    If TmpOpts.Tides > 0 Then colr = RGB(255 - 255 * BouyancyScaling, 255 - 255 * BouyancyScaling, 0)
+    If SimOpts.Daytime Then
+    'Range calculation 0.25 + ~.75 pow 3
+    sunstart = (SunPosition - (0.25 + (SunRange ^ 3) * 0.75) / 2) * SimOpts.FieldWidth
+    sunstop = (SunPosition + (0.25 + (SunRange ^ 3) * 0.75) / 2) * SimOpts.FieldWidth
+    If sunstart < 0 Then
+            sunadd = SimOpts.FieldWidth + sunstart
+            Line (sunadd, 0)-(SimOpts.FieldWidth, SimOpts.FieldHeight / 100), colr, BF
+            Line (sunadd, 0)-(sunadd, SimOpts.FieldHeight), colr
+        sunstart = 0
+    End If
+    If sunstop > SimOpts.FieldWidth Then
+            sunadd = sunstop - SimOpts.FieldWidth
+            Line (sunadd, 0)-(0, SimOpts.FieldHeight / 100), colr, BF
+            Line (sunadd, 0)-(sunadd, SimOpts.FieldHeight), colr
+        sunstop = SimOpts.FieldWidth
+    End If
+    Line (sunstart, 0)-(sunstop, SimOpts.FieldHeight / 100), colr, BF
+    Line (sunstart, 0)-(sunstart, SimOpts.FieldHeight), colr
+    Line (sunstop, 0)-(sunstop, SimOpts.FieldHeight), colr
+    End If
+
     If MDIForm1.ZoomLock = 0 Then Exit Sub 'no need to draw boundaries if we aren't going to see them
     Line (0, 0)-(0, 0 + SimOpts.FieldHeight), vbWhite
     Line -(SimOpts.FieldWidth - 0, SimOpts.FieldHeight), vbWhite
@@ -969,7 +990,7 @@ Public Sub DrawAllRobs()
   
   FortyEightOverTwipWidth = 48 / twipWidth
   FortyEightOverTwipHeight = 48 / TwipHeight
-  
+   
 '  PixelsPerTwip = GetTwipWidth
 '  PixRobSize = PixelsPerTwip * RobSize
 '  PixBorderSize = PixRobSize / 10
@@ -1202,7 +1223,7 @@ Sub StartSimul()
       Write #1, False
     Close #1
 
-Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is normailized
+Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the scren is normailized
 
 MDIForm1.visualize = True 'Botsareus 8/31/2012 reset vedio tuggle button
 MDIForm1.menuupdate
@@ -1237,6 +1258,16 @@ MDIForm1.menuupdate
         backgcolor = &H400000
     End If
   
+'Botsareus 8/16/2014 Lets initate the sun
+If SimOpts.SunOnRnd Then
+    SunRange = 0.5
+    SunChange = Int(Rnd * 3) + Int(Rnd * 2) * 10
+    SunPosition = Rnd
+Else
+    SunPosition = 0.5
+    SunRange = 1
+End If
+
   SimOpts.SimGUID = CLng(Rnd)
   Over = False
   
@@ -1266,6 +1297,7 @@ MDIForm1.menuupdate
   
   MDIForm1.DisableTies.Checked = SimOpts.DisableTies
   MDIForm1.DisableArep.Checked = SimOpts.DisableTypArepro
+  MDIForm1.DisableFixing.Checked = SimOpts.DisableFixing
   
   'SimOpts.MutCurrMult = 1 'EricL 4/1/2006 Commented out as it was overriding saved values
   'SimOpts.TotRunCycle = -1 'EricL 4/7/2006 Now initialized in Options Dialog Start New button Click
@@ -1489,6 +1521,7 @@ Sub startloaded()
   
   MDIForm1.DisableTies.Checked = SimOpts.DisableTies
   MDIForm1.DisableArep.Checked = SimOpts.DisableTypArepro
+  MDIForm1.DisableFixing.Checked = SimOpts.DisableFixing
   
   MDIForm1.AutoFork.Checked = SimOpts.EnableAutoSpeciation
     
@@ -1572,6 +1605,10 @@ Private Sub loadrobs()
       
       rob(a).mem(DnaLenSys) = rob(a).DnaLen
       rob(a).mem(GenesSys) = rob(a).genenum
+      
+      'Botsareus 7/29/2014 New kill restrictions
+      rob(a).multibot_time = IIf(SimOpts.Specie(k).kill_mb, 210, 0)
+      rob(a).dq = IIf(SimOpts.Specie(k).dq_kill, 1, 0)
     Next t
 bypassThisSpecies:
     k = k + 1
@@ -2006,7 +2043,7 @@ Dim i As Byte
 For i = 1 To NUMGRAPHS
   If Not (Charts(i).graf Is Nothing) Then
    If Charts(i).graf.Visible Then
-   SetWindowPos Charts(i).graf.hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
+   SetWindowPos Charts(i).graf.hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
    End If
   End If
 Next i
@@ -2016,7 +2053,7 @@ Dim i As Byte
 For i = 1 To NUMGRAPHS
   If Not (Charts(i).graf Is Nothing) Then
    If Charts(i).graf.Visible Then
-    SetWindowPos Charts(i).graf.hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
+    SetWindowPos Charts(i).graf.hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
    End If
   End If
 Next i

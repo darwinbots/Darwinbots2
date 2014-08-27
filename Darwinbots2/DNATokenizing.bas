@@ -15,16 +15,16 @@ Public savingtofile As Boolean 'make sure that when we are saving to file do not
 Public Sub calc_dnamatrix()
 'calculate dna matrix
 Dim result As String
-Dim y As block
+Dim Y As block
 Dim y_tipo As Byte
 Dim y_value As Byte
 Dim count As Byte
 
 For y_tipo = 0 To 8
  For y_value = 0 To 13
-  y.tipo = y_tipo + 2
-  y.value = y_value + 1
-  Parse result, y
+  Y.tipo = y_tipo + 2
+  Y.value = y_value + 1
+  Parse result, Y
   If result <> "" Then
    dnamatrix(y_tipo, y_value) = count
    count = count + 1
@@ -766,6 +766,10 @@ End Function
 Private Sub getvals(n As Integer, ByVal a As String, hold As String)
 'Botsareus 4/30/2013 Do not need to grab FName since we are no longer displaying a message
 
+'NOTE: HASH IS BROKEN FOR SOME REASON, MAY BE DUE TO THE FACT THAT THE DNA NOW PARSES TO FILE CORRECTLY
+
+On Error GoTo skip 'Botsareus 8/22/2014 Fix for messed up tags
+
  Dim r As Integer
  Dim g As Integer
  Dim b As Integer
@@ -826,6 +830,8 @@ Private Sub getvals(n As Integer, ByVal a As String, hold As String)
  '  a = Right$(a, Len(a) - 6)
  '  rob(n).color = Hex(a)
  'End If
+ 
+skip:
 End Sub
 
 ' calculates the hash function, i.e. simply a string of length f
@@ -863,7 +869,7 @@ Public Function SaveRobHeader(n As Integer) As String
     SaveRobHeader = "'#generation: " + CStr(rob(n).generation) + vbCrLf + _
     "'#mutations: " + CStr(rob(n).Mutations) + vbCrLf
     Dim blank As String * 50
-    If Left(rob(n).tag, 45) <> Left(blank, 45) Then SaveRobHeader = "'#tag:" + Left(rob(n).tag, 45) + vbCrLf
+    If Left(rob(n).tag, 45) <> Left(blank, 45) Then SaveRobHeader = SaveRobHeader & "'#tag:" + Left(rob(n).tag, 45) + vbCrLf
 End Function
 
 ' loads the sysvars.txt file

@@ -12,9 +12,13 @@ Public cooldown As Long
 Public TotalSimEnergy(100) As Long ' Any array of the total amount of sim energy over the past 100 cycles.
 Public CurrentEnergyCycle As Integer ' Index into he above array for calculating this cycle's sim energy.
 Public TotalSimEnergyDisplayed As Long
-Public PopulationLastCycle As Integer
 
 Public LightAval As Double 'Botsareus 8/14/2013 amount of avaialble light
+
+'Botsareus 8/16/2014 Variable Sun
+Public SunPosition As Double
+Public SunRange As Double
+Public SunChange As Byte '0 1 2 position + 10 20 range
 
 ' adds vegetables in random positions
 Public Sub VegsRepopulate()
@@ -37,6 +41,31 @@ End Sub
 
 ' gives vegs their energy meal
 Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no longer needed
+
+'Sun position calculation
+If SimOpts.SunOnRnd Then
+Dim Sposition As Byte
+Dim Srange As Byte
+'0 1 2 position + 10 20 range (calculated as one byte, being aware of memory at this pont)
+Sposition = SunChange Mod 10
+Srange = SunChange \ 10
+
+If Int(Rnd * 2000) = 0 Then Srange = IIf(Srange = 0, 1, 0)
+If Int(Rnd * 2000) = 0 Then Sposition = Int(Rnd * 3)
+
+    If Srange = 1 Then SunRange = SunRange + 0.0005
+    If Srange = 0 Then SunRange = SunRange - 0.0005
+    If SunRange >= 1 Then Srange = 0
+    If SunRange <= 0 Then Srange = 1
+
+    If Sposition = 0 Then SunPosition = SunPosition - 0.0005
+    If Sposition = 2 Then SunPosition = SunPosition + 0.0005
+    If SunPosition >= 1 Then Sposition = 0
+    If SunPosition <= 0 Then Sposition = 2
+'0 1 2 position + 10 20 range
+SunChange = Sposition + Srange * 10
+End If
+  
   Dim n As node
   Dim t As Integer
   Dim tok As Single
@@ -116,7 +145,7 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
       SimOpts.DayNightCycleCounter = SimOpts.DayNightCycleCounter + 1
       If SimOpts.DayNightCycleCounter > SimOpts.CycleLength Then
         SimOpts.Daytime = Not SimOpts.Daytime
-        SimOpts.DayNightCycleCounter = IIf(SimOpts.SunOnRnd And SimOpts.Daytime, SimOpts.CycleLength * Rnd, 0)
+        SimOpts.DayNightCycleCounter = 0
       End If
       If SimOpts.Daytime Then
         FeedThisCycle = True
@@ -134,7 +163,14 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
 '    MDIForm1.nightpic.Visible = True
     MDIForm1.SunButton.value = 1
   End If
-   
+  
+  'Botsareus 8/16/2014 All robots are set to think there is no sun, sun is calculated later
+  For t = 1 To MaxRobs
+    If rob(t).nrg > 0 And rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
+        rob(t).mem(218) = 0
+   End If
+  Next
+  
   If Not FeedThisCycle Then GoTo getout
    
   If SimOpts.Daytime Then daymod = 1 Else daymod = 0
@@ -148,23 +184,54 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
     End If
   Next
   
-  ScreenArea = ScreenArea * 0.85 'Botsareus 1/3/2014 multiply now (radial correction)
-  
-  If ScreenArea < 1 Then ScreenArea = 1
-
   For t = 1 To MaxRobs 'Panda 8/14/2013 Figure out total robot area
     If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then   'Botsareus 8/14/2013 We have to make sure the robot is alive first
         TotalRobotArea = TotalRobotArea + rob(t).radius ^ 2 * PI
     End If
   Next t
   
+  ScreenArea = ScreenArea * 0.85 'Botsareus 1/3/2014 radial correction
+  
+  If ScreenArea < 1 Then ScreenArea = 1
+  
   LightAval = TotalRobotArea / ScreenArea 'Panda 8/14/2013 Figure out AreaInverted a.k.a. available light
   If LightAval > 1 Then LightAval = 1 'Botsareus make sure LighAval never goes negative
   
   AreaCorrection = (1 - LightAval) ^ 2 * 4
+  
+  'Botsareus 8/16/2014 Sun calculation
+  Dim sunstart As Long
+  Dim sunstop As Long
+  Dim sunstart2 As Long 'wrap logic
+  Dim sunstop2 As Long
+  
+    'Botsareus 8/16/2014 calculate the sun
+    sunstart = (SunPosition - (0.25 + (SunRange ^ 3) * 0.75) / 2) * SimOpts.FieldWidth
+    sunstop = (SunPosition + (0.25 + (SunRange ^ 3) * 0.75) / 2) * SimOpts.FieldWidth
+    '
+    sunstop2 = sunstop
+    sunstart2 = sunstart 'Do not delete, bug fix!
+    '
+    If sunstart < 0 Then
+        sunstart2 = SimOpts.FieldWidth + sunstart
+        sunstop2 = SimOpts.FieldWidth
+    End If
+    If sunstop > SimOpts.FieldWidth Then
+        sunstop2 = sunstop - SimOpts.FieldWidth
+        sunstart2 = 0
+    End If
+    
  
   For t = 1 To MaxRobs
     If rob(t).nrg > 0 And rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
+    
+    'Botsareus 8/16/2014 Allow robots to share chloroplasts again
+    If rob(t).Chlr_Share_Delay > 0 Then
+        rob(t).Chlr_Share_Delay = rob(t).Chlr_Share_Delay - 1
+    End If
+    
+        
+    If (rob(t).pos.X < sunstart2 Or rob(t).pos.X > sunstop2) And (rob(t).pos.X < sunstart Or rob(t).pos.X > sunstop) Then GoTo nextrob
 
       If SimOpts.Pondmode Then
         depth = (rob(t).pos.Y / 2000) + 1
@@ -173,6 +240,8 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
       Else
         tok = totnrg
       End If
+      
+      If TmpOpts.Tides > 0 Then tok = tok * (1 - BouyancyScaling)
       
       If tok < 0 Then tok = 0
       
@@ -184,6 +253,8 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
       SubtractEnergyRate = (rob(t).chloroplasts / 32000) ^ 2 * tok
           
       acttok = AddEnergyRate - SubtractEnergyRate
+      
+      rob(t).mem(218) = 1 'Botsareus 8/16/2014 Now it is time view the sun
       
       Select Case SimOpts.VegFeedingMethod
       Case 0 'per veg
@@ -212,7 +283,8 @@ Public Sub feedvegs(totnrg As Long) 'Panda 8/23/2013 Removed totv as it is no lo
       
      ' EnergyAddedPerCycle = EnergyAddedPerCycle + energy + (body * 10)
     End If
-    Next t
+nextrob:
+  Next t
 getout:
 End Sub
 

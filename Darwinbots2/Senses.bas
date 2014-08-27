@@ -205,19 +205,14 @@ Public Sub WriteSenses(ByVal n As Integer)
     .mem(Energy) = CInt(.nrg)
     If .age = 0 And .mem(body) = 0 Then .mem(body) = .body 'to stop an odd bug in birth.  Don't ask
     If .Fixed Then .mem(215) = 1 Else .mem(215) = 0
-    'If .pos.Y <= 32000 And .pos.Y >= 0 Then .mem(217) = .pos.Y
+    If .pos.y < 0 Then .pos.y = 0
     temp = Int((.pos.y / Form1.yDivisor) / 32000#)
     temp = (.pos.y / Form1.yDivisor) - (temp * 32000#)
     .mem(217) = CInt(temp Mod 32000)
-    'If .pos.X <= 32000 And .pos.X >= 0 Then .mem(219) = .pos.X
+    If .pos.x < 0 Then .pos.x = 0
     temp = Int((.pos.x / Form1.xDivisor) / 32000#)
     temp = (.pos.x / Form1.xDivisor) - (temp * 32000#)
     .mem(219) = CInt(temp Mod 32000)
-    If SimOpts.Daytime Then
-      .mem(218) = 1
-    Else
-      .mem(218) = 0
-    End If
   End With
 End Sub
 

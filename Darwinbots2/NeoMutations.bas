@@ -119,7 +119,7 @@ Public Sub Mutate(ByVal robn As Integer, Optional reproducing As Boolean = False
     ismutating = True 'Botsareus 2/2/2013 Tells the parseor to ignore debugint and debugbool while the robot is mutating
     If Not reproducing Then
     
-      overtime = Sqr(UBound(rob(robn).DNA)) * 948
+      overtime = UBound(rob(robn).DNA) ^ (1 / 3) * 3000
     
       If .Mutables.mutarray(PointUP) > 0 Then PointMutation robn
       If .Mutables.mutarray(DeltaUP) > 0 And Not Delta2 Then DeltaMut robn
@@ -165,7 +165,7 @@ skip:
       
     Else
     
-      overtime = Sqr(UBound(rob(robn).DNA)) * 948
+      overtime = UBound(rob(robn).DNA) ^ (1 / 3) * 3000
       If .Mutables.mutarray(CopyErrorUP) > 0 Then CopyError robn
       If overtime < 0 Then Exit Sub
       If .Mutables.mutarray(CE2UP) > 0 And sunbelt Then CopyError2 robn
@@ -176,7 +176,9 @@ skip:
       If overtime < 0 Then Exit Sub
       If .Mutables.mutarray(TranslocationUP) > 0 And sunbelt Then Translocation robn 'Botsareus Translocation and Amplification still bugy, but I want them.
       If .Mutables.mutarray(AmplificationUP) > 0 And sunbelt Then Amplification robn
+      overtime = UBound(rob(robn).DNA) ^ (1 / 3) * 3000
       If .Mutables.mutarray(MajorDeletionUP) > 0 Then MajorDeletion robn
+      overtime = UBound(rob(robn).DNA) ^ (1 / 3) * 3000
       If .Mutables.mutarray(MinorDeletionUP) > 0 Then MinorDeletion robn
     End If
 
@@ -237,7 +239,7 @@ On Error GoTo getout:
   '3. Pick a new spot (1 to .dnalen - 1)
   '4. Insert copied DNA
     
-  overtime = Sqr(UBound(rob(robn).DNA)) * 948
+  overtime = UBound(rob(robn).DNA) ^ (1 / 3) * 3000
   
   Dim t As Long
   Dim Length As Long
@@ -854,6 +856,8 @@ Private Sub MinorDeletion(robn As Integer)
         .LastMutDetail = "Minor Deletion deleted a run of" + _
           Str(Length) + " bps at position" + Str(t) + " during cycle" + _
           Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
+          
+         overtime = overtime - 1: If overtime < 0 Then Exit Sub
         
       End If
     Next t
@@ -881,6 +885,8 @@ Private Sub MajorDeletion(robn As Integer)
         .LastMutDetail = "Major Deletion deleted a run of" + _
           Str(Length) + " bps at position" + Str(t) + " during cycle" + _
           Str(SimOpts.TotRunCycle) + vbCrLf + .LastMutDetail
+          
+        overtime = overtime - 1: If overtime < 0 Then Exit Sub
         
       End If
     Next t
@@ -938,8 +944,8 @@ Public Function delgene(n As Integer, g As Integer) As Boolean
     rob(n).mem(GenesSys) = rob(n).genenum
     makeoccurrlist n
     'Botsareus 3/14/2014 Disqualify
-    If SimOpts.F1 And Disqualify = 2 Then dreason rob(n).FName, rob(n).tag, "deleting a gene"
-    If Not SimOpts.F1 And x_restartmode > 3 And Disqualify = 2 Then KillRobot n
+    If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 2 Then dreason rob(n).FName, rob(n).tag, "deleting a gene"
+    If Not SimOpts.F1 And rob(n).dq = 1 And Disqualify = 2 Then rob(n).Dead = True 'safe kill robot
   End If
 End Function
 

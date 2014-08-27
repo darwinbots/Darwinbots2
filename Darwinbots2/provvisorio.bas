@@ -6,12 +6,14 @@ Public IName As String
 Public InboundPath As String
 Public OutboundPath As String
 Public ServIP As String
+Public ServPort As String
 
 'This is the window handle to DarwinbotsIM
 Public pid As Long
 Public Active As Boolean
 Public InternetMode As Boolean
 Public StartInInternetMode As Boolean
+
 
 'This stuff is needed so graphing works
 Public Const MAXINTERNETSPECIES = 500
@@ -43,16 +45,4 @@ Public Function AttribuisciNome(n As Integer) As String
   AttribuisciNome = p
 End Function
 
-Public Function IsValidIp(ByVal strIpAddress As String)
-Dim aTmp() As String
-Dim field
-IsValidIp = False
-aTmp = Split(strIpAddress, ".")
-' There must be 4 fields in a valid IP
-If UBound(aTmp) <> 3 Then Exit Function
-For Each field In aTmp
-If field > 255 Then Exit Function
-Next
-IsValidIp = True
-End Function
 

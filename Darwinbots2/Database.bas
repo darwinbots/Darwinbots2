@@ -55,12 +55,13 @@ Public Sub Snapshot()
   Dim OK As Boolean
   
   On Error GoTo fine
+  Form1.CommonDialog1.FileName = ""
   SnapBrowse
   If Form1.CommonDialog1.FileName = "" Then Exit Sub
   Open SnapName For Output As 3
   Print #3, "Rob id,Parent id,Founder name,Generation,Birth cycle,Age,Mutations,New mutations,Dna length,Offspring number,kills,Fitness,Energy,Chloroplasts" & vbCrLf;
   v = ","
-
+  Form1.GraphLab.Visible = True
   For rn = 1 To MaxRobs
     If rob(rn).Veg And SimOpts.DBExcludeVegs Then
       OK = False
@@ -81,21 +82,25 @@ Public Sub Snapshot()
         Form1.TotalOffspring = 1
         s = Form1.score(rn, 1, 10, 0) + rob(rn).nrg + rob(rn).body * 10 'Botsareus 5/22/2013 Advanced fit test
         s = (Form1.TotalOffspring ^ sPopulation) * (s ^ sEnergy)
-        Print #3, CStr(s); v; CStr(rob(rn).nrg + rob(rn).body * 10); v; .chloroplasts;
+        Print #3, CStr(s); v; CStr(rob(rn).nrg + rob(rn).body * 10); v; .chloroplasts & vbCrLf;
         d = ""
         savingtofile = True
-        d = DetokenizeDNA(rn)
+        d = DetokenizeDNA(rn) & vbCrLf
+        If Mid(d, Len(d) - 3, 2) = vbCrLf Then d = Left(d, Len(d) - 2) 'Borsareus 7/22/2014 a bug fix
         savingtofile = False
         Print #3, d;
       End With
     End If
+    Form1.GraphLab.Caption = "Calculating a snapshot: " & Int(rn / MaxRobs * 100) & "%"
+    DoEvents
   Next rn
-  Close 3
+  Form1.GraphLab.Visible = False
+  Close #3
   MsgBox ("Saved snapshot successfully.")
   GoTo getout
 
 fine:
-  Close 3
+  Close #3
   If Err.Number = 70 Then
     MsgBox ("That file is already open in another program")
   Else
@@ -140,6 +145,6 @@ getout:
 End Sub
 
 ' when I wasn't aware of the existence of CStr()
-Private Function sstr(x) As String
-  sstr = Right(Str(x), Len(Str(x)) - 1)
+Private Function sstr(X) As String
+  sstr = Right(Str(X), Len(Str(X)) - 1)
 End Function

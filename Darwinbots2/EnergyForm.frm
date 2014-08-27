@@ -21,11 +21,57 @@ Begin VB.Form EnergyForm
       TabIndex        =   1
       Top             =   120
       Width           =   5415
+      Begin VB.Frame ffmTides 
+         Caption         =   "Tide Simulator"
+         Height          =   615
+         Left            =   2040
+         TabIndex        =   18
+         Top             =   720
+         Width           =   3015
+         Begin VB.TextBox txtTide 
+            Height          =   285
+            Left            =   120
+            TabIndex        =   19
+            Text            =   "0"
+            Top             =   240
+            Width           =   1200
+         End
+         Begin ComCtl2.UpDown TideUpDn 
+            Height          =   285
+            Left            =   1440
+            TabIndex        =   21
+            ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
+            Top             =   240
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   503
+            _Version        =   327681
+            Value           =   100
+            BuddyControl    =   "txtTide"
+            BuddyDispid     =   196626
+            OrigLeft        =   3600
+            OrigTop         =   360
+            OrigRight       =   3855
+            OrigBottom      =   645
+            Increment       =   100
+            Max             =   32000
+            SyncBuddy       =   -1  'True
+            BuddyProperty   =   0
+            Enabled         =   -1  'True
+         End
+         Begin VB.Label lblTides 
+            Caption         =   "cycles (off)"
+            Height          =   255
+            Left            =   1920
+            TabIndex        =   20
+            Top             =   240
+            Width           =   855
+         End
+      End
       Begin VB.CheckBox chkRnd 
-         Caption         =   "Randomize the Sun On Period"
-         Enabled         =   0   'False
+         Caption         =   "Enable Weather"
          Height          =   255
-         Left            =   1320
+         Left            =   240
          TabIndex        =   17
          ToolTipText     =   "A cycle of light and darkness. Veggies are not fed or repopulated during night time."
          Top             =   840
@@ -114,7 +160,7 @@ Begin VB.Form EnergyForm
             Value           =   100
             AutoBuddy       =   -1  'True
             BuddyControl    =   "SunDownThreshold"
-            BuddyDispid     =   196614
+            BuddyDispid     =   196615
             OrigLeft        =   3600
             OrigTop         =   840
             OrigRight       =   3855
@@ -138,7 +184,7 @@ Begin VB.Form EnergyForm
             Value           =   100
             AutoBuddy       =   -1  'True
             BuddyControl    =   "SunUpThreshold"
-            BuddyDispid     =   196615
+            BuddyDispid     =   196616
             OrigLeft        =   3600
             OrigTop         =   1320
             OrigRight       =   3855
@@ -166,7 +212,7 @@ Begin VB.Form EnergyForm
          Text            =   "1000000"
          ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
          Top             =   360
-         Width           =   780
+         Width           =   1035
       End
       Begin VB.CheckBox DNCheck 
          Caption         =   "Enable Day Cycles"
@@ -179,7 +225,7 @@ Begin VB.Form EnergyForm
       End
       Begin ComCtl2.UpDown DNCycleUpDn 
          Height          =   285
-         Left            =   3840
+         Left            =   4080
          TabIndex        =   4
          ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
          Top             =   360
@@ -190,7 +236,7 @@ Begin VB.Form EnergyForm
          Value           =   100
          AutoBuddy       =   -1  'True
          BuddyControl    =   "DNLength"
-         BuddyDispid     =   196617
+         BuddyDispid     =   196618
          OrigLeft        =   3600
          OrigTop         =   360
          OrigRight       =   3855
@@ -256,8 +302,8 @@ Private Sub DNCheck_Click()
   If TmpOpts.DayNight = False Then TmpOpts.Daytime = True
   DNLength.Enabled = DNCheck.value * True
   DNCycleUpDn.Enabled = DNCheck.value * True
-  chkRnd.Enabled = DNCheck.value * True
 End Sub
+
 
 Private Sub DNLength_Change()
   If val(DNLength.text) > 32000 Then DNLength.text = 32000
@@ -281,6 +327,8 @@ Private Sub Form_Load()
   SunDown.value = TmpOpts.SunDown * True
   ThresholdMode(TmpOpts.SunThresholdMode).value = True
   chkRnd.value = TmpOpts.SunOnRnd * True
+  
+  txtTide = TmpOpts.Tides
 End Sub
 
 Private Sub OKButton_Click()
@@ -310,4 +358,12 @@ End Sub
 
 Private Sub ThresholdMode_Click(Index As Integer)
   TmpOpts.SunThresholdMode = Index
+End Sub
+
+Private Sub txtTide_Change()
+txtTide = Int(val(txtTide))
+If txtTide < 0 Then txtTide = 0
+If txtTide > 32000 Then txtTide = 32000
+If txtTide = 0 Then lblTides = "cycles (off)" Else lblTides = "cycles"
+TmpOpts.Tides = txtTide
 End Sub

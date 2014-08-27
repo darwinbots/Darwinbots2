@@ -417,6 +417,7 @@ If x_restartmode = 7 Or x_restartmode = 8 Then
      aggiungirob spppos, Random(60, SimOpts.FieldWidth - 60), Random(60, SimOpts.FieldHeight - 60)
     Next
     reduce = reduce + 1
+    logevo "Repopulation attempt " & reduce & " base robot", x_filenumber
     End If
   End If
   If Mutate_count < Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / 160 / (1 + reduce / 5) Then
@@ -429,6 +430,7 @@ If x_restartmode = 7 Or x_restartmode = 8 Then
      aggiungirob spppos, Random(60, SimOpts.FieldWidth - 60), Random(60, SimOpts.FieldHeight - 60)
     Next
     reduce = reduce + 1
+    logevo "Repopulation attempt " & reduce & " mutate robot", x_filenumber
     End If
   End If
   If reduce = 50 Then
@@ -486,7 +488,7 @@ If x_restartmode = 9 Then
             If rob(t).FName = "Test.txt" Then cmptotnrgnvegs = cmptotnrgnvegs + rob(t).nrg + rob(t).body * 10
         End If
     Next t
-    If totnvegsDisplayed > 15 And cmptotnrgnvegs > totnrgnvegs Then  'did population x3?
+    If totnvegsDisplayed > 10 And cmptotnrgnvegs > totnrgnvegs * 2 Then 'did population and energy x2?
         ZBpassedtest
     Else
         ZBfailedtest

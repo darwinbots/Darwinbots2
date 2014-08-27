@@ -55,7 +55,6 @@ Begin VB.Form datirob
          _ExtentX        =   11562
          _ExtentY        =   11827
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"robdata.frx":0E42
@@ -653,6 +652,10 @@ Private Sub dnatext_Change()
 robtag.Caption = Left(rob(robfocus).tag, 45) 'Botsareus 1/28/2014 New short description feature
 End Sub
 
+Private Sub Form_Activate()
+  SetWindowPos hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
+End Sub
+
 Private Sub MemoryCommand_Click()
  showingMemory = True
  MemoryStateCheck.Visible = True
@@ -728,7 +731,6 @@ Public Sub RefreshDna()
 End Sub
 
 Sub Form_Load()
-  SetWindowPos hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
   strings Me
   rage.Caption = "Age (cycles)" 'EricL 4/13/2006 Override resource file because I don't have a resource editor handy :)
   Me.Width = 3255

@@ -462,10 +462,10 @@ Private Sub cmdOK_Click()
 End Sub
 
 Private Sub Form_Load() ''Botsareus 8/7/2012 mod for new version
-    Me.Caption = "DarwinBots V2.47 DNA Help"
-    lblTitle.Caption = "DarwinBots V2.47 DNA Help"
+    Me.Caption = "DarwinBots V2.48 DNA Help"
+    lblTitle.Caption = "DarwinBots V2.48 DNA Help"
     Help.text = ""
-    Help.text = Help.text + vbTab + vbTab + vbTab + vbTab + "DarwinBots V2.47 DNA" + vbCrLf
+    Help.text = Help.text + vbTab + vbTab + vbTab + vbTab + "DarwinBots V2.48 DNA" + vbCrLf
     Help.text = Help.text + "" + vbCrLf
     Help.text = Help.text + vbTab + "This is a full listing of all the DNA commands and how they work" + vbCrLf
     Help.text = Help.text + vbTab + "Just to keep it interesting it is told from a robot's eye view. HeHe!" + vbCrLf

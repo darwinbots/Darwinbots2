@@ -72,35 +72,54 @@ Begin VB.Form frmGset
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "chkAddarob"
-      Tab(2).Control(1)=   "ffmDisqualification"
-      Tab(2).Control(2)=   "ffmFudge"
-      Tab(2).Control(3)=   "chkStepladder"
-      Tab(2).Control(4)=   "txtSourceDir"
-      Tab(2).Control(5)=   "chkTournament"
-      Tab(2).Control(6)=   "lblSource"
-      Tab(2).ControlCount=   7
+      Tab(2).Control(0)=   "Command1"
+      Tab(2).Control(0).Enabled=   0   'False
+      Tab(2).Control(1)=   "chkAddarob"
+      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(2)=   "ffmDisqualification"
+      Tab(2).Control(2).Enabled=   0   'False
+      Tab(2).Control(3)=   "ffmFudge"
+      Tab(2).Control(3).Enabled=   0   'False
+      Tab(2).Control(4)=   "chkStepladder"
+      Tab(2).Control(4).Enabled=   0   'False
+      Tab(2).Control(5)=   "txtSourceDir"
+      Tab(2).Control(5).Enabled=   0   'False
+      Tab(2).Control(6)=   "chkTournament"
+      Tab(2).Control(6).Enabled=   0   'False
+      Tab(2).Control(7)=   "lblSource"
+      Tab(2).Control(7).Enabled=   0   'False
+      Tab(2).ControlCount=   8
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "chkSurvivalEco"
-      Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "ffmEvoCommon"
-      Tab(3).Control(1).Enabled=   0   'False
-      Tab(3).Control(2)=   "chkZBmode"
-      Tab(3).Control(2).Enabled=   0   'False
-      Tab(3).Control(3)=   "ffmZeroBot"
-      Tab(3).Control(3).Enabled=   0   'False
-      Tab(3).Control(4)=   "chkSurvivalSimple"
-      Tab(3).Control(4).Enabled=   0   'False
-      Tab(3).Control(5)=   "ffmSurvival"
-      Tab(3).Control(5).Enabled=   0   'False
+      Tab(3).Control(0)=   "ffmSurvival"
+      Tab(3).Control(1)=   "chkSurvivalSimple"
+      Tab(3).Control(2)=   "ffmZeroBot"
+      Tab(3).Control(3)=   "chkZBmode"
+      Tab(3).Control(4)=   "chkSurvivalEco"
+      Tab(3).Control(5)=   "btnEvoRES"
       Tab(3).ControlCount=   6
+      Begin VB.CommandButton Command1 
+         Caption         =   "League Restrictions"
+         Height          =   375
+         Left            =   -68880
+         TabIndex        =   87
+         Top             =   3960
+         Width           =   2175
+      End
+      Begin VB.CommandButton btnEvoRES 
+         Caption         =   "Evolution Restrictions"
+         Height          =   375
+         Left            =   -74760
+         TabIndex        =   86
+         Top             =   3480
+         Width           =   2175
+      End
       Begin VB.CheckBox chkAddarob 
          Caption         =   "Add a single robot to existing league"
          Height          =   195
          Left            =   -70200
-         TabIndex        =   87
+         TabIndex        =   85
          Top             =   2160
          Visible         =   0   'False
          Width           =   5415
@@ -112,22 +131,6 @@ Begin VB.Form frmGset
          TabIndex        =   67
          Top             =   4080
          Width           =   2295
-      End
-      Begin VB.Frame ffmEvoCommon 
-         Caption         =   "Common Evolution Settings"
-         Height          =   855
-         Left            =   -66600
-         TabIndex        =   85
-         Top             =   4080
-         Width           =   2175
-         Begin VB.CheckBox chkNoChlr 
-            Caption         =   "Disable Chloroplasts"
-            Height          =   255
-            Left            =   120
-            TabIndex        =   86
-            Top             =   360
-            Width           =   1935
-         End
       End
       Begin VB.CheckBox chkZBmode 
          Caption         =   "Zerobot Mode"
@@ -729,7 +732,7 @@ Begin VB.Form frmGset
          Top             =   2160
          Width           =   4695
          Begin VB.CheckBox chkGreedy 
-            Caption         =   "Nearly kill robots that are excessively greedy to there kids, using them to dump there energy."
+            Caption         =   "Kill robots that are excessively greedy to there kids, using them to dump there energy."
             Height          =   375
             Left            =   240
             TabIndex        =   8
@@ -839,6 +842,11 @@ Private Sub btnCancel_Click()
 Unload Me
 End Sub
 
+
+Private Sub btnEvoRES_Click()
+    frmRestriOps.res_state = 4
+    frmRestriOps.Show vbModal
+End Sub
 
 Private Sub btnHelp_Click()
 MsgBox "Survival mode consists of a base species and a mutating species. The base species gets 'turned on and off.'" & _
@@ -1059,16 +1067,31 @@ MsgBox "Global settings will take effect the next time DarwinBots starts.", vbIn
       
       Write #1, txtRob
       Write #1, chkShowGraphs.value = 1
-      Write #1, chkNormSize.value = 1 'Botsareusnotsone norm size auto disabled for eco
+      Write #1, chkNormSize.value = 1
       Write #1, val(txtCycSM)
       Write #1, val(txtLFOR)
       
-      Write #1, chkNoChlr.value = 1
+      Write #1, False 'Replacing with better rules
       
       Write #1, val(txtZlength)
       
-      'Botsareusnotsone other evo modes
+      'Restrictions
       
+      Write #1, x_res_kill_chlr
+      Write #1, x_res_kill_mb
+      Write #1, x_res_other
+      '
+      Write #1, y_res_kill_chlr
+      Write #1, y_res_kill_mb
+      Write #1, y_res_kill_dq
+      Write #1, y_res_other
+      '
+      Write #1, x_res_kill_mb_veg
+      Write #1, x_res_other_veg
+      '
+      Write #1, y_res_kill_mb_veg
+      Write #1, y_res_kill_dq_veg
+      Write #1, y_res_other_veg
       
     Close #1
     
@@ -1331,7 +1354,7 @@ End Sub
 
 Private Sub chkTournament_Click()
 If chkTournament.value = 1 Then
-    chkStepladder.Caption = "Stepladder league (starts between 16 and 24 robots)"
+    chkStepladder.Caption = "Stepladder league (starts between 16 and 31 robots)"
     lblSource.Visible = True
     txtSourceDir.Visible = True
     chkSurvivalSimple.value = 0
@@ -1369,6 +1392,11 @@ If chkZBmode.value = 1 Then
 End If
 ffmZeroBot.Visible = chkZBmode.value = 1
 txtStartChlr = 16000 'default chloroplasts
+End Sub
+
+Private Sub Command1_Click()
+    frmRestriOps.res_state = 2
+    frmRestriOps.Show vbModal
 End Sub
 
 Private Sub Form_Load()
@@ -1448,8 +1476,6 @@ chkShowGraphs = IIf(y_graphs, 1, 0)
 chkNormSize = IIf(y_normsize, 1, 0)
 txtCycSM = y_hidePredCycl
 txtLFOR = y_LFOR
-'
-chkNoChlr.value = IIf(NoChlr, 1, 0)
 '
 txtZlength = y_zblen
 '

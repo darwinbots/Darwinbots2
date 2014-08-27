@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
 Begin VB.MDIForm MDIForm1 
    AutoShowChildren=   0   'False
    BackColor       =   &H00400000&
@@ -584,8 +584,11 @@ Begin VB.MDIForm MDIForm1
       Begin VB.Menu sep90 
          Caption         =   "-"
       End
+      Begin VB.Menu DisableFixing 
+         Caption         =   "Disallow robot from fixing or unfixing"
+      End
       Begin VB.Menu DisableArep 
-         Caption         =   "Disable asexual reproduction for un-repopulating robots"
+         Caption         =   "Disable asexual reproduction for non-repopulating robots"
       End
       Begin VB.Menu AutoFork 
          Caption         =   "Enable Automatic Forking"
@@ -600,6 +603,13 @@ Begin VB.MDIForm MDIForm1
          Caption         =   "Enable PlayerBot Mode"
          Shortcut        =   {F11}
       End
+      Begin VB.Menu Sep81 
+         Caption         =   "-"
+      End
+      Begin VB.Menu RESOver 
+         Caption         =   "Restriction Overwrites"
+         Shortcut        =   {F8}
+      End
    End
    Begin VB.Menu Backgrounds 
       Caption         =   "View"
@@ -609,20 +619,19 @@ Begin VB.MDIForm MDIForm1
       Begin VB.Menu removepiccy 
          Caption         =   "Remove Background Picture"
       End
-      Begin VB.Menu backsep 
+      Begin VB.Menu sep987 
          Caption         =   "-"
-         Index           =   1
       End
       Begin VB.Menu ShowVisionGrid 
          Caption         =   "Show Vision Grid"
          Checked         =   -1  'True
       End
-      Begin VB.Menu DisplayShotImpacts 
-         Caption         =   "Display Shot Impacts"
-         Checked         =   -1  'True
-      End
       Begin VB.Menu DisplayMovementVectors 
          Caption         =   "Display Movement Vectors"
+         Checked         =   -1  'True
+      End
+      Begin VB.Menu DisplayShotImpacts 
+         Caption         =   "Display Shot Impacts"
          Checked         =   -1  'True
       End
       Begin VB.Menu DisplayResourceGuages 
@@ -657,7 +666,7 @@ Begin VB.MDIForm MDIForm1
          Caption         =   "Change Color"
          Shortcut        =   ^C
       End
-      Begin VB.Menu Sep 
+      Begin VB.Menu sep 
          Caption         =   "-"
          Index           =   14
       End
@@ -873,6 +882,8 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
+
 ' DarwinBots - copyright 2003 Carlo Comis
 ' Modifications by Purple Youko and Numsgil - 2004, 2005
 ' Post V2.42 modifications copyright (c) 2006, 2007 Eric Lockard  eric@sulaadventures.com
@@ -999,6 +1010,12 @@ Private Sub DisableArep_Click() 'Botsareus 4/17/2013 The new disable asexrepro b
   DisableArep.Checked = Not DisableArep.Checked
   SimOpts.DisableTypArepro = DisableArep.Checked
   TmpOpts.DisableTypArepro = DisableArep.Checked
+End Sub
+
+Private Sub DisableFixing_Click()
+  DisableFixing.Checked = Not DisableFixing.Checked
+  SimOpts.DisableFixing = DisableFixing.Checked
+  TmpOpts.DisableFixing = DisableFixing.Checked
 End Sub
 
 Private Sub DisableTies_Click()
@@ -1149,8 +1166,10 @@ tryagain:
      & " -in " & iq _
      & " -out " & oq _
      & " -name " & Chr(34) & IntOpts.IName & Chr(34) _
+     & " -port " & Chr(34) & "1050" & Chr(34) _
      & " -pid " & Str(GetCurrentProcessId()) _
-     & " -server " & Chr(34) & IIf(IsValidIp(IntOpts.ServIP), IntOpts.ServIP, "74.14.179.28") & Chr(34)
+     & " -port " & Chr(34) & IntOpts.ServPort & Chr(34) _
+     & " -server " & Chr(34) & IntOpts.ServIP & Chr(34)
 
     IntOpts.pid = shell(s, vbNormalFocus)
     If IntOpts.pid = 0 Then
@@ -1231,25 +1250,18 @@ Private Sub Leagues_Click()
   optionsform.Show vbModal
 End Sub
 
-Private Sub loadpiccy_Click()   'for some reason this doesn't work. I have given up on it for now
+Private Sub loadpiccy_Click()
 On Error GoTo fine
   optionsform.Visible = False
   CommonDialog1.DialogTitle = "Load a Background picture file"
-  CommonDialog1.InitDir = "C:\"
+  CommonDialog1.InitDir = App.path
   CommonDialog1.FileName = ""
-  CommonDialog1.Filter = "*.bmp|*.jpg"
+  CommonDialog1.Filter = "Pictures (*.bmp;*.jpg)|*.bmp;*.jpg"
   CommonDialog1.ShowOpen
   If CommonDialog1.FileName <> "" Then Form1.BackPic = CommonDialog1.FileName
   Form1.PiccyMode = True
   Form1.Newpic = True
-  
-  
-  'Form1.AutoRedraw = True
-  'Form1.Picture = LoadPicture(BackPic)
-  
-  'Form1.AutoRedraw = False
 fine:
-
 End Sub
 
 Private Sub CheckerMaze_Click()
@@ -1376,6 +1388,11 @@ Form1.PiccyMode = False
 Form1.Picture = Nothing
 End Sub
 
+Private Sub RESOver_Click()
+    frmRestriOps.res_state = 3
+    frmRestriOps.Show vbModal
+End Sub
+
 Private Sub robinf_Click()
   Dim n As Integer
   n = robfocus
@@ -1436,7 +1453,7 @@ If SimOpts.F1 Or x_restartmode > 3 Then
     End Select
     optMaxCycles = MaxCycles 'Botsareus 2/14/2014 Move max cycles to optimized max cycles
 End If
-pbOn.Enabled = Not SimOpts.F1
+pbOn.Enabled = Not SimOpts.F1 And Not y_eco_im = 2
 inssp.Enabled = y_eco_im = 0
 If y_eco_im = 2 And Not F1Internet.Checked And Not SimOpts.F1 Then F1Internet_Click 'Botsareus 7/12/2014 For eco evo this activates the internet
 Form1.BackColor = backgcolor 'Botsareus 4/27/2013 Set back ground skin color
@@ -1974,6 +1991,125 @@ fine:
 MsgBox "Saving sim failed.  " + Err.Description, vbOKOnly
 End Sub
 
+Private Sub load_league_res()
+'Botsareus 7/30/214 Load restrictions
+Dim lastmod As Byte
+Dim holdother As Byte
+Dim i As Byte
+'evo restrictions
+For i = 0 To UBound(TmpOpts.Specie)
+ If TmpOpts.Specie(i).Veg Then
+  TmpOpts.Specie(i).kill_mb = x_res_kill_mb_veg
+  '
+        holdother = x_res_other_veg
+  '
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).Fixed = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).CantSee = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).DisableDNA = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).CantReproduce = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).VirusImmune = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).DisableMovementSysvars = lastmod * True
+ Else
+  TmpOpts.Specie(i).kill_mb = x_res_kill_mb
+  '
+        holdother = x_res_other
+  '
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).NoChlr = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).Fixed = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).CantSee = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).DisableDNA = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).CantReproduce = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).VirusImmune = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).DisableMovementSysvars = lastmod * True
+ End If
+Next
+End Sub
+Private Sub load_evo_res()
+'Botsareus 7/30/214 Load restrictions
+Dim lastmod As Byte
+Dim holdother As Byte
+Dim i As Byte
+'evo restrictions
+For i = 0 To UBound(TmpOpts.Specie)
+ If TmpOpts.Specie(i).Veg Then
+  TmpOpts.Specie(i).kill_mb = y_res_kill_mb_veg
+  '
+        holdother = y_res_other_veg
+  '
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).Fixed = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).CantSee = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).DisableDNA = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).CantReproduce = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).VirusImmune = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).DisableMovementSysvars = lastmod * True
+  '
+  TmpOpts.Specie(i).dq_kill = y_res_kill_dq_veg
+ Else
+  TmpOpts.Specie(i).kill_mb = y_res_kill_mb
+  '
+        holdother = y_res_other
+  '
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).NoChlr = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).Fixed = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).CantSee = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).DisableDNA = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).CantReproduce = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).VirusImmune = lastmod * True
+        holdother = (holdother - lastmod) / 2
+        lastmod = holdother Mod 2
+  TmpOpts.Specie(i).DisableMovementSysvars = lastmod * True
+  '
+  TmpOpts.Specie(i).dq_kill = y_res_kill_dq
+ End If
+Next
+End Sub
+
 Private Sub MDIForm_Load()
 'Botsareus 6/16/2014 Starting positions for graphs so they are less annoying
 Dim k As Byte
@@ -2073,6 +2209,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   DisableArep.Checked = False
   TmpOpts.DisableTies = False
   TmpOpts.DisableTypArepro = False
+  TmpOpts.DisableFixing = False
   TmpOpts.NoShotDecay = False
   TmpOpts.NoWShotDecay = False
   TmpOpts.chartingInterval = 200
@@ -2120,6 +2257,8 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   EnableRobotsMenu
     
   optionsform.ReadSett MDIForm1.MainDir + IIf(simalreadyrunning, "\settings\lastran.set", "\settings\lastexit.set")
+  IntOpts.ServIP = "www.Darwinbots.com"
+  IntOpts.ServPort = "21013"
   optionsform.IntSettLoad
   
   'From now on all league and special evolution modes use the restart system.
@@ -2141,6 +2280,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     For i = 0 To UBound(TmpOpts.Specie)
                      If TmpOpts.Specie(i).Name = "Test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                     Next
+                    load_league_res 'Botsareus 8/16/2014 although this is techincally an evo test, it is designed as a league test
                     'F1 desabled
                     TmpOpts.F1 = False
                     'new seed and run sim
@@ -2163,7 +2303,8 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     Next
                     'Randomize find best
                     Randomize
-                    intFindBestV2 = Choose(Int(Rnd * 5) + 1, 0, 0, 0, 0, 200)
+                    intFindBestV2 = Choose(Int(Rnd * 4) + 1, 0, 0, 0, 200)
+                    load_evo_res 'load evolution restrictions
                     'F1 desabled
                     TmpOpts.F1 = False
                     'new seed and run sim
@@ -2194,6 +2335,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                         If TmpOpts.Specie(i).Name = "Test.txt" Then TmpOpts.Specie(i).qty = 1
                      End If
                     Next
+                    load_league_res 'although this is techincally an evo test, it is designed as a league test
                     'F1 enabled
                     TmpOpts.F1 = True
                     'new seed and run sim
@@ -2218,14 +2360,13 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     For i = 0 To UBound(TmpOpts.Specie)
                      If TmpOpts.Specie(i).Name = "Base.txt" Then
                         TmpOpts.Specie(i).Mutables.Mutations = False
-                        TmpOpts.Specie(i).NoChlr = NoChlr
                      End If
-                     If TmpOpts.Specie(i).Name = "Mutate.txt" Then TmpOpts.Specie(i).NoChlr = NoChlr
                       If y_eco_im > 0 Then
                         If TmpOpts.Specie(i).Name = "Base.txt" Then TmpOpts.Specie(i).qty = 1
                         If TmpOpts.Specie(i).Name = "Mutate.txt" Then TmpOpts.Specie(i).qty = 1
                       End If
                     Next
+                    load_evo_res 'load evolution restrictions
                     'F1 desabled
                     TmpOpts.F1 = False
                     'new seed and run sim
@@ -2243,6 +2384,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                      If TmpOpts.Specie(i).Name = "robotA.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                      If TmpOpts.Specie(i).Name = "robotB.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                     Next
+                    load_league_res
                     'F1 enabled
                     TmpOpts.F1 = True
                     'new seed and run sim
@@ -2282,6 +2424,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     For i = 0 To UBound(TmpOpts.Specie)
                      If TmpOpts.Specie(i).Name = "Test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                     Next
+                    load_league_res
                     'F1 desabled
                     TmpOpts.F1 = False
                     'new seed and run sim
@@ -2303,7 +2446,7 @@ mode2:
                         x_restartmode = 0
                         Kill App.path & "\restartmode.gset"
                         GoTo skipsetup
-                    ElseIf (seeded.count + files.count) < 25 And UseStepladder Then
+                    ElseIf (seeded.count + files.count) < 32 And UseStepladder Then
                         'Botsareus 3/8/2014 end of tournament league transition to stepladder
                         MkDir MDIForm1.MainDir & "\league\Tournament_Results"
                         deseed MDIForm1.MainDir & "\league\round" & (x_filenumber + 1)
@@ -2348,6 +2491,7 @@ mode2:
                      If TmpOpts.Specie(i).Name = "robotA.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                      If TmpOpts.Specie(i).Name = "robotB.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                     Next
+                    load_league_res
                     'F1 enabled
                     TmpOpts.F1 = True
                     'new seed and run sim
@@ -2442,6 +2586,7 @@ If x_restartmode > 0 Then
             Exit Sub
         Case vbYes
             Kill App.path & "\restartmode.gset"
+            hidepred = False 'Botsareus 8/5/2014 Bug fix
         Case vbNo
                 'special case restore restart mode
                 If x_restartmode = 2 Then
