@@ -1,0 +1,81 @@
+'25.10.03
+'Topic: Lucky Spinner  
+'Jez
+
+'* drifting spinner 1* default conditions unblocked *
+'* Purple Youko +/- conditions applied * critical mass 100-150 *
+
+
+'***reproduce***
+
+cond
+*.nrg 6000 >
+start
+25 .repro store
+50 .aimdx store
+stop
+
+'***target***
+
+cond
+*.eye5 *.eye4 <
+start
+26 .aimsx store
+stop
+
+cond
+*.eye5 *.eye6 <
+start
+26 .aimdx store
+stop
+
+cond
+*.eye5 *.eye1 <
+start
+104 .aimsx store
+stop
+
+cond
+*.eye5 *.eye9 <
+start
+104 .aimdx store
+stop
+
+'***shoot - this seems to work better than 1 gene (probably just luck!)***
+
+cond
+*.eye5 0 >
+*.refeye 12 <
+start
+10 .up store
+-10 .dn store
+-1 .shoot store
+stop
+
+cond
+*.eye5 0 >
+*.refeye 12 >
+start
+10 .up store
+-10 .dn store
+-1 .shoot store
+stop
+
+'***nothing in front***
+
+cond
+*.eye5 0 =
+start
+52 .aimdx store
+stop
+
+'***friend in front***
+
+cond
+*.eye5 0 >
+*.refeye 12 =
+start
+208 .aimdx store
+stop
+end
+'#tag:Drifting Spinner1 (F2)(Jez)-25.10.03.txt

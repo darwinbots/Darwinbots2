@@ -1,0 +1,143 @@
+'Topic: Formula one bots!
+'Henk
+
+
+' équalite bot
+
+
+'******************Following genes********************************** 18eye 3shoot 1sx
+
+' Follow gene 1
+cond
+*.eye1 *.eye9 !=
+*.numties 0 =
+start
+*.eye9 *.eye1 sub 4 mult .aimdx store
+stop
+
+' Follow gene 2
+cond
+*.eye2 *.eye8 !=
+*.numties 0 =
+start
+*.eye8 *.eye2 sub 3 mult .aimdx store
+stop
+
+' Follow gene 3
+cond
+*.eye3 *.eye7 !=
+*.numties 0 =
+start
+*.eye7 *.eye3 sub 2 mult .aimdx store
+stop
+
+' Follow gene 4
+cond
+*.eye4 *.eye6 !=
+*.numties 0 =
+start
+*.eye6 *.eye4 sub .aimdx store
+stop
+
+
+'***********************Adv Genes****************************
+
+cond
+*.eye5 0 >
+*.refshoot 3 !=
+*.refeye 18 !=
+*.refsx 1 !=
+start
+-1 .shoot store
+stop
+
+cond
+*.eye5 40 >
+*.refshoot 3 =
+*.refeye 18 =
+*.refsx 1 =
+*.numties 0 =
+' *.nrg 2000 <
+*.robage 20 >
+start
+32 .tie store
+stop
+
+cond
+*.numties 0 >
+start
+32 .readtie store
+stop
+
+cond
+*.trefnrg *.nrg %=
+start
+32 .deltie store
+stop 
+
+cond
+*.trefnrg *.nrg !%=
+start
+50 .sharenrg store
+50 .sharewaste store
+stop
+
+' *************************** Movement genes *************************
+
+'cond
+'*.nrg 2000 >
+'*.refshoot 3 =
+'*.refeye 18 =
+'*.refsx 1 =
+'start
+'314 .aimdx store
+'stop
+
+cond
+*.nrg 1 >
+start
+40 *.vel sub .up store
+stop
+
+
+' ****************************** Reaction genes *************************
+cond
+*.shdn -1 =
+start
+628 .aimdx store
+5 .dn store
+stop
+
+' ****************************** Nonsense *******************************
+cond
+*.nrg 1 =
+start
+2 .sx store
+-1 .shoot store
+-1 .shoot store
+stop
+
+'*********************************Cool repro*********************************
+
+'tie to dad, or mum
+cond
+*.robage 0 =
+start
+1 .tie store
+stop
+
+' Delete tie to mum, or dad
+cond
+*.robage 1 =
+start
+1 .deltie store
+stop
+
+cond
+*.nrg 5000 >
+start
+50 .repro store
+630 .aimdx store
+stop
+end
+'#tag:Equalite (F2)(Henk) -23.02.05.txt

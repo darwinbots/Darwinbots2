@@ -1,0 +1,65 @@
+'Topic: Short-bots thread  
+'Jez
+
+'Expletus Sexcompitus
+
+'from one gene bot
+cond
+*.refeye 5 !=
+*.eye5 77 !=
+start
+*.eye4 *.eye8 sub *.sx 2 mult add .aimsx store 
+*.eye5 100 sub -1 mult 10 div *.dn add .up store
+-1 .shoot store
+'plus tie
+*98 .tie store
+'minus repro if see sun
+'40 299 *.sun add store
+'plus slime
+100 *.slime sub .mkslime store
+stop
+
+'reproduce 
+cond
+*.eye5 0 =
+*.nrg 6000 >
+start
+25 .repro store
+stop
+
+'headstart and initialisation
+cond
+*.robage 0 =
+start 
+1 900 rnd 98 store
+*98 .tie store
+*98 .readtie store
+50 .repro store
+stop
+
+'deltie
+cond
+*.numties 0 !=
+*.trefeye 5 =
+start
+*98 .deltie store
+stop
+
+'feed through tie
+cond
+*.robage 0 !=
+*.numties 0 !=
+start
+*98 .tienum store
+-1 .tieloc store
+-1000 .tieval store
+stop
+
+'avoidance
+cond
+*.refeye 5 =
+start
+104 .aimsx store
+stop
+end
+'#tag:Expletus Sexcomplitus (6G)(Jez)-11.03.04.txt

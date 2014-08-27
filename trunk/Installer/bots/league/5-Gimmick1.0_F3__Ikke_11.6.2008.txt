@@ -1,0 +1,200 @@
+'Imitation is the first step in learning. I started with commenting a version of Defence
+'Every bot has its gimmicks. I have taken the best and added my own.
+'Since it beats all other F3 bots, I'll post it to raise the bar.
+'Most (practically all) are not mine so neither is the credit
+
+
+'move
+start
+30 .up store
+'To do: improve search
+stop
+
+'Waste Removal. Done here so it can be overwritten by more urgent shots
+*.waste 100 >=
+start
+-4 .shoot store
+*.waste .shootval store
+stop
+
+cond
+'birth
+*.robage 0 =
+start
+'store dna length for conspec
+.dnalen .memloc store
+'cut tie
+.deltie inc
+'turn away
+314 .aimright store
+'what to infect with poison
+.shoot .ploc store
+'set eyedirection
+80 .eye9dir store
+60 .eye8dir store
+40 .eye7dir store
+'since eyewidth has been changed by 20 eyedir also has to change by 20
+20 .eye6dir store
+-20 .eye4dir store
+-40.eye3dir store
+-60 .eye2dir store
+-80 .eye1dir store
+'set eyewidth
+-20 .eye1width store
+-20 .eye2width store
+-20 .eye3width store
+-20 .eye4width store
+-20 .eye5width store
+-20 .eye6width store
+-20 .eye7width store
+-20 .eye8width store
+-20 .eye9width store
+
+stop
+
+'set focuseye to nearest bot. Understand what it does. To do: understand how it does it
+start
+-4 *.eye1 *.eye9 sub sgn 0 floor mult *.eye1 *.eye8 sub sgn 0 floor mult *.eye1 *.eye7 sub sgn 0 floor mult *.eye1 *.eye6 sub sgn 0 floor mult *.eye1 *.eye5 sub sgn 0 floor mult *.eye1 *.eye4 sub sgn 0 floor mult *.eye1 *.eye3 sub sgn 0 floor mult *.eye1 *.eye2 sub sgn 0 floor mult 4 *.eye9 *.eye8 sub sgn 0 floor mult *.eye9 *.eye7 sub sgn 0 floor mult *.eye9 *.eye6 sub sgn 0 floor mult
+*.eye9 *.eye5 sub sgn 0 floor mult *.eye9 *.eye4 sub sgn 0 floor mult *.eye9 *.eye3 sub sgn 0 floor mult *.eye9 *.eye2 sub sgn 0 floor mult *.eye9 *.eye1 sub sgn ++ sgn mult add -3 *.eye2 *.eye9 sub sgn ++ sgn mult *.eye2 *.eye8 sub sgn 0 floor mult *.eye2 *.eye7 sub sgn 0 floor mult *.eye2 *.eye6 sub sgn 0 floor mult *.eye2 *.eye5 sub sgn 0 floor mult *.eye2 *.eye4 sub sgn 0 floor mult *.eye2 *.eye3 sub sgn 0 floor mult *.eye2 *.eye1 sub sgn ++ sgn mult add 3 *.eye8 *.eye9 sub sgn ++ sgn mult *.eye8 *.eye7 sub sgn 0 floor mult *.eye8 *.eye6 sub sgn 0 floor mult *.eye8 *.eye5 sub sgn 0 floor mult *.eye8 *.eye4 sub sgn 0 floor mult *.eye8 *.eye3 sub sgn 0 floor mult *.eye8 *.eye2 sub sgn ++ sgn mult *.eye8 *.eye1 sub sgn ++ sgn mult add -2 *.eye3 *.eye9 sub sgn ++ sgn mult *.eye3 *.eye8 sub sgn ++ sgn mult *.eye3 *.eye7 sub sgn 0 floor mult *.eye3 *.eye6 sub sgn 0 floor mult
+*.eye3 *.eye5 sub sgn 0 floor mult *.eye3 *.eye4 sub sgn 0 floor mult *.eye3 *.eye2 sub sgn ++ sgn mult *.eye3 *.eye1 sub sgn ++ sgn mult add 2 *.eye7 *.eye9 sub sgn ++ sgn mult *.eye7 *.eye8 sub sgn ++ sgn mult *.eye7 *.eye7 sub sgn 0 floor mult *.eye7 *.eye6 sub sgn 0 floor mult *.eye7 *.eye5 sub sgn 0 floor mult *.eye7 *.eye4 sub sgn ++ sgn mult *.eye7 *.eye2 sub sgn ++ sgn mult *.eye7 *.eye1 sub sgn ++ sgn mult add -1 *.eye4 *.eye9 sub sgn ++ sgn mult *.eye4 *.eye8 sub sgn ++ sgn mult *.eye4 *.eye7 sub sgn ++ sgn mult *.eye4 *.eye6 sub sgn 0 floor mult *.eye4 *.eye5 sub sgn 0 floor mult *.eye4 *.eye3 sub sgn ++ sgn mult *.eye4 *.eye2 sub sgn ++ sgn mult *.eye4 *.eye1 sub sgn ++ sgn mult add 1 *.eye4 *.eye9 sub sgn ++ sgn mult *.eye4 *.eye8 sub sgn ++ sgn mult *.eye4 *.eye7 sub sgn ++ sgn mult *.eye4 *.eye6 sub sgn ++ sgn mult *.eye4 *.eye5 sub sgn 0 floor mult
+*.eye4 *.eye3 sub sgn ++ sgn mult *.eye4 *.eye2 sub sgn ++ sgn mult *.eye4 *.eye1 sub sgn ++ sgn mult add 0 *.eye5 *.eye9 sub sgn ++ sgn mult *.eye5 *.eye8 sub sgn ++ sgn mult *.eye5 *.eye7 sub sgn ++ sgn mult *.eye5 *.eye6 sub sgn ++ sgn mult *.eye5 *.eye4 sub sgn ++ sgn mult *.eye5 *.eye3 sub sgn ++ sgn mult *.eye5 *.eye2 sub sgn ++ sgn mult *.eye5 *.eye1 sub sgn ++ sgn mult add .focuseye store
+stop
+
+cond
+*.eyef 0 >
+*.memval *.dnalen !=
+start
+'aim in the right direction
+*.refxpos *.refypos angle .setaim store
+'I am chasing you
+'*refvelup 0 >
+'so I try to catch you
+*.refveldx .dx store
+*.refxpos *.xpos sub abs *.refypos *.ypos sub abs pyth 5 div 20 sub 0 floor 100 ceil *.refvelup add .up store
+'you are trying to catch me
+*refvelup 0 <
+'so I try to stay just out of reach
+*.refveldx .dx store
+*.refxpos *.xpos sub abs *.refypos *.ypos sub abs pyth 5 div 20 sub 0 floor 100 ceil 30 sub *.refvelup add .up store
+stop
+
+cond
+'if something is seen close enough to hit.
+'To do: change from eye5 to eyef and test the difference
+*.eye5 30 >
+'and it is not one of our own kind
+*.memval *.dnalen !=
+start
+'shoot (body) shot
+-6 .shoot store
+
+stop
+
+cond
+'if enough energy
+*.nrg 200 >
+start
+increase the power of the shot
+16 .shootval store
+stop
+
+cond
+*.nrg 100 <=
+start
+'use default shot strenght
+0 .shootval store
+stop
+
+cond
+'if poison level below minimum
+*.poison 500 <
+start
+'make poison
+50 .strpoison store
+stop
+
+cond
+'if shell level below minimum
+*.shell 500 <
+start
+'make shell
+50 .mkshell store
+stop
+
+'still to do: check if firing back is usefull, or whether just turning is better
+cond
+'if hit by a shot that is not zero or energy 
+*.shflav 0 !=
+*.shflav -2 !=
+start
+' Aim where the shot came from
+*.shang .aimshoot store
+'shoot -6 shot
+-6 .shoot store
+'boost power
+16 .shootval store
+'reset trigger
+0 .shflav store
+' turn toward enemy if none in sight
+'To do: change from eye5 to eyef and test the difference
+*.eye5=0
+*.memval *.dnalen != or
+*.shang .aimdx store
+
+
+stop
+
+'reproduce
+cond
+*.eye5 0 =
+'don't look at body or energy but at the combo
+'older versions were full of energy but were stopped from reproducing because it could not be converted fast enough
+*.body 10 mult *.nrg add 11500 >
+start
+50 .repro store
+314 .aimright store
+stop
+
+'store energy in body
+cond
+*.nrg 1000 >
+*.body 1500 <
+start
+100 .strbody store
+stop
+
+'revert body to energy
+cond
+*.nrg 600 <
+*.body *.nrg >
+start
+100 .fdbody store
+stop
+
+'Chameleon genes
+cond
+*.in1 0 !=
+*.in1 *.out1 !=
+start
+*.in1 .out1 store
+stop
+cond
+*.in2 0 !=
+*.in2 *.out2 !=
+start
+*.in2 .out2 store
+stop
+cond
+*.in5 0 !=
+*.in5 *.out5 !=
+start
+*.in5 .out5 store
+stop
+
+'you're too strong get out of here
+cond
+*.pain 250 >
+start
+250 .sx store
+stop
+'#tag:Gimmick1.0_F3__Ikke_11.6.2008.txt

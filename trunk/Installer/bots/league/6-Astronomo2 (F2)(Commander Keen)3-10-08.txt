@@ -1,0 +1,147 @@
+' ASTRONOMO
+' F2
+' Commander Keen
+' 3rd October 2008
+' Version 2
+' Changes:
+' Improved Kill method
+' No longer fires -1/-6 shots
+' Should do much better against tie-feeders in F1.
+
+def badarea 51
+def enemy 55
+def stage 56
+
+cond
+*.robage 0 =
+start
+140 .eye6width store
+280 .eye7width store
+280 .eye8width store
+280 .eye9width store
+-68 .eye1dir store
+-68 .eye2dir store
+-68 .eye3dir store
+-68 .eye4dir store
+-68 .eye5dir store
+-140 .eye6dir store
+317 .eye7dir store
+634 .eye8dir store
+970 .eye9dir store
+-2 .focuseye store
+.shoot .ploc store
+.tie inc
+.shoot .vloc store
+-2 .venval store
+1991 .out5 store
+32000 rnd .out4 store
+128 .badarea store
+stop
+
+cond
+1 1 =
+start
+50 *.venom sub 0 floor .strvenom store
+50 *.poison sub 0 floor .strpoison store
+50 *.slime sub 0 floor 10 ceil .mkslime store
+50 *.shell sub 0 floor .mkshell store
+*.nrg *.body 10 mult add 20 div *.body sub 1 floor .strbody store
+*.body *.nrg *.body 10 mult add 20 div sub 0 floor 30000 *.nrg sub 10 div ceil  .fdbody store
+*.tiepres .deltie store
+*.refshoot *.myshoot sub *.refaimdx *.myaimdx sub *.refaimsx *.myaimsx sub *.refeye *.myeye sub *.refup *.myup sub *.refdn *.mydn sub *.refsx *.mysx sub *.refdx *.mydx sub abs add abs add abs add abs add abs add abs add abs add abs .enemy store
+*.tiepres .readtie store
+.tieval .tmemloc store
+32000 .tmemval store
+*.enemy 1 =
+0 .enemy store
+clearbool
+*.enemy *.out5 *.in5 sub abs add .enemy store
+1 *.out4 *.in4 sub abs sgn sub *.enemy add .enemy store
+stop
+
+cond
+*.eye1 *.eye2 *.eye3 *.eye4 *.eye5 *.eye6 *.eye7 *.eye8 *.eye9 add add add add add add add add 0 =
+*.enemy 0 = or
+*.badarea 16 >=
+start
+1 *.timer 8 mod sgn sub 10 mult .up store
+1 *.timer 2 add 8 mod sgn sub 10 mult .dx store
+1 *.timer 4 add 8 mod sgn sub 10 mult .dn store
+1 *.timer 6 add 8 mod sgn sub 10 mult .sx store
+stop
+
+cond
+*.eye1 *.eye2 *.eye3 *.eye4 *.eye5 add add add add 0 =
+*.enemy 0 = or
+start
+157 .aimdx store
+.badarea inc
+stop
+
+cond
+*.eye3 0 =
+*.eye4 0 !=
+start
+34 .aimdx store
+stop
+cond
+*.eye3 0 =
+*.eye2 0 !=
+start
+-34 .aimdx store
+stop
+cond
+*.eye3 0 =
+*.eye5 0 !=
+start
+68 .aimdx store
+stop
+cond
+*.eye3 0 =
+*.eye1 0 !=
+start
+-68 .aimdx store
+stop
+
+cond
+*.eyef 0 !=
+*.enemy 0 !=
+start
+*.velsx .dx store
+128 *.eyef sub *.velup sub *.veldn 2 div floor *.refvelup add .up store
+*.refxpos *.refypos angle .setaim store
+0 .badarea store
+clearbool
+*.stage 0 =
+30000 .shootval store
+.shootval .shoot store
+clearbool
+*.stage 1 =
+*.refxpos *.refypos angle 628 add 1256 mod .shootval store
+.setaim .shoot store
+clearbool
+*.stage 2 =
+-3 .shoot store
+*.venom .shootval store
+clearbool
+1 1 =
+*.stage 1 add 3 mod .stage store
+clearbool
+stop
+
+cond
+*.nrg *.body 10 mult add 2500 >
+start
+50 .repro store
+stop
+
+cond
+*.badarea 32 >=
+start
+*.timer 4 add 8 mod 0 =
+*.maxvel *.veldn sub .dn store
+*.timer 8 mod 0 =
+0 *.maxvel *.velup sub sub .dn store
+clearbool
+stop
+'#tag:Astronomo2 (F2)(Commander Keen)3-10-08.txt

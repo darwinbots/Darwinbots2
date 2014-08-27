@@ -1,0 +1,246 @@
+'A_Praxidikae_mk2 "The Vengeful"
+'Yeah, it's kinda confusing and cluttered, isn't it?
+'The idea is to breed young, and to fight later on in age
+'If it's badly outnumbered, it's probably ok. 
+'Fixed:  MUCH improved at tracking enemy bots.
+
+cond
+*.robage 0 =
+start
+.tie inc
+stop
+
+cond
+*.numties 0 >
+start
+.tie inc
+stop
+
+cond
+start
+.deltie inc
+mult mult 0 85
+stop
+
+
+cond
+*.robage 1 =
+start
+.deltie inc
+stop
+
+
+
+cond
+*.51 1 =
+start
+180 .aimdx store
+0 .51 store
+stop
+
+cond
+*.nrg 4000 >
+*.robage 300 <
+start
+1 .51 store
+180 .aimsx store
+50 .repro store
+0 .shoot store
+stop
+
+cond
+*.nrg 30000 >
+*.robage 300 >
+start
+1 .51 store
+180 .aimsx store
+50 .repro store
+0 .shoot store
+stop
+
+
+cond 
+*.eye1 *.eye9 !=
+start
+*.eye1 *.eye9 sub
+stop
+
+cond
+*.eye2 *.eye8 !=
+start
+*.eye2 *.eye8 sub
+stop
+
+cond
+*.eye4 *.eye6 !=
+start
+*.eye4 *.eye6 sub
+stop
+
+
+cond
+*.memval *.genes =
+start
+mult 180 
+stop
+
+
+cond
+start
+.aimsx store
+stop
+
+cond
+.aimsx 0 !=
+start
+*.aimsx 10 div .sx store
+stop
+
+cond
+*.numties 0 >
+*.pain 60 >
+*.eye5 0 =
+start
+90 .aimsx store
+stop
+
+
+
+cond
+*.shell 90 <
+start
+100 .mkshell store
+stop
+
+
+cond
+*.slime 90 <
+start
+100 .mkslime store
+stop
+
+cond
+*.numties 0 =
+'*.memval *.genes !=
+*.refeye *.myeye !=
+*.refsx *.mysx !=
+*.vel 40 <
+*.eye5 0 >
+start
+*.refvelup *.vel sub 2 mult 60 add .up store
+
+stop
+
+
+
+
+
+cond
+*.numties 0 =
+*.vel 40 <
+*.robage 10 <
+start
+10 .up store
+
+stop
+
+
+
+cond
+*.eye5 40 >
+*.nrg 3000 <
+  *.refnrg 1500 <
+  *.refshell 50 > or
+  *.refpoison 0 = or
+start
+  -1 .shoot store
+10 .shootval store
+
+stop
+
+cond
+*.eye5 40 >
+*.nrg 3000 <
+  *.refnrg 1500 >
+  *.refshell 50 < or
+  *.refpoison 0 > or
+start
+  -6 .shoot store
+10 .shootval store
+
+stop
+
+cond
+*.eye5 40 >
+*.nrg 3000 >
+*.robage 6 >
+  *.refnrg 1500 <
+  *.refshell 50 > or
+  *.refpoison 0 = or
+start
+  -1 .shoot store
+150 .shootval store
+
+stop
+
+cond
+*.eye5 40 >
+*.nrg 3000 >
+*.robage 6 >
+  *.refnrg 1500 >
+  *.refshell 50 < or
+  *.refpoison 0 > or
+start
+  -6 .shoot store
+150 .shootval store
+
+stop
+
+
+cond
+*.body 20 >
+*.nrg 1000 <
+start
+100 .fdbody store
+stop
+
+cond
+*.body 1000 <
+*.nrg 1100 >
+*.robage 6 <
+start
+100 .strbody store
+stop
+
+cond
+*.body 5000 <
+*.nrg 2000 >
+*.robage 6 >
+start
+400 .strbody store
+stop
+
+cond
+*.waste 100 >
+start
+1 .backshoot store
+-4 .shoot store
+*.waste .shootval store
+stop
+
+cond
+*.robage 0 =
+start
+.thisgene .memloc store
+stop
+
+
+cond
+start
+*.genes .delgene
+*.thisgene *.genes sub dup div
+mult *.robage sgn mult store
+.genes inc
+stop
+end
+'#tag:A. Praxidikae mk2 (F2)(Unc) 07.29.05.txt

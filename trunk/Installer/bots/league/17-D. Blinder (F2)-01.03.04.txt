@@ -1,0 +1,103 @@
+'D_Blinder
+'This robot tries to blind the opponent when is atacked
+'It is not very efficient since it is a test robot.
+
+'Mar.2004 Joan
+
+'-----------------------
+'Counters *41 Rotation *40 Defend
+'*80 .aimdx *81 inicialize 
+'-----------------------
+
+'----------Body genes. Tends to be stable.
+
+'-----Setup
+
+cond
+*81 23 !=
+start
+23 81 store
+75 80 store
+300 .aimdx store
+0 .out1 store
+stop
+
+'-----Reproduction
+cond
+*.nrg 10000 >
+start
+50 .repro store
+150 .aimsx store
+stop
+
+'-----Rotation
+cond
+*.eye5 0 =
+start
+*80 .aimdx store
+*41 *80 add 41 store
+stop
+
+'-----Control
+cond
+*41 1200 >
+*.eye5 0 =
+start
+5 .up store
+0 41 store
+0 .out1 store
+stop
+
+'-----Feed
+cond
+*.eye5 0 !=
+start
+-1 .shoot store
+*.up 10 add .up store
+stop
+
+'----------Added genes. Tends to change.
+
+'-----Defense Function
+
+cond
+*40 0 <
+start
+*.eye5 .shoot store
+0 .shootval store
+200 .aimdx store
+inc 40 store
+stop
+
+'-----Direction chage
+cond
+*.in1 -1 =
+start
+400 .aimdx store
+stop
+
+'-----Getting shooted
+cond
+*.shsx 0 !=
+start
+-6 40 store
+-1 .out1 store 
+stop
+
+'--------------------
+cond
+*.shdn 0 !=
+start
+-1 .out1 store
+stop
+
+'--------------------
+cond
+*.hitup 0 !=
+start
+-1 .out1 store
+stop
+
+'--------------------
+end
+'#tag:D. Blinder (F2)-01.03.04.txt

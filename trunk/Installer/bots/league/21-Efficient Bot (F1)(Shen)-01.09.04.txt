@@ -1,0 +1,64 @@
+' Topic: Proposed new league table
+'Shen
+' An Efficient Bot
+
+
+' - Spin -
+cond
+*.refeye *.myeye =
+start
+100 .aimdx store
+666 .deltie store
+stop
+
+' - Move -
+cond
+*.refeye *.myeye !=
+start
+*.eye6 *.eye4 sub .aimdx store
+*.aimdx 5 div .dx store
+*.maxvel *.vel sub .up store
+stop
+
+' - Tie -
+cond
+*.eye5 35 >
+*.refeye *.myeye !=
+start
+-1 .shoot store
+666 .tie store
+stop
+
+' - Drain Nrg -
+cond
+*.numties 0 >
+start
+666 .tienum store
+.tieloc dec
+-1000 .tieval store
+stop
+
+' - Feed Body -
+cond
+*.body 300 >
+start
+100 .fdbody store
+stop
+
+' - Slime -
+cond
+*.slime 95 <
+start
+100 .mkslime store
+stop
+
+' - Reproduce -
+cond
+*.nrg 1500 >
+*.eye5 30 <
+start
+50 .repro store
+stop
+
+end
+'#tag:Efficient Bot (F1)(Shen)-01.09.04.txt

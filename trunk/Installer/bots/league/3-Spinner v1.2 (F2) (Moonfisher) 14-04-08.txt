@@ -1,0 +1,662 @@
+'Spinner v1.2 (F2) 14-04-08
+'by Moonfisher
+'Added some small "torpedoes" to cause some confusion
+'They also kill with ties, but it can be disabled below (the locs constant)
+'Also changed the conspec
+
+
+'------------------- vars
+def seteyes 50
+def seteyewidth 51
+def seteyespace 52
+def setoffset 53
+
+def state 54
+def repspin 55
+
+def randm 56
+def keyloc 57
+
+def birthstate 971
+def birthx 972
+def birthy 973
+
+
+'-------------------- constants
+def spineyewidth 0
+def spineyespace 105
+def spinoffset 140
+
+def scaning 1
+def torpedo 2
+
+def key1 23
+def key2 403
+def key3 506
+def key4 102
+def key5 1053
+
+def startkey 110
+def startloc 120
+def locs 5 '--- Must correcpond to the amount of different tie actions
+'Set locs to 4 to disable instant kill using .shootval
+'Set locs to 3 to disable .strbody killing aswell
+
+
+cond
+*.robage 0 =
+start
+4 rnd .randm store
+.startkey *.randm add .keyloc store
+.startkey *.randm add .memloc store
+.startkey *.randm add .tmemloc store
+.key1 .startkey store
+.key2 .startkey 1 add store
+.key3 .startkey 2 add store
+.key4 .startkey 3 add store
+.key5 .startkey 4 add store
+'-------Tie actions (5)
+.eye5dir .startloc store
+682 .startloc 1 add store
+.vloc .startloc 2 add store
+174 .startloc 3 add store
+.memloc .startloc 4 add store
+173 .startloc 5 add store
+.shootval .startloc 6 add store
+31999 .startloc 7 add store
+.strbody .startloc 8 add store
+31999 .startloc 9 add store
+stop
+
+cond
+*.robage 0 =
+*.birthstate 0 =
+start
+.scaning .state store
+stop
+
+cond
+*.robage 0 =
+*.birthstate 0 !=
+*.state 0 =
+start
+*.birthstate .state store
+stop
+
+cond
+*.birthstate 0 !=
+start
+0 .birthstate store
+stop
+
+cond
+*.robage 0 =
+*.state .scaning =
+start
+1 .seteyes store
+.spineyewidth .seteyewidth store
+.spineyespace .seteyespace store
+.spinoffset .setoffset store
+.shoot .vloc store
+-2 .venval store
+.shoot .ploc store
+stop
+
+cond
+*.robage 0 =
+*.state .torpedo =
+start
+1 .seteyes store
+.spineyewidth .seteyewidth store
+.spineyespace .seteyespace store
+.spinoffset .setoffset store
+.shoot .vloc store
+-2 .venval store
+.shoot .ploc store
+stop
+
+cond
+*.seteyes 1 =
+start
+*.setoffset .eye9dir store
+*.setoffset *.seteyespace add .eye8dir store
+*.setoffset *.seteyespace 2 mult add .eye7dir store
+*.setoffset *.seteyespace 3 mult add .eye6dir store
+*.setoffset *.seteyespace 4 mult add .eye5dir store
+*.setoffset *.seteyespace 5 mult add .eye4dir store
+*.setoffset *.seteyespace 6 mult add .eye3dir store
+*.setoffset *.seteyespace 7 mult add .eye2dir store
+*.setoffset *.seteyespace 8 mult add .eye1dir store
+4 .focuseye store
+0 .seteyes store
+stop
+
+cond
+*.state .scaning =
+*.eye9 0 >
+*.memval *.keyloc * !=
+start
+*.refxpos *.refypos angle .setaim store
+*.refxpos *.xpos sub abs *.refypos *.ypos sub abs pyth 5 div 30 sub 0 floor 100 ceil *.refvelup add .up store
+*.refveldx .dx store
+-6 .shoot store
+*.nrg 30 div 20 ceil *.eye9 40 sub 0 floor sgn *.body 40 sub 0 floor sgn mult mult .shootval store
+*.refxpos .out4 store
+*.refypos .out5 store
+stop
+
+cond
+*.eye9 0 =
+*.memval *.keyloc * = or
+*.out4 0 !=
+*.out5 0 != or
+start
+0 .out4 store
+0 .out5 store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 >
+*.memval *.keyloc * !=
+*.robage 5 mod 0 =
+*.venom 1 >
+start
+-3 .shoot store
+0 .shootval store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 =
+*.robage 20 mod 16 >=
+*.robage 200 >= or
+start
+*.aim 35 add .setaim store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 =
+*.robage 20 mod 16 <
+*.robage 200 <
+start
+20 .dx store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 !=
+*.memval *.keyloc * =
+*.robage 20 mod 16 >=
+*.robage 200 >= or
+start
+*.aim 35 add .setaim store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 !=
+*.memval *.keyloc * =
+*.robage 20 mod 16 <
+*.robage 200 <
+start
+20 .dx store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.robage 100 >=
+*.robage 1000 <
+*.eye9 0 =
+*.robage 20 mod 10 >
+start
+20 .dx store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 =
+*.robage 20 >
+*.memval *.keyloc * = and or
+*.eye1 0 >
+start
+*.aim *.eye1dir add .setaim store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 =
+*.robage 20 >
+*.memval *.keyloc * = and or
+*.eye2 0 >
+start
+*.aim *.eye2dir add .setaim store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 =
+*.robage 20 >
+*.memval *.keyloc * = and or
+*.eye3 0 >
+start
+*.aim *.eye3dir add .setaim store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 =
+*.robage 20 >
+*.memval *.keyloc * = and or
+*.eye4 0 >
+start
+*.aim *.eye4dir add .setaim store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 =
+*.robage 20 >
+*.memval *.keyloc * = and or
+*.eye5 0 >
+start
+*.aim *.eye5dir add .setaim store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 =
+*.robage 20 >
+*.memval *.keyloc * = and or
+*.eye6 0 >
+start
+*.aim *.eye6dir add .setaim store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 =
+*.robage 20 >
+*.memval *.keyloc * = and or
+*.eye7 0 >
+start
+*.aim *.eye7dir add .setaim store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 =
+*.robage 20 >
+*.memval *.keyloc * = and or
+*.eye8 0 >
+start
+*.aim *.eye8dir add .setaim store
+stop
+
+cond
+*.state .scaning =
+*.state .torpedo = or
+*.eye9 0 >
+*.memval *.keyloc * =
+*.in4 0 !=
+*.in5 0 != or
+*.in4 *.in5 dist 1000 <
+start
+*.in4 *.in5 angle .setaim store
+20 .dx store
+stop
+
+cond
+*.state .scaning =
+*.eye9 0 =
+*.memval *.keyloc * = or
+*.nrg 3100 > or
+*.nrg 300 >
+*.body 100 > and
+*.totalmyspecies 70 < and
+*.nrg 500 >
+*.body 100 > and
+*.totalmyspecies 70 >= and or
+*.repspin 0 =
+start
+*.robage 1 add .repspin store
+stop
+
+cond
+*.state .scaning =
+*.repspin 1 add *.robage =
+start
+*.aim 511 add .setaim store
+0 .up store
+0 .dx store
+stop
+
+cond
+*.state .scaning =
+*.repspin 2 add *.robage =
+start
+*.aim 341 add .setaim store
+0 .up store
+0 .dx store
+stop
+
+cond
+*.state .scaning =
+*.repspin 3 add *.robage =
+start
+*.aim 511 add .setaim store
+0 .up store
+0 .dx store
+stop
+
+cond
+*.state .scaning =
+*.repspin 15 add *.robage <
+*.repspin 0 !=
+start
+0 .repspin store
+stop
+
+cond
+*.state .scaning =
+*.nrg 300 >
+*.body 100 >
+*.repspin 1 add *.robage =
+*.repspin 2 add *.robage = or
+*.totalmyspecies 70 <
+start
+32 .repro store
+stop
+
+cond
+*.state .scaning =
+*.nrg 500 >
+*.body 100 >
+*.repspin 1 add *.robage =
+*.repspin 2 add *.robage = or
+*.totalmyspecies 70 >=
+start
+32 .repro store
+stop
+
+cond
+*.state .scaning =
+*.nrg 200 >
+*.body 500 <
+*.totalmyspecies 70 > or
+start
+100 .strbody store
+stop
+
+cond
+*.state .scaning =
+*.nrg 100 <
+*.body 20 >
+start
+50 .fdbody store
+stop
+
+cond
+*.state .scaning =
+*.shell 50 <
+*.nrg 50 >
+start
+20 .mkshell store
+stop
+
+cond
+*.state .scaning =
+*.shell 200 <
+*.nrg 200 >
+*.body 120 >
+start
+50 .mkshell store
+stop
+
+cond
+*.state .scaning =
+*.venom 50 <
+*.nrg 20 >
+start
+10 .strvenom store
+stop
+
+cond
+*.state .scaning =
+*.shell 300 <
+*.nrg 200 >
+*.body 100 >
+*.eye9 0 >
+*.refeye 0 !=
+*.refshoot 0 != or
+*.refshell 0 != or
+*.refpoison 0 != or
+*.refvenom 0 != or
+*.refvelscalar 20 > or
+start
+300 *.shell sub .mkshell store
+stop
+
+cond
+*.state .scaning =
+*.shflav 0 !=
+*.shflav -2 !=
+*.shflav -3 !=
+*.nrg 80 >
+*.venom 5 >
+start
+*.shang .setaim store
+-3 .shoot store
+10 .shootval store
+stop
+
+cond
+*.state .scaning =
+*.shflav 0 !=
+*.shflav -2 !=
+*.shflav -3 !=
+*.nrg 80 >
+*.venom 5 <=
+start
+*.shang .setaim store
+.setaim .shoot store
+*.refaim 682 add .shootval store
+stop
+
+cond
+*.fixpos 0 !=
+start
+0 .fixpos store
+stop
+
+cond
+*.state .scaning =
+*.pain 60 >
+*.shflav 0 !=
+*.shflav -2 !=
+start
+*.maxvel .dx store
+stop
+
+cond
+*.shflav 0 !=
+start
+0 .shflav store
+stop
+
+cond
+*.numties 0 >
+*.trefbody *.body >=
+*.trefnrg *.nrg >= or
+start
+*.tiepres .tienum store
+.tieval .tieloc store
+1000 .tieval store
+*.tiepres .deltie store
+stop
+
+'Wasn't sure the above was legal for F2
+'If it is, then disable the gene above and always use this
+cond
+*.numties 0 >
+*.trefbody *.body <
+*.trefnrg *.nrg <
+start
+*.tiepres .tienum store
+.shoot .tieloc store
+-2 .tieval store
+*.tiepres .deltie store
+stop
+
+'------------------------------------- Torpedo
+cond
+*.state .scaning =
+*.memval *.keyloc * !=
+*.eye9 0 !=
+*.body 150 >
+*.totalmyspecies 50 <
+*.refshell 0 >
+*.refshell *.refbody add *.refnrg add *.shell *.body add *.nrg add >
+start
+*.refxpos .birthx store
+*.refypos .birthy store
+.torpedo .birthstate store
+5 .repro store
+stop
+
+cond
+*.robage 1 >
+*.body *.nrg add 150 <
+start
+.torpedo .state store
+stop
+
+cond
+*.robage 0 =
+*.state .torpedo =
+start
+*.birthx *.birthy angle .setaim store
+stop
+
+cond
+*.state .torpedo =
+*.body 1 >
+start
+*.body 10 mult 10 sub 0 floor .fdbody store
+stop
+
+cond
+*.state .torpedo =
+*.memval *.keyloc * !=
+*.numties 0 =
+*.eye5 0 !=
+start
+*.refxpos *.refypos angle .setaim store
+*.refxpos *.xpos sub abs *.refypos *.ypos sub abs pyth 10 div 30 sub 0 floor 100 ceil *.refvelup add .up store
+*.refveldx .dx store
+*.refvelsx .sx store
+1 .tie store
+.eye5dir .tieloc store
+.spinoffset .spineyespace 4 mult add .tieval store
+stop
+
+cond
+*.state .torpedo =
+*.memval 0 =
+*.refeye 0 =
+*.refshoot 0 =
+*.reftie 0 =
+*.refshell 0 =
+*.revenom 0 =
+*.refaim 0 =
+*.refpoison 0 =
+*.refvenom 0 =
+*.refkills 0 =
+start
+0 .up store
+0 .dx store
+0 .sx store
+0 .tie store
+*.aim *.eye8dir add .setaim store
+stop
+
+cond
+*.state .torpedo =
+*.tmemval *.keyloc * !=
+*.numties 0 >
+start
+*.tiepres .tienum store
+.locs 1 sub rnd 2 mult .startloc add dup * .tieloc store
+1 add * .tieval store
+40 .stifftie store
+200 .fixlen store
+*.trefxpos *.trefypos angle .setaim store
+*.trefvelup .up store
+*.trefveldx .dx store
+0 .deltie store
+stop
+
+cond
+*.state .torpedo =
+*.tmemval *.keyloc * =
+*.numties 0 >
+start
+*.tiepres .deltie store
+stop
+
+'--------------------------
+'Viral and mem defence
+
+cond
+*.keyloc .startkey *.randm add !=
+*.memloc .startkey *.randm add != or
+*.memloc .startkey *.randm add != or
+*.venval -2 != or
+*.vloc .shoot != or
+start
+.startkey *.randm add .keyloc store
+.startkey *.randm add .memloc store
+.startkey *.randm add .tmemloc store
+-2 .venval store
+.shoot .vloc store
+stop
+
+cond
+*.vtimer 0 !=
+start
+0 .vshoot store
+stop
+
+cond
+*.repro 0 !=
+*.repro 32 !=
+*.repro 5 !=
+'*.repro 98 !=
+start
+0 .repro store
+stop
+
+cond
+*.delgene 0 !=
+start
+0 .delgene store
+stop
+
+end
+
+'#tag:Spinner v1.2 (F2) (Moonfisher) 14-04-08.txt
