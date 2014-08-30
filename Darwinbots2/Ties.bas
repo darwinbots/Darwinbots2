@@ -179,6 +179,7 @@ Public Sub Update_Ties(t As Integer)
     .mem(831) = 0
     .mem(832) = 0
     .mem(833) = 0
+    .mem(sharechlr) = 0
         
     .numties = k - 1  ' Set the number of ties.
     .mem(numties) = .numties   'places a value in the memory cell .numties for number of ties attached to a robot
