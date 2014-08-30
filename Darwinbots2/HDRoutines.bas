@@ -1836,6 +1836,8 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
         .dq = 2
       End If
      End If
+    Else
+     If TotalChlr > SimOpts.MaxPopulation Then .Dead = True
     End If
     
     'read in any future data here
