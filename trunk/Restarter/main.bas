@@ -179,6 +179,26 @@ End Sub
 Sub Main()
 wait 2
 KillApp Command$
+wait 1
+KillApp extractpath(Command$) & "\DarwinbotsIM.exe"
 wait 2
 Shell trimexe(Command$) & ".exe"
 End Sub
+
+Function extractpath(path As String) As String
+  Dim k As Integer
+  Dim OK As Integer
+  If path <> "" Then
+    k = 1
+    While InStr(k, path, "\") > 0
+      OK = k
+      k = InStr(k, path, "\") + 1
+    Wend
+    'EricL - If condition below added March 15, 2006
+    If k = 1 Then
+      extractpath = ""
+    Else
+      extractpath = Left(path, k - 2)
+    End If
+  End If
+End Function
