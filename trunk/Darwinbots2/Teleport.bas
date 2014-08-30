@@ -165,7 +165,7 @@ Dim randomV As vector
       If (TeleportCollision(n, i) Or rob(n).dq = 2) And rob(n).exist Then
         If Teleporters(i).Out Or Teleporters(i).Internet Then
           If rob(n).dq = 2 Then GoTo forceteleport
-          If (rob(n).Veg And (Not Teleporters(i).teleportVeggies Or y_eco_im > 0)) Or _
+          If (rob(n).Veg And Not Teleporters(i).teleportVeggies) Or _
              (rob(n).Corpse And Not Teleporters(i).teleportCorpses) Or _
              ((Not rob(n).Veg) And (Not Teleporters(i).teleportHeterotrophs)) Then
             'Don't Teleport
