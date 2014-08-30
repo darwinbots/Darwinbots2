@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.MDIForm MDIForm1 
    AutoShowChildren=   0   'False
    BackColor       =   &H00400000&
@@ -1168,8 +1168,8 @@ tryagain:
      & " -name " & Chr(34) & IntOpts.IName & Chr(34) _
      & " -port " & Chr(34) & "1050" & Chr(34) _
      & " -pid " & Str(GetCurrentProcessId()) _
-     & " -port " & Chr(34) & IntOpts.ServPort & Chr(34) _
-     & " -server " & Chr(34) & IntOpts.ServIP & Chr(34)
+     & " -port " & Chr(34) & IIf(IntOpts.ServPort = "", "80", IntOpts.ServPort) & Chr(34) _
+     & " -server " & Chr(34) & IIf(IntOpts.ServIP = "PeterIM", "198.50.150.51", IntOpts.ServIP) & Chr(34)
 
     IntOpts.pid = shell(s, vbNormalFocus)
     If IntOpts.pid = 0 Then
@@ -2257,8 +2257,8 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   EnableRobotsMenu
     
   optionsform.ReadSett MDIForm1.MainDir + IIf(simalreadyrunning, "\settings\lastran.set", "\settings\lastexit.set")
-  IntOpts.ServIP = "www.Darwinbots.com"
-  IntOpts.ServPort = "21013"
+  IntOpts.ServIP = "PeterIM"
+  IntOpts.ServPort = ""
   optionsform.IntSettLoad
   
   'From now on all league and special evolution modes use the restart system.
