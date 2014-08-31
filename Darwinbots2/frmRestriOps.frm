@@ -294,7 +294,7 @@ Case 3
     If rob(t).exist Then
       If rob(t).Veg Then
        rob(t).multibot_time = IIf(chkMBKillChlr.value * True, 210, 0)
-       If rob(t).dq <> 2 Then rob(t).dq = chkDQKillChlr.value
+       rob(t).dq = chkDQKillChlr.value
        '
        rob(t).Fixed = BlockSpecVeg.value * True
        If rob(t).Fixed Then
