@@ -2586,6 +2586,7 @@ If x_restartmode > 0 Then
             Exit Sub
         Case vbYes
             Kill App.path & "\restartmode.gset"
+            If dir(App.path & "\im.gset") <> "" Then Kill App.path & "\im.gset"
             hidepred = False 'Botsareus 8/5/2014 Bug fix
         Case vbNo
                 'special case restore restart mode

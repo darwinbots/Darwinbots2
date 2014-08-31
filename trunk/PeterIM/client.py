@@ -106,7 +106,20 @@ class Client(socket):
 
     def _recvFile(self, inbound):
         LENGTH_SIZE = 5
-        length = self.decode_length(self.recv(LENGTH_SIZE))
+        strLength=""
+        timesWaited = 0
+        while (LENGTH_SIZE) > 0:
+            rec = self.recv(LENGTH_SIZE)
+            strLength+=rec
+            LENGTH_SIZE -= len(strLength)
+            if LENGTH_SIZE != 0:
+                print "waiting..."
+                timesWaited+=1
+                sleep(timesWaited)
+                if timesWaited >10:
+                    raise Exception("Waited too long")
+
+        length = self.decode_length(strLength)
         if  length==0:
             print 'server got no bots'
             if self.status == "R":
