@@ -310,7 +310,7 @@ Case 3
        rob(t).DisableMovementSysvars = DisableMovementSysvarsCheckVeg.value * True
       Else
        rob(t).multibot_time = IIf(chkMBKillNChlr.value * True, 210, 0)
-       If rob(t).dq <> 2 Then rob(t).dq = chkDQKillNChlr.value
+       If rob(t).dq < 2 Then rob(t).dq = chkDQKillNChlr.value
        '
        rob(t).NoChlr = chkNoChlr.value * True
        rob(t).Fixed = BlockSpec.value * True

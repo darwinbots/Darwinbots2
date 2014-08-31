@@ -1830,10 +1830,10 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     If Not .Veg Then
      If y_eco_im > 0 And Form1.lblSaving.Visible = False Then
       If Right(.tag, 5) <> Left(.nrg & .nrg, 5) Then
-        .dq = 2
+        .dq = 2 + (.dq = 1) * True
       End If
       If .FName <> "Mutate.txt" And .FName <> "Base.txt" Then
-        .dq = 2
+        .dq = 2 + (.dq = 1) * True
       End If
      End If
     Else
@@ -2111,7 +2111,7 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     
     Put #n, , .multibot_time
     Put #n, , .Chlr_Share_Delay
-    Put #n, , .dq
+    Put #n, , .dq - IIf(.dq > 1, 2, 0)
     
     'write any future data here
     

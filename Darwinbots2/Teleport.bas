@@ -162,7 +162,7 @@ Dim randomV As vector
 
   For i = 1 To numTeleporters
     If Teleporters(i).Out Or Teleporters(i).local Or (Teleporters(i).Internet And Teleporters(i).PollCountDown <= 0) Then
-      If (TeleportCollision(n, i) Or rob(n).dq = 2) And rob(n).exist Then
+      If (TeleportCollision(n, i) Or rob(n).dq > 1) And rob(n).exist Then
         If Teleporters(i).Out Or Teleporters(i).Internet Then
           If rob(n).dq = 2 Then GoTo forceteleport
           If (rob(n).Veg And Not Teleporters(i).teleportVeggies) Or _
