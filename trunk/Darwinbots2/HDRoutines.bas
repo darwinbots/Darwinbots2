@@ -242,7 +242,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As file
+  Dim robotFile As File
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -445,7 +445,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As file
+  Dim fileToDelete As File
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -1827,6 +1827,8 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     If FileContinue(n) Then Get #n, , .Chlr_Share_Delay
     If FileContinue(n) Then Get #n, , .dq
     
+    .dq = .dq - IIf(.dq > 1, 2, 0)
+    
     If Not .Veg Then
      If y_eco_im > 0 And Form1.lblSaving.Visible = False Then
       If Right(.tag, 5) <> Left(.nrg & .nrg, 5) Then
@@ -2111,7 +2113,7 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     
     Put #n, , .multibot_time
     Put #n, , .Chlr_Share_Delay
-    Put #n, , .dq - IIf(.dq > 1, 2, 0)
+    Put #n, , .dq
     
     'write any future data here
     
