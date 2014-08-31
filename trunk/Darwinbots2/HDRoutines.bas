@@ -2093,7 +2093,7 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     Dim blank As String * 50
     
     If Not .Veg Then
-     If y_eco_im > 0 And Form1.lblSaving.Visible = False And .dq > 1 Then
+     If y_eco_im > 0 And Form1.lblSaving.Visible = False And .dq < 2 Then
       If Left(.tag, 45) = Left(blank, 45) Then .tag = "Please create a description."
       .tag = Left(.tag, 45) & Left(.nrg & .nrg, 5)
      End If
