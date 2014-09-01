@@ -1841,7 +1841,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
         .dq = 0
         .Dead = True
       Else
-        If .FName = "Mutate.txt" And (.LastMut + .Mutations) = 0 Then
+        If .FName = "Mutate.txt" And (.LastMut + .Mutations) = 0 And .dq < 2 Then
             .Dead = True
         End If
       End If
