@@ -243,7 +243,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As file
+  Dim robotFile As File
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -446,7 +446,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As file
+  Dim fileToDelete As File
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -1838,16 +1838,13 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
       If .FName <> "Mutate.txt" And .FName <> "Base.txt" Then
         .dq = 2 + (.dq = 1) * True
       End If
-      If .dq > 1 And (.LastMut + .Mutations) = 0 Then
-        .dq = 0
-        .Dead = True
-      Else
-        If .FName = "Mutate.txt" And (.LastMut + .Mutations) = 0 And .dq < 2 Then
+      If .dq < 2 Then
+        If .FName = "Mutate.txt" And (.LastMut + .Mutations) = 0 Then
             .Dead = True
-            basefix = basefix + 1
+            basefix = basefix + Int(Rnd * 2)
             If basefix > 32000 Then basefix = 32000
         End If
-        If .FName = "Base.txt" And .dq < 2 And basefix > 0 Then
+        If .FName = "Base.txt" And basefix > 0 Then
             .Dead = True
             basefix = basefix - 1
         End If
