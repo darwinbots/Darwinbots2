@@ -1,5 +1,6 @@
 Attribute VB_Name = "HDRoutines"
 Option Explicit
+Dim basefix As Integer
 
 '
 '   D I S K    O P E R A T I O N S
@@ -1843,6 +1844,12 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
       Else
         If .FName = "Mutate.txt" And (.LastMut + .Mutations) = 0 And .dq < 2 Then
             .Dead = True
+            basefix = basefix + 1
+            If basefix > 32000 Then basefix = 32000
+        End If
+        If .FName = "Base.txt" And .dq < 2 And basefix > 0 Then
+            .Dead = True
+            basefix = basefix - 1
         End If
       End If
      End If
