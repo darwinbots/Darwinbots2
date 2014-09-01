@@ -833,6 +833,12 @@ Begin VB.MDIForm MDIForm1
          Caption         =   "DNA Help"
          Shortcut        =   ^D
       End
+      Begin VB.Menu sep102 
+         Caption         =   "-"
+      End
+      Begin VB.Menu RobTagInfo 
+         Caption         =   "Robot Tag Information"
+      End
       Begin VB.Menu y_info 
          Caption         =   "Survival Info"
          Visible         =   0   'False
@@ -1398,6 +1404,38 @@ Private Sub robinf_Click()
   n = robfocus
   datirob.Show
   datirob.infoupdate n, rob(n).nrg, rob(n).parent, rob(n).Mutations, rob(n).age, rob(n).SonNumber, 1, rob(n).FName, rob(n).genenum, rob(n).LastMut, rob(n).generation, rob(n).DnaLen, rob(n).LastOwner, rob(n).Waste, rob(n).body, rob(n).mass, rob(n).venom, rob(n).shell, rob(n).Slime, rob(n).chloroplasts
+End Sub
+
+Private Sub RobTagInfo_Click() 'Botsareus & Peter 9/1/2014 Simple idea to list tag information
+Dim all_str() As String
+Dim blank As String * 50
+ReDim all_str(0)
+all_str(0) = "Tag" & String(45 - 3, " ") & ":File Name"
+Dim t As Integer
+Dim rob_str As String
+Dim i As Integer
+Dim datahit As Boolean
+For t = 1 To MaxRobs
+ If rob(t).exist Then
+  If Left(rob(t).tag, 45) = Left(blank, 45) Then
+   rob_str = String(45, " ") & ":" & rob(t).FName
+  Else
+   rob_str = Left(rob(t).tag, 45) & ":" & rob(t).FName
+  End If
+  datahit = False
+  For i = 0 To UBound(all_str)
+   If all_str(i) = rob_str Then
+    datahit = True
+    Exit For
+   End If
+  Next
+  If Not datahit Then
+   ReDim Preserve all_str(UBound(all_str) + 1)
+   all_str(UBound(all_str)) = rob_str
+  End If
+ End If
+Next
+MsgBox Join(all_str, vbCrLf), vbInformation, "Robot Tag Information"
 End Sub
 
 Private Sub SaveSimWithoutMutations_Click()
