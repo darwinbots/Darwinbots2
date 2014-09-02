@@ -14,6 +14,8 @@ Public energydif2 As Double 'Total last hide pred
 Public energydifX2 As Double 'Avg last hide pred
 Public energydifXP2 As Double 'The actual handycap
 
+Public stopflag As Boolean
+
 Public Sub UpdateSim()
 
   'core evo
@@ -66,13 +68,19 @@ Public Sub UpdateSim()
       End If
     Next t
     'See if end of evo
-    If Base_count = 0 Then UpdateWonEvo Form1.fittest
-    If Mutate_count = 0 Then UpdateLostEvo
-     If Base_count = 0 Or Mutate_count = 0 Then 'Botsareus 3/22/2014 Bug fix
-          DisplayActivations = False
-          Form1.Active = False
-          Form1.SecTimer.Enabled = False
-     End If
+    If Mutate_count = 0 Then
+        DisplayActivations = False
+        Form1.Active = False
+        Form1.SecTimer.Enabled = False
+        stopflag = True 'Botsareus 9/2/2014 A bug fix from Spork22
+        UpdateLostEvo
+    End If
+    If Base_count = 0 And Not stopflag Then
+        DisplayActivations = False
+        Form1.Active = False
+        Form1.SecTimer.Enabled = False
+        UpdateWonEvo Form1.fittest
+    End If
     If ModeChangeCycles > (hidePredCycl / 1.2 + hidePredOffset) Then
       'calculate new energy handycap
       energydif2 = energydif2 + energydif / ModeChangeCycles 'inverse handycap
@@ -100,13 +108,13 @@ Public Sub UpdateSim()
              If rob(t).exist And rob(t).FName = "Base.txt" Then
                   For i = 1 To MaxRobs
                       If rob(i).exist And rob(i).FName = "Mutate.txt" Then
-                        If ((rob(i).pos.X - rob(t).pos.X) ^ 2 + (rob(i).pos.Y - rob(t).pos.Y) ^ 2) ^ 0.5 < avgsize Then
+                        If ((rob(i).pos.x - rob(t).pos.x) ^ 2 + (rob(i).pos.y - rob(t).pos.y) ^ 2) ^ 0.5 < avgsize Then
                         'if the distance between the robots is less then avgsize then move mutate robot out of the way
                             With rob(i)
                                 'tie mod
                                 Dim pozdif As vector
-                                pozdif.X = 9237 * Rnd - .pos.X
-                                pozdif.Y = 6928 * Rnd - .pos.Y
+                                pozdif.x = 9237 * Rnd - .pos.x
+                                pozdif.y = 6928 * Rnd - .pos.y
                                 If .numties > 0 Then
                                     Dim clist(50) As Integer, tk As Integer
                                     clist(0) = i
@@ -114,13 +122,13 @@ Public Sub UpdateSim()
                                     'move multibot
                                     tk = 1
                                     While clist(tk) > 0
-                                        rob(clist(tk)).pos.X = rob(clist(tk)).pos.X + pozdif.X
-                                        rob(clist(tk)).pos.Y = rob(clist(tk)).pos.Y + pozdif.Y
+                                        rob(clist(tk)).pos.x = rob(clist(tk)).pos.x + pozdif.x
+                                        rob(clist(tk)).pos.y = rob(clist(tk)).pos.y + pozdif.y
                                         tk = tk + 1
                                     Wend
                                 End If
-                                .pos.X = .pos.X + pozdif.X
-                                .pos.Y = .pos.Y + pozdif.Y
+                                .pos.x = .pos.x + pozdif.x
+                                .pos.y = .pos.y + pozdif.y
                             End With
                             k = k + 1
                             k2 = k2 + 1
@@ -272,7 +280,7 @@ Public Sub UpdateSim()
     With rob(t)
      If .exist Then
       If t = robfocus Or .highlight Then
-       If Not (Mouse_loc.X = 0 And Mouse_loc.Y = 0) Then .mem(SetAim) = angnorm(angle(.pos.X, .pos.Y, Mouse_loc.X, Mouse_loc.Y)) * 200
+       If Not (Mouse_loc.x = 0 And Mouse_loc.y = 0) Then .mem(SetAim) = angnorm(angle(.pos.x, .pos.y, Mouse_loc.x, Mouse_loc.y)) * 200
        For i = 1 To UBound(PB_keys)
         If PB_keys(i).Active <> PB_keys(i).Invert Then .mem(PB_keys(i).memloc) = PB_keys(i).value
        Next
