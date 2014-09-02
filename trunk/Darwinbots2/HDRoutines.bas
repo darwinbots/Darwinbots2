@@ -1841,7 +1841,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
       If .dq < 2 Then
         If .FName = "Mutate.txt" And (.LastMut + .Mutations) = 0 Then
             .Dead = True
-            basefix = basefix + Int(Rnd * 2)
+            basefix = basefix + (Int(Rnd * 5) <> 0) * True
             If basefix > 32000 Then basefix = 32000
         End If
         If .FName = "Base.txt" And basefix > 0 Then
