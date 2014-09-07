@@ -3131,7 +3131,7 @@ Private Sub writeIMdata()
     Dim simpopulations() As IMbots
     Dim upperbound As Integer
     ReDim simpopulations(0)
-    simdata = "{""cycle"":" & SimOpts.TotRunCycle & ",""simId"":""" & strSimStart & """,""localtime"":" & Int(Timer) & """,""width"":" & SimOpts.FieldWidth & """,""height"":" & SimOpts.FieldHeight & ",""population"":["
+    simdata = "{""cycle"":" & SimOpts.TotRunCycle & ",""simId"":""" & strSimStart & """,""localtime"":" & Int(Timer) & ",""width"":" & SimOpts.FieldWidth & ",""height"":" & SimOpts.FieldHeight & ",""population"":["
     
     'calculate species
     For i = 1 To MaxRobs
