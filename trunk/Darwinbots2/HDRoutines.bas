@@ -1,6 +1,5 @@
 Attribute VB_Name = "HDRoutines"
 Option Explicit
-Dim basefix As Integer
 
 '
 '   D I S K    O P E R A T I O N S
@@ -243,7 +242,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As File
+  Dim robotFile As file
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -253,7 +252,7 @@ Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   k = SimOpts.SpeciesNum
   If k < MAXNATIVESPECIES Then SimOpts.SpeciesNum = SimOpts.SpeciesNum + 1
    
-  SimOpts.Specie(k).Name = rob(n).FName
+  SimOpts.Specie(k).name = rob(n).FName
   SimOpts.Specie(k).Veg = rob(n).Veg
   SimOpts.Specie(k).CantSee = rob(n).CantSee
   SimOpts.Specie(k).DisableMovementSysvars = rob(n).DisableMovementSysvars
@@ -318,7 +317,7 @@ tryagain:
       foundSpecies = False
       While i > 0
         i = i - 1
-        If rob(nuovo).FName = SimOpts.Specie(i).Name Then
+        If rob(nuovo).FName = SimOpts.Specie(i).name Then
           foundSpecies = True
           i = 0
         End If
@@ -446,7 +445,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As File
+  Dim fileToDelete As file
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -469,8 +468,8 @@ bypass:
       
   For x = 0 To SimOpts.SpeciesNum - 1
     If SimOpts.Specie(x).population > 0 Then
-      Put #10, , Len(SimOpts.Specie(x).Name)
-      Put #10, , SimOpts.Specie(x).Name
+      Put #10, , Len(SimOpts.Specie(x).name)
+      Put #10, , SimOpts.Specie(x).name
       Put #10, , SimOpts.Specie(x).population
       Put #10, , SimOpts.Specie(x).Veg
       Put #10, , SimOpts.Specie(x).color
@@ -635,8 +634,8 @@ Public Sub SaveSimulation(path As String)
       Put #1, , SimOpts.Specie(k).Fixed
       Put #1, , SimOpts.Specie(k).Mutables.mutarray
       Put #1, , SimOpts.Specie(k).Mutables.Mutations
-      Put #1, , Len(SimOpts.Specie(k).Name)
-      Put #1, , SimOpts.Specie(k).Name
+      Put #1, , Len(SimOpts.Specie(k).name)
+      Put #1, , SimOpts.Specie(k).name
       
       'obsolete, so we do this instead
       'Put #1, , SimOpts.Specie(k).omnifeed
@@ -1157,8 +1156,8 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
       If Not EOF(1) Then Get #1, , SimOpts.Specie(k).Fixed
       If Not EOF(1) Then Get #1, , SimOpts.Specie(k).Mutables.mutarray
       If Not EOF(1) Then Get #1, , SimOpts.Specie(k).Mutables.Mutations
-      If Not EOF(1) Then Get #1, , j: SimOpts.Specie(k).Name = Space(Abs(j))
-      If Not EOF(1) Then Get #1, , SimOpts.Specie(k).Name
+      If Not EOF(1) Then Get #1, , j: SimOpts.Specie(k).name = Space(Abs(j))
+      If Not EOF(1) Then Get #1, , SimOpts.Specie(k).name
       
       'obsolete
       'If Not EOF(1) Then Get #1, , SimOpts.Specie(k).omnifeed
@@ -1596,8 +1595,8 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     Get #n, , .nrg
     
     For t = 1 To 50
-      Get #n, , k: .vars(t).Name = Space(k)
-      Get #n, , .vars(t).Name   '|
+      Get #n, , k: .vars(t).name = Space(k)
+      Get #n, , .vars(t).name   '|
       Get #n, , .vars(t).value
     Next t
     Get #n, , .vnum             '| variabili private
@@ -1838,17 +1837,6 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
       If .FName <> "Mutate.txt" And .FName <> "Base.txt" Then
         .dq = 2 + (.dq = 1) * True
       End If
-      If .dq < 2 Then
-        If .FName = "Mutate.txt" And (.LastMut + .Mutations) = 0 Then
-            .Dead = True
-            basefix = basefix + (Int(Rnd * 5) <> 0) * True
-            If basefix > 32000 Then basefix = 32000
-        End If
-        If .FName = "Base.txt" And basefix > 0 Then
-            .Dead = True
-            basefix = basefix - 1
-        End If
-      End If
      End If
     Else
      If TotalChlr > SimOpts.MaxPopulation Then .Dead = True
@@ -1962,8 +1950,8 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     
     'custom variables we're saving
     For t = 1 To 50
-      Put #n, , CInt(Len(.vars(t).Name))
-      Put #n, , .vars(t).Name         '|
+      Put #n, , CInt(Len(.vars(t).name))
+      Put #n, , .vars(t).name         '|
       Put #n, , .vars(t).value
     Next t
 
@@ -2106,7 +2094,7 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     
     If Not .Veg Then
      If y_eco_im > 0 And Form1.lblSaving.Visible = False And .dq < 2 Then
-      If Left(.tag, 45) = Left(blank, 45) Then .tag = "Please create a description."
+      If Left(.tag, 45) = Left(blank, 45) Then .tag = .FName
       .tag = Left(.tag, 45) & Left(.nrg & .nrg, 5)
      End If
     End If
