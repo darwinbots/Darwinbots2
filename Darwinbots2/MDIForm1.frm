@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
 Begin VB.MDIForm MDIForm1 
    AutoShowChildren=   0   'False
    BackColor       =   &H00400000&
@@ -1410,7 +1410,7 @@ Private Sub RobTagInfo_Click() 'Botsareus & Peter 9/1/2014 Simple idea to list t
 Dim all_str() As String
 Dim blank As String * 50
 ReDim all_str(0)
-all_str(0) = "Tag" & String(45 - 3, " ") & ":File Name"
+all_str(0) = "Tag" & String(45 - 3, " ") & ":File Name:User"
 Dim t As Integer
 Dim rob_str As String
 Dim i As Integer
@@ -1420,7 +1420,7 @@ For t = 1 To MaxRobs
   If Left(rob(t).tag, 45) = Left(blank, 45) Then
    rob_str = String(45, " ") & ":" & rob(t).FName
   Else
-   rob_str = Left(rob(t).tag, 45) & ":" & rob(t).FName
+   rob_str = Left(rob(t).tag, 45) & ":" & rob(t).FName & ":" & rob(t).LastOwner
   End If
   datahit = False
   For i = 0 To UBound(all_str)
@@ -1939,7 +1939,7 @@ Private Sub simload(Optional path As String)
     If i > MAXNATIVESPECIES Then
       MsgBox "Exceeded number of native species."
     Else
-      If SimOpts.Specie(i).Native Then MDIForm1.Combo1.additem SimOpts.Specie(i).Name
+      If SimOpts.Specie(i).Native Then MDIForm1.Combo1.additem SimOpts.Specie(i).name
     End If
   Next i
   
@@ -2316,7 +2316,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     optionsform.additem MDIForm1.MainDir & "\evolution\Test.txt"
                     'disable mutations
                     For i = 0 To UBound(TmpOpts.Specie)
-                     If TmpOpts.Specie(i).Name = "Test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).name = "Test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                     Next
                     load_league_res 'Botsareus 8/16/2014 although this is techincally an evo test, it is designed as a league test
                     'F1 desabled
@@ -2333,11 +2333,11 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     optionsform.additem MDIForm1.MainDir & "\evolution\Mutate.txt"
                     'disable mutations
                     For i = 0 To UBound(TmpOpts.Specie)
-                     If TmpOpts.Specie(i).Name = "Base.txt" Then
+                     If TmpOpts.Specie(i).name = "Base.txt" Then
                         TmpOpts.Specie(i).Mutables.Mutations = False
                         TmpOpts.Specie(i).qty = Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / 80
                      End If
-                     If TmpOpts.Specie(i).Name = "Mutate.txt" Then TmpOpts.Specie(i).qty = Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / 80
+                     If TmpOpts.Specie(i).name = "Mutate.txt" Then TmpOpts.Specie(i).qty = Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / 80
                     Next
                     'Randomize find best
                     Randomize
@@ -2366,11 +2366,11 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     End If
                     'disable mutations
                     For i = 0 To UBound(TmpOpts.Specie)
-                     If TmpOpts.Specie(i).Name = "Base.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
-                     If TmpOpts.Specie(i).Name = "Test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).name = "Base.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).name = "Test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                      If y_eco_im > 0 Then
-                        If TmpOpts.Specie(i).Name = "Base.txt" Then TmpOpts.Specie(i).qty = 1
-                        If TmpOpts.Specie(i).Name = "Test.txt" Then TmpOpts.Specie(i).qty = 1
+                        If TmpOpts.Specie(i).name = "Base.txt" Then TmpOpts.Specie(i).qty = 1
+                        If TmpOpts.Specie(i).name = "Test.txt" Then TmpOpts.Specie(i).qty = 1
                      End If
                     Next
                     load_league_res 'although this is techincally an evo test, it is designed as a league test
@@ -2396,12 +2396,12 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     End If
                     'disable mutations
                     For i = 0 To UBound(TmpOpts.Specie)
-                     If TmpOpts.Specie(i).Name = "Base.txt" Then
+                     If TmpOpts.Specie(i).name = "Base.txt" Then
                         TmpOpts.Specie(i).Mutables.Mutations = False
                      End If
                       If y_eco_im > 0 Then
-                        If TmpOpts.Specie(i).Name = "Base.txt" Then TmpOpts.Specie(i).qty = 1
-                        If TmpOpts.Specie(i).Name = "Mutate.txt" Then TmpOpts.Specie(i).qty = 1
+                        If TmpOpts.Specie(i).name = "Base.txt" Then TmpOpts.Specie(i).qty = 1
+                        If TmpOpts.Specie(i).name = "Mutate.txt" Then TmpOpts.Specie(i).qty = 1
                       End If
                     Next
                     load_evo_res 'load evolution restrictions
@@ -2419,8 +2419,8 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     optionsform.additem MDIForm1.MainDir & "\league\robotB.txt"
                     'disable mutations
                     For i = 0 To UBound(TmpOpts.Specie)
-                     If TmpOpts.Specie(i).Name = "robotA.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
-                     If TmpOpts.Specie(i).Name = "robotB.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).name = "robotA.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).name = "robotB.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                     Next
                     load_league_res
                     'F1 enabled
@@ -2460,7 +2460,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     optionsform.additem MDIForm1.MainDir & "\league\Test.txt"
                     'disable mutations
                     For i = 0 To UBound(TmpOpts.Specie)
-                     If TmpOpts.Specie(i).Name = "Test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).name = "Test.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                     Next
                     load_league_res
                     'F1 desabled
@@ -2526,8 +2526,8 @@ mode2:
                     optionsform.additem MDIForm1.MainDir & "\league\robotB.txt"
                     'disable mutations
                     For i = 0 To UBound(TmpOpts.Specie)
-                     If TmpOpts.Specie(i).Name = "robotA.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
-                     If TmpOpts.Specie(i).Name = "robotB.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).name = "robotA.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).name = "robotB.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
                     Next
                     load_league_res
                     'F1 enabled
