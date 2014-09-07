@@ -1189,7 +1189,7 @@ If lblSaving.Visible Then Exit Sub
       If SimOpts.AutoSaveDeleteOlderFiles Then
         If AutoSimNum > 10 Then
           Dim fso As New FileSystemObject
-          Dim fileToDelete As file
+          Dim fileToDelete As File
           On Error GoTo bypass
           Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
           fileToDelete.Delete
@@ -1207,7 +1207,7 @@ bypass:
       If SimOpts.AutoSaveDeleteOldBotFiles Then
         If AutoRobNum > 10 Then
           Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As file
+          Dim fileToDelete2 As File
           On Error GoTo bypass2
           Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
           fileToDelete2.Delete
@@ -2253,7 +2253,7 @@ End Sub
 Public Sub FeedGraph(GraphNumber As Integer)
   Dim nomi(MAXSPECIES) As String
   Dim dati(MAXSPECIES, NUMGRAPHS) As Single
-  Dim t As Integer, k As Integer, p As Integer, i As Integer
+  Dim t As Integer, k As Integer, P As Integer, i As Integer
   Dim startingChart As Integer, endingChart As Integer
   
   ' This should never be the case.
@@ -2275,7 +2275,7 @@ Public Sub FeedGraph(GraphNumber As Integer)
    
   For k = startingChart To endingChart
     If k = 10 Then t = 1
-    For p = 1 To t
+    For P = 1 To t
       If Not (Charts(k).graf Is Nothing) Then
         If k = 10 Then
           Charts(k).graf.SetValues "Cost Multiplier", dati(1, k)
@@ -2285,10 +2285,10 @@ Public Sub FeedGraph(GraphNumber As Integer)
           Charts(k).graf.SetValues "Zero Level", dati(5, k)
           Charts(k).graf.SetValues "Reinstatement Level", dati(6, k)
         Else
-          Charts(k).graf.SetValues nomi(p), dati(p, k)
+          Charts(k).graf.SetValues nomi(P), dati(P, k)
         End If
       End If
-    Next p
+    Next P
   Next k
   For k = startingChart To endingChart
     If Not (Charts(k).graf Is Nothing) Then
@@ -2404,7 +2404,7 @@ Private Sub Qpow()
 End Sub
 ' calculates data for the different graph types
 Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/3/2012 use names for graph id mod
-  Dim p As Integer, t As Integer, i As Integer, x As Integer
+  Dim P As Integer, t As Integer, i As Integer, x As Integer
   Dim n As node
   Dim population As Integer
   Dim ListOSubSpecies(500, 10000) As Integer
@@ -2432,28 +2432,28 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
       With rob(t)
       'If Not .wall And .exist Then
       If .exist Then
-        p = Flex.Position(rob(t).FName, nomi)
-        dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
-        dati(p, MUTATIONS_GRAPH) = dati(p, MUTATIONS_GRAPH) + .LastMut + .Mutations
-        dati(p, AVGAGE_GRAPH) = dati(p, AVGAGE_GRAPH) + (.age / 100) ' EricL 4/7/2006 Graph age in 100's of cycles
-        dati(p, OFFSPRING_GRAPH) = dati(p, OFFSPRING_GRAPH) + .SonNumber
-        dati(p, ENERGY_GRAPH) = dati(p, ENERGY_GRAPH) + .nrg
-        dati(p, DNALENGTH_GRAPH) = dati(p, DNALENGTH_GRAPH) + .DnaLen
-        dati(p, DNACOND_GRAPH) = dati(p, DNACOND_GRAPH) + .condnum
-        dati(p, MUT_DNALENGTH_GRAPH) = dati(p, MUT_DNALENGTH_GRAPH) + (.LastMut + .Mutations) / .DnaLen * 1000
-        dati(p, ENERGY_SPECIES_GRAPH) = Round(dati(p, ENERGY_SPECIES_GRAPH) + (.nrg + .body * 10) * 0.001, 2)
+        P = Flex.Position(rob(t).FName, nomi)
+        dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
+        dati(P, MUTATIONS_GRAPH) = dati(P, MUTATIONS_GRAPH) + .LastMut + .Mutations
+        dati(P, AVGAGE_GRAPH) = dati(P, AVGAGE_GRAPH) + (.age / 100) ' EricL 4/7/2006 Graph age in 100's of cycles
+        dati(P, OFFSPRING_GRAPH) = dati(P, OFFSPRING_GRAPH) + .SonNumber
+        dati(P, ENERGY_GRAPH) = dati(P, ENERGY_GRAPH) + .nrg
+        dati(P, DNALENGTH_GRAPH) = dati(P, DNALENGTH_GRAPH) + .DnaLen
+        dati(P, DNACOND_GRAPH) = dati(P, DNACOND_GRAPH) + .condnum
+        dati(P, MUT_DNALENGTH_GRAPH) = dati(P, MUT_DNALENGTH_GRAPH) + (.LastMut + .Mutations) / .DnaLen * 1000
+        dati(P, ENERGY_SPECIES_GRAPH) = Round(dati(P, ENERGY_SPECIES_GRAPH) + (.nrg + .body * 10) * 0.001, 2)
         
         
         'Look through the subspecies we have seen so far and see if this bot has the same as any of them
         i = 0
-        While i < speciesListIndex(p) And .SubSpecies <> ListOSubSpecies(p, i)
+        While i < speciesListIndex(P) And .SubSpecies <> ListOSubSpecies(P, i)
           i = i + 1
         Wend
                                 
-        If i = speciesListIndex(p) Then ' New sub species
-           ListOSubSpecies(p, i) = .SubSpecies
-           speciesListIndex(p) = speciesListIndex(p) + 1
-           dati(p, SPECIESDIVERSITY_GRAPH) = dati(p, SPECIESDIVERSITY_GRAPH) + 1
+        If i = speciesListIndex(P) Then ' New sub species
+           ListOSubSpecies(P, i) = .SubSpecies
+           speciesListIndex(P) = speciesListIndex(P) + 1
+           dati(P, SPECIESDIVERSITY_GRAPH) = dati(P, SPECIESDIVERSITY_GRAPH) + 1
         End If
         If Not .Corpse Then
           If .SubSpecies < 0 Then
@@ -2464,7 +2464,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
           
           'Botsareus 8/3/2012 Generational Distance Graph
            ll = FindGenerationalDistance(t)
-           If ll > dati(p, GENERATION_DIST_GRAPH) Then dati(p, GENERATION_DIST_GRAPH) = ll
+           If ll > dati(P, GENERATION_DIST_GRAPH) Then dati(P, GENERATION_DIST_GRAPH) = ll
                     
         End If
       End If
@@ -2472,17 +2472,17 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
     Next t
     
     t = Flex.last(nomi)
-    If dati(p, POPULATION_GRAPH) <> 0 Then
-    For p = 1 To t
-      dati(p, MUTATIONS_GRAPH) = Round(dati(p, MUTATIONS_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-      dati(p, AVGAGE_GRAPH) = Round(dati(p, AVGAGE_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-      dati(p, OFFSPRING_GRAPH) = Round(dati(p, OFFSPRING_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-      dati(p, ENERGY_GRAPH) = Round(dati(p, ENERGY_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-      dati(p, DNALENGTH_GRAPH) = Round(dati(p, DNALENGTH_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-      dati(p, DNACOND_GRAPH) = Round(dati(p, DNACOND_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-      dati(p, MUT_DNALENGTH_GRAPH) = Round(dati(p, MUT_DNALENGTH_GRAPH) / dati(p, POPULATION_GRAPH), 1)
+    If dati(P, POPULATION_GRAPH) <> 0 Then
+    For P = 1 To t
+      dati(P, MUTATIONS_GRAPH) = Round(dati(P, MUTATIONS_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+      dati(P, AVGAGE_GRAPH) = Round(dati(P, AVGAGE_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+      dati(P, OFFSPRING_GRAPH) = Round(dati(P, OFFSPRING_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+      dati(P, ENERGY_GRAPH) = Round(dati(P, ENERGY_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+      dati(P, DNALENGTH_GRAPH) = Round(dati(P, DNALENGTH_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+      dati(P, DNACOND_GRAPH) = Round(dati(P, DNACOND_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+      dati(P, MUT_DNALENGTH_GRAPH) = Round(dati(P, MUT_DNALENGTH_GRAPH) / dati(P, POPULATION_GRAPH), 1)
   '    dati(P, ENERGY_SPECIES_GRAPH) = dati(P, ENERGY_SPECIES_GRAPH) / dati(P, POPULATION_GRAPH)
-    Next p
+    Next P
     End If
     dati(1, DYNAMICCOSTS_GRAPH) = SimOpts.Costs(COSTMULTIPLIER)
     
@@ -2517,20 +2517,20 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
     If myquery Like "*simpgenetic*" Then
     
         t = Flex.last(nomi)
-        For p = 1 To t
-          dati(p, GENETIC_DIST_GRAPH) = 0
-        Next p
+        For P = 1 To t
+          dati(P, GENETIC_DIST_GRAPH) = 0
+        Next P
         
         For t = 1 To MaxRobs
           With rob(t)
           If .exist And Not .Corpse Then
     
-            p = Flex.Position(rob(t).FName, nomi)
+            P = Flex.Position(rob(t).FName, nomi)
     
             If .GenMut > 0 Then 'If there is not enough mutations for a graph check, skip it
     
                 l = .OldGD
-                If l > dati(p, GENETIC_DIST_GRAPH) Then dati(p, GENETIC_DIST_GRAPH) = l
+                If l > dati(P, GENETIC_DIST_GRAPH) Then dati(P, GENETIC_DIST_GRAPH) = l
     
             Else
     
@@ -2548,7 +2548,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
                 If x = UBound(rob) Then Exit For
                 Next x
     
-                If copyl > dati(p, GENETIC_DIST_GRAPH) Then dati(p, GENETIC_DIST_GRAPH) = copyl 'now we write this max distance
+                If copyl > dati(P, GENETIC_DIST_GRAPH) Then dati(P, GENETIC_DIST_GRAPH) = copyl 'now we write this max distance
                 .OldGD = copyl 'since this robot will not checked for a while, we need to store it's genetic distance to be used later
     
             End If
@@ -2562,7 +2562,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
     End If
     
     If graphNum > 0 Then
-      For p = 1 To t
+      For P = 1 To t
         'calculate query
         ClearQStack
         'query logic
@@ -2579,27 +2579,27 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
             Else
                 Select Case splt(q)
                 Case "pop"
-                    PushQStack dati(p, POPULATION_GRAPH)
+                    PushQStack dati(P, POPULATION_GRAPH)
                 Case "avgmut"
-                    PushQStack dati(p, MUTATIONS_GRAPH)
+                    PushQStack dati(P, MUTATIONS_GRAPH)
                 Case "avgage"
-                    PushQStack dati(p, AVGAGE_GRAPH)
+                    PushQStack dati(P, AVGAGE_GRAPH)
                 Case "avgsons"
-                    PushQStack dati(p, OFFSPRING_GRAPH)
+                    PushQStack dati(P, OFFSPRING_GRAPH)
                 Case "avgnrg"
-                    PushQStack dati(p, ENERGY_GRAPH)
+                    PushQStack dati(P, ENERGY_GRAPH)
                 Case "avglen"
-                    PushQStack dati(p, DNALENGTH_GRAPH)
+                    PushQStack dati(P, DNALENGTH_GRAPH)
                 Case "avgcond"
-                    PushQStack dati(p, DNACOND_GRAPH)
+                    PushQStack dati(P, DNACOND_GRAPH)
                 Case "simnrg"
-                    PushQStack dati(p, ENERGY_SPECIES_GRAPH)
+                    PushQStack dati(P, ENERGY_SPECIES_GRAPH)
                 Case "specidiv"
-                    PushQStack dati(p, SPECIESDIVERSITY_GRAPH)
+                    PushQStack dati(P, SPECIESDIVERSITY_GRAPH)
                 Case "maxgd"
-                    PushQStack dati(p, GENERATION_DIST_GRAPH)
+                    PushQStack dati(P, GENERATION_DIST_GRAPH)
                 Case "simpgenetic"
-                    PushQStack dati(p, GENETIC_DIST_GRAPH)
+                    PushQStack dati(P, GENETIC_DIST_GRAPH)
                 Case "add"
                      Qadd
                 Case "sub"
@@ -2620,7 +2620,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
         holdqstack = PopQStack
         If holdqstack < 0 Then holdqstack = 0
         
-        dati(p, graphNum) = holdqstack
+        dati(P, graphNum) = holdqstack
       Next
     End If
     
@@ -2631,8 +2631,8 @@ getout2:
       With rob(t)
      ' If Not .wall And .exist Then
       If .exist Then
-        p = Flex.Position(rob(t).FName, nomi)
-        dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
+        P = Flex.Position(rob(t).FName, nomi)
+        dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
       End If
       End With
     Next t
@@ -2643,16 +2643,16 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
   '    numbots = numbots + 1
-        p = Flex.Position(rob(t).FName, nomi)
-        dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
-        dati(p, MUTATIONS_GRAPH) = dati(p, MUTATIONS_GRAPH) + .LastMut + .Mutations
+        P = Flex.Position(rob(t).FName, nomi)
+        dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
+        dati(P, MUTATIONS_GRAPH) = dati(P, MUTATIONS_GRAPH) + .LastMut + .Mutations
       End If
       End With
     Next t
     t = Flex.last(nomi)
-    For p = 1 To t
-      If dati(p, POPULATION_GRAPH) <> 0 Then dati(p, MUTATIONS_GRAPH) = Round(dati(p, MUTATIONS_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-    Next p
+    For P = 1 To t
+      If dati(P, POPULATION_GRAPH) <> 0 Then dati(P, MUTATIONS_GRAPH) = Round(dati(P, MUTATIONS_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+    Next P
     
     
   Case AVGAGE_GRAPH
@@ -2661,16 +2661,16 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
   '      numbots = numbots + 1
-        p = Flex.Position(rob(t).FName, nomi)
-        dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
-        dati(p, AVGAGE_GRAPH) = dati(p, AVGAGE_GRAPH) + (.age / 100) ' EricL 4/7/2006 Graph age in 100's of cycles
+        P = Flex.Position(rob(t).FName, nomi)
+        dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
+        dati(P, AVGAGE_GRAPH) = dati(P, AVGAGE_GRAPH) + (.age / 100) ' EricL 4/7/2006 Graph age in 100's of cycles
       End If
       End With
     Next t
     t = Flex.last(nomi)
-    For p = 1 To t
-      If dati(p, POPULATION_GRAPH) <> 0 Then dati(p, AVGAGE_GRAPH) = Round(dati(p, AVGAGE_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-    Next p
+    For P = 1 To t
+      If dati(P, POPULATION_GRAPH) <> 0 Then dati(P, AVGAGE_GRAPH) = Round(dati(P, AVGAGE_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+    Next P
 
   Case OFFSPRING_GRAPH
   For t = 1 To MaxRobs
@@ -2678,16 +2678,16 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.Position(rob(t).FName, nomi)
-        dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
-        dati(p, OFFSPRING_GRAPH) = dati(p, OFFSPRING_GRAPH) + .SonNumber
+        P = Flex.Position(rob(t).FName, nomi)
+        dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
+        dati(P, OFFSPRING_GRAPH) = dati(P, OFFSPRING_GRAPH) + .SonNumber
       End If
       End With
     Next t
     t = Flex.last(nomi)
-    For p = 1 To t
-      If dati(p, POPULATION_GRAPH) <> 0 Then dati(p, OFFSPRING_GRAPH) = Round(dati(p, OFFSPRING_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-    Next p
+    For P = 1 To t
+      If dati(P, POPULATION_GRAPH) <> 0 Then dati(P, OFFSPRING_GRAPH) = Round(dati(P, OFFSPRING_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+    Next P
 
    
   Case ENERGY_GRAPH
@@ -2696,16 +2696,16 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.Position(rob(t).FName, nomi)
-        dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
-        dati(p, ENERGY_GRAPH) = dati(p, ENERGY_GRAPH) + .nrg
+        P = Flex.Position(rob(t).FName, nomi)
+        dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
+        dati(P, ENERGY_GRAPH) = dati(P, ENERGY_GRAPH) + .nrg
       End If
       End With
     Next t
     t = Flex.last(nomi)
-    For p = 1 To t
-      If dati(p, POPULATION_GRAPH) <> 0 Then dati(p, ENERGY_GRAPH) = Round(dati(p, ENERGY_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-    Next p
+    For P = 1 To t
+      If dati(P, POPULATION_GRAPH) <> 0 Then dati(P, ENERGY_GRAPH) = Round(dati(P, ENERGY_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+    Next P
 
    
   Case DNALENGTH_GRAPH
@@ -2714,16 +2714,16 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.Position(rob(t).FName, nomi)
-        dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
-        dati(p, DNALENGTH_GRAPH) = dati(p, DNALENGTH_GRAPH) + .DnaLen
+        P = Flex.Position(rob(t).FName, nomi)
+        dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
+        dati(P, DNALENGTH_GRAPH) = dati(P, DNALENGTH_GRAPH) + .DnaLen
       End If
       End With
     Next t
     t = Flex.last(nomi)
-    For p = 1 To t
-      If dati(p, POPULATION_GRAPH) <> 0 Then dati(p, DNALENGTH_GRAPH) = Round(dati(p, DNALENGTH_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-    Next p
+    For P = 1 To t
+      If dati(P, POPULATION_GRAPH) <> 0 Then dati(P, DNALENGTH_GRAPH) = Round(dati(P, DNALENGTH_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+    Next P
 
    
   Case DNACOND_GRAPH
@@ -2732,16 +2732,16 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
       '  numbots = numbots + 1
-        p = Flex.Position(rob(t).FName, nomi)
-        dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
-        dati(p, DNACOND_GRAPH) = dati(p, DNACOND_GRAPH) + .condnum
+        P = Flex.Position(rob(t).FName, nomi)
+        dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
+        dati(P, DNACOND_GRAPH) = dati(P, DNACOND_GRAPH) + .condnum
       End If
       End With
     Next t
     t = Flex.last(nomi)
-    For p = 1 To t
-      If dati(p, POPULATION_GRAPH) <> 0 Then dati(p, DNACOND_GRAPH) = Round(dati(p, DNACOND_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-    Next p
+    For P = 1 To t
+      If dati(P, POPULATION_GRAPH) <> 0 Then dati(P, DNACOND_GRAPH) = Round(dati(P, DNACOND_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+    Next P
 
    
   Case MUT_DNALENGTH_GRAPH
@@ -2750,16 +2750,16 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.Position(rob(t).FName, nomi)
-        dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
-        dati(p, MUT_DNALENGTH_GRAPH) = dati(p, MUT_DNALENGTH_GRAPH) + (.LastMut + .Mutations) / .DnaLen * 1000
+        P = Flex.Position(rob(t).FName, nomi)
+        dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
+        dati(P, MUT_DNALENGTH_GRAPH) = dati(P, MUT_DNALENGTH_GRAPH) + (.LastMut + .Mutations) / .DnaLen * 1000
       End If
       End With
     Next t
     t = Flex.last(nomi)
-    For p = 1 To t
-      If dati(p, POPULATION_GRAPH) <> 0 Then dati(p, MUT_DNALENGTH_GRAPH) = Round(dati(p, MUT_DNALENGTH_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-    Next p
+    For P = 1 To t
+      If dati(P, POPULATION_GRAPH) <> 0 Then dati(P, MUT_DNALENGTH_GRAPH) = Round(dati(P, MUT_DNALENGTH_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+    Next P
 
    
   Case ENERGY_SPECIES_GRAPH
@@ -2768,8 +2768,8 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.Position(rob(t).FName, nomi)
-        dati(p, ENERGY_SPECIES_GRAPH) = dati(p, ENERGY_SPECIES_GRAPH) + (.nrg + .body * 10) * 0.001
+        P = Flex.Position(rob(t).FName, nomi)
+        dati(P, ENERGY_SPECIES_GRAPH) = dati(P, ENERGY_SPECIES_GRAPH) + (.nrg + .body * 10) * 0.001
       End If
       End With
     Next t
@@ -2796,18 +2796,18 @@ getout2:
     For t = 1 To MaxRobs
       With rob(t)
       If .exist Then
-        p = Flex.Position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
         
         'Look through the subspecies we have seen so far and see if this bot has the same as any of them
         i = 0
-        While i < speciesListIndex(p) And .SubSpecies <> ListOSubSpecies(p, i)
+        While i < speciesListIndex(P) And .SubSpecies <> ListOSubSpecies(P, i)
           i = i + 1
         Wend
                                 
-        If i = speciesListIndex(p) Then ' New sub species
-           ListOSubSpecies(p, i) = .SubSpecies
-           speciesListIndex(p) = speciesListIndex(p) + 1
-           dati(p, SPECIESDIVERSITY_GRAPH) = dati(p, SPECIESDIVERSITY_GRAPH) + 1
+        If i = speciesListIndex(P) Then ' New sub species
+           ListOSubSpecies(P, i) = .SubSpecies
+           speciesListIndex(P) = speciesListIndex(P) + 1
+           dati(P, SPECIESDIVERSITY_GRAPH) = dati(P, SPECIESDIVERSITY_GRAPH) + 1
         End If
         
       End If
@@ -2820,16 +2820,16 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.Position(rob(t).FName, nomi)
-        dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
-        dati(p, AVGCHLR_GRAPH) = dati(p, AVGCHLR_GRAPH) + .chloroplasts
+        P = Flex.Position(rob(t).FName, nomi)
+        dati(P, POPULATION_GRAPH) = dati(P, POPULATION_GRAPH) + 1
+        dati(P, AVGCHLR_GRAPH) = dati(P, AVGCHLR_GRAPH) + .chloroplasts
       End If
       End With
     Next t
     t = Flex.last(nomi)
-    For p = 1 To t
-      If dati(p, POPULATION_GRAPH) <> 0 Then dati(p, AVGCHLR_GRAPH) = Round(dati(p, AVGCHLR_GRAPH) / dati(p, POPULATION_GRAPH), 1)
-    Next p
+    For P = 1 To t
+      If dati(P, POPULATION_GRAPH) <> 0 Then dati(P, AVGCHLR_GRAPH) = Round(dati(P, AVGCHLR_GRAPH) / dati(P, POPULATION_GRAPH), 1)
+    Next P
     
 getout3:
     
@@ -2838,9 +2838,9 @@ getout3:
     
 
     t = Flex.last(nomi)
-    For p = 1 To t
-      dati(p, GENETIC_DIST_GRAPH) = 0
-    Next p
+    For P = 1 To t
+      dati(P, GENETIC_DIST_GRAPH) = 0
+    Next P
 
     'show the graph update label and set value to zero
     GraphLab.Caption = "Updating Graph: 0%"
@@ -2850,12 +2850,12 @@ getout3:
       With rob(t)
       If .exist And Not .Corpse Then
 
-        p = Flex.Position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
 
         If .GenMut > 0 Then 'If there is not enough mutations for a graph check, skip it
 
             l = .OldGD
-            If l > dati(p, GENETIC_DIST_GRAPH) Then dati(p, GENETIC_DIST_GRAPH) = l
+            If l > dati(P, GENETIC_DIST_GRAPH) Then dati(P, GENETIC_DIST_GRAPH) = l
 
         Else
 
@@ -2877,7 +2877,7 @@ getout3:
             If x = UBound(rob) Then Exit For
             Next x
 
-            If copyl > dati(p, GENETIC_DIST_GRAPH) Then dati(p, GENETIC_DIST_GRAPH) = copyl 'now we write this max distance
+            If copyl > dati(P, GENETIC_DIST_GRAPH) Then dati(P, GENETIC_DIST_GRAPH) = copyl 'now we write this max distance
             .OldGD = copyl 'since this robot will not checked for a while, we need to store it's genetic distance to be used later
             DoEvents
 
@@ -2896,17 +2896,17 @@ getout3:
    Case GENERATION_DIST_GRAPH
     t = Flex.last(nomi)
     
-    For p = 1 To t
-      dati(p, GENERATION_DIST_GRAPH) = 0
-    Next p
+    For P = 1 To t
+      dati(P, GENERATION_DIST_GRAPH) = 0
+    Next P
     
     For t = 1 To MaxRobs
       With rob(t)
       If .exist And Not .Corpse Then
-        p = Flex.Position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
            'Botsareus 8/3/2012 Generational Distance Graph
            ll = FindGenerationalDistance(t)
-           If ll > dati(p, GENERATION_DIST_GRAPH) Then dati(p, GENERATION_DIST_GRAPH) = ll
+           If ll > dati(P, GENERATION_DIST_GRAPH) Then dati(P, GENERATION_DIST_GRAPH) = ll
       End If
       End With
     Next t
@@ -2918,18 +2918,18 @@ getout3:
     GraphLab.Visible = True
     
     t = Flex.last(nomi)
-    For p = 1 To t
-      dati(p, GENETIC_SIMPLE_GRAPH) = 0
-    Next p
+    For P = 1 To t
+      dati(P, GENETIC_SIMPLE_GRAPH) = 0
+    Next P
 
     For t = 1 To MaxRobs
       With rob(t)
       If .exist And Not .Corpse Then
-        p = Flex.Position(rob(t).FName, nomi)
+        P = Flex.Position(rob(t).FName, nomi)
             For x = t + 1 To MaxRobs
             If rob(x).exist And Not rob(x).Corpse And rob(x).FName = .FName Then  ' Must exist, and be of same species
                 l = DoGeneticDistance(t, x) * 1000
-                If l > dati(p, GENETIC_SIMPLE_GRAPH) Then dati(p, GENETIC_SIMPLE_GRAPH) = l 'here we store the max generational distance for a given robot
+                If l > dati(P, GENETIC_SIMPLE_GRAPH) Then dati(P, GENETIC_SIMPLE_GRAPH) = l 'here we store the max generational distance for a given robot
             End If
             Next x
         GraphLab.Caption = "Updating Graph: " & Int(t / MaxRobs * 100) & "%"
@@ -3097,14 +3097,14 @@ End Function
 
 ' goes up the tree searching for eldest ancestor
 Private Sub plines(ByVal t As Integer)
-  Dim p As Integer
-  p = parent(t)
-  While p > 0
-    t = p
-    p = parent(t)
+  Dim P As Integer
+  P = parent(t)
+  While P > 0
+    t = P
+    P = parent(t)
   Wend
-  If p = 0 Then p = t
-  t = score(p, 1, 1000, 3)
+  If P = 0 Then P = t
+  t = score(P, 1, 1000, 3)
 End Sub
 
 ' returns the robot's parent
@@ -3131,7 +3131,7 @@ Private Sub writeIMdata()
     Dim simpopulations() As IMbots
     Dim upperbound As Integer
     ReDim simpopulations(0)
-    simdata = "{""cycle"":" & SimOpts.TotRunCycle & ",""simId"":""" & strSimStart & """,""localtime"":" & Int(Timer) & ",""width"":" & SimOpts.FieldWidth & ",""height"":" & SimOpts.FieldHeight & ",""population"":["
+    simdata = "{""cycle"":" & SimOpts.TotRunCycle & ",""simId"":""" & strSimStart & """,""unixtime"":" & DateDiff("s", "01/1/1970 12:00:00 AM", Now) & ",""width"":" & SimOpts.FieldWidth & ",""height"":" & SimOpts.FieldHeight & ",""population"":[" 'bug fix
     
     'calculate species
     For i = 1 To MaxRobs
