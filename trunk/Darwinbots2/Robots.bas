@@ -361,7 +361,7 @@ Public TotalRobotsDisplayed As Integer      ' Display value to avoid displaying 
 'Public MaxAbsNum As Long                   ' robots born (used to assign unique code)
 Public MaxMem As Integer
 
-'Botsareus 4/3/3013 crossover section
+'Botsareus 4/3/2013 crossover section
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -835,9 +835,9 @@ Public Sub UpdatePosition(ByVal n As Integer)
   .mem(dirsx) = 0
   
   .mem(velscalar) = iceil(Sqr(vt))
-  .mem(vel) = iceil(Cos(.aim) * .vel.X + Sin(.aim) * .vel.Y * -1)
+  .mem(vel) = iceil(Cos(.aim) * .vel.x + Sin(.aim) * .vel.y * -1)
   .mem(veldn) = .mem(vel) * -1
-  .mem(veldx) = iceil(Sin(.aim) * .vel.X + Cos(.aim) * .vel.Y)
+  .mem(veldx) = iceil(Sin(.aim) * .vel.x + Cos(.aim) * .vel.y)
   .mem(velsx) = .mem(veldx) * -1
   
   .mem(masssys) = .mass
@@ -845,9 +845,9 @@ Public Sub UpdatePosition(ByVal n As Integer)
   End With
 End Sub
 
-Private Function iceil(X As Single) As Integer
-    If (Abs(X) > 32000) Then X = Sgn(X) * 32000
-    iceil = X
+Private Function iceil(x As Single) As Integer
+    If (Abs(x) > 32000) Then x = Sgn(x) * 32000
+    iceil = x
 End Function
 
 Private Sub makeshell(n As Integer)
@@ -953,7 +953,9 @@ Private Sub altzheimer(n As Integer)
   loops = (rob(n).Pwaste + rob(n).Waste - SimOpts.BadWastelevel) / 4
 
   For t = 1 To loops
-    loc = Random(1, 1000)
+    Do 'Botsareus 9/12/2014 From Testlund waste can not change chloroplasts
+     loc = Random(1, 1000)
+    Loop Until loc <> mkchlr And loc <> rmchlr
     val = Random(-32000, 32000)
     rob(n).mem(loc) = val
   Next t
@@ -1167,10 +1169,9 @@ Private Sub Shooting(ByVal n As Integer)
 End Sub
 
 Private Sub ManageChlr(ByVal n As Integer) 'Panda 8/15/2013 The new chloroplast function
-    
     If rob(n).mem(mkchlr) > 0 Or rob(n).mem(rmchlr) > 0 Then ChangeChlr n
     
-    rob(n).chloroplasts = rob(n).chloroplasts - 0.1 'From Panda 8/22/2014 Robots slowly lose chloroplasts
+    rob(n).chloroplasts = rob(n).chloroplasts - 0.05 'From Panda 8/22/2014 Robots slowly lose chloroplasts
     
     If rob(n).chloroplasts > 32000 Then rob(n).chloroplasts = 32000
     If rob(n).chloroplasts < 0 Then rob(n).chloroplasts = 0 'Panda 9/5/2013 Bug fix
@@ -1393,11 +1394,11 @@ Private Sub FireTies(ByVal n As Integer)
 End Sub
 
 Private Sub DeleteSpecies(i As Integer)
-  Dim X As Integer
+  Dim x As Integer
   
-  For X = i To SimOpts.SpeciesNum - 1
-    SimOpts.Specie(X) = SimOpts.Specie(X + 1)
-  Next X
+  For x = i To SimOpts.SpeciesNum - 1
+    SimOpts.Specie(x) = SimOpts.Specie(x + 1)
+  Next x
   SimOpts.Specie(SimOpts.SpeciesNum - 1).Native = False ' Do this just in case
   SimOpts.SpeciesNum = SimOpts.SpeciesNum - 1
    
@@ -1427,7 +1428,7 @@ Public Sub UpdateBots()
   Dim z As Integer
   Dim q As Integer
   Dim ti As Single
-  Dim X As Integer
+  Dim x As Integer
   Dim staticV As vector
     
   rp = 1
@@ -2080,8 +2081,8 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
   
   tempnrg = rob(n).nrg
   If tempnrg > 0 Then
-    nx = rob(n).pos.X + absx(rob(n).aim, sondist, 0, 0, 0)
-    ny = rob(n).pos.Y + absy(rob(n).aim, sondist, 0, 0, 0)
+    nx = rob(n).pos.x + absx(rob(n).aim, sondist, 0, 0, 0)
+    ny = rob(n).pos.y + absy(rob(n).aim, sondist, 0, 0, 0)
     tests = tests Or simplecoll(nx, ny, n)
     tests = tests Or Not rob(n).exist 'Botsareus 6/4/2014 Can not reproduce from a dead robot
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
@@ -2114,11 +2115,11 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       Erase rob(nuovo).mem
       Erase rob(nuovo).Ties
       
-      rob(nuovo).pos.X = rob(n).pos.X + absx(rob(n).aim, sondist, 0, 0, 0)
-      rob(nuovo).pos.Y = rob(n).pos.Y + absy(rob(n).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.x = rob(n).pos.x + absx(rob(n).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.y = rob(n).pos.y + absy(rob(n).aim, sondist, 0, 0, 0)
       rob(nuovo).exist = True
-      rob(nuovo).BucketPos.X = -2
-      rob(nuovo).BucketPos.Y = -2
+      rob(nuovo).BucketPos.x = -2
+      rob(nuovo).BucketPos.y = -2
       UpdateBotBucket nuovo
       rob(nuovo).vel = rob(n).vel
       rob(nuovo).color = rob(n).color
@@ -2397,8 +2398,8 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
   
   tempnrg = rob(female).nrg
   If tempnrg > 0 Then
-    nx = rob(female).pos.X + absx(rob(female).aim, sondist, 0, 0, 0)
-    ny = rob(female).pos.Y + absy(rob(female).aim, sondist, 0, 0, 0)
+    nx = rob(female).pos.x + absx(rob(female).aim, sondist, 0, 0, 0)
+    ny = rob(female).pos.y + absy(rob(female).aim, sondist, 0, 0, 0)
     tests = tests Or simplecoll(nx, ny, female)
     tests = tests Or Not rob(female).exist 'Botsareus 6/4/2014 Can not reproduce from a dead robot
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
@@ -2554,11 +2555,11 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       Erase rob(nuovo).mem
       Erase rob(nuovo).Ties
       
-      rob(nuovo).pos.X = rob(female).pos.X + absx(rob(female).aim, sondist, 0, 0, 0)
-      rob(nuovo).pos.Y = rob(female).pos.Y + absy(rob(female).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.x = rob(female).pos.x + absx(rob(female).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.y = rob(female).pos.y + absy(rob(female).aim, sondist, 0, 0, 0)
       rob(nuovo).exist = True
-      rob(nuovo).BucketPos.X = -2
-      rob(nuovo).BucketPos.Y = -2
+      rob(nuovo).BucketPos.x = -2
+      rob(nuovo).BucketPos.y = -2
       UpdateBotBucket nuovo
       
       rob(nuovo).vel = rob(female).vel
@@ -2789,7 +2790,7 @@ Public Sub DoGeneticMemory(t As Integer)
 End Sub
 
 ' verifies rapidly if a field position is already occupied
-Public Function simplecoll(X As Long, Y As Long, k As Integer) As Boolean
+Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
   Dim t As Integer
   Dim radius As Long
   
@@ -2797,8 +2798,8 @@ Public Function simplecoll(X As Long, Y As Long, k As Integer) As Boolean
   
   For t = 1 To MaxRobs
     If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
-      If Abs(rob(t).pos.X - X) < rob(t).radius + rob(k).radius And _
-        Abs(rob(t).pos.Y - Y) < rob(t).radius + rob(k).radius Then
+      If Abs(rob(t).pos.x - x) < rob(t).radius + rob(k).radius And _
+        Abs(rob(t).pos.y - y) < rob(t).radius + rob(k).radius Then
         If k <> t Then
           simplecoll = True
           GoTo getout
@@ -2809,21 +2810,21 @@ Public Function simplecoll(X As Long, Y As Long, k As Integer) As Boolean
   
   'EricL Can't reproduce into or across a shape
   For t = 1 To numObstacles
-    If Not ((Obstacles.Obstacles(t).pos.X > Max(rob(k).pos.X, X)) Or _
-           (Obstacles.Obstacles(t).pos.X + Obstacles.Obstacles(t).Width < Min(rob(k).pos.X, X)) Or _
-           (Obstacles.Obstacles(t).pos.Y > Max(rob(k).pos.Y, Y)) Or _
-           (Obstacles.Obstacles(t).pos.Y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.Y, Y))) Then
+    If Not ((Obstacles.Obstacles(t).pos.x > Max(rob(k).pos.x, x)) Or _
+           (Obstacles.Obstacles(t).pos.x + Obstacles.Obstacles(t).Width < Min(rob(k).pos.x, x)) Or _
+           (Obstacles.Obstacles(t).pos.y > Max(rob(k).pos.y, y)) Or _
+           (Obstacles.Obstacles(t).pos.y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.y, y))) Then
        simplecoll = True
        GoTo getout
     End If
   Next t
   
   If SimOpts.Dxsxconnected = False Then
-    If X < rob(k).radius + smudgefactor Or X + rob(k).radius + smudgefactor > SimOpts.FieldWidth Then simplecoll = True
+    If x < rob(k).radius + smudgefactor Or x + rob(k).radius + smudgefactor > SimOpts.FieldWidth Then simplecoll = True
   End If
   
   If SimOpts.Updnconnected = False Then
-    If Y < rob(k).radius + smudgefactor Or Y + rob(k).radius + smudgefactor > SimOpts.FieldHeight Then simplecoll = True
+    If y < rob(k).radius + smudgefactor Or y + rob(k).radius + smudgefactor > SimOpts.FieldHeight Then simplecoll = True
   End If
 getout:
 End Function
@@ -2833,7 +2834,7 @@ Public Function posto() As Integer
   Dim newsize As Long
   Dim t As Integer
   Dim foundone As Boolean
-  Dim X As Long
+  Dim x As Long
   
   t = 1
   foundone = False
@@ -2906,7 +2907,7 @@ End If
 
 
  Dim newsize As Long
- Dim X As Long
+ Dim x As Long
  
   If n = -1 Then n = robfocus
   
