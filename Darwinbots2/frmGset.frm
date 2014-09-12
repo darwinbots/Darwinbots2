@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmGset 
    BorderStyle     =   4  'Fixed ToolWindow
@@ -66,38 +66,38 @@ Begin VB.Form frmGset
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ffmEpiReset"
-      Tab(1).Control(1)=   "ffmSunMut"
+      Tab(1).Control(0)=   "ffmSunMut"
+      Tab(1).Control(1)=   "ffmEpiReset"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Command1"
+      Tab(2).Control(0)=   "lblSource"
       Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "chkAddarob"
+      Tab(2).Control(1)=   "chkTournament"
       Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "ffmDisqualification"
+      Tab(2).Control(2)=   "txtSourceDir"
       Tab(2).Control(2).Enabled=   0   'False
-      Tab(2).Control(3)=   "ffmFudge"
+      Tab(2).Control(3)=   "chkStepladder"
       Tab(2).Control(3).Enabled=   0   'False
-      Tab(2).Control(4)=   "chkStepladder"
+      Tab(2).Control(4)=   "ffmFudge"
       Tab(2).Control(4).Enabled=   0   'False
-      Tab(2).Control(5)=   "txtSourceDir"
+      Tab(2).Control(5)=   "ffmDisqualification"
       Tab(2).Control(5).Enabled=   0   'False
-      Tab(2).Control(6)=   "chkTournament"
+      Tab(2).Control(6)=   "chkAddarob"
       Tab(2).Control(6).Enabled=   0   'False
-      Tab(2).Control(7)=   "lblSource"
+      Tab(2).Control(7)=   "Command1"
       Tab(2).Control(7).Enabled=   0   'False
       Tab(2).ControlCount=   8
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "ffmSurvival"
-      Tab(3).Control(1)=   "chkSurvivalSimple"
-      Tab(3).Control(2)=   "ffmZeroBot"
-      Tab(3).Control(3)=   "chkZBmode"
-      Tab(3).Control(4)=   "chkSurvivalEco"
-      Tab(3).Control(5)=   "btnEvoRES"
+      Tab(3).Control(0)=   "btnEvoRES"
+      Tab(3).Control(1)=   "chkSurvivalEco"
+      Tab(3).Control(2)=   "chkZBmode"
+      Tab(3).Control(3)=   "ffmZeroBot"
+      Tab(3).Control(4)=   "chkSurvivalSimple"
+      Tab(3).Control(5)=   "ffmSurvival"
       Tab(3).ControlCount=   6
       Begin VB.CommandButton Command1 
          Caption         =   "League Restrictions"
@@ -1303,7 +1303,6 @@ txtDnalen.Visible = chkNorm.value = 1
 lblDnalen.Visible = chkNorm.value = 1
 txtMxDnalen.Visible = chkNorm.value = 1
 End Sub
-
 
 Private Sub chkStepladder_Click()
 If chkStepladder.value = 1 Then

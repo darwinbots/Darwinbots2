@@ -933,6 +933,7 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Public Function delgene(n As Integer, g As Integer) As Boolean
+If y_eco_im > 0 Then Exit Function 'Botsareus 9/12/2014 Robots are not allowed to delete a gene during eco_evolution
   Dim k As Integer, t As Integer
   k = rob(n).genenum
   If g > 0 And g <= k Then
