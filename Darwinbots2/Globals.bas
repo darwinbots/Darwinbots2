@@ -100,6 +100,7 @@ Public y_Stgwins As Integer
 Public y_zblen As Integer
 
 Public y_eco_im As Byte
+Public Corruptions As Integer
 
 'actual evolution globals
 
@@ -426,10 +427,10 @@ Public Sub aggiungirob(ByVal r As Integer, ByVal X As Single, ByVal Y As Single)
     
     rob(a).Vtimer = 0
     rob(a).virusshot = 0
-    rob(a).genenum = CountGenes(rob(a).DNA)
+    rob(a).genenum = CountGenes(rob(a).dna)
     
     
-    rob(a).DnaLen = DnaLen(rob(a).DNA())
+    rob(a).DnaLen = DnaLen(rob(a).dna())
     rob(a).GenMut = rob(a).DnaLen / GeneticSensitivity 'Botsareus 4/9/2013 automatically apply genetic to inserted robots
     
     

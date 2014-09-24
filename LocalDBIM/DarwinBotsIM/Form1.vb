@@ -6,7 +6,7 @@ Public Class Form1
     Private Sub Timer1_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Timer1.Tick
         Dim strFileSize As String = ""
         Dim di As New IO.DirectoryInfo(outfolder)
-        Dim aryFi As IO.FileInfo() = di.GetFiles("*.*")
+        Dim aryFi As IO.FileInfo() = di.GetFiles("*.dbo")
         Dim fi As IO.FileInfo
 
         Dim fir(0) As String

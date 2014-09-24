@@ -197,3 +197,9 @@ Public Function Min(ByVal x As Single, ByVal y As Single) As Single
     
     Min = y
 End Function
+
+Public Function cstdiff(ByVal a As Double, ByVal b As Double, ByVal d As Double) As Boolean
+  Dim c As Double
+  c = a / 100 * d
+  cstdiff = (Not ((a + c >= b) And (a - c <= b)))
+End Function

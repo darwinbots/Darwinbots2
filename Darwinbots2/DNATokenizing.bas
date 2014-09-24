@@ -74,7 +74,9 @@ inizio:
   DNApos = 0
   hold = ""
    
-  ReDim rob(n).DNA(0)
+  ReDim rob(n).dna(0)
+  ReDim rob(n).delgenes(0) 'Botsareus 9/16/2014 Bug fix from Billy
+  ReDim rob(n).delgenes(0).dna(0)
   DNApos = 0
   If path = "" Then
     LoadDNA = False
@@ -126,18 +128,18 @@ inizio:
             
             If b <> "" Then
               DNApos = DNApos + 1
-              If DNApos > UBound(rob(n).DNA()) Then
-                ReDim Preserve rob(n).DNA(DNApos + 5)
+              If DNApos > UBound(rob(n).dna()) Then
+                ReDim Preserve rob(n).dna(DNApos + 5)
               End If
-              Parse b, rob(n).DNA(DNApos), n
+              Parse b, rob(n).dna(DNApos), n
             End If
           Wend
           If a <> "" Then
             DNApos = DNApos + 1
-            If DNApos > UBound(rob(n).DNA()) Then
-              ReDim Preserve rob(n).DNA(DNApos + 5)
+            If DNApos > UBound(rob(n).dna()) Then
+              ReDim Preserve rob(n).dna(DNApos + 5)
             End If
-            Parse a, rob(n).DNA(DNApos), n
+            Parse a, rob(n).dna(DNApos), n
           End If
         End If
     Else
@@ -153,22 +155,22 @@ here:
   Close 1
   LoadDNA = True
   DNApos = DNApos + 1
-  If DNApos > UBound(rob(n).DNA()) Then
-    ReDim Preserve rob(n).DNA(DNApos + 1)
+  If DNApos > UBound(rob(n).dna()) Then
+    ReDim Preserve rob(n).dna(DNApos + 1)
   End If
-  rob(n).DNA(DNApos).tipo = 10
-  rob(n).DNA(DNApos).value = 1
+  rob(n).dna(DNApos).tipo = 10
+  rob(n).dna(DNApos).value = 1
   'ReDim Preserve rob(n).DNA(DnaLen(rob(n).DNA())) ' EricL commented out March 15, 2006
-  ReDim Preserve rob(n).DNA(DNApos)  'EricL - Added March 15, 2006
+  ReDim Preserve rob(n).dna(DNApos)  'EricL - Added March 15, 2006
   'Botsareus 6/5/2013 Bug fix to do with leading zero on def
   If useref Then
-    If rob(n).DNA(0).tipo = 0 And rob(n).DNA(0).value = 0 And _
-       Not rob(n).DNA(1).tipo = 9 _
+    If rob(n).dna(0).tipo = 0 And rob(n).dna(0).value = 0 And _
+       Not rob(n).dna(1).tipo = 9 _
     Then
-        For DNApos = 0 To UBound(rob(n).DNA) - 1
-            rob(n).DNA(DNApos) = rob(n).DNA(DNApos + 1)
+        For DNApos = 0 To UBound(rob(n).dna) - 1
+            rob(n).dna(DNApos) = rob(n).dna(DNApos + 1)
         Next
-        ReDim Preserve rob(n).DNA(UBound(rob(n).DNA) - 1)
+        ReDim Preserve rob(n).dna(UBound(rob(n).dna) - 1)
     End If
   End If
   Exit Function
@@ -177,10 +179,10 @@ fine:
   pos = Err.Number
   If Err.Number = 53 Or Err.Number = 76 Then
   
-    If path <> MDIForm1.MainDir + "\Robots\" & rob(n).FName Then 'Attempt to load a robot from common folder if not found.
-      If dir(MDIForm1.MainDir + "\Robots\" & rob(n).FName) <> "" Then
-        path = MDIForm1.MainDir + "\Robots\" & rob(n).FName
-        SimOpts.Specie(SpeciesFromBot(n)).path = Left(path, Len(path) - Len(rob(n).FName) - 1)
+    If path <> MDIForm1.MainDir + "\Robots\" & rob(n).fname Then 'Attempt to load a robot from common folder if not found.
+      If dir(MDIForm1.MainDir + "\Robots\" & rob(n).fname) <> "" Then
+        path = MDIForm1.MainDir + "\Robots\" & rob(n).fname
+        SimOpts.Specie(SpeciesFromBot(n)).path = Left(path, Len(path) - Len(rob(n).fname) - 1)
         GoTo inizio
       End If
     End If
@@ -201,7 +203,7 @@ fine:
     Else
       ' The user selected a new path
       path = path2
-      SimOpts.Specie(SpeciesFromBot(n)).path = Left(path, Len(path) - Len(rob(n).FName) - 1)  ' Update the species struct
+      SimOpts.Specie(SpeciesFromBot(n)).path = Left(path, Len(path) - Len(rob(n).fname) - 1)  ' Update the species struct
       GoTo inizio
     End If
     
@@ -770,10 +772,6 @@ Private Sub getvals(n As Integer, ByVal a As String, hold As String)
 
 On Error GoTo skip 'Botsareus 8/22/2014 Fix for messed up tags
 
- Dim r As Integer
- Dim g As Integer
- Dim b As Integer
- Static FName As String
  Static generation As Long
  Static Mutations As Long
  Dim Name As String
@@ -791,10 +789,6 @@ On Error GoTo skip 'Botsareus 8/22/2014 Fix for messed up tags
  ' depending on the parameter's name
  ' we record it in the rob structure or, if we want to wait
  ' to check the hash before, in a temporary static variable
-' If Name = "name" Then
-'   FName = value
-'   rob(n).FName = FName
-' End If
  If Name = "generation" Then
    generation = val(value)
  End If
@@ -803,6 +797,9 @@ On Error GoTo skip 'Botsareus 8/22/2014 Fix for messed up tags
  End If
  If Name = "tag" Then 'Botsareus 1/28/2014 New short description feature
    rob(n).tag = Left(replacechars(value), 45)
+ End If
+ If Name = "Corruptions" Then
+   Corruptions = Corruptions + 1
  End If
 ' If Name = "image" Then
 '   SimOpts.Specie(SpeciesFromBot(n)).DisplayImage = LoadPicture(value)
@@ -816,21 +813,11 @@ On Error GoTo skip 'Botsareus 8/22/2014 Fix for messed up tags
  If Name = "hash" Then
    hold = Left(hold, InStr(hold, "'#hash:") - 1)
    If Hash(hold, 20) = value Then
-     'rob(n).FName = FName
      rob(n).generation = generation
      rob(n).Mutations = Mutations
-   'Else
-     'MsgBox rob(n).FName + "'s dna hashing incorrect - ignoring parameters", vbExclamation
    End If
  End If
- 
- 'If Left$(a, 6) = "color:" Then
- '  'additem function was changed to not apply a random color if a color exists for it already
- '  'bot knows what color it is or wants to be
- '  a = Right$(a, Len(a) - 6)
- '  rob(n).color = Hex(a)
- 'End If
- 
+
 skip:
 End Sub
 
@@ -1405,7 +1392,7 @@ Public Sub LoadSysVars()
 
 End Sub
 
-Public Function DetokenizeDNA(n As Integer, Optional Position As Integer) As String
+Public Function DetokenizeDNA(n As Integer, Optional position As Integer, Optional delgenes As Boolean) As String
   Dim temp As String, t As Long
   Dim tempint As Integer
   Dim converttosysvar As Boolean
@@ -1415,18 +1402,42 @@ Public Function DetokenizeDNA(n As Integer, Optional Position As Integer) As Str
   Dim GeneEnd As Boolean
   Dim coding As Boolean
   
+  Dim X As Integer
+  Dim dna() As block
+  Dim vlen As Integer
+  Dim Insert As Integer
+  dna = rob(n).dna
+  
+  If delgenes Then
+  With rob(n)
+    For X = UBound(.delgenes) To 1 Step -1
+
+    'a slightely modified version of addgene
+     vlen = UBound(.delgenes(X).dna)
+     Insert = .delgenes(X).position - 1
+     If MakeSpace(dna, Insert, vlen) Then
+      For t = Insert To Insert + vlen - 1
+        dna(t + 1) = .delgenes(X).dna(t - Insert)
+      Next t
+     End If
+
+    Next
+  End With
+  End If
+  
+  
   ingene = False
   coding = False
   t = 1
   gene = 0
   lastgene = 0
-  While Not (rob(n).DNA(t).tipo = 10 And rob(n).DNA(t).value = 1)
+  While Not (dna(t).tipo = 10 And dna(t).value = 1)
     
     temp = ""
    'Gene breaks
     With rob(n)
       ' If a Start or Else
-      If .DNA(t).tipo = 9 And (.DNA(t).value = 2 Or .DNA(t).value = 3) Then
+      If dna(t).tipo = 9 And (dna(t).value = 2 Or dna(t).value = 3) Then
         If coding And Not ingene Then ' if terminating a coding region and not following a cond
            DetokenizeDNA = DetokenizeDNA + vbCrLf + "''''''''''''''''''''''''  " + "Gene: " + Str(gene) + " Ends at position " + Str(t - 1) + "  '''''''''''''''''''''''"
         End If
@@ -1438,7 +1449,7 @@ Public Function DetokenizeDNA(n As Integer, Optional Position As Integer) As Str
         coding = True
       End If
       ' If a Cond
-      If .DNA(t).tipo = 9 And (.DNA(t).value = 1) Then
+      If dna(t).tipo = 9 And (dna(t).value = 1) Then
         If coding Then ' indicate gene ended before cond base pair
           DetokenizeDNA = DetokenizeDNA + vbCrLf + "''''''''''''''''''''''''  " + "Gene: " + Str(gene) + " Ends at position " + Str(t - 1) + "  '''''''''''''''''''''''" + vbCrLf
         End If
@@ -1447,7 +1458,7 @@ Public Function DetokenizeDNA(n As Integer, Optional Position As Integer) As Str
         coding = True
       End If
       ' If a stop
-      If .DNA(t).tipo = 9 And .DNA(t).value = 4 Then
+      If dna(t).tipo = 9 And dna(t).value = 4 Then
         If coding Then GeneEnd = True
         ingene = False
         coding = False
@@ -1470,12 +1481,12 @@ Public Function DetokenizeDNA(n As Integer, Optional Position As Integer) As Str
       lastgene = gene
     End If
        
-    converttosysvar = IIf(rob(n).DNA(t + 1).tipo = 7, True, False)
-    Parse temp, rob(n).DNA(t), n, converttosysvar
+    converttosysvar = IIf(dna(t + 1).tipo = 7, True, False)
+    Parse temp, dna(t), n, converttosysvar
     If temp = "" Then temp = "VOID" 'alert user that there is an invalid DNA entry.
       'This is probably a BUG!
     
-    tempint = rob(n).DNA(t).tipo
+    tempint = dna(t).tipo
     
     'formatting
     If tempint = 5 Or tempint = 6 Or tempint = 7 Or tempint = 9 Then temp = temp + vbCrLf
@@ -1487,10 +1498,10 @@ Public Function DetokenizeDNA(n As Integer, Optional Position As Integer) As Str
       GeneEnd = False
     End If
     
-    If Position > 0 And t = Position Then DetokenizeDNA = DetokenizeDNA & " '[<POSITION MARKER]" & Chr(13) & Chr(10) 'Botsareus 2/25/2013 Makes the program easy to debug
+    If position > 0 And t = position Then DetokenizeDNA = DetokenizeDNA & " '[<POSITION MARKER]" & Chr(13) & Chr(10) 'Botsareus 2/25/2013 Makes the program easy to debug
     t = t + 1
   Wend
-   If Not (rob(n).DNA(t - 1).tipo = 9 And rob(n).DNA(t - 1).value = 4) And coding Then ' End of DNA without a stop.
+   If Not (dna(t - 1).tipo = 9 And dna(t - 1).value = 4) And coding Then ' End of DNA without a stop.
     DetokenizeDNA = DetokenizeDNA + "''''''''''''''''''''''''  " + "Gene: " + Str(gene) + " Ends at position " + Str(t - 1) + "  '''''''''''''''''''''''" + vbCrLf
   End If
 

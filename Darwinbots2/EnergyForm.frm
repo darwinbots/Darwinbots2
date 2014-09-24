@@ -48,7 +48,7 @@ Begin VB.Form EnergyForm
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "txtTide"
-            BuddyDispid     =   196626
+            BuddyDispid     =   196611
             OrigLeft        =   3600
             OrigTop         =   360
             OrigRight       =   3855
@@ -160,7 +160,7 @@ Begin VB.Form EnergyForm
             Value           =   100
             AutoBuddy       =   -1  'True
             BuddyControl    =   "SunDownThreshold"
-            BuddyDispid     =   196615
+            BuddyDispid     =   196618
             OrigLeft        =   3600
             OrigTop         =   840
             OrigRight       =   3855
@@ -184,7 +184,7 @@ Begin VB.Form EnergyForm
             Value           =   100
             AutoBuddy       =   -1  'True
             BuddyControl    =   "SunUpThreshold"
-            BuddyDispid     =   196616
+            BuddyDispid     =   196619
             OrigLeft        =   3600
             OrigTop         =   1320
             OrigRight       =   3855
@@ -236,7 +236,7 @@ Begin VB.Form EnergyForm
          Value           =   100
          AutoBuddy       =   -1  'True
          BuddyControl    =   "DNLength"
-         BuddyDispid     =   196618
+         BuddyDispid     =   196621
          OrigLeft        =   3600
          OrigTop         =   360
          OrigRight       =   3855

@@ -168,6 +168,11 @@ Private Type ancestorType
   sim As Long ' the sim this ancestor was born in
 End Type
 
+Private Type delgenerestore 'Botsareus 9/16/2014 A new bug fix from Billy
+position As Integer
+dna() As block
+End Type
+
 ' robot structure
 Private Type robot
 
@@ -254,7 +259,7 @@ Private Type robot
   ' virtual machine
   epimem(14) As Integer
   mem(1000) As Integer      ' memory array
-  DNA() As block            ' program array
+  dna() As block            ' program array
   
   lastopp As Long           ' Index of last object in the focus eye.  Could be a bot or shape or something else.
   lastopptype As Integer    ' Indicates the type of lastopp.
@@ -339,6 +344,8 @@ Private Type robot
   multibot_time As Byte
   Chlr_Share_Delay As Byte
   dq As Byte
+  
+  delgenes() As delgenerestore  'Botsareus 9/16/2014 A new bug fix from Billy
 
 End Type
 
@@ -519,19 +526,19 @@ Dim ndna1() As block3
 Dim ndna2() As block3
 Dim length1 As Integer
 Dim length2 As Integer
-length1 = UBound(rob(r1).DNA)
-length2 = UBound(rob(r2).DNA)
+length1 = UBound(rob(r1).dna)
+length2 = UBound(rob(r2).dna)
 ReDim ndna1(length1)
 ReDim ndna2(length2)
 
 'map to nucli
 
 'if step is 1 then normal nucli
-For t = 0 To UBound(rob(r1).DNA)
- ndna1(t).nucli = DNAtoInt(rob(r1).DNA(t).tipo, rob(r1).DNA(t).value)
+For t = 0 To UBound(rob(r1).dna)
+ ndna1(t).nucli = DNAtoInt(rob(r1).dna(t).tipo, rob(r1).dna(t).value)
 Next
-For t = 0 To UBound(rob(r2).DNA)
- ndna2(t).nucli = DNAtoInt(rob(r2).DNA(t).tipo, rob(r2).DNA(t).value)
+For t = 0 To UBound(rob(r2).dna)
+ ndna2(t).nucli = DNAtoInt(rob(r2).dna(t).tipo, rob(r2).dna(t).value)
 Next
       
 'Step3 Figure out genetic distance
@@ -835,9 +842,9 @@ Public Sub UpdatePosition(ByVal n As Integer)
   .mem(dirsx) = 0
   
   .mem(velscalar) = iceil(Sqr(vt))
-  .mem(vel) = iceil(Cos(.aim) * .vel.x + Sin(.aim) * .vel.y * -1)
+  .mem(vel) = iceil(Cos(.aim) * .vel.X + Sin(.aim) * .vel.Y * -1)
   .mem(veldn) = .mem(vel) * -1
-  .mem(veldx) = iceil(Sin(.aim) * .vel.x + Cos(.aim) * .vel.y)
+  .mem(veldx) = iceil(Sin(.aim) * .vel.X + Cos(.aim) * .vel.Y)
   .mem(velsx) = .mem(veldx) * -1
   
   .mem(masssys) = .mass
@@ -845,9 +852,9 @@ Public Sub UpdatePosition(ByVal n As Integer)
   End With
 End Sub
 
-Private Function iceil(x As Single) As Integer
-    If (Abs(x) > 32000) Then x = Sgn(x) * 32000
-    iceil = x
+Private Function iceil(X As Single) As Integer
+    If (Abs(X) > 32000) Then X = Sgn(X) * 32000
+    iceil = X
 End Function
 
 Private Sub makeshell(n As Integer)
@@ -1006,8 +1013,8 @@ Public Function genelength(n As Integer, p As Integer) As Long
   'measures the length of gene p in robot n
   Dim pos As Long
  
-  pos = genepos(rob(n).DNA(), p)
-  genelength = GeneEnd(rob(n).DNA(), pos) - pos + 1
+  pos = genepos(rob(n).dna(), p)
+  genelength = GeneEnd(rob(n).dna(), pos) - pos + 1
   
 End Function
 
@@ -1394,11 +1401,11 @@ Private Sub FireTies(ByVal n As Integer)
 End Sub
 
 Private Sub DeleteSpecies(i As Integer)
-  Dim x As Integer
+  Dim X As Integer
   
-  For x = i To SimOpts.SpeciesNum - 1
-    SimOpts.Specie(x) = SimOpts.Specie(x + 1)
-  Next x
+  For X = i To SimOpts.SpeciesNum - 1
+    SimOpts.Specie(X) = SimOpts.Specie(X + 1)
+  Next X
   SimOpts.Specie(SimOpts.SpeciesNum - 1).Native = False ' Do this just in case
   SimOpts.SpeciesNum = SimOpts.SpeciesNum - 1
    
@@ -1428,7 +1435,7 @@ Public Sub UpdateBots()
   Dim z As Integer
   Dim q As Integer
   Dim ti As Single
-  Dim x As Integer
+  Dim X As Integer
   Dim staticV As vector
     
   rp = 1
@@ -2081,8 +2088,8 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
   
   tempnrg = rob(n).nrg
   If tempnrg > 0 Then
-    nx = rob(n).pos.x + absx(rob(n).aim, sondist, 0, 0, 0)
-    ny = rob(n).pos.y + absy(rob(n).aim, sondist, 0, 0, 0)
+    nx = rob(n).pos.X + absx(rob(n).aim, sondist, 0, 0, 0)
+    ny = rob(n).pos.Y + absy(rob(n).aim, sondist, 0, 0, 0)
     tests = tests Or simplecoll(nx, ny, n)
     tests = tests Or Not rob(n).exist 'Botsareus 6/4/2014 Can not reproduce from a dead robot
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
@@ -2092,10 +2099,13 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       
       SimOpts.TotBorn = SimOpts.TotBorn + 1
       If rob(n).Veg Then totvegs = totvegs + 1
-      ReDim rob(nuovo).DNA(UBound(rob(n).DNA))
-      For t = 1 To UBound(rob(nuovo).DNA)
-        rob(nuovo).DNA(t) = rob(n).DNA(t)
+      ReDim rob(nuovo).dna(UBound(rob(n).dna))
+      For t = 1 To UBound(rob(nuovo).dna)
+        rob(nuovo).dna(t) = rob(n).dna(t)
       Next t
+      
+      rob(nuovo).delgenes = rob(n).delgenes
+        
       rob(nuovo).DnaLen = rob(n).DnaLen
       rob(nuovo).genenum = rob(n).genenum
       rob(nuovo).Mutables = rob(n).Mutables
@@ -2115,11 +2125,11 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       Erase rob(nuovo).mem
       Erase rob(nuovo).Ties
       
-      rob(nuovo).pos.x = rob(n).pos.x + absx(rob(n).aim, sondist, 0, 0, 0)
-      rob(nuovo).pos.y = rob(n).pos.y + absy(rob(n).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.X = rob(n).pos.X + absx(rob(n).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.Y = rob(n).pos.Y + absy(rob(n).aim, sondist, 0, 0, 0)
       rob(nuovo).exist = True
-      rob(nuovo).BucketPos.x = -2
-      rob(nuovo).BucketPos.y = -2
+      rob(nuovo).BucketPos.X = -2
+      rob(nuovo).BucketPos.Y = -2
       UpdateBotBucket nuovo
       rob(nuovo).vel = rob(n).vel
       rob(nuovo).color = rob(n).color
@@ -2304,8 +2314,8 @@ skip:
       End If
       
       makeoccurrlist nuovo
-      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())
-      rob(nuovo).genenum = CountGenes(rob(nuovo).DNA())
+      rob(nuovo).DnaLen = DnaLen(rob(nuovo).dna())
+      rob(nuovo).genenum = CountGenes(rob(nuovo).dna())
       rob(nuovo).mem(DnaLenSys) = rob(nuovo).DnaLen
       rob(nuovo).mem(GenesSys) = rob(nuovo).genenum
 
@@ -2398,8 +2408,8 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
   
   tempnrg = rob(female).nrg
   If tempnrg > 0 Then
-    nx = rob(female).pos.x + absx(rob(female).aim, sondist, 0, 0, 0)
-    ny = rob(female).pos.y + absy(rob(female).aim, sondist, 0, 0, 0)
+    nx = rob(female).pos.X + absx(rob(female).aim, sondist, 0, 0, 0)
+    ny = rob(female).pos.Y + absy(rob(female).aim, sondist, 0, 0, 0)
     tests = tests Or simplecoll(nx, ny, female)
     tests = tests Or Not rob(female).exist 'Botsareus 6/4/2014 Can not reproduce from a dead robot
     'tests = tests Or (rob(n).Fixed And IsInSpawnArea(nx, ny))
@@ -2420,10 +2430,10 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       Dim dna1() As block2
       Dim dna2() As block2
 
-      ReDim dna1(UBound(rob(female).DNA))
+      ReDim dna1(UBound(rob(female).dna))
       For t = 0 To UBound(dna1)
-       dna1(t).tipo = rob(female).DNA(t).tipo
-       dna1(t).value = rob(female).DNA(t).value
+       dna1(t).tipo = rob(female).dna(t).tipo
+       dna1(t).value = rob(female).dna(t).value
       Next
       
       ReDim dna2(UBound(rob(female).spermDNA))
@@ -2529,15 +2539,15 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
           
       'Step4 after robot is created store the dna
       
-      rob(nuovo).DNA = Outdna
+      rob(nuovo).dna = Outdna
           
-      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())     ' Set the DNA length of the offspring
+      rob(nuovo).DnaLen = DnaLen(rob(nuovo).dna())     ' Set the DNA length of the offspring
 
       'Bugfix actual length = virtual length
-      ReDim Preserve rob(nuovo).DNA(rob(nuovo).DnaLen)
+      ReDim Preserve rob(nuovo).dna(rob(nuovo).DnaLen)
       
       
-      rob(nuovo).genenum = CountGenes(rob(nuovo).DNA())
+      rob(nuovo).genenum = CountGenes(rob(nuovo).dna())
       rob(nuovo).Mutables = rob(female).Mutables
       rob(nuovo).Mutations = rob(female).Mutations
       rob(nuovo).LastMut = 0
@@ -2555,11 +2565,11 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       Erase rob(nuovo).mem
       Erase rob(nuovo).Ties
       
-      rob(nuovo).pos.x = rob(female).pos.x + absx(rob(female).aim, sondist, 0, 0, 0)
-      rob(nuovo).pos.y = rob(female).pos.y + absy(rob(female).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.X = rob(female).pos.X + absx(rob(female).aim, sondist, 0, 0, 0)
+      rob(nuovo).pos.Y = rob(female).pos.Y + absy(rob(female).aim, sondist, 0, 0, 0)
       rob(nuovo).exist = True
-      rob(nuovo).BucketPos.x = -2
-      rob(nuovo).BucketPos.y = -2
+      rob(nuovo).BucketPos.X = -2
+      rob(nuovo).BucketPos.Y = -2
       UpdateBotBucket nuovo
       
       rob(nuovo).vel = rob(female).vel
@@ -2640,6 +2650,8 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       'Botsareus 7/29/2014 New kill restrictions
       If rob(female).multibot_time > 0 Then rob(nuovo).multibot_time = rob(female).multibot_time / 2 + 2
       rob(nuovo).dq = rob(female).dq
+      
+      rob(nuovo).delgenes = rob(female).delgenes
   
       For i = 0 To 500
         rob(nuovo).Ancestors(i) = rob(female).Ancestors(i)  ' copy the parents ancestor list
@@ -2731,8 +2743,8 @@ skip:
       End If
         
       makeoccurrlist nuovo
-      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())
-      rob(nuovo).genenum = CountGenes(rob(nuovo).DNA())
+      rob(nuovo).DnaLen = DnaLen(rob(nuovo).dna())
+      rob(nuovo).genenum = CountGenes(rob(nuovo).dna())
       rob(nuovo).mem(DnaLenSys) = rob(nuovo).DnaLen
       rob(nuovo).mem(GenesSys) = rob(nuovo).genenum
             
@@ -2790,7 +2802,7 @@ Public Sub DoGeneticMemory(t As Integer)
 End Sub
 
 ' verifies rapidly if a field position is already occupied
-Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
+Public Function simplecoll(X As Long, Y As Long, k As Integer) As Boolean
   Dim t As Integer
   Dim radius As Long
   
@@ -2798,8 +2810,8 @@ Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
   
   For t = 1 To MaxRobs
     If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
-      If Abs(rob(t).pos.x - x) < rob(t).radius + rob(k).radius And _
-        Abs(rob(t).pos.y - y) < rob(t).radius + rob(k).radius Then
+      If Abs(rob(t).pos.X - X) < rob(t).radius + rob(k).radius And _
+        Abs(rob(t).pos.Y - Y) < rob(t).radius + rob(k).radius Then
         If k <> t Then
           simplecoll = True
           GoTo getout
@@ -2810,21 +2822,21 @@ Public Function simplecoll(x As Long, y As Long, k As Integer) As Boolean
   
   'EricL Can't reproduce into or across a shape
   For t = 1 To numObstacles
-    If Not ((Obstacles.Obstacles(t).pos.x > Max(rob(k).pos.x, x)) Or _
-           (Obstacles.Obstacles(t).pos.x + Obstacles.Obstacles(t).Width < Min(rob(k).pos.x, x)) Or _
-           (Obstacles.Obstacles(t).pos.y > Max(rob(k).pos.y, y)) Or _
-           (Obstacles.Obstacles(t).pos.y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.y, y))) Then
+    If Not ((Obstacles.Obstacles(t).pos.X > Max(rob(k).pos.X, X)) Or _
+           (Obstacles.Obstacles(t).pos.X + Obstacles.Obstacles(t).Width < Min(rob(k).pos.X, X)) Or _
+           (Obstacles.Obstacles(t).pos.Y > Max(rob(k).pos.Y, Y)) Or _
+           (Obstacles.Obstacles(t).pos.Y + Obstacles.Obstacles(t).Height < Min(rob(k).pos.Y, Y))) Then
        simplecoll = True
        GoTo getout
     End If
   Next t
   
   If SimOpts.Dxsxconnected = False Then
-    If x < rob(k).radius + smudgefactor Or x + rob(k).radius + smudgefactor > SimOpts.FieldWidth Then simplecoll = True
+    If X < rob(k).radius + smudgefactor Or X + rob(k).radius + smudgefactor > SimOpts.FieldWidth Then simplecoll = True
   End If
   
   If SimOpts.Updnconnected = False Then
-    If y < rob(k).radius + smudgefactor Or y + rob(k).radius + smudgefactor > SimOpts.FieldHeight Then simplecoll = True
+    If Y < rob(k).radius + smudgefactor Or Y + rob(k).radius + smudgefactor > SimOpts.FieldHeight Then simplecoll = True
   End If
 getout:
 End Function
@@ -2834,7 +2846,7 @@ Public Function posto() As Integer
   Dim newsize As Long
   Dim t As Integer
   Dim foundone As Boolean
-  Dim x As Long
+  Dim X As Long
   
   t = 1
   foundone = False
@@ -2907,7 +2919,7 @@ End If
 
 
  Dim newsize As Long
- Dim x As Long
+ Dim X As Long
  
   If n = -1 Then n = robfocus
   
@@ -2944,6 +2956,10 @@ End If
   
   rob(n).spermDNAlen = 0
   ReDim rob(n).spermDNA(0)
+  '
+  ReDim rob(n).delgenes(0)
+  ReDim rob(n).delgenes(0).dna(0)
+  '
   
   If n = MaxRobs Then
     Dim b As Integer
