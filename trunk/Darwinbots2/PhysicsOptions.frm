@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
 Begin VB.Form PhysicsOptions 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Advanced Physics Options"
@@ -531,8 +531,8 @@ Private Sub MiscSlider_Change(Index As Integer)
       TmpOpts.PhysMoving = MiscSlider(Index).value / 100
       MiscText(Index).Caption = CStr(MiscSlider(Index).value) + "%"
     Case 1 'Y axis gravity
-      TmpOpts.Ygravity = MiscSlider(Index).value / 10
-      MiscText(Index).Caption = TmpOpts.Ygravity
+       TmpOpts.Ygravity = MiscSlider(Index).value / 10
+       MiscText(Index).Caption = TmpOpts.Ygravity
     Case 2
       TmpOpts.PhysBrown = MiscSlider(Index).value / 10
       MiscText(Index).Caption = TmpOpts.PhysBrown
@@ -605,5 +605,26 @@ Private Sub Form_Activate()
     FluidText(0).text = .Viscosity * 10 ^ 5
     FluidText(1).text = .Density * 10 ^ 7
     
+    If Int(SimOpts.Ygravity * 10) <> (SimOpts.Ygravity * 10) Then MiscText(1).Caption = "?"
+    
   End With
 End Sub
+
+'Botsareus 9/13/2014 Warnings for Shvarz
+
+Private Function YgravityWarning(oldval, newval) As Boolean
+If Not cstdiff(newval + 50, oldval + 50, 15) Then
+    YgravityWarning = True
+Else
+    YgravityWarning = MsgBox("Making drastic changes to vertical gravity may change the robots behavior and may break your simulation. Are you sure?", vbExclamation + vbYesNo, "Darwinbots Settings") = vbYes
+End If
+End Function
+
+Private Function BrownWarning(oldval, newval) As Boolean
+If Not cstdiff(newval + 50, oldval + 50, 33) Or newval < oldval Then
+    BrownWarning = True
+Else
+    BrownWarning = MsgBox("Making drastic changes to Brownian motion will add alot of chaotic motion and break your simulation. Are you sure?", vbExclamation + vbYesNo, "Darwinbots Settings") = vbYes
+End If
+End Function
+

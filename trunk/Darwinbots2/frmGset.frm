@@ -66,28 +66,20 @@ Begin VB.Form frmGset
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ffmSunMut"
-      Tab(1).Control(1)=   "ffmEpiReset"
+      Tab(1).Control(0)=   "ffmEpiReset"
+      Tab(1).Control(1)=   "ffmSunMut"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "lblSource"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "chkTournament"
-      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).Control(2)=   "txtSourceDir"
-      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).Control(3)=   "chkStepladder"
-      Tab(2).Control(3).Enabled=   0   'False
       Tab(2).Control(4)=   "ffmFudge"
-      Tab(2).Control(4).Enabled=   0   'False
       Tab(2).Control(5)=   "ffmDisqualification"
-      Tab(2).Control(5).Enabled=   0   'False
       Tab(2).Control(6)=   "chkAddarob"
-      Tab(2).Control(6).Enabled=   0   'False
       Tab(2).Control(7)=   "Command1"
-      Tab(2).Control(7).Enabled=   0   'False
       Tab(2).ControlCount=   8
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
@@ -1278,6 +1270,9 @@ chkAddarob.value = 0
 End Sub
 
 Private Sub chkDelta2_Click()
+If chkDelta2.value = 1 And Visible Then
+    If MsgBox("Enabling Delta2 mutations may slow down your simulation considerably as it may optimize for extreme mutation rates. Are you sure?", vbExclamation + vbYesNo, "Global Darwinbots Settings") = vbNo Then chkDelta2.value = 0 'Botsareus 9/13/2014 Warnings for Shvarz
+End If
 lblMmain.Visible = chkDelta2.value = 1
 lblMmean.Visible = chkDelta2.value = 1
 lblPMDelta2.Visible = chkDelta2.value = 1
@@ -1485,6 +1480,10 @@ Private Sub txtBodyFix_LostFocus()
 'make sure the value is sane
 txtBodyFix = Abs(val(txtBodyFix))
 If txtBodyFix > 32100 Then txtBodyFix = 32100
+If txtBodyFix < 2500 Then
+   If MsgBox("It is not recommended to set 'Cheating Prevention' below 2500 because it may result in your robots never getting enough body to survive. Do you want to set to 2500 instead?", vbExclamation + vbYesNo, "Global Darwinbots Settings") = vbYes Then txtBodyFix = 2500 'Botsareus 9/13/2014 Warnings for Shvarz
+End If
+If txtBodyFix < 1000 Then txtBodyFix = 1000
 End Sub
 
 Private Sub txtCycSM_LostFocus()

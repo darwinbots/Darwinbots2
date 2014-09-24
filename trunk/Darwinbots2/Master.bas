@@ -344,7 +344,14 @@ Public Sub UpdateSim()
   Dim totlen As Long
   totlen = 0
   For t = 1 To MaxRobs
-    If rob(t).exist Then totlen = totlen + rob(t).DnaLen
+    If rob(t).exist Then
+        totlen = totlen + rob(t).DnaLen
+        On Error GoTo b:
+        For i = 0 To UBound(rob(t).delgenes) 'Botsareus 9/16/2014 More overflow prevention stuff
+         totlen = totlen + UBound(rob(t).delgenes(i).dna)
+        Next
+b:
+    End If
   Next t
   If totlen > 3825000 Then
     Dim calcminenergy As Single

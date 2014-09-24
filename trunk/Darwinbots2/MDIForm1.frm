@@ -603,6 +603,12 @@ Begin VB.MDIForm MDIForm1
          Caption         =   "Enable PlayerBot Mode"
          Shortcut        =   {F11}
       End
+      Begin VB.Menu SepEYE 
+         Caption         =   "-"
+      End
+      Begin VB.Menu showEyeDesign 
+         Caption         =   "Go to eye designer..."
+      End
       Begin VB.Menu Sep81 
          Caption         =   "-"
       End
@@ -666,7 +672,7 @@ Begin VB.MDIForm MDIForm1
          Caption         =   "Change Color"
          Shortcut        =   ^C
       End
-      Begin VB.Menu sep 
+      Begin VB.Menu Sep 
          Caption         =   "-"
          Index           =   14
       End
@@ -1163,9 +1169,6 @@ tryagain:
     InternetMode = True
     
     MDIForm1.Caption = MDIForm1.Caption + "    Internet Mode"
-    'Start up DarwinbotsIM
-    'Aparently VB6 doest allow you to add numbers to strings, thus the Str(Num)
-    'Chr(34) = "
     iq = Chr(34) & Teleporters(i).intInPath & Chr(34)
     oq = Chr(34) & Teleporters(i).intOutPath & Chr(34)
      s = App.path & "\DarwinbotsIM.exe" _
@@ -1174,7 +1177,7 @@ tryagain:
      & " -name " & Chr(34) & IntOpts.IName & Chr(34) _
      & " -port " & Chr(34) & "1050" & Chr(34) _
      & " -pid " & Str(GetCurrentProcessId()) _
-     & " -port " & Chr(34) & IIf(IntOpts.ServPort = "", "79", IntOpts.ServPort) & Chr(34) _
+     & " -port " & Chr(34) & IIf(IntOpts.ServPort = "", "4669", IntOpts.ServPort) & Chr(34) _
      & " -server " & Chr(34) & IIf(IntOpts.ServIP = "PeterIM", "198.50.150.51", IntOpts.ServIP) & Chr(34)
 
     IntOpts.pid = shell(s, vbNormalFocus)
@@ -1367,8 +1370,8 @@ End Sub
 Private Sub pbOn_Click()
 pbOn.Checked = Not pbOn.Checked
 If pbOn.Checked Then
-    Mouse_loc.x = 0
-    Mouse_loc.y = 0
+    Mouse_loc.X = 0
+    Mouse_loc.Y = 0
 End If
 Form1.PlayerBot.Visible = pbOn.Checked
 End Sub
@@ -1410,7 +1413,7 @@ Private Sub RobTagInfo_Click() 'Botsareus & Peter 9/1/2014 Simple idea to list t
 Dim all_str() As String
 Dim blank As String * 50
 ReDim all_str(0)
-all_str(0) = "Tag" & String(45 - 3, " ") & ":File Name:User"
+all_str(0) = "Tag:FileName:User" & vbCrLf & "~~~" & vbCrLf
 Dim t As Integer
 Dim rob_str As String
 Dim i As Integer
@@ -1418,7 +1421,7 @@ Dim datahit As Boolean
 For t = 1 To MaxRobs
  If rob(t).exist Then
   If Left(rob(t).tag, 45) = Left(blank, 45) Then
-   rob_str = String(45, " ") & ":" & rob(t).FName
+   rob_str = String(45, " ") & ":" & rob(t).FName & ":" & rob(t).LastOwner
   Else
    rob_str = Left(rob(t).tag, 45) & ":" & rob(t).FName & ":" & rob(t).LastOwner
   End If
@@ -1435,7 +1438,11 @@ For t = 1 To MaxRobs
   End If
  End If
 Next
-MsgBox Join(all_str, vbCrLf), vbInformation, "Robot Tag Information"
+
+Clipboard.CLEAR
+Clipboard.SetText Join(all_str, vbCrLf)
+
+MsgBox "Data is now copyable from clipboard", vbInformation
 End Sub
 
 Private Sub SaveSimWithoutMutations_Click()
@@ -1451,6 +1458,16 @@ End Sub
 
 Private Sub ShowDB_Click()
 Form1.t_MouseDown (1)
+End Sub
+
+Private Sub showEyeDesign_Click()
+On Error Resume Next
+frmEYE.Show
+Dim i As Byte
+For i = 0 To 8
+ frmEYE.txtDir(i).text = rob(robfocus).mem(i + EYE1DIR)
+ frmEYE.txtWth(i).text = rob(robfocus).mem(i + EYE1WIDTH)
+Next
 End Sub
 
 Private Sub ShowVisionGrid_Click()
@@ -1483,6 +1500,25 @@ Toolbar1.Refresh 'Botsareus 1/11/2013 Force toolbar to refresh
 End Sub
 
 Sub fixcam() 'Botsareus 2/23/2013 When simulation starts the screen is normailized
+Dim c As Byte
+Dim t As Integer
+
+'Botsareus 9/16/2014 Balance out eco test round
+If Corruptions > 0 And y_eco_im > 0 And (x_restartmode = 6) Then
+    For c = 0 To Corruptions \ 4
+    
+     'kill one robot and exit nested loop
+     For t = 1 To MaxRobs
+      If rob(t).exist And (Not rob(t).Dead) And rob(t).FName = "Base.txt" Then
+        rob(t).Dead = True
+        Exit For
+      End If
+     Next
+     
+    Next
+    Corruptions = 0
+End If
+
 'Botsareus 9/12/2014 Simulation now always starts with ignoreerror on
 If UseSafeMode = False Then
  ignoreerror = True
@@ -1497,6 +1533,7 @@ If SimOpts.F1 Or x_restartmode > 3 Then
     optMaxCycles = MaxCycles 'Botsareus 2/14/2014 Move max cycles to optimized max cycles
 End If
 pbOn.Enabled = Not SimOpts.F1 And Not y_eco_im = 2
+showEyeDesign.Enabled = Not SimOpts.F1 And Not y_eco_im = 2
 inssp.Enabled = y_eco_im = 0
 If y_eco_im = 2 And Not F1Internet.Checked And Not SimOpts.F1 Then F1Internet_Click 'Botsareus 7/12/2014 For eco evo this activates the internet
 Form1.BackColor = backgcolor 'Botsareus 4/27/2013 Set back ground skin color
@@ -1728,20 +1765,20 @@ Private Sub costi_Click()
   optionsform.Show vbModal
 End Sub
 
-Private Sub czin_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czin_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = True
   ZoomInPremuto
 End Sub
 
-Private Sub czin_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czin_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = False
 End Sub
 
 Public Sub ZoomIn()
   If Form1.visiblew > RobSize * 4 Then
     If robfocus > 0 Then
-      xc = rob(robfocus).pos.x
-      yc = rob(robfocus).pos.y
+      xc = rob(robfocus).pos.X
+      yc = rob(robfocus).pos.Y
     Else
       xc = Form1.visiblew / 2 + Form1.ScaleLeft
       yc = Form1.visibleh / 2 + Form1.ScaleTop
@@ -1771,8 +1808,8 @@ End Sub
 
 Public Sub Follow() 'Botsareus 11/29/2013 Zoom follow selected robot
     If robfocus > 0 And Form1.visiblew < 6000 And visualize Then
-      xc = rob(robfocus).pos.x
-      yc = rob(robfocus).pos.y
+      xc = rob(robfocus).pos.X
+      yc = rob(robfocus).pos.Y
       Form1.ScaleTop = yc - Form1.ScaleHeight / 2
       Form1.ScaleLeft = xc - Form1.ScaleWidth / 2
   End If
@@ -1792,7 +1829,7 @@ Private Sub ZoomOutPremuto()
   Wend
 End Sub
 
-Private Sub czo_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czo_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = True
   ZoomOutPremuto
 End Sub
@@ -1856,7 +1893,7 @@ Public Sub ZoomOut()
   Form1.Redraw
 End Sub
 
-Private Sub czo_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czo_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
  AspettaFlag = False
 End Sub
 
@@ -2383,6 +2420,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     TmpOpts.F1 = True
                     'new seed and run sim
                     chseedstartnew = True
+                    Corruptions = 0
                     optionsform.StartNew_Click
             Case 4
                 'setup evo
@@ -2440,7 +2478,16 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                         x_restartmode = 2
                         Set files = getfiles(MDIForm1.MainDir & "\league\seeded")
                         MkDir MDIForm1.MainDir & "\league\round0\"
-                        movefilemulti MDIForm1.MainDir & "\league\seeded", MDIForm1.MainDir & "\league\round0", nextlowestmultof2(files.count)
+                        'lets make things simple
+                        If nextlowestmultof2(files.count) = files.count Then
+                            Dim ii As Integer
+                            For ii = 1 To files.count
+                                FileCopy files(ii), MDIForm1.MainDir & "\league\round0" & "\" & extractname(files(ii))
+                                Kill files(ii)
+                            Next
+                        Else
+                            movefilemulti MDIForm1.MainDir & "\league\seeded", MDIForm1.MainDir & "\league\round0", nextlowestmultof2(files.count)
+                        End If
                         'reset files
                         Kill MDIForm1.MainDir & "\league\Test.txt"
                         Open MDIForm1.MainDir & "\league\robotA.txt" For Append As #1
@@ -2617,6 +2664,12 @@ Public Function DisableRobotsMenu()
 End Function
 
 Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+If Caption Like "Moving files*" Then
+MsgBox "Please wait until files are calculated"
+Cancel = True
+Exit Sub
+End If
+
 If Form1.lblSaving.Visible Then 'Botsareus 2/7/2014 small bug fix for autosave
     Cancel = 1
     Exit Sub
