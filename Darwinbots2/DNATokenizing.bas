@@ -179,10 +179,10 @@ fine:
   pos = Err.Number
   If Err.Number = 53 Or Err.Number = 76 Then
   
-    If path <> MDIForm1.MainDir + "\Robots\" & rob(n).fname Then 'Attempt to load a robot from common folder if not found.
-      If dir(MDIForm1.MainDir + "\Robots\" & rob(n).fname) <> "" Then
-        path = MDIForm1.MainDir + "\Robots\" & rob(n).fname
-        SimOpts.Specie(SpeciesFromBot(n)).path = Left(path, Len(path) - Len(rob(n).fname) - 1)
+    If path <> MDIForm1.MainDir + "\Robots\" & rob(n).FName Then 'Attempt to load a robot from common folder if not found.
+      If dir(MDIForm1.MainDir + "\Robots\" & rob(n).FName) <> "" Then
+        path = MDIForm1.MainDir + "\Robots\" & rob(n).FName
+        SimOpts.Specie(SpeciesFromBot(n)).path = Left(path, Len(path) - Len(rob(n).FName) - 1)
         GoTo inizio
       End If
     End If
@@ -203,7 +203,7 @@ fine:
     Else
       ' The user selected a new path
       path = path2
-      SimOpts.Specie(SpeciesFromBot(n)).path = Left(path, Len(path) - Len(rob(n).fname) - 1)  ' Update the species struct
+      SimOpts.Specie(SpeciesFromBot(n)).path = Left(path, Len(path) - Len(rob(n).FName) - 1)  ' Update the species struct
       GoTo inizio
     End If
     
@@ -798,7 +798,7 @@ On Error GoTo skip 'Botsareus 8/22/2014 Fix for messed up tags
  If Name = "tag" Then 'Botsareus 1/28/2014 New short description feature
    rob(n).tag = Left(replacechars(value), 45)
  End If
- If Name = "Corruptions" Then
+ If Name = "corruptions" Then
    Corruptions = Corruptions + 1
  End If
 ' If Name = "image" Then

@@ -66,30 +66,32 @@ Begin VB.Form frmGset
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ffmEpiReset"
-      Tab(1).Control(1)=   "ffmSunMut"
+      Tab(1).Control(0)=   "ffmSunMut"
+      Tab(1).Control(0).Enabled=   0   'False
+      Tab(1).Control(1)=   "ffmEpiReset"
+      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "lblSource"
-      Tab(2).Control(1)=   "chkTournament"
-      Tab(2).Control(2)=   "txtSourceDir"
-      Tab(2).Control(3)=   "chkStepladder"
-      Tab(2).Control(4)=   "ffmFudge"
-      Tab(2).Control(5)=   "ffmDisqualification"
-      Tab(2).Control(6)=   "chkAddarob"
-      Tab(2).Control(7)=   "Command1"
+      Tab(2).Control(0)=   "Command1"
+      Tab(2).Control(1)=   "chkAddarob"
+      Tab(2).Control(2)=   "ffmDisqualification"
+      Tab(2).Control(3)=   "ffmFudge"
+      Tab(2).Control(4)=   "chkStepladder"
+      Tab(2).Control(5)=   "txtSourceDir"
+      Tab(2).Control(6)=   "chkTournament"
+      Tab(2).Control(7)=   "lblSource"
       Tab(2).ControlCount=   8
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "btnEvoRES"
-      Tab(3).Control(1)=   "chkSurvivalEco"
-      Tab(3).Control(2)=   "chkZBmode"
-      Tab(3).Control(3)=   "ffmZeroBot"
-      Tab(3).Control(4)=   "chkSurvivalSimple"
-      Tab(3).Control(5)=   "ffmSurvival"
+      Tab(3).Control(0)=   "ffmSurvival"
+      Tab(3).Control(1)=   "chkSurvivalSimple"
+      Tab(3).Control(2)=   "ffmZeroBot"
+      Tab(3).Control(3)=   "chkZBmode"
+      Tab(3).Control(4)=   "chkSurvivalEco"
+      Tab(3).Control(5)=   "btnEvoRES"
       Tab(3).ControlCount=   6
       Begin VB.CommandButton Command1 
          Caption         =   "League Restrictions"
@@ -399,6 +401,7 @@ Begin VB.Form frmGset
             TabIndex        =   50
             ToolTipText     =   "Probability Delta2 Chance"
             Top             =   960
+            Visible         =   0   'False
             Width           =   1935
             _ExtentX        =   3413
             _ExtentY        =   503
@@ -448,6 +451,7 @@ Begin VB.Form frmGset
             Left            =   6480
             TabIndex        =   40
             Top             =   1440
+            Visible         =   0   'False
             Width           =   615
          End
          Begin VB.TextBox txtDevExp 
@@ -455,6 +459,7 @@ Begin VB.Form frmGset
             Left            =   5280
             TabIndex        =   38
             Top             =   1440
+            Visible         =   0   'False
             Width           =   615
          End
          Begin VB.TextBox txtMainLn 
@@ -462,6 +467,7 @@ Begin VB.Form frmGset
             Left            =   6240
             TabIndex        =   37
             Top             =   960
+            Visible         =   0   'False
             Width           =   615
          End
          Begin VB.TextBox txtMainExp 
@@ -469,6 +475,7 @@ Begin VB.Form frmGset
             Left            =   4995
             TabIndex        =   35
             Top             =   960
+            Visible         =   0   'False
             Width           =   615
          End
          Begin VB.CheckBox chkDelta2 
@@ -506,6 +513,7 @@ Begin VB.Form frmGset
             TabIndex        =   51
             ToolTipText     =   "Mean/Stddev Delta2 Chance"
             Top             =   1440
+            Visible         =   0   'False
             Width           =   1935
             _ExtentX        =   3413
             _ExtentY        =   503
@@ -513,22 +521,33 @@ Begin VB.Form frmGset
             Max             =   100
             TickFrequency   =   10
          End
+         Begin VB.Label lblD2 
+            Alignment       =   2  'Center
+            BorderStyle     =   1  'Fixed Single
+            Caption         =   "Click here for some really advanced delta2 settings."
+            Height          =   255
+            Left            =   2640
+            TabIndex        =   88
+            Top             =   1200
+            Width           =   6135
+         End
          Begin VB.Label lblChance 
             Caption         =   "Chance of mutation %"
             Height          =   255
             Left            =   7200
             TabIndex        =   49
             Top             =   720
+            Visible         =   0   'False
             Width           =   1575
          End
          Begin VB.Label lblWTC 
-            Caption         =   "Delta2 for what to change:    ±"
+            Caption         =   "Delta2 for value(s) of what to change:     ±"
             Height          =   495
-            Left            =   5760
+            Left            =   5280
             TabIndex        =   47
             ToolTipText     =   "Oscillation between type and value"
             Top             =   1800
-            Width           =   1095
+            Width           =   1575
          End
          Begin VB.Label lblDnalen 
             Caption         =   "DNA length *    XXXX     Slowest rate DNA length * "
@@ -552,6 +571,7 @@ Begin VB.Form frmGset
             Left            =   2520
             TabIndex        =   39
             Top             =   1440
+            Visible         =   0   'False
             Width           =   4335
          End
          Begin VB.Label lblMmain 
@@ -560,6 +580,7 @@ Begin VB.Form frmGset
             Left            =   2520
             TabIndex        =   36
             Top             =   960
+            Visible         =   0   'False
             Width           =   3975
          End
          Begin VB.Label lblExplMut 
@@ -697,7 +718,7 @@ Begin VB.Form frmGset
          Height          =   1095
          Left            =   120
          TabIndex        =   9
-         Top             =   3840
+         Top             =   3960
          Width           =   4695
          Begin VB.CheckBox chkchseedloadsim 
             Caption         =   "Generate new seed when you click 'Load Simulation'"
@@ -721,7 +742,7 @@ Begin VB.Form frmGset
          Height          =   1575
          Left            =   120
          TabIndex        =   5
-         Top             =   2160
+         Top             =   2280
          Width           =   4695
          Begin VB.CheckBox chkGreedy 
             Caption         =   "Kill robots that are excessively greedy to there kids, using them to dump there energy."
@@ -750,11 +771,27 @@ Begin VB.Form frmGset
       End
       Begin VB.Frame ffmUI 
          Caption         =   "UI Settings"
-         Height          =   1575
+         Height          =   1695
          Left            =   120
          TabIndex        =   3
          Top             =   480
          Width           =   4695
+         Begin VB.CheckBox chkScreenRatio 
+            Caption         =   "Fix Screen Ratio when simulation starts"
+            Height          =   255
+            Left            =   240
+            TabIndex        =   4
+            Top             =   270
+            Width           =   3075
+         End
+         Begin VB.CheckBox chkGraphUp 
+            Caption         =   "Automatically assume to keep updating graphs"
+            Height          =   255
+            Left            =   240
+            TabIndex        =   89
+            Top             =   1365
+            Width           =   3975
+         End
          Begin VB.CheckBox chkNoVid 
             Caption         =   "Turn off Video when simulation starts"
             Height          =   255
@@ -777,14 +814,6 @@ Begin VB.Form frmGset
             Left            =   240
             TabIndex        =   20
             Top             =   480
-            Width           =   3075
-         End
-         Begin VB.CheckBox chkScreenRatio 
-            Caption         =   "Fix Screen Ratio when simulation starts"
-            Height          =   375
-            Left            =   240
-            TabIndex        =   4
-            Top             =   240
             Width           =   3075
          End
       End
@@ -1085,6 +1114,8 @@ MsgBox "Global settings will take effect the next time DarwinBots starts.", vbIn
       Write #1, y_res_kill_dq_veg
       Write #1, y_res_other_veg
       
+      Write #1, chkGraphUp.value = 1
+      
     Close #1
     
 'Botsareus 1/31/2014 Setup a league
@@ -1180,7 +1211,7 @@ If chkSurvivalSimple.value = 1 Or chkSurvivalEco.value = 1 Then
     'we have to calculate length of robot here
     ReDim rob(0)
     If LoadDNA(txtRob, 0) Then
-        Length = DnaLen(rob(0).DNA)
+        Length = DnaLen(rob(0).dna)
     End If
     'generate data file
     Open MDIForm1.MainDir & "\evolution\data.gset" For Output As #1
@@ -1273,19 +1304,23 @@ Private Sub chkDelta2_Click()
 If chkDelta2.value = 1 And Visible Then
     If MsgBox("Enabling Delta2 mutations may slow down your simulation considerably as it may optimize for extreme mutation rates. Are you sure?", vbExclamation + vbYesNo, "Global Darwinbots Settings") = vbNo Then chkDelta2.value = 0 'Botsareus 9/13/2014 Warnings for Shvarz
 End If
-lblMmain.Visible = chkDelta2.value = 1
-lblMmean.Visible = chkDelta2.value = 1
+lblD2.Visible = chkDelta2.value = 1
 lblPMDelta2.Visible = chkDelta2.value = 1
-txtMainExp.Visible = chkDelta2.value = 1
-txtMainLn.Visible = chkDelta2.value = 1
-txtDevExp.Visible = chkDelta2.value = 1
-txtDevLn.Visible = chkDelta2.value = 1
 txtPMinter.Visible = chkDelta2.value = 1
 lblWTC.Visible = chkDelta2.value = 1
 txtWTC.Visible = chkDelta2.value = 1
-lblChance.Visible = chkDelta2.value = 1
-sldMain.Visible = chkDelta2.value = 1
-sldDev.Visible = chkDelta2.value = 1
+'
+If chkDelta2.value = 0 Then
+    lblMmain.Visible = False
+    lblMmean.Visible = False
+    txtMainExp.Visible = False
+    txtMainLn.Visible = False
+    txtDevExp.Visible = False
+    txtDevLn.Visible = False
+    lblChance.Visible = False
+    sldMain.Visible = False
+    sldDev.Visible = False
+End If
 End Sub
 
 Private Sub chkEpiReset_Click()
@@ -1440,19 +1475,11 @@ chkNorm = IIf(NormMut, 1, 0)
 txtDnalen = valNormMut
 txtMxDnalen = valMaxNormMut
 'Set values Delta2 and Norm mut
-lblMmain.Visible = chkDelta2.value = 1
-lblMmean.Visible = chkDelta2.value = 1
+lblD2.Visible = chkDelta2.value = 1
 lblPMDelta2.Visible = chkDelta2.value = 1
-txtMainExp.Visible = chkDelta2.value = 1
-txtMainLn.Visible = chkDelta2.value = 1
-txtDevExp.Visible = chkDelta2.value = 1
-txtDevLn.Visible = chkDelta2.value = 1
 txtPMinter.Visible = chkDelta2.value = 1
 lblWTC.Visible = chkDelta2.value = 1
 txtWTC.Visible = chkDelta2.value = 1
-lblChance.Visible = chkDelta2.value = 1
-sldMain.Visible = chkDelta2.value = 1
-sldDev.Visible = chkDelta2.value = 1
 '
 txtDnalen.Visible = chkNorm.value = 1
 lblDnalen.Visible = chkNorm.value = 1
@@ -1474,6 +1501,21 @@ txtLFOR = y_LFOR
 txtZlength = y_zblen
 '
 If y_eco_im > 0 Then chkIM.value = y_eco_im - 1
+'
+chkGraphUp.value = IIf(Graphup, 1, 0)
+End Sub
+
+Private Sub lblD2_Click()
+lblMmain.Visible = True
+lblMmean.Visible = True
+txtMainExp.Visible = True
+txtMainLn.Visible = True
+txtDevExp.Visible = True
+txtDevLn.Visible = True
+lblChance.Visible = True
+sldMain.Visible = True
+sldDev.Visible = True
+lblD2.Visible = False
 End Sub
 
 Private Sub txtBodyFix_LostFocus()

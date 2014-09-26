@@ -22,6 +22,7 @@ Public reprofix As Boolean
 Public chseedstartnew As Boolean
 Public chseedloadsim As Boolean
 Public UseSafeMode As Boolean
+Public GraphUp As Boolean
 Public intFindBestV2 As Integer
 Public UseOldColor As Boolean
 Public startnovid As Boolean

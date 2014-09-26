@@ -3923,7 +3923,9 @@ If secretunloadoverwrite Then 'Botsareus 6/29/2013
     graphvisible(WhichGraphAmI) = False
     secretunloadoverwrite = False
 Else
+If GraphUp Then GoTo skipmsg 'Botsareus 9/26/2014 From Shvarz, make UI more frindly
     If MsgBox("Would you like to keep updating this graph?", vbYesNo + vbQuestion) = vbYes Then
+skipmsg:
         Cancel = True
         Left = Screen.Width
         Top = Screen.Height
@@ -3997,7 +3999,7 @@ chk_GDsave.BackColor = chartcolor
 If Left <> Screen.Width Then graphleft(WhichGraphAmI) = Left 'A little mod here not to update graph position if invisible mode
 If Top <> Screen.Height Then graphtop(WhichGraphAmI) = Top
   
-  Dim k, P As Integer
+  Dim k, p As Integer
   Dim t, X As Integer
   Dim maxv As Single
   Dim xunit As Single, yunit As Single
@@ -4054,12 +4056,12 @@ If Top <> Screen.Height Then graphtop(WhichGraphAmI) = Top
     Next X
   End If
   
-  P = Pivot - 1
-  If P < 0 Then P = MaxData
+  p = Pivot - 1
+  If p < 0 Then p = MaxData
   
   If t > 50 Or SimOpts.EnableAutoSpeciation Then 'Botsareus attempt to fix forking issue, may lead to graph instability
    For X = (MaxSeries - 1) To 0 Step -1
-      If data(P, X) = 0 Then
+      If data(p, X) = 0 Then
         DelSeries (X)
       End If
     Next X
