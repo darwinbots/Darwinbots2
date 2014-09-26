@@ -840,6 +840,7 @@ Public Sub LoadGlobalSettings()
 bodyfix = 32100
 chseedstartnew = True
 chseedloadsim = True
+GraphUp = False
 MDIForm1.MainDir = App.path
 UseSafeMode = False
 intFindBestV2 = 100
@@ -965,6 +966,8 @@ If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
       If Not EOF(1) Then Input #1, y_res_kill_mb_veg
       If Not EOF(1) Then Input #1, y_res_kill_dq_veg
       If Not EOF(1) Then Input #1, y_res_other_veg
+      '
+      If Not EOF(1) Then Input #1, GraphUp
     Close #1
 End If
 

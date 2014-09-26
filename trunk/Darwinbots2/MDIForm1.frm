@@ -2831,11 +2831,12 @@ End Sub
 
 Private Sub newsim_Click(Index As Integer)
 If Form1.GraphLab.Visible Then Exit Sub
-  TmpOpts = SimOpts
-  NetEvent.Timer1.Enabled = False
-  NetEvent.Hide
-  optionsform.SSTab1.Tab = 0 ' EricL 3/29/2006 Insures we start at the first tab when starting a new sim
-  optionsform.Show
+NetEvent.Timer1.Enabled = False
+NetEvent.Hide
+optionsform.Show vbModal
+If Not optionsform.Canc Then
+  Form1.Show
+End If
 End Sub
 
 Private Sub quit_Click() 'Botsareus 2/7/2014 Simple quit code
