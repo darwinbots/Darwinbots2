@@ -348,7 +348,7 @@ Public Sub UpdateSim()
         totlen = totlen + rob(t).DnaLen
         On Error GoTo b:
         For i = 0 To UBound(rob(t).delgenes) 'Botsareus 9/16/2014 More overflow prevention stuff
-         totlen = totlen + UBound(rob(t).delgenes(i).dna)
+         totlen = totlen + UBound(rob(t).delgenes(i).DNA)
         Next
 b:
     End If

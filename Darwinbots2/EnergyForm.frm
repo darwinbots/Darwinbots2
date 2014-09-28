@@ -22,7 +22,7 @@ Begin VB.Form EnergyForm
       Top             =   120
       Width           =   5415
       Begin VB.Frame ffmTides 
-         Caption         =   "Tide Simulator"
+         Caption         =   "Tide Simulator (Advanced)"
          Height          =   615
          Left            =   2040
          TabIndex        =   18

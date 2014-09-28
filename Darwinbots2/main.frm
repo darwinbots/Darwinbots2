@@ -298,8 +298,8 @@ Dim DraggingBot As Boolean     ' EricL True while mouse is down dragging bot aro
 'Botsareus 11/29/2013 Allows for moving whole organism
 Private Type tmppostyp
 n As Integer
-X As Single
-Y As Single
+x As Single
+y As Single
 End Type
 Private tmprob_c As Byte
 Private tmppos(50) As tmppostyp
@@ -567,7 +567,7 @@ With frmMonitorSet
     '
     Dim aspectmod As Double
     aspectmod = TwipHeight / twipWidth
-    Line (rob(n).pos.X - rob(n).radius * 1.1, rob(n).pos.Y - rob(n).radius * 1.1 / aspectmod)-(rob(n).pos.X + rob(n).radius * 1.1, rob(n).pos.Y + rob(n).radius * 1.1 / aspectmod), RGB(valred, valgreen, valblue), B
+    Line (rob(n).pos.x - rob(n).radius * 1.1, rob(n).pos.y - rob(n).radius * 1.1 / aspectmod)-(rob(n).pos.x + rob(n).radius * 1.1, rob(n).pos.y + rob(n).radius * 1.1 / aspectmod), RGB(valred, valgreen, valblue), B
 End With
 End Sub
 
@@ -593,8 +593,8 @@ Private Sub DrawRobPer(n As Integer)
  
  ' Sides = rob(n).Shape
  ' If Sides > 0 Then Sdlen = 6.28 / Sides
-  CentreX = rob(n).pos.X
-  CentreY = rob(n).pos.Y
+  CentreX = rob(n).pos.x
+  CentreY = rob(n).pos.y
   radius = rob(n).radius
    
   If rob(n).highlight Then Circle (CentreX, CentreY), radius * 1.2, vbYellow
@@ -708,8 +708,8 @@ Private Sub DrawRobDistPer(n As Integer)
   Dim nrgPercent As Single
   Dim bodyPercent As Single
   
-  CentreX = rob(n).pos.X
-  CentreY = rob(n).pos.Y
+  CentreX = rob(n).pos.x
+  CentreY = rob(n).pos.y
    
   If rob(n).highlight Then Circle (CentreX, CentreY), RobSize * 2, vbYellow 'new line
   If n = robfocus Then Circle (CentreX, CentreY), RobSize * 2, vbWhite
@@ -726,7 +726,7 @@ End Sub
 
 ' draws rob aim
 Private Sub DrawRobAim(n As Integer)
-  Dim X As Long, Y As Long
+  Dim x As Long, y As Long
   Dim pos As vector
   Dim pos2 As vector
   Dim vol As vector
@@ -740,11 +740,11 @@ Private Sub DrawRobAim(n As Integer)
     With rob(n)
   
     'We have to remember that the upper left corner is (0,0)
-    pos.X = .aimvector.X
-    pos.Y = -.aimvector.Y
+    pos.x = .aimvector.x
+    pos.y = -.aimvector.y
        
     pos2 = VectorAdd(.pos, VectorScalar(VectorUnit(pos), .radius))
-    PSet (pos2.X, pos2.Y), vbWhite
+    PSet (pos2.x, pos2.y), vbWhite
     
     If MDIForm1.displayMovementVectorsToggle Then
       'Draw the voluntary movement vectors
@@ -753,72 +753,72 @@ Private Sub DrawRobAim(n As Integer)
         If .lastup > 1000 Then .lastup = 1000
         'pos2 = VectorAdd(.pos, VectorScalar(pos, .radius)) 'done above
         vol = VectorAdd(pos2, VectorScalar(pos, CSng(.lastup)))
-        Line (pos2.X, pos2.Y)-(vol.X, vol.Y), .color
+        Line (pos2.x, pos2.y)-(vol.x, vol.y), .color
         
         arrow3 = VectorAdd(vol, VectorScalar(pos, 15)) ' point of the arrowhead
         temp = VectorSet(Cos(.aim - PI / 2), Sin(.aim - PI / 2))
-        temp.Y = -temp.Y
+        temp.y = -temp.y
         pos2 = VectorScalar(temp, 10)
         arrow1 = VectorAdd(vol, pos2) ' left side of arrowhead
         arrow2 = VectorSub(vol, pos2) ' right side of arrowhead
-        Line (arrow1.X, arrow1.Y)-(arrow3.X, arrow3.Y), .color
-        Line (arrow2.X, arrow2.Y)-(arrow3.X, arrow3.Y), .color
-        Line (arrow1.X, arrow1.Y)-(arrow2.X, arrow2.Y), .color
+        Line (arrow1.x, arrow1.y)-(arrow3.x, arrow3.y), .color
+        Line (arrow2.x, arrow2.y)-(arrow3.x, arrow3.y), .color
+        Line (arrow1.x, arrow1.y)-(arrow2.x, arrow2.y), .color
       End If
       If .lastdown <> 0 Then
         If .lastdown < -1000 Then .lastdown = -1000
         If .lastdown > 1000 Then .lastdown = 1000
         pos2 = VectorSub(.pos, VectorScalar(pos, .radius))
         vol = VectorSub(pos2, VectorScalar(pos, CSng(.lastdown)))
-        Line (pos2.X, pos2.Y)-(vol.X, vol.Y), .color
+        Line (pos2.x, pos2.y)-(vol.x, vol.y), .color
         
         arrow3 = VectorAdd(vol, VectorScalar(pos, -15)) ' point of the arrowhead
         temp = VectorSet(Cos(.aim - PI / 2), Sin(.aim - PI / 2))
-        temp.Y = -temp.Y
+        temp.y = -temp.y
         pos2 = VectorScalar(temp, 10)
         arrow1 = VectorAdd(vol, pos2) ' left side of arrowhead
         arrow2 = VectorSub(vol, pos2) ' right side of arrowhead
-        Line (arrow1.X, arrow1.Y)-(arrow3.X, arrow3.Y), .color
-        Line (arrow2.X, arrow2.Y)-(arrow3.X, arrow3.Y), .color
-        Line (arrow1.X, arrow1.Y)-(arrow2.X, arrow2.Y), .color
+        Line (arrow1.x, arrow1.y)-(arrow3.x, arrow3.y), .color
+        Line (arrow2.x, arrow2.y)-(arrow3.x, arrow3.y), .color
+        Line (arrow1.x, arrow1.y)-(arrow2.x, arrow2.y), .color
       End If
       If .lastleft <> 0 Then
         If .lastleft < -1000 Then .lastleft = -1000
         If .lastleft > 1000 Then .lastleft = 1000
         pos = VectorSet(Cos(.aim - PI / 2), Sin(.aim - PI / 2))
-        pos.Y = -pos.Y
+        pos.y = -pos.y
         pos2 = VectorAdd(.pos, VectorScalar(pos, .radius))
         vol = VectorAdd(pos2, VectorScalar(pos, CSng(.lastleft)))
-        Line (pos2.X, pos2.Y)-(vol.X, vol.Y), .color
+        Line (pos2.x, pos2.y)-(vol.x, vol.y), .color
         
         arrow3 = VectorAdd(vol, VectorScalar(pos, 15)) ' point of the arrowhead
         temp = .aimvector
-        temp.Y = -temp.Y
+        temp.y = -temp.y
         pos2 = VectorScalar(temp, 10)
         arrow1 = VectorAdd(vol, pos2) ' left side of arrowhead
         arrow2 = VectorSub(vol, pos2) ' right side of arrowhead
-        Line (arrow1.X, arrow1.Y)-(arrow3.X, arrow3.Y), .color
-        Line (arrow2.X, arrow2.Y)-(arrow3.X, arrow3.Y), .color
-        Line (arrow1.X, arrow1.Y)-(arrow2.X, arrow2.Y), .color
+        Line (arrow1.x, arrow1.y)-(arrow3.x, arrow3.y), .color
+        Line (arrow2.x, arrow2.y)-(arrow3.x, arrow3.y), .color
+        Line (arrow1.x, arrow1.y)-(arrow2.x, arrow2.y), .color
       End If
       If .lastright <> 0 Then
         If .lastright < -1000 Then .lastright = -1000
         If .lastright > 1000 Then .lastright = 1000
         pos = VectorSet(Cos(.aim + PI / 2), Sin(.aim + PI / 2))
-        pos.Y = -pos.Y
+        pos.y = -pos.y
         pos2 = VectorAdd(.pos, VectorScalar(pos, .radius))
         vol = VectorAdd(pos2, VectorScalar(pos, CSng(.lastright)))
-        Line (pos2.X, pos2.Y)-(vol.X, vol.Y), .color
+        Line (pos2.x, pos2.y)-(vol.x, vol.y), .color
         
         arrow3 = VectorAdd(vol, VectorScalar(pos, 15)) ' point of the arrowhead
         temp = .aimvector
-        temp.Y = -temp.Y
+        temp.y = -temp.y
         pos2 = VectorScalar(temp, 10)
         arrow1 = VectorAdd(vol, pos2) ' left side of arrowhead
         arrow2 = VectorSub(vol, pos2) ' right side of arrowhead
-        Line (arrow1.X, arrow1.Y)-(arrow3.X, arrow3.Y), .color
-        Line (arrow2.X, arrow2.Y)-(arrow3.X, arrow3.Y), .color
-        Line (arrow1.X, arrow1.Y)-(arrow2.X, arrow2.Y), .color
+        Line (arrow1.x, arrow1.y)-(arrow3.x, arrow3.y), .color
+        Line (arrow2.x, arrow2.y)-(arrow3.x, arrow3.y), .color
+        Line (arrow1.x, arrow1.y)-(arrow2.x, arrow2.y), .color
       End If
     End If
     End With
@@ -838,19 +838,19 @@ Private Sub DrawRobSkin(n As Integer)
       With rob(n)
         .OSkin(0) = (Cos(.Skin(1) / 100 - .aim) * .Skin(0)) * .radius / 60
         .OSkin(1) = (Sin(.Skin(1) / 100 - .aim) * .Skin(0)) * .radius / 60
-        PSet (.OSkin(0) + .pos.X, .OSkin(1) + .pos.Y)
+        PSet (.OSkin(0) + .pos.x, .OSkin(1) + .pos.y)
         For t = 2 To 6 Step 2
           .OSkin(t) = (Cos(.Skin(t + 1) / 100 - .aim) * .Skin(t)) * .radius / 60
           .OSkin(t + 1) = (Sin(.Skin(t + 1) / 100 - .aim) * .Skin(t)) * .radius / 60
-          Line -(.OSkin(t) + .pos.X, .OSkin(t + 1) + .pos.Y), .color
+          Line -(.OSkin(t) + .pos.x, .OSkin(t + 1) + .pos.y), .color
         Next t
         .oaim = .aim
       End With
     Else
       With rob(n)
-        PSet (.OSkin(0) + .pos.X, .OSkin(1) + .pos.Y)
+        PSet (.OSkin(0) + .pos.x, .OSkin(1) + .pos.y)
         For t = 2 To 6 Step 2
-          Line -(.OSkin(t) + .pos.X, .OSkin(t + 1) + .pos.Y), .color
+          Line -(.OSkin(t) + .pos.x, .OSkin(t + 1) + .pos.y), .color
         Next t
       End With
     End If
@@ -871,13 +871,13 @@ Private Sub DrawRobTies(t As Integer, w As Integer, ByVal s As Integer)
   
   k = 1
   With rob(t)
-  CentreX = .pos.X
-  CentreY = .pos.Y
+  CentreX = .pos.x
+  CentreY = .pos.y
   While .Ties(k).pnt > 0
     If Not .Ties(k).back Then
       rp = .Ties(k).pnt
-      CentreX1 = rob(rp).pos.X
-      CentreY1 = rob(rp).pos.Y
+      CentreX1 = rob(rp).pos.x
+      CentreY1 = rob(rp).pos.y
       DrawWidth = drawsmall
       If .Ties(k).last > 0 Then
         If w > 2 Then
@@ -908,13 +908,13 @@ Private Sub DrawRobTiesCol(t As Integer, w As Integer, ByVal s As Integer)
   If drawsmall = 0 Then drawsmall = 1
   k = 1
   With rob(t)
-  CentreX = .pos.X
-  CentreY = .pos.Y
+  CentreX = .pos.x
+  CentreY = .pos.y
   While .Ties(k).pnt > 0
     If Not .Ties(k).back Then
       rp = .Ties(k).pnt
-      CentreX1 = rob(rp).pos.X
-      CentreY1 = rob(rp).pos.Y
+      CentreX1 = rob(rp).pos.x
+      CentreY1 = rob(rp).pos.y
       DrawWidth = drawsmall
       col = .color
       If w < 2 Then w = 2
@@ -949,13 +949,13 @@ Public Sub DrawShots()
     If Shots(t).flash And MDIForm1.displayShotImpactsToggle Then
        If Shots(t).shottype < 0 And Shots(t).shottype >= -7 Then
         FillColor = FlashColor(Shots(t).shottype + 10)
-        Form1.Circle (Shots(t).opos.X, Shots(t).opos.Y), 20, FlashColor(Shots(t).shottype + 10)
+        Form1.Circle (Shots(t).opos.x, Shots(t).opos.y), 20, FlashColor(Shots(t).shottype + 10)
       Else
         FillColor = vbBlack
-        Form1.Circle (Shots(t).opos.X, Shots(t).opos.Y), 20, vbBlack
+        Form1.Circle (Shots(t).opos.x, Shots(t).opos.y), 20, vbBlack
       End If
     ElseIf Shots(t).exist And Shots(t).stored = False Then
-      PSet (Shots(t).pos.X, Shots(t).pos.Y), Shots(t).color
+      PSet (Shots(t).pos.x, Shots(t).pos.y), Shots(t).color
     End If
   Next t
   FillColor = BackColor
@@ -1040,10 +1040,10 @@ Public Sub DrawAllRobs()
         Length = EyeSightDistance(AbsoluteEyeWidth(rob(robfocus).mem(EYE1WIDTH + a)), robfocus) + rob(robfocus).radius + rob(robfocus).radius
       End If
             
-      Circle (rob(robfocus).pos.X, rob(robfocus).pos.Y), Length, vbCyan, -low, -hi
+      Circle (rob(robfocus).pos.x, rob(robfocus).pos.y), Length, vbCyan, -low, -hi
       
       If (a = Abs(rob(robfocus).mem(FOCUSEYE) + 4) Mod 9) Then
-        Circle (rob(robfocus).pos.X, rob(robfocus).pos.Y), Length, vbRed, low, hi
+        Circle (rob(robfocus).pos.x, rob(robfocus).pos.y), Length, vbRed, low, hi
       End If
        
     Next a
@@ -1063,8 +1063,8 @@ Public Sub DrawAllRobs()
     For a = 1 To MaxRobs
       If rob(a).exist And Not (rob(a).FName = "Base.txt" And hidepred) Then
         r = rob(a).radius
-        If rob(a).pos.X + r > visibleLeft And rob(a).pos.X - r < visibleRight And _
-           rob(a).pos.Y + r > visibleTop And rob(a).pos.Y - r < visibleBottom Then
+        If rob(a).pos.x + r > visibleLeft And rob(a).pos.x - r < visibleRight And _
+           rob(a).pos.y + r > visibleTop And rob(a).pos.y - r < visibleBottom Then
            DrawRobDistPer a
         End If
       End If
@@ -1074,8 +1074,8 @@ Public Sub DrawAllRobs()
     For a = 1 To MaxRobs
       If rob(a).exist And Not (rob(a).FName = "Base.txt" And hidepred) Then
          r = rob(a).radius
-         If rob(a).pos.X + r > visibleLeft And rob(a).pos.X - r < visibleRight And _
-            rob(a).pos.Y + r > visibleTop And rob(a).pos.Y - r < visibleBottom Then
+         If rob(a).pos.x + r > visibleLeft And rob(a).pos.x - r < visibleRight And _
+            rob(a).pos.y + r > visibleTop And rob(a).pos.y - r < visibleBottom Then
             DrawRobPer a
          End If
       End If
@@ -1086,8 +1086,8 @@ Public Sub DrawAllRobs()
   If dispskin And Not noeyeskin Then
     For a = 1 To MaxRobs
       If rob(a).exist And Not (rob(a).FName = "Base.txt" And hidepred) Then
-        If rob(a).pos.X + r > visibleLeft And rob(a).pos.X - r < visibleRight And _
-           rob(a).pos.Y + r > visibleTop And rob(a).pos.Y - r < visibleBottom Then
+        If rob(a).pos.x + r > visibleLeft And rob(a).pos.x - r < visibleRight And _
+           rob(a).pos.y + r > visibleTop And rob(a).pos.y - r < visibleBottom Then
            DrawRobSkin a
         End If
       End If
@@ -1099,8 +1099,8 @@ Public Sub DrawAllRobs()
   If Not noeyeskin Then
     For a = 1 To MaxRobs
      If rob(a).exist And Not (rob(a).FName = "Base.txt" And hidepred) Then
-       If rob(a).pos.X + r > visibleLeft And rob(a).pos.X - r < visibleRight And _
-          rob(a).pos.Y + r > visibleTop And rob(a).pos.Y - r < visibleBottom Then
+       If rob(a).pos.x + r > visibleLeft And rob(a).pos.x - r < visibleRight And _
+          rob(a).pos.y + r > visibleTop And rob(a).pos.y - r < visibleBottom Then
           DrawRobAim a
        End If
      End If
@@ -1115,8 +1115,8 @@ Public Sub DrawAllRobs()
     For a = 1 To MaxRobs
       If rob(a).exist And Not (rob(a).FName = "Base.txt" And hidepred) Then
          r = rob(a).radius
-         If rob(a).pos.X + r > visibleLeft And rob(a).pos.X - r < visibleRight And _
-            rob(a).pos.Y + r > visibleTop And rob(a).pos.Y - r < visibleBottom Then
+         If rob(a).pos.x + r > visibleLeft And rob(a).pos.x - r < visibleRight And _
+            rob(a).pos.y + r > visibleTop And rob(a).pos.y - r < visibleBottom Then
             DrawMonitor a
          End If
       End If
@@ -1145,8 +1145,8 @@ Public Sub DrawAllTies()
   
   For t = 1 To MaxRobs
     If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
-      If rob(t).pos.X > visibleLeft And rob(t).pos.X < visibleRight And _
-         rob(t).pos.Y > visibleTop And rob(t).pos.Y < visibleBottom Then
+      If rob(t).pos.x > visibleLeft And rob(t).pos.x < visibleRight And _
+         rob(t).pos.y > visibleTop And rob(t).pos.y < visibleBottom Then
          DrawRobTiesCol t, PixelsPerTwip * rob(t).radius * 2, rob(t).radius
       End If
     End If
@@ -1400,7 +1400,7 @@ End If
 For o = 1 To UBound(xObstacle)
 If xObstacle(o).exist Then
 With xObstacle(o)
-    oo = NewObstacle(.pos.X * SimOpts.FieldWidth, .pos.Y * SimOpts.FieldHeight, .Width * SimOpts.FieldWidth, .Height * SimOpts.FieldHeight)
+    oo = NewObstacle(.pos.x * SimOpts.FieldWidth, .pos.y * SimOpts.FieldHeight, .Width * SimOpts.FieldWidth, .Height * SimOpts.FieldHeight)
     Obstacles.Obstacles(oo).color = xObstacle(o).color
     Obstacles.Obstacles(oo).vel = xObstacle(o).vel
 End With
@@ -1574,8 +1574,8 @@ Private Sub loadrobs()
       rob(a).NoChlr = SimOpts.Specie(k).NoChlr
       rob(a).Fixed = SimOpts.Specie(k).Fixed
       If rob(a).Fixed Then rob(a).mem(216) = 1
-      rob(a).pos.X = Random(SimOpts.Specie(k).Poslf * CSng(SimOpts.FieldWidth - 60#), SimOpts.Specie(k).Posrg * CSng(SimOpts.FieldWidth - 60#))
-      rob(a).pos.Y = Random(SimOpts.Specie(k).Postp * CSng(SimOpts.FieldHeight - 60#), SimOpts.Specie(k).Posdn * CSng(SimOpts.FieldHeight - 60#))
+      rob(a).pos.x = Random(SimOpts.Specie(k).Poslf * CSng(SimOpts.FieldWidth - 60#), SimOpts.Specie(k).Posrg * CSng(SimOpts.FieldWidth - 60#))
+      rob(a).pos.y = Random(SimOpts.Specie(k).Postp * CSng(SimOpts.FieldHeight - 60#), SimOpts.Specie(k).Posdn * CSng(SimOpts.FieldHeight - 60#))
       
       rob(a).nrg = SimOpts.Specie(k).Stnrg
       rob(a).body = 1000
@@ -1604,9 +1604,9 @@ Private Sub loadrobs()
       rob(a).VirusImmune = SimOpts.Specie(k).VirusImmune
       rob(a).virusshot = 0
       rob(a).Vtimer = 0
-      rob(a).genenum = CountGenes(rob(a).dna)
+      rob(a).genenum = CountGenes(rob(a).DNA)
       
-      rob(a).DnaLen = DnaLen(rob(a).dna())
+      rob(a).DnaLen = DnaLen(rob(a).DNA())
       rob(a).GenMut = rob(a).DnaLen / GeneticSensitivity 'Botsareus 4/9/2013 automatically apply genetic to inserted robots
       
       rob(a).mem(DnaLenSys) = rob(a).DnaLen
@@ -1629,7 +1629,7 @@ Public Sub cyccaption(ByVal num As Single)
 End Sub
 
 ' which rob has been clicked?
-Private Function whichrob(X As Single, Y As Single) As Integer
+Private Function whichrob(x As Single, y As Single) As Integer
   Dim dist As Double, pist As Double
   Dim t As Integer
   whichrob = 0
@@ -1637,8 +1637,8 @@ Private Function whichrob(X As Single, Y As Single) As Integer
   Dim nd As node
   For t = 1 To MaxRobs
     If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
-      pist = Abs(rob(t).pos.X - X) ^ 2 + Abs(rob(t).pos.Y - Y) ^ 2
-      If Abs(rob(t).pos.X - X) < rob(t).radius And Abs(rob(t).pos.Y - Y) < rob(t).radius And pist < dist And rob(t).exist Then
+      pist = Abs(rob(t).pos.x - x) ^ 2 + Abs(rob(t).pos.y - y) ^ 2
+      If Abs(rob(t).pos.x - x) < rob(t).radius And Abs(rob(t).pos.y - y) < rob(t).radius And pist < dist And rob(t).exist Then
         whichrob = t
         dist = pist
       End If
@@ -1648,7 +1648,7 @@ End Function
 
 ' stuff for clicking, dragging, etc
 ' move+click: drags robot if one selected, else drags screen
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
 'Botsareus 7/2/2014 Added exitsub to awoid bugs
   Dim st As Long
   Dim sl As Long
@@ -1659,21 +1659,21 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
   
   visibleh = Int(Form1.ScaleHeight)
   If Button = 0 Then
-    MouseClickX = X
-    MouseClickY = Y
+    MouseClickX = x
+    MouseClickY = y
   End If
   
   If Button = 1 And Not MDIForm1.insrob And obstaclefocus = 0 And teleporterFocus = 0 And Not MDIForm1.pbOn.Checked Then
     If MouseClicked Then
-      st = ScaleTop + MouseClickY - Y
-      sl = ScaleLeft + MouseClickX - X
+      st = ScaleTop + MouseClickY - y
+      sl = ScaleLeft + MouseClickX - x
       If st < 0 And MDIForm1.ZoomLock.value = 0 Then
         st = 0
-        MouseClickY = Y
+        MouseClickY = y
       End If
       If sl < 0 And MDIForm1.ZoomLock.value = 0 Then
         sl = 0
-        MouseClickX = X
+        MouseClickX = x
       End If
       If st > SimOpts.FieldHeight - visibleh And MDIForm1.ZoomLock.value = 0 Then
         st = SimOpts.FieldHeight - visibleh
@@ -1691,12 +1691,12 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
   End If
   
   If Button = 1 And robfocus > 0 And DraggingBot Then
-    vel = VectorSub(rob(robfocus).pos, VectorSet(X, Y))
-    rob(robfocus).pos = VectorSet(X, Y)
+    vel = VectorSub(rob(robfocus).pos, VectorSet(x, y))
+    rob(robfocus).pos = VectorSet(x, y)
     rob(robfocus).vel = VectorSet(0, 0)
     Dim a As Byte
     For a = 1 To tmprob_c
-        rob(tmppos(a).n).pos = VectorSet(X - tmppos(a).X, Y - tmppos(a).Y)
+        rob(tmppos(a).n).pos = VectorSet(x - tmppos(a).x, y - tmppos(a).y)
         rob(tmppos(a).n).vel = VectorSet(0, 0)
     Next
     If Not Active Then Redraw
@@ -1705,22 +1705,22 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
   
   If Button = 1 And obstaclefocus > 0 Then
   ' Obstacles.Obstacles(obstaclefocus).pos = VectorSet(x - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.x), y - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.y))
-   Obstacles.Obstacles(obstaclefocus).pos = VectorSet(X - (Obstacles.Obstacles(obstaclefocus).Width / 2), Y - (Obstacles.Obstacles(obstaclefocus).Height / 2))
+   Obstacles.Obstacles(obstaclefocus).pos = VectorSet(x - (Obstacles.Obstacles(obstaclefocus).Width / 2), y - (Obstacles.Obstacles(obstaclefocus).Height / 2))
     If Not Active Then Redraw
     Exit Sub
   End If
   
   If Button = 1 And teleporterFocus > 0 Then
   ' Obstacles.Obstacles(obstaclefocus).pos = VectorSet(x - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.x), y - (mousepos.x - Obstacles.Obstacles(obstaclefocus).pos.y))
-   Teleport.Teleporters(teleporterFocus).pos = VectorSet(X - (Teleport.Teleporters(teleporterFocus).Width / 2), Y - (Teleport.Teleporters(teleporterFocus).Height / 2))
+   Teleport.Teleporters(teleporterFocus).pos = VectorSet(x - (Teleport.Teleporters(teleporterFocus).Width / 2), y - (Teleport.Teleporters(teleporterFocus).Height / 2))
     If Not Active Then Redraw
     Exit Sub
   End If
   
   'Botsareus 7/2/2014 Overwrite for PlayerBot mode
   If Button = 1 And MDIForm1.pbOn.Checked Then
-    Mouse_loc.X = X
-    Mouse_loc.Y = Y
+    Mouse_loc.x = x
+    Mouse_loc.y = y
   End If
   
  ' If GetInputState() <> 0 Then DoEvents
@@ -1729,7 +1729,7 @@ End Sub
 ' it seems that there's no simple way to know the mouse status
 ' outside of a Form event. So I've used the event to switch
 ' on and off some global vars
-Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
 If lblSafeMode.Visible Then Exit Sub 'Botsareus 5/13/2013 Safemode restrictions
   
   MouseClicked = False
@@ -1738,8 +1738,8 @@ If lblSafeMode.Visible Then Exit Sub 'Botsareus 5/13/2013 Safemode restrictions
   
   If MDIForm1.pbOn.Checked And Not MDIForm1.insrob Then
     MousePointer = vbNormal
-    Mouse_loc.X = 0
-    Mouse_loc.Y = 0
+    Mouse_loc.x = 0
+    Mouse_loc.y = 0
   End If
 End Sub
 
@@ -1832,8 +1832,8 @@ tmprob_c = 0
         tmprob_c = tmprob_c + 1
         If tmprob_c < 51 Then
             tmppos(tmprob_c).n = a
-            tmppos(tmprob_c).X = rob(robfocus).pos.X - rob(a).pos.X
-            tmppos(tmprob_c).Y = rob(robfocus).pos.Y - rob(a).pos.Y
+            tmppos(tmprob_c).x = rob(robfocus).pos.x - rob(a).pos.x
+            tmppos(tmprob_c).y = rob(robfocus).pos.y - rob(a).pos.y
         Else
             tmprob_c = 50
         End If
@@ -1845,7 +1845,7 @@ End Sub
 ' clicking (well, half-clicking) on a robot selects it
 ' clicking outside can add a robot if we're in robot insertion
 ' mode.
-Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
 If lblSafeMode.Visible Then Exit Sub 'Botsareus 5/13/2013 Safemode restrictions
 
   Dim n As Integer
@@ -1861,15 +1861,15 @@ If lblSafeMode.Visible Then Exit Sub 'Botsareus 5/13/2013 Safemode restrictions
         Form1.visibleh = Form1.visibleh / 1.05
         Form1.ScaleHeight = Form1.visibleh
         Form1.ScaleWidth = Form1.visiblew
-        Form1.ScaleTop = Y - Form1.ScaleHeight / 2
-        Form1.ScaleLeft = X - Form1.ScaleWidth / 2
+        Form1.ScaleTop = y - Form1.ScaleHeight / 2
+        Form1.ScaleLeft = x - Form1.ScaleWidth / 2
       End If
         Form1.Redraw
         DoEvents
      Wend
   End If
     
-  n = whichrob(X, Y)
+  n = whichrob(x, y)
   
     
   'Botsareus 7/2/2014 Multiselect for pb mode
@@ -1890,20 +1890,20 @@ If lblSafeMode.Visible Then Exit Sub 'Botsareus 5/13/2013 Safemode restrictions
   End If
   
   If n = 0 Then
-    teleporterFocus = whichTeleporter(X, Y)
+    teleporterFocus = whichTeleporter(x, y)
     If teleporterFocus <> 0 Then
       'MDIForm1.DeleteTeleporter.Enabled = True
-      mousepos = VectorSet(X, Y)
+      mousepos = VectorSet(x, y)
     Else
      ' MDIForm1.DeleteTeleporter.Enabled = False
     End If
   End If
   
   If n = 0 And teleporterFocus = 0 Then
-    obstaclefocus = whichobstacle(X, Y)
+    obstaclefocus = whichobstacle(x, y)
     If obstaclefocus <> 0 Then
       MDIForm1.DeleteShape.Enabled = True
-      mousepos = VectorSet(X, Y)
+      mousepos = VectorSet(x, y)
     Else
       MDIForm1.DeleteShape.Enabled = False
     End If
@@ -1935,7 +1935,7 @@ If lblSafeMode.Visible Then Exit Sub 'Botsareus 5/13/2013 Safemode restrictions
     'ElseIf Not SimOpts.Specie(k).Native Then
     '   MsgBox ("Sorry, but you can't insert a species which did not originate in this simulation.")
     Else
-      aggiungirob k, X, Y
+      aggiungirob k, x, y
     End If
    End If
   End If
@@ -2051,7 +2051,7 @@ Dim i As Byte
 For i = 1 To NUMGRAPHS
   If Not (Charts(i).graf Is Nothing) Then
    If Charts(i).graf.Visible Then
-   SetWindowPos Charts(i).graf.hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
+   SetWindowPos Charts(i).graf.hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
    End If
   End If
 Next i
@@ -2061,7 +2061,7 @@ Dim i As Byte
 For i = 1 To NUMGRAPHS
   If Not (Charts(i).graf Is Nothing) Then
    If Charts(i).graf.Visible Then
-    SetWindowPos Charts(i).graf.hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
+    SetWindowPos Charts(i).graf.hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
    End If
   End If
 Next i
@@ -2404,7 +2404,7 @@ Private Sub Qpow()
 End Sub
 ' calculates data for the different graph types
 Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/3/2012 use names for graph id mod
-  Dim p As Integer, t As Integer, i As Integer, X As Integer
+  Dim p As Integer, t As Integer, i As Integer, x As Integer
   Dim n As node
   Dim population As Integer
   Dim ListOSubSpecies(500, 10000) As Integer
@@ -2432,7 +2432,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
       With rob(t)
       'If Not .wall And .exist Then
       If .exist Then
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, MUTATIONS_GRAPH) = dati(p, MUTATIONS_GRAPH) + .LastMut + .Mutations
         dati(p, AVGAGE_GRAPH) = dati(p, AVGAGE_GRAPH) + (.age / 100) ' EricL 4/7/2006 Graph age in 100's of cycles
@@ -2525,7 +2525,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
           With rob(t)
           If .exist And Not .Corpse Then
     
-            p = Flex.position(rob(t).FName, nomi)
+            p = Flex.Position(rob(t).FName, nomi)
     
             If .GenMut > 0 Then 'If there is not enough mutations for a graph check, skip it
     
@@ -2539,14 +2539,14 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
                 Dim copyl As Single
                 copyl = 0
     
-                For X = t + 1 To MaxRobs 'search trough all robots and figure out genetic distance for the once that have enough mutations
-                If rob(X).exist And Not rob(X).Corpse And rob(X).FName = .FName And rob(X).GenMut = 0 Then  ' Must exist, have enugh mutations, and be of same species
-                    l = DoGeneticDistance(t, X) * 1000
+                For x = t + 1 To MaxRobs 'search trough all robots and figure out genetic distance for the once that have enough mutations
+                If rob(x).exist And Not rob(x).Corpse And rob(x).FName = .FName And rob(x).GenMut = 0 Then  ' Must exist, have enugh mutations, and be of same species
+                    l = DoGeneticDistance(t, x) * 1000
                     If l > copyl Then copyl = l 'here we store the max genetic distance for a given robot
                 End If
     
-                If X = UBound(rob) Then Exit For
-                Next X
+                If x = UBound(rob) Then Exit For
+                Next x
     
                 If copyl > dati(p, GENETIC_DIST_GRAPH) Then dati(p, GENETIC_DIST_GRAPH) = copyl 'now we write this max distance
                 .OldGD = copyl 'since this robot will not checked for a while, we need to store it's genetic distance to be used later
@@ -2631,7 +2631,7 @@ getout2:
       With rob(t)
      ' If Not .wall And .exist Then
       If .exist Then
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
       End If
       End With
@@ -2643,7 +2643,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
   '    numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, MUTATIONS_GRAPH) = dati(p, MUTATIONS_GRAPH) + .LastMut + .Mutations
       End If
@@ -2661,7 +2661,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
   '      numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, AVGAGE_GRAPH) = dati(p, AVGAGE_GRAPH) + (.age / 100) ' EricL 4/7/2006 Graph age in 100's of cycles
       End If
@@ -2678,7 +2678,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, OFFSPRING_GRAPH) = dati(p, OFFSPRING_GRAPH) + .SonNumber
       End If
@@ -2696,7 +2696,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, ENERGY_GRAPH) = dati(p, ENERGY_GRAPH) + .nrg
       End If
@@ -2714,7 +2714,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, DNALENGTH_GRAPH) = dati(p, DNALENGTH_GRAPH) + .DnaLen
       End If
@@ -2732,7 +2732,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
       '  numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, DNACOND_GRAPH) = dati(p, DNACOND_GRAPH) + .condnum
       End If
@@ -2750,7 +2750,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, MUT_DNALENGTH_GRAPH) = dati(p, MUT_DNALENGTH_GRAPH) + (.LastMut + .Mutations) / .DnaLen * 1000
       End If
@@ -2768,7 +2768,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, ENERGY_SPECIES_GRAPH) = dati(p, ENERGY_SPECIES_GRAPH) + (.nrg + .body * 10) * 0.001
       End If
       End With
@@ -2796,7 +2796,7 @@ getout2:
     For t = 1 To MaxRobs
       With rob(t)
       If .exist Then
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         
         'Look through the subspecies we have seen so far and see if this bot has the same as any of them
         i = 0
@@ -2820,7 +2820,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, AVGCHLR_GRAPH) = dati(p, AVGCHLR_GRAPH) + .chloroplasts
       End If
@@ -2850,7 +2850,7 @@ getout3:
       With rob(t)
       If .exist And Not .Corpse Then
 
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
 
         If .GenMut > 0 Then 'If there is not enough mutations for a graph check, skip it
 
@@ -2864,18 +2864,18 @@ getout3:
             'Dim copyl As Single
             copyl = 0
 
-            For X = t + 1 To MaxRobs 'search trough all robots and figure out genetic distance for the once that have enough mutations
-            If rob(X).exist And Not rob(X).Corpse And rob(X).FName = .FName And rob(X).GenMut = 0 Then  ' Must exist, have enugh mutations, and be of same species
-                l = DoGeneticDistance(t, X) * 1000
+            For x = t + 1 To MaxRobs 'search trough all robots and figure out genetic distance for the once that have enough mutations
+            If rob(x).exist And Not rob(x).Corpse And rob(x).FName = .FName And rob(x).GenMut = 0 Then  ' Must exist, have enugh mutations, and be of same species
+                l = DoGeneticDistance(t, x) * 1000
                 If l > copyl Then copyl = l 'here we store the max genetic distance for a given robot
 
                 'update the graph label
-                GraphLab.Caption = "Updating Graph: " & Int(t / MaxRobs * 100) & "." & Int(X / MaxRobs * 99) & "%"
+                GraphLab.Caption = "Updating Graph: " & Int(t / MaxRobs * 100) & "." & Int(x / MaxRobs * 99) & "%"
                 DoEvents
             End If
 
-            If X = UBound(rob) Then Exit For
-            Next X
+            If x = UBound(rob) Then Exit For
+            Next x
 
             If copyl > dati(p, GENETIC_DIST_GRAPH) Then dati(p, GENETIC_DIST_GRAPH) = copyl 'now we write this max distance
             .OldGD = copyl 'since this robot will not checked for a while, we need to store it's genetic distance to be used later
@@ -2903,7 +2903,7 @@ getout3:
     For t = 1 To MaxRobs
       With rob(t)
       If .exist And Not .Corpse Then
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
            'Botsareus 8/3/2012 Generational Distance Graph
            ll = FindGenerationalDistance(t)
            If ll > dati(p, GENERATION_DIST_GRAPH) Then dati(p, GENERATION_DIST_GRAPH) = ll
@@ -2925,13 +2925,13 @@ getout3:
     For t = 1 To MaxRobs
       With rob(t)
       If .exist And Not .Corpse Then
-        p = Flex.position(rob(t).FName, nomi)
-            For X = t + 1 To MaxRobs
-            If rob(X).exist And Not rob(X).Corpse And rob(X).FName = .FName Then  ' Must exist, and be of same species
-                l = DoGeneticDistance(t, X) * 1000
+        p = Flex.Position(rob(t).FName, nomi)
+            For x = t + 1 To MaxRobs
+            If rob(x).exist And Not rob(x).Corpse And rob(x).FName = .FName Then  ' Must exist, and be of same species
+                l = DoGeneticDistance(t, x) * 1000
                 If l > dati(p, GENETIC_SIMPLE_GRAPH) Then dati(p, GENETIC_SIMPLE_GRAPH) = l 'here we store the max generational distance for a given robot
             End If
-            Next X
+            Next x
         GraphLab.Caption = "Updating Graph: " & Int(t / MaxRobs * 100) & "%"
         DoEvents
       End If
@@ -3071,16 +3071,16 @@ Function score(ByVal r As Integer, ByVal reclev As Integer, maxrec As Integer, t
         If tipo = 4 And reclev > p_reclev Then p_reclev = reclev
         If tipo = 1 Then rob(t).highlight = True
         If tipo = 3 Then
-          dx = (rob(r).pos.X - rob(t).pos.X) / 2
-          dy = (rob(r).pos.Y - rob(t).pos.Y) / 2
+          dx = (rob(r).pos.x - rob(t).pos.x) / 2
+          dy = (rob(r).pos.y - rob(t).pos.y) / 2
           cr = RGB(128, 128, 128)
           ct = vbWhite
           If rob(r).AbsNum > rob(t).AbsNum Then
             cr = vbWhite
             ct = RGB(128, 128, 128)
           End If
-          Line (rob(t).pos.X, rob(t).pos.Y)-Step(dx, dy), ct
-          Line -(rob(r).pos.X, rob(r).pos.Y), cr
+          Line (rob(t).pos.x, rob(t).pos.y)-Step(dx, dy), ct
+          Line -(rob(r).pos.x, rob(r).pos.y), cr
         End If
       End If
     End If
