@@ -1,6 +1,5 @@
 Attribute VB_Name = "Vegs"
 Option Explicit
-
 '
 '  V E G E T A B L E S   M A N A G E M E N T
 '
@@ -22,7 +21,6 @@ Public SunChange As Byte '0 1 2 position + 10 20 range
 
 ' adds vegetables in random positions
 Public Sub VegsRepopulate()
-  Dim n As node
   Dim r As Integer
   Dim Rx As Long
   Dim Ry As Long
@@ -66,15 +64,13 @@ If Int(Rnd * 2000) = 0 Then Sposition = Int(Rnd * 3)
 SunChange = Sposition + Srange * 10
 End If
   
-  Dim n As node
   Dim t As Integer
   Dim tok As Single
   Dim depth As Long
   Dim daymod As Single
-  Dim Energy As Single
-  Dim body As Single
   Dim FeedThisCycle As Boolean
   Dim OverrideDayNight As Boolean
+  
   
   Dim ScreenArea As Double
   Dim TotalRobotArea As Single
@@ -83,9 +79,6 @@ End If
   Dim AddEnergyRate As Single
   Dim SubtractEnergyRate As Single
   Dim acttok As Single
-    
-  Const Constant As Single = 0.00000005859375
-  Dim temp As Single
   
   FeedThisCycle = SimOpts.Daytime 'Default is to feed if it is daytime, not feed if night
   OverrideDayNight = False
@@ -190,8 +183,6 @@ End If
     End If
   Next t
   
-  ScreenArea = ScreenArea * 0.85 'Botsareus 1/3/2014 radial correction
-  
   If ScreenArea < 1 Then ScreenArea = 1
   
   LightAval = TotalRobotArea / ScreenArea 'Panda 8/14/2013 Figure out AreaInverted a.k.a. available light
@@ -223,18 +214,20 @@ End If
     
  
   For t = 1 To MaxRobs
-    If rob(t).nrg > 0 And rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
+  With rob(t)
+    If .nrg > 0 And .exist And Not (.FName = "Base.txt" And hidepred) Then
     
     'Botsareus 8/16/2014 Allow robots to share chloroplasts again
-    If rob(t).Chlr_Share_Delay > 0 Then
-        rob(t).Chlr_Share_Delay = rob(t).Chlr_Share_Delay - 1
-    End If
+      If .Chlr_Share_Delay > 0 Then
+        .Chlr_Share_Delay = .Chlr_Share_Delay - 1
+      End If
     
+      acttok = 0
         
-    If (rob(t).pos.X < sunstart2 Or rob(t).pos.X > sunstop2) And (rob(t).pos.X < sunstart Or rob(t).pos.X > sunstop) Then GoTo nextrob
+      If (.pos.x < sunstart2 Or .pos.x > sunstop2) And (.pos.x < sunstart Or .pos.x > sunstop) Then GoTo nextrob
 
       If SimOpts.Pondmode Then
-        depth = (rob(t).pos.Y / 2000) + 1
+        depth = (.pos.y / 2000) + 1
         If depth < 1 Then depth = 1
         tok = (SimOpts.LightIntensity / depth ^ SimOpts.Gradient) * daymod 'Botsareus 3/26/2013 No longer add one, robots get fed more accuratly
       Else
@@ -248,42 +241,30 @@ End If
       tok = tok / 3.5 'Botsareus 2/25/2014 A little mod for PhinotPi
       
       'Panda 8/14/2013 New chloroplast codez
-      ChloroplastCorrection = rob(t).chloroplasts / 16000
-      AddEnergyRate = (AreaCorrection * ChloroplastCorrection) ^ 0.8 * tok * 1.25
-      SubtractEnergyRate = (rob(t).chloroplasts / 32000) ^ 2 * tok
+      ChloroplastCorrection = .chloroplasts / 16000
+      AddEnergyRate = (AreaCorrection * ChloroplastCorrection) * 1.25
+      SubtractEnergyRate = (.chloroplasts / 32000) ^ 2
           
-      acttok = AddEnergyRate - SubtractEnergyRate
+      acttok = (AddEnergyRate - SubtractEnergyRate) * tok
+      .mem(218) = 1 'Botsareus 8/16/2014 Now it is time view the sun
       
-      rob(t).mem(218) = 1 'Botsareus 8/16/2014 Now it is time view the sun
-      
-      Select Case SimOpts.VegFeedingMethod
-      Case 0 'per veg
-        Energy = acttok * (1 - SimOpts.VegFeedingToBody)
-        body = (acttok * SimOpts.VegFeedingToBody) / 10
-      Case 1 'per kilobody
-        Energy = acttok * (1 - SimOpts.VegFeedingToBody) * rob(t).body / 1000
-        body = (acttok * (SimOpts.VegFeedingToBody) * rob(t).body / 1000) / 10
-      Case 2 'quadratically based on body.  Close to type 0 near 1000 body points, but quickly diverges at about 5K body points
-        acttok = acttok * ((rob(t).body ^ 2 * Constant) + (1 - Constant * 1000 * 1000))
-        Energy = acttok * (1 - SimOpts.VegFeedingToBody)
-        body = (acttok * SimOpts.VegFeedingToBody) / 10
-      End Select
-      rob(t).nrg = rob(t).nrg + Energy
-      rob(t).body = rob(t).body + body
-      
-      If rob(t).nrg > 32000 Then
-     '   Energy = Energy - (rob(t).nrg - 32000)
-        rob(t).nrg = 32000
-      End If
-      If rob(t).body > 32000 Then
-    '    body = body - (rob(t).body - 32000)
-        rob(t).body = 32000
-      End If
-      rob(t).radius = FindRadius(rob(t).body)
-      
-     ' EnergyAddedPerCycle = EnergyAddedPerCycle + energy + (body * 10)
-    End If
 nextrob:
+      
+      acttok = acttok - CSng(.age) * CSng(.chloroplasts) / 4500000000#
+      
+      .nrg = .nrg + acttok * (1 - SimOpts.VegFeedingToBody)
+      .body = .body + (acttok * SimOpts.VegFeedingToBody) / 10
+      
+      If .nrg > 32000 Then
+        .nrg = 32000
+      End If
+      If .body > 32000 Then
+        .body = 32000
+      End If
+      .radius = FindRadius(t)
+    
+    End If
+  End With
   Next t
 getout:
 End Sub
@@ -311,38 +292,3 @@ Public Sub feedveg2(t As Integer) 'gives veg an additional meal based on waste '
    
   End With
 End Sub
-
-'' kill vegetables which are too distant from any robot
-''currently broken, so it's commented out
-'Public Sub KillDistVegs(mdist As Long)
-'  Dim n As node
-'  Dim t As Integer
-'  Dim k As Integer
-'  Dim mdist2 As Long
-'  Dim dist2 As Long
-'  Dim currdist2 As Long
-'  mdist2 = mdist ^ 2
-'  For t = 1 To MaxRobs
-''    If rob(t).Veg And rob(t).Exist Then
-''      currdist2 = 10 ^ 8
-''      While Abs(nn.xpos - n.xpos) < mdist And Not nn Is rlist.last
-''        k = nn.robn
-''        If rob(k).Exist And Not rob(k).Veg Then
-''          dist2 = (rob(k).pos.x - rob(t).pos.x) ^ 2 + (rob(k).pos.y - rob(t).pos.y) ^ 2
-''          If dist2 < currdist2 Then currdist2 = dist2
-''        End If
-''        Set nn = rlist.nextorder(nn)
-''      Wend
-''      Set nn = rlist.prevorder(n)
-''      While Abs(nn.xpos - n.xpos) < mdist And Not nn Is rlist.head
-''        k = nn.robn
-''        If Not rob(k).Veg Then
-''          dist2 = (rob(k).pos.x - rob(t).pos.x) ^ 2 + (rob(k).pos.y - rob(t).pos.y) ^ 2
-''          If dist2 < currdist2 Then currdist2 = dist2
-''        End If
-''        Set nn = rlist.prevorder(nn)
-''      Wend
-''      If currdist2 > mdist2 Then KillRobot (t)
-''    End If
-'  Next t
-'End Sub

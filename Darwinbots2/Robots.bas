@@ -169,8 +169,8 @@ Private Type ancestorType
 End Type
 
 Private Type delgenerestore 'Botsareus 9/16/2014 A new bug fix from Billy
-Position As Integer
-DNA() As block
+position As Integer
+dna() As block
 End Type
 
 ' robot structure
@@ -214,6 +214,7 @@ Private Type robot
   occurr(20) As Integer     ' array with the ref* values
   nrg As Single             ' energy
   onrg As Single            ' old energy
+
   
   chloroplasts As Single    'Panda 8/11/2013 number of chloroplasts
   
@@ -259,7 +260,7 @@ Private Type robot
   ' virtual machine
   epimem(14) As Integer
   mem(1000) As Integer      ' memory array
-  DNA() As block            ' program array
+  dna() As block            ' program array
   
   lastopp As Long           ' Index of last object in the focus eye.  Could be a bot or shape or something else.
   lastopptype As Integer    ' Indicates the type of lastopp.
@@ -526,19 +527,19 @@ Dim ndna1() As block3
 Dim ndna2() As block3
 Dim length1 As Integer
 Dim length2 As Integer
-length1 = UBound(rob(r1).DNA)
-length2 = UBound(rob(r2).DNA)
+length1 = UBound(rob(r1).dna)
+length2 = UBound(rob(r2).dna)
 ReDim ndna1(length1)
 ReDim ndna2(length2)
 
 'map to nucli
 
 'if step is 1 then normal nucli
-For t = 0 To UBound(rob(r1).DNA)
- ndna1(t).nucli = DNAtoInt(rob(r1).DNA(t).tipo, rob(r1).DNA(t).value)
+For t = 0 To UBound(rob(r1).dna)
+ ndna1(t).nucli = DNAtoInt(rob(r1).dna(t).tipo, rob(r1).dna(t).value)
 Next
-For t = 0 To UBound(rob(r2).DNA)
- ndna2(t).nucli = DNAtoInt(rob(r2).DNA(t).tipo, rob(r2).DNA(t).value)
+For t = 0 To UBound(rob(r2).dna)
+ ndna2(t).nucli = DNAtoInt(rob(r2).dna(t).tipo, rob(r2).dna(t).value)
 Next
       
 'Step3 Figure out genetic distance
@@ -701,13 +702,28 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Public Function FindRadius(ByVal bodypoints As Single) As Single
+Public Function FindRadius(ByVal n As Integer, Optional ByVal mult As Single = 1) As Single
+
+  'Botsareus 9/30/2014 Redo of find radius to make it faster
+  Dim bodypoints As Single
+  Dim chlr As Single
+  
+  If mult = -1 Then
+    bodypoints = 32000
+    chlr = 0
+  Else
+    bodypoints = rob(n).body * mult
+    chlr = rob(n).chloroplasts * mult
+  End If
+  
   If bodypoints < 1 Then bodypoints = 1
   If SimOpts.FixedBotRadii Then
     FindRadius = half
   Else
     ' EricL 10/20/2007 Added log(bodypoints) to increase the size variation in bots.
     FindRadius = (Log(bodypoints) * bodypoints * CubicTwipPerBody * 3 * 0.25 / PI) ^ (1 / 3)
+    'Botsareus 9/30/2014 added a rule to count chloroplasts in robot size
+    FindRadius = FindRadius + (415 - FindRadius) * chlr / 32000
     If FindRadius < 1 Then FindRadius = 1
   End If
 End Function
@@ -744,7 +760,7 @@ Public Function absy(aim As Single, ByVal up As Integer, ByVal dn As Integer, By
   absy = -Sin(aim) * upTotal + Cos(aim) * sxTotal
 End Function
 
-Private Function SetAimFunc(t As Integer) As Single 'Botsareus 6/29/2013 Turn costs and ma more accurate
+Private Function SetAimFunc(t As Integer) As Single  'Botsareus 6/29/2013 Turn costs and ma more accurate
   Dim diff As Single
   Dim diff2 As Single
   Dim newaim As Single
@@ -904,7 +920,7 @@ getout:
   End With
 End Sub
 
-Private Sub makeslime(n As Integer)
+Private Sub makeslime(ByVal n As Integer)
 Dim oldslime As Single
 Dim Cost As Single
 Dim Delta As Single
@@ -947,8 +963,10 @@ Dim slimeNrgConvRate As Single
     
 getout:
     'Botsareus 3/14/2014 Disqualify
-    If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 2 Then dreason .FName, .tag, "making slime"
-    If Not SimOpts.F1 And .dq = 1 And Disqualify = 2 Then rob(n).Dead = True 'safe kill robot
+    If Not .Veg Then
+        If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 2 Then dreason .FName, .tag, "making slime"
+        If Not SimOpts.F1 And .dq = 1 And Disqualify = 2 Then rob(n).Dead = True 'safe kill robot
+    End If
   End With
 End Sub
 
@@ -1013,8 +1031,8 @@ Public Function genelength(n As Integer, p As Integer) As Long
   'measures the length of gene p in robot n
   Dim pos As Long
  
-  pos = genepos(rob(n).DNA(), p)
-  genelength = GeneEnd(rob(n).DNA(), pos) - pos + 1
+  pos = genepos(rob(n).dna(), p)
+  genelength = GeneEnd(rob(n).dna(), pos) - pos + 1
   
 End Function
 
@@ -1022,6 +1040,7 @@ Private Sub BotDNAManipulation(n As Integer)
 Dim Length As Long
 
   With rob(n)
+  
   
   'count down
   If .Vtimer > 1 Then
@@ -1031,19 +1050,29 @@ Dim Length As Long
   
   'Viruses
   If .mem(mkvirus) > 0 And .Vtimer = 0 Then
+  
+   'Botsareus 9/30/2014 Chloroplasts and viruses do not mix very well anymore
+   If .chloroplasts = 0 Then
    
-    'make the virus
-    If MakeVirus(n, .mem(mkvirus)) Then
-       Length = genelength(n, .mem(mkvirus)) * 2
-       rob(n).nrg = rob(n).nrg - Length / 2 * SimOpts.Costs(DNACOPYCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 7/20/2013 Creating a virus costs a copy cost
-       If Length < 32000 Then
-         .Vtimer = Length
-       Else
-         .Vtimer = 32000
-       End If
+        'make the virus
+        If MakeVirus(n, .mem(mkvirus)) Then
+           Length = genelength(n, .mem(mkvirus)) * 2
+           rob(n).nrg = rob(n).nrg - Length / 2 * SimOpts.Costs(DNACOPYCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 7/20/2013 Creating a virus costs a copy cost
+           If Length < 32000 Then
+             .Vtimer = Length
+           Else
+             .Vtimer = 32000
+           End If
+        Else
+          .Vtimer = 0
+          .virusshot = 0
+        End If
+    
     Else
-      .Vtimer = 0
-      .virusshot = 0
+    
+        .chloroplasts = 0
+        .radius = FindRadius(n)
+    
     End If
     
   End If
@@ -1176,21 +1205,25 @@ Private Sub Shooting(ByVal n As Integer)
 End Sub
 
 Private Sub ManageChlr(ByVal n As Integer) 'Panda 8/15/2013 The new chloroplast function
-    If rob(n).mem(mkchlr) > 0 Or rob(n).mem(rmchlr) > 0 Then ChangeChlr n
+With rob(n)
+
+    If .mem(mkchlr) > 0 Or .mem(rmchlr) > 0 Then ChangeChlr n
     
-    rob(n).chloroplasts = rob(n).chloroplasts - 0.05 'From Panda 8/22/2014 Robots slowly lose chloroplasts
+    .chloroplasts = .chloroplasts - 0.5 / (100 ^ (.chloroplasts / 16000)) 'Redo from Botsareus robots with less chloroplasts lose chloroplasts much faster
     
-    If rob(n).chloroplasts > 32000 Then rob(n).chloroplasts = 32000
-    If rob(n).chloroplasts < 0 Then rob(n).chloroplasts = 0 'Panda 9/5/2013 Bug fix
+    If .chloroplasts > 32000 Then .chloroplasts = 32000
+    If .chloroplasts < 0 Then .chloroplasts = 0 'Panda 9/5/2013 Bug fix
     
-    rob(n).mem(chlr) = rob(n).chloroplasts
+    .mem(chlr) = .chloroplasts
     
-    rob(n).mem(light) = 32000 - (LightAval * 32000) 'Botsareus 8/24/2013 Tells the robot how much light is aval. (I want this here because it is chloroplast related)
+    .mem(light) = 32000 - (LightAval * 32000) 'Botsareus 8/24/2013 Tells the robot how much light is aval. (I want this here because it is chloroplast related)
     
+    .radius = FindRadius(n)
+End With
 End Sub
 
 
-Private Sub ChangeChlr(t As Integer) 'Panda 8/15/2013 change the number of chloroplasts
+Private Sub ChangeChlr(t As Integer)  'Panda 8/15/2013 change the number of chloroplasts
 With rob(t)
  
   Dim tmpchlr As Single 'Botsareus 8/24/2013 used to charge energy for adding chloroplasts
@@ -1219,25 +1252,23 @@ End With
 End Sub
 
 Private Sub ManageBody(ByVal n As Integer)
-
+    
   'body management
   rob(n).obody = rob(n).body      'replaces routine above
-    
+        
   If rob(n).mem(strbody) > 0 Then storebody n
   If rob(n).mem(fdbody) > 0 Then feedbody n
   
   If rob(n).body > 32000 Then rob(n).body = 32000
   If rob(n).body < 0 Then rob(n).body = 0   'Ericl 4/6/2006 Overflow protection.
   rob(n).mem(body) = CInt(rob(n).body)
-  
-  'rob(n).radius = FindRadius(rob(n).body)
-  
+    
 End Sub
 
 Private Sub Shock(ByVal n As Integer)
 
-  'shock code:
-  'later make the shock threshold based on body and age
+'This code here forces a robot to die instantly from getting an overload based on energy
+
   If Not rob(n).Veg And rob(n).nrg > 3000 Then
     Dim temp As Double
     temp = rob(n).onrg - rob(n).nrg
@@ -1245,11 +1276,13 @@ Private Sub Shock(ByVal n As Integer)
       rob(n).nrg = 0
       rob(n).body = rob(n).body + (rob(n).nrg / 10)
       If rob(n).body > 32000 Then rob(n).body = 32000
-      rob(n).radius = FindRadius(rob(n).body)
+      rob(n).radius = FindRadius(n)
     End If
   End If
 
 End Sub
+
+
 
 Private Sub ManageDeath(ByVal n As Integer)
   Dim i As Integer
@@ -1477,9 +1510,9 @@ Public Sub UpdateBots()
     If TmpOpts.Tides = 0 Then
         BouyancyScaling = 1
     Else
-        BouyancyScaling = (1 + Sin((SimOpts.TotRunCycle Mod TmpOpts.Tides) / SimOpts.Tides * PI * 2 + PI / 2)) / 2
+        BouyancyScaling = (1 + Sin(((SimOpts.TotRunCycle + TmpOpts.TidesOf) Mod TmpOpts.Tides) / SimOpts.Tides * PI * 2)) / 2
         BouyancyScaling = Sqr(BouyancyScaling)
-        SimOpts.Ygravity = 0.01 + (1 - BouyancyScaling) * 2
+        SimOpts.Ygravity = (1 - BouyancyScaling) * 4
         SimOpts.PhysBrown = IIf(BouyancyScaling > 0.8, 10, 0)
     End If
   
@@ -1497,7 +1530,6 @@ Public Sub UpdateBots()
       If Not rob(t).Corpse And Not rob(t).DisableDNA Then TieTorque t 'EricL 4/21/2006 Handles tie angles
       If Not rob(t).Fixed Then NetForces t 'calculate forces on all robots
       BucketsCollision t
-      'Colls2 t
       If rob(t).ImpulseStatic > 0 Then
         staticV = VectorScalar(VectorUnit(rob(t).ImpulseInd), rob(t).ImpulseStatic)
         If VectorMagnitudeSquare(staticV) > VectorMagnitudeSquare(rob(t).ImpulseInd) Then
@@ -1649,7 +1681,7 @@ Private Sub storebody(t As Integer)
   rob(t).nrg = rob(t).nrg - rob(t).mem(313)
   rob(t).body = rob(t).body + rob(t).mem(313) / 10
   If rob(t).body > 32000 Then rob(t).body = 32000
-  rob(t).radius = FindRadius(rob(t).body)
+  rob(t).radius = FindRadius(t)
   rob(t).mem(313) = 0
 End Sub
 
@@ -1658,7 +1690,7 @@ Private Sub feedbody(t As Integer)
   rob(t).nrg = rob(t).nrg + rob(t).mem(fdbody)
   rob(t).body = rob(t).body - CSng(rob(t).mem(fdbody)) / 10#
   If rob(t).nrg > 32000 Then rob(t).nrg = 32000
-  rob(t).radius = FindRadius(rob(t).body)
+  rob(t).radius = FindRadius(t)
   rob(t).mem(fdbody) = 0
 End Sub
 
@@ -1836,6 +1868,7 @@ Public Sub sharechloroplasts(t As Integer, k As Integer) 'Panda 8/31/2013 code t
     Else
       rob(.Ties(k).pnt).chloroplasts = 32000
     End If
+    
   End With
 End Sub
 
@@ -2046,6 +2079,9 @@ End Sub
 ' reanalizes the resulting dna (usedvars, condlist, and so on)
 ' ties parent and son, and the miracle of birth is accomplished
 Public Sub Reproduce(n As Integer, per As Integer)
+
+If globalreprodisable Then Exit Sub 'Botsareus 9/30/2014 Out of memory prevention
+
 If reprofix Then If per < 3 Then rob(n).Dead = True 'Botsareus 4/27/2013 kill 8/26/2014 greedy robots
 
 If rob(n).body < 5 Then Exit Sub 'Botsareus 3/27/2014 An attempt to prevent 'robot bursts'
@@ -2080,7 +2116,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
 
   per = per Mod 100 ' per should never be <=0 as this is checked in ManageReproduction()
   If per <= 0 Then GoTo getout
-  sondist = FindRadius(rob(n).body * (per / 100)) + FindRadius(rob(n).body * ((100 - per) / 100))
+  sondist = FindRadius(n, (per / 100)) + FindRadius(n, ((100 - per) / 100))
   
   nnrg = (rob(n).nrg / 100#) * CSng(per)
   nbody = (rob(n).body / 100#) * CSng(per)
@@ -2099,9 +2135,9 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       
       SimOpts.TotBorn = SimOpts.TotBorn + 1
       If rob(n).Veg Then totvegs = totvegs + 1
-      ReDim rob(nuovo).DNA(UBound(rob(n).DNA))
-      For t = 1 To UBound(rob(nuovo).DNA)
-        rob(nuovo).DNA(t) = rob(n).DNA(t)
+      ReDim rob(nuovo).dna(UBound(rob(n).dna))
+      For t = 1 To UBound(rob(nuovo).dna)
+        rob(nuovo).dna(t) = rob(n).dna(t)
       Next t
       
       rob(nuovo).delgenes = rob(n).delgenes
@@ -2158,12 +2194,12 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       rob(n).Waste = rob(n).Waste - nwaste
       rob(n).Pwaste = rob(n).Pwaste - npwaste
       rob(n).body = rob(n).body - nbody
-      rob(n).radius = FindRadius(rob(n).body)
+      rob(n).radius = FindRadius(n)
       rob(n).chloroplasts = rob(n).chloroplasts - nchloroplasts 'Panda 8/23/2013 Distribute the chloroplasts
       
       rob(nuovo).chloroplasts = nchloroplasts 'Panda 8/23/2013 Distribute the chloroplasts
       rob(nuovo).body = nbody
-      rob(nuovo).radius = FindRadius(nbody)
+      rob(nuovo).radius = FindRadius(nuovo)
       rob(nuovo).Waste = nwaste
       rob(nuovo).Pwaste = npwaste
       rob(n).mem(Energy) = CInt(rob(n).nrg)
@@ -2314,8 +2350,8 @@ skip:
       End If
       
       makeoccurrlist nuovo
-      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())
-      rob(nuovo).genenum = CountGenes(rob(nuovo).DNA())
+      rob(nuovo).DnaLen = DnaLen(rob(nuovo).dna())
+      rob(nuovo).genenum = CountGenes(rob(nuovo).dna())
       rob(nuovo).mem(DnaLenSys) = rob(nuovo).DnaLen
       rob(nuovo).mem(GenesSys) = rob(nuovo).genenum
 
@@ -2357,6 +2393,9 @@ End Sub
 
 ' New Sexual Reproduction routine from EricL Jan 2008  -Botsareus 4/2/2013 Sexrepro fix
 Public Function SexReproduce(female As Integer)
+
+If globalreprodisable Then Exit Function 'Botsareus 9/30/2014 Out of memory prevention
+
 If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).Dead = True 'Botsareus 4/27/2013 kill 8/26/2014 greedy robots
 
 If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to prevent 'robot bursts'
@@ -2401,7 +2440,7 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
 
   per = per Mod 100 ' per should never be <=0 as this is checked in ManageReproduction()
   If per <= 0 Then Exit Function ' Can't give 100% or 0% of resources to offspring
-  sondist = FindRadius(rob(female).body * (per / 100)) + FindRadius(rob(female).body * ((100 - per) / 100))
+  sondist = FindRadius(female, (per / 100)) + FindRadius(female, ((100 - per) / 100))
   
   nnrg = (rob(female).nrg / 100#) * CSng(per)
   nbody = (rob(female).body / 100#) * CSng(per)
@@ -2430,10 +2469,10 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       Dim dna1() As block2
       Dim dna2() As block2
 
-      ReDim dna1(UBound(rob(female).DNA))
+      ReDim dna1(UBound(rob(female).dna))
       For t = 0 To UBound(dna1)
-       dna1(t).tipo = rob(female).DNA(t).tipo
-       dna1(t).value = rob(female).DNA(t).value
+       dna1(t).tipo = rob(female).dna(t).tipo
+       dna1(t).value = rob(female).dna(t).value
       Next
       
       ReDim dna2(UBound(rob(female).spermDNA))
@@ -2539,15 +2578,15 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
           
       'Step4 after robot is created store the dna
       
-      rob(nuovo).DNA = Outdna
+      rob(nuovo).dna = Outdna
           
-      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())     ' Set the DNA length of the offspring
+      rob(nuovo).DnaLen = DnaLen(rob(nuovo).dna())     ' Set the DNA length of the offspring
 
       'Bugfix actual length = virtual length
-      ReDim Preserve rob(nuovo).DNA(rob(nuovo).DnaLen)
+      ReDim Preserve rob(nuovo).dna(rob(nuovo).DnaLen)
       
       
-      rob(nuovo).genenum = CountGenes(rob(nuovo).DNA())
+      rob(nuovo).genenum = CountGenes(rob(nuovo).dna())
       rob(nuovo).Mutables = rob(female).Mutables
       rob(nuovo).Mutations = rob(female).Mutations
       rob(nuovo).LastMut = 0
@@ -2601,12 +2640,12 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       rob(female).Waste = rob(female).Waste - nwaste
       rob(female).Pwaste = rob(female).Pwaste - npwaste
       rob(female).body = rob(female).body - nbody
-      rob(female).radius = FindRadius(rob(female).body)
+      rob(female).radius = FindRadius(female)
       rob(female).chloroplasts = rob(female).chloroplasts - nchloroplasts 'Panda 8/23/2013 Distribute the chloroplasts
       
       rob(nuovo).chloroplasts = nchloroplasts 'Botsareus 8/24/2013 Distribute the chloroplasts
       rob(nuovo).body = nbody
-      rob(nuovo).radius = FindRadius(nbody)
+      rob(nuovo).radius = FindRadius(nuovo)
       rob(nuovo).Waste = nwaste
       rob(nuovo).Pwaste = npwaste
       rob(female).mem(Energy) = CInt(rob(female).nrg)
@@ -2743,8 +2782,8 @@ skip:
       End If
         
       makeoccurrlist nuovo
-      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())
-      rob(nuovo).genenum = CountGenes(rob(nuovo).DNA())
+      rob(nuovo).DnaLen = DnaLen(rob(nuovo).dna())
+      rob(nuovo).genenum = CountGenes(rob(nuovo).dna())
       rob(nuovo).mem(DnaLenSys) = rob(nuovo).DnaLen
       rob(nuovo).mem(GenesSys) = rob(nuovo).genenum
             
@@ -2958,7 +2997,7 @@ End If
   ReDim rob(n).spermDNA(0)
   '
   ReDim rob(n).delgenes(0)
-  ReDim rob(n).delgenes(0).DNA(0)
+  ReDim rob(n).delgenes(0).dna(0)
   '
   
   If n = MaxRobs Then

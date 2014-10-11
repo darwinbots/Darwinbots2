@@ -244,7 +244,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As File
+  Dim robotFile As file
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -447,7 +447,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As File
+  Dim fileToDelete As file
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -662,7 +662,7 @@ Public Sub SaveSimulation(path As String)
       Put #1, , SimOpts.Specie(k).Veg
     Next k
     
-    Put #1, , SimOpts.VegFeedingMethod
+    Put #1, , CInt(0)
     Put #1, , SimOpts.VegFeedingToBody
     Put #1, , SimOpts.CoefficientStatic
     Put #1, , SimOpts.CoefficientKinetic
@@ -841,6 +841,7 @@ bodyfix = 32100
 chseedstartnew = True
 chseedloadsim = True
 GraphUp = False
+HideDB = False
 MDIForm1.MainDir = App.path
 UseSafeMode = False
 intFindBestV2 = 100
@@ -968,6 +969,7 @@ If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
       If Not EOF(1) Then Input #1, y_res_other_veg
       '
       If Not EOF(1) Then Input #1, GraphUp
+      If Not EOF(1) Then Input #1, HideDB
     Close #1
 End If
 
@@ -1045,6 +1047,7 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
   Dim t As Integer
   Dim s As Single 'EricL 4/1/2006 Use this to read in single values
   Dim tempbool As Boolean
+  Dim tempint As Integer
   Dim temp As String
   Dim s2 As String
   
@@ -1205,7 +1208,7 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
       If Not EOF(1) Then Get #1, , SimOpts.Specie(k).Veg
     Next k
     
-    If Not EOF(1) Then Get #1, , SimOpts.VegFeedingMethod
+    If Not EOF(1) Then Get #1, , tempint
     If Not EOF(1) Then Get #1, , SimOpts.VegFeedingToBody
     
     'New for 2.4
@@ -1531,8 +1534,8 @@ Public Sub LoadRobot(fnum As Integer, ByVal n As Integer)
     insertsysvars n
     ScanUsedVars n
     makeoccurrlist n
-    rob(n).DnaLen = DnaLen(rob(n).DNA())
-    rob(n).genenum = CountGenes(rob(n).DNA())
+    rob(n).DnaLen = DnaLen(rob(n).dna())
+    rob(n).genenum = CountGenes(rob(n).dna())
     rob(n).mem(DnaLenSys) = rob(n).DnaLen
     rob(n).mem(GenesSys) = rob(n).genenum
    ' UpdateBotBucket n
@@ -1608,16 +1611,16 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     
     ' macchina virtuale
     Get #n, , .mem()       ' memoria dati
-    Get #n, , k: ReDim .DNA(k)
+    Get #n, , k: ReDim .dna(k)
     
     For t = 1 To k
-      Get #n, , .DNA(t).tipo
-      Get #n, , .DNA(t).value
+      Get #n, , .dna(t).tipo
+      Get #n, , .dna(t).value
     Next t
     
     'Force an end base pair to protect against DNA corruption
-    .DNA(k).tipo = 10
-    .DNA(k).value = 1
+    .dna(k).tipo = 10
+    .dna(k).value = 1
         
         
     'EricL Set reasonable default values to protect against corrupted sims that don't read these values
@@ -1645,7 +1648,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     Get #n, , .color
     
     'new stuff using FileContinue conditions for backward and forward compatability
-    If FileContinue(n) Then Get #n, , .body: .radius = FindRadius(.body)
+    If FileContinue(n) Then Get #n, , .body: .radius = FindRadius(r)
     If FileContinue(n) Then Get #n, , .Bouyancy
     If FileContinue(n) Then Get #n, , .Corpse
     If FileContinue(n) Then Get #n, , .Pwaste
@@ -1849,7 +1852,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     
     'Botsareus 9/16/2014 Read gene kill resrictions
     ReDim .delgenes(0)
-    ReDim .delgenes(0).DNA(0)
+    ReDim .delgenes(0).dna(0)
     Dim x As Integer
     Dim y As Integer
     Dim poz As Long
@@ -1864,12 +1867,12 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     End If
     ReDim .delgenes(x)
     For y = 0 To x
-        Get #n, , .delgenes(y).Position
+        Get #n, , .delgenes(y).position
         Get #n, , k
-        ReDim .delgenes(y).DNA(k)
+        ReDim .delgenes(y).dna(k)
         For t = 0 To k
-          Get #n, , .delgenes(y).DNA(t).tipo
-          Get #n, , .delgenes(y).DNA(t).value
+          Get #n, , .delgenes(y).dna(t).tipo
+          Get #n, , .delgenes(y).dna(t).value
         Next t
     Next
     
@@ -1906,11 +1909,11 @@ Private Function FileContinue(filenumber As Integer) As Boolean
   'three FE bytes (ie: 254) means we are at the end of the record
   
   Dim Fe As Byte
-  Dim Position As Long
+  Dim position As Long
   Dim k As Integer
   
   FileContinue = False
-  Position = Seek(filenumber)
+  position = Seek(filenumber)
    
   Do
     If Not EOF(filenumber) Then
@@ -1929,7 +1932,7 @@ Private Function FileContinue(filenumber As Integer) As Boolean
   Loop While Not FileContinue And k < 3
   
   'reset position
-  Get #filenumber, Position - 1, Fe
+  Get #filenumber, position - 1, Fe
 End Function
 ' saves the body of the robot
 Private Sub SaveRobotBody(n As Integer, r As Integer)
@@ -1990,10 +1993,10 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     
     ' macchina virtuale
     Put #n, , .mem()
-    k = DnaLen(rob(r).DNA()): Put #n, , k
+    k = DnaLen(rob(r).dna()): Put #n, , k
     For t = 1 To k
-      Put #n, , .DNA(t).tipo
-      Put #n, , .DNA(t).value
+      Put #n, , .dna(t).tipo
+      Put #n, , .dna(t).value
     Next t
     
     For t = 0 To 20
@@ -2152,11 +2155,11 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     Dim y As Integer
     x = UBound(.delgenes): Put #n, , x
     For y = 0 To x
-        Put #n, , .delgenes(y).Position
-        k = UBound(.delgenes(y).DNA): Put #n, , k
+        Put #n, , .delgenes(y).position
+        k = UBound(.delgenes(y).dna): Put #n, , k
         For t = 0 To k
-          Put #n, , .delgenes(y).DNA(t).tipo
-          Put #n, , .delgenes(y).DNA(t).value
+          Put #n, , .delgenes(y).dna(t).tipo
+          Put #n, , .delgenes(y).dna(t).value
         Next t
     Next
     
@@ -2370,8 +2373,8 @@ Private Sub SaveShot(n As Integer, t As Long)
     If (.shottype = -7 Or .shottype = -8) And .exist And .DnaLen > 0 Then
       Put #n, , .DnaLen
       For x = 1 To .DnaLen
-        Put #n, , .DNA(x).tipo
-        Put #n, , .DNA(x).value
+        Put #n, , .dna(x).tipo
+        Put #n, , .dna(x).value
       Next x
     Else
       k = 0: Put #n, , k
@@ -2422,10 +2425,10 @@ Private Sub LoadShot(n As Integer, t As Long)
     ' Somewhere to store genetic code for a virus
     Get #n, , k
     If k > 0 Then
-      ReDim .DNA(k)
+      ReDim .dna(k)
       For x = 1 To k
-        Get #n, , .DNA(x).tipo
-        Get #n, , .DNA(x).value
+        Get #n, , .dna(x).tipo
+        Get #n, , .dna(x).value
       Next x
     End If
     

@@ -185,7 +185,6 @@ Public Function Max(ByVal x As Single, ByVal y As Single) As Single
         Max = x
         Exit Function
     End If
-    
     Max = y
 End Function
 
@@ -194,12 +193,21 @@ Public Function Min(ByVal x As Single, ByVal y As Single) As Single
         Min = x
         Exit Function
     End If
-    
     Min = y
 End Function
 
-Public Function cstdiff(ByVal a As Double, ByVal b As Double, ByVal d As Double) As Boolean
-  Dim c As Double
-  c = a / 100 * d
-  cstdiff = (Not ((a + c >= b) And (a - c <= b)))
-End Function
+Public Sub restarter()
+    traycleanup
+    shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+End Sub
+
+Private Sub traycleanup()
+On Error Resume Next
+If HideDB Then
+    MDIForm1.Show
+    Form1.t.Remove
+    MDIForm1.stealthmode = False
+End If
+End Sub
+
+

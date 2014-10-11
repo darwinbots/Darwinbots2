@@ -359,7 +359,7 @@ Public Sub Update_Ties(t As Integer)
                 rob(.Ties(k).pnt).body = rob(.Ties(k).pnt).body + l * 0.029           'tied robot stores some fat
                 If rob(.Ties(k).pnt).body > 32000 Then rob(.Ties(k).pnt).body = 32000
                 rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l * 0.01          'tied robot receives waste
-                rob(.Ties(k).pnt).radius = FindRadius(rob(.Ties(k).pnt).body)
+                rob(.Ties(k).pnt).radius = FindRadius(.Ties(k).pnt)
                 .nrg = .nrg - l                                                       'tying robot gives up energy
                 If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "giving energy to opponent"
                 If Not SimOpts.F1 And .dq = 1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then rob(t).Dead = True 'safe kill robot
@@ -410,7 +410,7 @@ Public Sub Update_Ties(t As Integer)
                 If .nrg > 32000 Then .nrg = 32000
                 .body = .body - l * 0.029            'tying robot stores some fat
                 If .body > 32000 Then .body = 32000
-                .radius = FindRadius(.body)
+                .radius = FindRadius(t)
                 .Waste = .Waste + Abs(l / 100#)      'tying robot adds waste
               End If ' Taking nrg
               
@@ -518,7 +518,7 @@ Public Sub Update_Ties(t As Integer)
                 rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l * 0.001 'tied robot receives 1 % waste
                 If rob(.Ties(k).pnt).body > 32000 Then rob(.Ties(k).pnt).body = 32000
                 If rob(.Ties(k).pnt).nrg > 32000 Then rob(.Ties(k).pnt).nrg = 32000
-                rob(.Ties(k).pnt).radius = FindRadius(rob(.Ties(k).pnt).body)
+                rob(.Ties(k).pnt).radius = FindRadius(.Ties(k).pnt)
                 .body = .body - l   'tying robot gives up body
               End If
               If l < 0 Then
@@ -564,7 +564,7 @@ Public Sub Update_Ties(t As Integer)
                 .Waste = .Waste - l * 0.001
                 If .body > 32000 Then .body = 32000
                 If .nrg > 32000 Then .nrg = 32000
-                .radius = FindRadius(.body)
+                .radius = FindRadius(t)
               End If
               
               If Not .Ties(k).back Then   'forward ties
@@ -711,8 +711,8 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
     .mem(trefvelyourdx) = rob(.Ties(k).pnt).mem(veldx)
                 
     'Botsareus 9/27/2014 I was thinking long and hard where to place this bug fix, probebly best to place it at the source
-    If Abs(rob(.Ties(k).pnt).vel.y) > 32000 Then rob(.Ties(k).pnt).vel.y = 32000 * Sgn(rob(.Ties(k).pnt).vel.y)
-    If Abs(rob(.Ties(k).pnt).vel.x) > 32000 Then rob(.Ties(k).pnt).vel.x = 32000 * Sgn(rob(.Ties(k).pnt).vel.x)
+    If Abs(rob(.Ties(k).pnt).vel.y) > 16000 Then rob(.Ties(k).pnt).vel.y = 16000 * Sgn(rob(.Ties(k).pnt).vel.y)
+    If Abs(rob(.Ties(k).pnt).vel.x) > 16000 Then rob(.Ties(k).pnt).vel.x = 16000 * Sgn(rob(.Ties(k).pnt).vel.x)
     
     .mem(trefvelmyup) = rob(.Ties(k).pnt).vel.x * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.y * -1 - .mem(velup) 'gives velocity from mybots frame of reference
     .mem(trefvelmydn) = .mem(trefvelmyup) * -1

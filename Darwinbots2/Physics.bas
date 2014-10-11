@@ -120,7 +120,7 @@ Public Sub BrownianForces(n As Integer)
 getout:
 End Sub
 
-Public Sub SphereDragForces(n As Integer) 'for bots
+Public Sub SphereDragForces(n As Integer)  'for bots
   Dim Impulse As Single
   Dim ImpulseVector  As vector
   Dim mag As Single
@@ -155,7 +155,7 @@ Public Sub SphereDragForces(n As Integer) 'for bots
 getout:
 End Sub
 
-Public Sub TieDragForces(n As Integer) 'for ties
+Public Sub TieDragForces(n As Integer)  'for ties
 'calculate drag on the ties as if the ties are cylinders
 'radius of the tie should be stored in tie array
 Dim a As Long
@@ -237,7 +237,7 @@ Public Sub TieDrag2(ByVal n1 As Long, ByVal n2 As Long)
 getout:
 End Sub
 
-Public Sub TieDrag(ByVal n1 As Integer, ByVal n2 As Integer)
+Public Sub TieDrag(n1 As Integer, n2 As Integer)
 'Simple method:
 
 'v1 = my velocity
@@ -383,7 +383,7 @@ getout:
   End With
 End Function
 
-Public Sub GravityForces(n As Integer) 'Botsareus 2/2/2013 added bouy as part of y-gravity formula
+Public Sub GravityForces(n As Integer)  'Botsareus 2/2/2013 added bouy as part of y-gravity formula
 If (SimOpts.Ygravity = 0 Or Not SimOpts.Pondmode Or SimOpts.Updnconnected) Then
     If rob(n).Bouyancy > 0 Then
         If Not boylabldisp Then Form1.BoyLabl.Visible = True
@@ -463,7 +463,7 @@ getout:
   End With
 End Sub
 
-Public Sub TieHooke(n As Integer, Optional timestep As Single = 0)
+Public Sub TieHooke(n As Integer)
   'Handles Hooke forces of a tie.  That is, stretching and shrinking
   'Force = -kx - bv
   'from experiments, k and b should be less than .1 otherwise the forces
@@ -492,7 +492,7 @@ Public Sub TieHooke(n As Integer, Optional timestep As Single = 0)
   While k <= MAXTIES And .Ties(k).pnt <> 0
     'Botsareus 9/27/2014 Bug fix
     'This may happen sometimes when the robot a tie points to did not teleport properly
-    If .Ties(k).pnt > UBound(rob) Then
+    If CheckRobot(.Ties(k).pnt) Then
         Do
         'Simple Delete Tie
         If k > 1 Then
@@ -507,7 +507,7 @@ Public Sub TieHooke(n As Integer, Optional timestep As Single = 0)
         '
         .Ties(MAXTIES).pnt = 0
         '
-        Loop Until .Ties(k).pnt <= UBound(rob)
+        Loop Until Not CheckRobot(.Ties(k).pnt)
     End If
     
     uv = VectorSub(.pos, rob(.Ties(k).pnt).pos)
@@ -554,6 +554,24 @@ getout:
 End With
 
 End Sub
+
+'Botsareus 9/30/2014 Returns true if robot does not exsist
+Private Function CheckRobot(ByVal n As Integer) As Boolean
+'
+CheckRobot = False
+'
+If n > UBound(rob) Then
+CheckRobot = True
+Exit Function
+End If
+'
+If n = 0 Then
+CheckRobot = False
+Exit Function
+End If
+'
+If rob(n).exist = False Then CheckRobot = True
+End Function
 
 Public Sub PlanetEaters(n As Integer)
 'this way is really, really slow, since we normalize the vector (yuck), - Botsareus I am no math wiz, but how to make faster? I think it is as good as it gets... unless Numsgil maybe?
@@ -754,7 +772,7 @@ End Sub
 '  Wend
 'End Sub
 
-Public Sub bordercolls(t As Integer, Optional whichside As Integer = 0, Optional whichbottom As Integer = 0)
+Public Sub bordercolls(t As Integer)
   'treat the borders as spongy ground
   'that makes you bounce off.
   
@@ -817,239 +835,10 @@ Public Sub bordercolls(t As Integer, Optional whichside As Integer = 0, Optional
         If .pos.y - .radius < 0 Then .pos.y = .radius
         If .pos.y + .radius > SimOpts.FieldHeight Then .pos.y = CSng(SimOpts.FieldHeight) - .radius
         .ImpulseRes.y = .ImpulseRes.y + .vel.y * b
-        If SimOpts.Tides Then
-            If dist.y < 0 Then
-                .pos.y = .pos.y - 100 * BouyancyScaling
-                .pos.x = .pos.x - (Rnd - 0.5) * BouyancyScaling * 100
-            End If
-        End If
       End If
     End If
 getout:
   End With
-End Sub
-
-Public Sub Colls2(n As Integer)
-  Dim k As Integer
-  Dim distvector As vector
-  Dim dist As Single
-   
-  For k = n + 1 To MaxRobs
-    While Not rob(k).exist
-      k = k + 1
-      If k > MaxRobs Then GoTo getout
-    Wend
-
-    distvector = VectorSub(rob(n).pos, rob(k).pos)
-      
-    'for an interesting effect, try > instead
-    dist = rob(n).radius + rob(k).radius
-    If VectorMagnitudeSquare(distvector) < (dist * dist) Then
-      Repel3 n, k
-    End If
-  Next k
-getout:
-
-End Sub
-
-'' calculates collisions between the robot pointed by node n
-'' (of the robots' sorted linked list) and other robots
-'' and generates accelerations
-'Public Sub colls(n As node)
-'  Dim nd As node
-'  Dim t As Integer
-'  Dim a As Integer
-'  Dim dist As Long
-'  Dim tvx As Long, tvy As Long
-'  Dim slowdown As Single
-'  Dim angl As Single
-'  Dim aPer As Single
-'  Dim tPer As Single
-'  Dim aM As Single
-'  Dim tM As Single
-'  Dim totM As Single
-'  Dim colldist As Long
-'  Dim colldistsquared As Long
-'  Dim deltax As Long
-'  Dim deltay As Long
-'  Dim deltaxsquare As Long
-'  Dim deltaysquare As Long
-'  Dim maxdist As Integer
-'  Dim otherrobot As Integer
-'  Dim xpos As Long
-'
-'  slowdown = 0.8
-'
-'  On Error Resume Next
-'
-'  t = n.robn
-'  xpos = n.xpos
-'
-'  maxdist = FindRadius(32000) * 2
-'
-'  Set nd = rlist.firstprox(n, maxdist)
-'  otherrobot = rob(nd.robn).order
-'
-'  If Roborder(otherrobot) = -1 Then Exit Sub
-'
-'  While rob(Roborder(otherrobot)).pos.x < xpos + maxdist
-'    a = Roborder(otherrobot)
-'    If t <> a Then
-'      colldist = rob(t).radius + rob(a).radius
-'      colldistsquared = colldist * colldist 'so we don't need the sqr
-'
-'      deltax = rob(t).pos.x - rob(a).pos.x
-'      If Abs(deltax) > colldist Then GoTo bypass1
-'      deltay = rob(t).pos.y - rob(a).pos.y
-'      If Abs(deltay) > colldist Then GoTo bypass1
-'
-'      deltaxsquare = deltax * deltax
-'      deltaysquare = deltay * deltay
-'      If deltaxsquare + deltaysquare > colldistsquared Then GoTo bypass1
-'
-'        Repel2 a, t
-'        touch t, rob(a).pos.x, rob(a).pos.y
-'        touch a, rob(t).pos.x, rob(t).pos.y
-'        GoTo bypass
-'      'End If
-'bypass1:
-'
-'    'PLEASE don't delete this
-'    'this was Numsgil's attempt at physics
-'    'there might still be some useful bits here and there
-'
-'    'deltax = deltax + rob(t).vx - rob(a).vx
-'    'If deltax > colldist Then GoTo bypass
-'    '
-'    'deltay = deltay + rob(t).vy - rob(a).vy
-'    'If deltay > colldist Then GoTo bypass
-'    '
-'    'deltaxsquare = deltax * deltax
-'    'deltaysquare = deltay * deltay
-'    '
-'    'If deltaxsquare + deltaysquare <= colldistsquared Then
-'    '
-'    '  dist = Sqr(deltaxsquare + deltaysquare)
-'    '  If dist = 0 Then GoTo bypass
-'    '
-'    '  Dim deltaxsingle As Single
-'    '  Dim deltaysingle As Single
-'    '
-'    '  deltaxsingle = deltax
-'    '  deltaysingle = deltay
-'    '
-'    '  deltaxsingle = deltaxsingle / dist
-'    '  deltaysingle = deltaysingle / dist
-'    '
-'    '  Dim tabx As Single
-'    '  Dim taby As Single
-'    '
-'    '  tabx = -deltaysingle
-'    '  taby = deltaxsingle
-'    '
-'    '  Dim vait As Single
-'    '  vait = rob(a).vx * tabx + rob(a).vy * taby
-'
-'    '  Dim vain As Single
-'    '  vain = rob(a).vx * deltaxsingle + rob(a).vy * deltaysingle
-'
-'    '  Dim vbit As Single
-'    '  vbit = rob(t).vx * tabx + rob(t).vy * taby
-'
-'    '  Dim vbin As Single
-'    '  vbin = rob(t).vx * deltaxsingle + rob(t).vy * deltaysingle
-'
-'    '  Dim ma As Single
-'    '  ma = rob(a).mass
-'    '  If rob(a).Fixed Then ma = 1000000
-'
-'    '  Dim mb As Single
-'    '  mb = rob(t).mass
-'    '  If rob(t).Fixed Then mb = 1000000
-'
-'    '  Dim vafn As Single
-'    '  vafn = (mb * vbin * (cof_E + 1) + vain * (ma - cof_E * mb)) / (ma + mb)
-'
-'    '  Dim vbfn As Single
-'    '  vbfn = (ma * vain * (cof_E + 1) - vbin * (ma - cof_E * mb)) / (ma + mb)
-'
-'    '  Dim vaft As Single
-'    '  vaft = vait
-'
-'    '  Dim vbft As Single
-'    '  vbft = vbit
-'
-'    '  Dim xfa As Single
-'    '  xfa = vafn * deltaxsingle + vaft * tabx
-'
-'    '  Dim yfa As Single
-'    '  yfa = vafn * deltaysingle + vaft * taby
-'
-'    '  Dim xfb As Single
-'    '  xfb = vbfn * deltaxsingle + vbft * tabx
-'
-'    '  Dim yfb As Single
-'    '  yfb = vbfn * deltaysingle + vbft * taby
-'
-'    '  If Sqr(xfa ^ 2 + yfa ^ 2) > 60 Then
-'    '    'normalize * maxspeed
-'    '  End If
-'
-'    '  If Sqr(xfb ^ 2 + yfb ^ 2) > 60 Then
-'    '    'normalize * maxspeed
-'    '  End If
-'
-'    '  rob(a).vx = xfa
-'    '  rob(a).vy = yfa
-'
-'    '  rob(t).vx = xfb
-'    '  rob(t).vy = yfb
-'   'End If
-'bypass:
-'    End If
-'    'Set nd = rlist.nextorder(nd)
-'    otherrobot = otherrobot + 1
-'    If Roborder(otherrobot) = -1 Then
-'      Exit Sub
-'    End If
-'  Wend
-'End Sub
-
-'only a minor bug, sometimes (rarely) bots get 'stuck' together, forming an
-'infinite energy matrix!  woah!
-'EricL - This routine works, but collision detection is pretty lame
-Public Sub Repel2(rob1 As Integer, rob2 As Integer)
-  Dim uv As vector
-  Dim vy As vector
-  Dim Length As Single
-  Dim force As Single
-  Dim ForceVector As vector
-  
-  Const k As Single = 0.1
-  Const b As Single = 0.1
-  
-  uv = VectorSub(rob(rob1).pos, rob(rob2).pos)
-  Length = VectorInvMagnitude(uv)
-                
-  If Length <> -1# Then 'vectorinvmagnitude = inverse magnitude.  Returns -1# if divide by zero
-    uv = VectorScalar(uv, Length)
-    
-    'length is now displacement
-    Length = rob(rob1).radius + rob(rob2).radius - 1 / Length
-        
-    'Restitutive Force
-    force = k * Length
-    ForceVector = VectorScalar(uv, force)
-    rob(rob1).ImpulseInd = VectorAdd(rob(rob1).ImpulseInd, ForceVector)
-    rob(rob2).ImpulseInd = VectorSub(rob(rob2).ImpulseInd, ForceVector)
-      
-    'next -bv
-    vy = VectorSub(rob(rob2).vel, rob(rob1).vel)
-    force = Dot(vy, uv) * b
-    ForceVector = VectorScalar(uv, force)
-    rob(rob1).ImpulseInd = VectorAdd(rob(rob1).ImpulseInd, ForceVector)
-    rob(rob2).ImpulseInd = VectorSub(rob(rob2).ImpulseInd, ForceVector)
-  End If
 End Sub
 
 'EricL - My attempt to back port 2.5 physics to address collision detection
@@ -1080,18 +869,8 @@ Public Sub Repel3(rob1 As Integer, rob2 As Integer)
   
   e = SimOpts.CoefficientElasticity ' Set in the UI or loaded/defaulted in the sim load routines
   
-If SimOpts.Tides Then
-    If rob(rob1).mass > 192 Then
-        If rob(rob1).pos.y + rob(rob1).radius + smudgefactor > SimOpts.FieldHeight - 100 Then
-            e = 10
-        End If
-    End If
-    If rob(rob2).mass > 192 Then
-        If rob(rob2).pos.y + rob(rob2).radius + smudgefactor > SimOpts.FieldHeight - 100 Then
-            e = 10
-        End If
-    End If
-End If
+  'Botsareus 9/30/2014 More realisitic coefficient for massive robots
+  If e > 0 Then If rob(rob1).mass > 400 And rob(rob2).mass > 400 Then e = e * 10
   
   normal = VectorSub(rob(rob2).pos, rob(rob1).pos) ' Vector pointing from bot 1 to bot 2
   currdist = VectorMagnitude(normal) ' The current distance between the bots

@@ -288,7 +288,6 @@ Public Sub updateshots()
   Dim ti As Single
   Dim x As Long
   Dim y As Long
-  Dim onrg As Long
   Dim tempnum As Single
   
  ' shotpointer = 1
@@ -472,7 +471,7 @@ Public Sub Decay(n As Integer) 'corpse decaying as waste shot, energy shot or no
     
 
     rob(n).body = rob(n).body - SimOpts.Decay / 10
-    rob(n).radius = FindRadius(rob(n).body)
+    rob(n).radius = FindRadius(n)
   End If
 End Sub
 Public Sub defacate(n As Integer) 'only used to get rid of massive amounts of waste
@@ -575,7 +574,7 @@ Public Sub releasenrg(n As Integer, t As Long)
     y = Shots(t).pos.y
     
     createshot x, y, vel.x, vel.y, -2, n, power, Range * (RobSize / 3), vbWhite
-    rob(n).radius = FindRadius(rob(n).body)
+    rob(n).radius = FindRadius(n)
   End If
   
   If rob(n).body <= 0.5 Or rob(n).nrg <= 0.5 Then
@@ -646,7 +645,7 @@ Private Sub releasebod(n As Integer, t As Long) 'a robot is shot by a -6 shot an
     If power > rob(n).body * 10 Then power = rob(n).body * 10
     rob(n).body = rob(n).body - power / 10      'all energy comes from body
   '  EnergyLostPerCycle = EnergyLostPerCycle - power
-    rob(n).radius = FindRadius(rob(n).body)
+    rob(n).radius = FindRadius(n)
   Else
     Dim leftover As Single
     
@@ -693,7 +692,7 @@ Private Sub releasebod(n As Integer, t As Long) 'a robot is shot by a -6 shot an
       End If
     End If
     End With
-    rob(n).radius = FindRadius(rob(n).body)
+    rob(n).radius = FindRadius(n)
   End If
   
   If rob(n).body <= 0.5 Or rob(n).nrg <= 0.5 Then
@@ -740,7 +739,7 @@ Private Sub takenrg(n As Integer, t As Long)
   rob(n).Waste = rob(n).Waste + partial * 0.01  '1% goes to waste
  
   'Shots(t).Exist = False
-  rob(n).radius = FindRadius(rob(n).body)
+  rob(n).radius = FindRadius(n)
 getout:
 End Sub
 '  robot takes a venomous shot and becomes seriously messed up

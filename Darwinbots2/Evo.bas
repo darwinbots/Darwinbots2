@@ -32,7 +32,7 @@ Close #1
 Open App.path & "\autosaved.gset" For Output As #1
  Write #1, False
 Close #1
-shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+Call restarter
 End Sub
 
 Private Function n10(ByVal a As Single) As Integer 'range correction
@@ -74,7 +74,7 @@ Dim gotdnalen As Integer
 'lets grab a test robot to figure out dna length
 For t = 1 To MaxRobs
         If rob(t).exist And rob(t).FName = "Test.txt" Then
-            gotdnalen = DnaLen(rob(t).DNA)
+            gotdnalen = DnaLen(rob(t).dna)
             Exit For
         End If
 Next
@@ -345,7 +345,7 @@ Close #1
     Open App.path & "\autosaved.gset" For Output As #1
      Write #1, False
     Close #1
-shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+Call restarter
 End Sub
 Public Sub ZBpassedtest()
 MsgBox "Zerobot evolution complete.", vbInformation, "Zerobot evo"
@@ -373,7 +373,7 @@ Close #1
     Open App.path & "\autosaved.gset" For Output As #1
      Write #1, False
     Close #1
-shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+Call restarter
 End Sub
 Public Sub calculateZB(ByVal robid As Long, ByVal Mx As Double, ByVal bestrob As Integer)
 If rob(bestrob).LastMut > 0 Then

@@ -149,13 +149,13 @@ Public Sub UpdateSim()
   'provides the mutation rates oscillation Botsareus 8/3/2013 moved to UpdateSim)
   If SimOpts.MutOscill Then
    With SimOpts
-    'Botsareus 8/3/2013 a more frindly mut oscill
+    'Botsareus 9/1/2014 Redo from Shvarz (simplify)
     Dim fullrange As Long
     fullrange = .TotRunCycle Mod (.MutCycMax + .MutCycMin)
     If fullrange < .MutCycMax Then
-     .MutCurrMult = 20 ^ Sin(fullrange / .MutCycMax * PI)
+     .MutCurrMult = 16
     Else
-     .MutCurrMult = 20 ^ -Sin((fullrange - .MutCycMax) / .MutCycMin * PI)
+     .MutCurrMult = 1 / 16
     End If
    End With
   End If
@@ -276,6 +276,7 @@ Public Sub UpdateSim()
   Next t
   
   'it is time for some overwrites by playerbot mode
+  If MDIForm1.pbOn.Checked Then
    For t = 1 To MaxRobs
     With rob(t)
      If .exist Then
@@ -288,6 +289,7 @@ Public Sub UpdateSim()
      End If
     End With
    Next t
+  End If
   
   'okay, time to store some values for RGB monitor
   If MDIForm1.MonitorOn Then
@@ -348,18 +350,19 @@ Public Sub UpdateSim()
         totlen = totlen + rob(t).DnaLen
         On Error GoTo b:
         For i = 0 To UBound(rob(t).delgenes) 'Botsareus 9/16/2014 More overflow prevention stuff
-         totlen = totlen + UBound(rob(t).delgenes(i).DNA)
+         totlen = totlen + UBound(rob(t).delgenes(i).dna)
         Next
 b:
     End If
   Next t
-  If totlen > 3825000 Then
+  If totlen > 3820000 Then
     Dim calcminenergy As Single
     Dim selectrobot As Integer
     Dim maxdel As Long
-    
+
+    globalreprodisable = True 'Botsareus 9/30/2014 Minor idea from Peter
     maxdel = 1500 * (CLng(TotalRobotsDisplayed) * 425 / totlen)
-    
+
     For i = 0 To maxdel
         calcminenergy = 320000 'only erase robots with lowest energy
         For t = 1 To MaxRobs
@@ -372,8 +375,10 @@ b:
         Next t
         Call KillRobot(selectrobot)
     Next i
+  Else
+   globalreprodisable = False 'Botsareus 9/30/2014 Minor idea from Peter
   End If
-  
+
   'Botsareus 5/6/2013 The safemode system
   If UseSafeMode Then 'special modes does not apply, may need to expended to other restart modes
     If SimOpts.TotRunCycle Mod 2000 = 0 And SimOpts.TotRunCycle > 0 Then
@@ -387,7 +392,7 @@ b:
       End If
     End If
   End If
-  
+
   'R E S T A R T  N E X T
   'Botsareus 1/31/2014 seeding
   If x_restartmode = 1 Then
@@ -400,10 +405,9 @@ b:
         Open App.path & "\Safemode.gset" For Output As #1
          Write #1, False
         Close #1
-        shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+        Call restarter
     End If
   End If
-  
  
   'Z E R O B O T
 'evo mode
@@ -481,7 +485,7 @@ If x_restartmode = 7 Or x_restartmode = 8 Then
     Open App.path & "\autosaved.gset" For Output As #1
      Write #1, False
     Close #1
-    shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+    Call restarter
   End If
 End If
 
