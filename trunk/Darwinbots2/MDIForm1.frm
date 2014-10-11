@@ -862,9 +862,6 @@ Begin VB.MDIForm MDIForm1
       Visible         =   0   'False
       Begin VB.Menu ShowInfo 
          Caption         =   "Show Information"
-         Begin VB.Menu CyclesPS 
-            Caption         =   "CyclesPS"
-         End
          Begin VB.Menu CyclesNumber 
             Caption         =   "CyclesNumber"
          End
@@ -1175,6 +1172,7 @@ tryagain:
      & " -in " & iq _
      & " -out " & oq _
      & " -name " & Chr(34) & IntOpts.IName & Chr(34) _
+     & " -port " & Chr(34) & "1050" & Chr(34) _
      & " -pid " & Str(GetCurrentProcessId()) _
      & " -port " & Chr(34) & IIf(IntOpts.ServPort = "", "4669", IntOpts.ServPort) & Chr(34) _
      & " -server " & Chr(34) & IIf(IntOpts.ServIP = "PeterIM", "198.50.150.51", IntOpts.ServIP) & Chr(34)
@@ -1499,6 +1497,14 @@ Toolbar1.Refresh 'Botsareus 1/11/2013 Force toolbar to refresh
 End Sub
 
 Sub fixcam() 'Botsareus 2/23/2013 When simulation starts the screen is normailized
+
+If x_restartmode > 0 And HideDB Then
+      Form1.t.Add
+      stealthmode = True
+      Me.Hide
+      If SimOpts.F1 Then Contest_Form.WindowState = vbMinimized
+End If
+
 Dim c As Byte
 Dim t As Integer
 
@@ -1569,6 +1575,7 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
       If Form1.GraphLab.Visible Then Exit Sub
       NetEvent.Timer1.Enabled = False
       NetEvent.Hide
+      optionsform.SSTab1.Tab = 0
       optionsform.Show vbModal
       If Not optionsform.Canc Then
         Form1.Show
@@ -1645,6 +1652,7 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
       Form1.t.Add
       stealthmode = True
       Me.Hide
+      If SimOpts.F1 Then Contest_Form.WindowState = vbMinimized
     Case "Ignore"
       'ignores errors when it encounters them with the hope that they'll fix themselves
       ignoreerror = Not ignoreerror
@@ -2349,6 +2357,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                   Dim files As Collection
                   Dim seeded As Collection
                   Dim i As Byte
+
   If Not (x_restartmode = 0 Or x_restartmode = 5 Or x_restartmode = 8) Then
         If Not simalreadyrunning Then
             Select Case x_restartmode
@@ -2782,7 +2791,6 @@ Sub infos(ByVal cyc As Single, tot As Integer, tnv As Integer, tv As Long, brn A
   
   If tot = 0 Then Exit Sub
   StatusBar1.Panels(1).text = SBcycsec + Str$(Round(cyc, 3)) + " "
-  Me.CyclesPS.Caption = SBcycsec + Str$(Round(cyc, 3))
   StatusBar1.Panels(2).text = "Tot " + Str$(tot) + " "
   Me.TotalBots.Caption = "Tot " + Str$(tot)
   StatusBar1.Panels(3).text = "Bots " + Str$(tnv) + " "
@@ -2832,6 +2840,7 @@ Private Sub newsim_Click(Index As Integer)
 If Form1.GraphLab.Visible Then Exit Sub
 NetEvent.Timer1.Enabled = False
 NetEvent.Hide
+optionsform.SSTab1.Tab = 0
 optionsform.Show vbModal
 If Not optionsform.Canc Then
   Form1.Show

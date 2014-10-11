@@ -150,7 +150,7 @@ Begin VB.Form PhysicsOptions
          Width           =   435
       End
       Begin VB.Label Label3 
-         Caption         =   "Y azis Gravity"
+         Caption         =   "Y axis Gravity"
          Height          =   255
          Index           =   4
          Left            =   180
@@ -404,7 +404,7 @@ Private Sub Command_Click(Index As Integer)
           "of energy.  A robot under ideal conditions doing 1 .up store is " + _
           "spending 1 NRG and producing 1 Bang."
     Case 1, 2
-      Me.Hide
+      Unload Me
     Case 3 'general help
       Text1.text = "The medium in which the bots live has some remarkable " + _
         "properties that can become difficult to invision all at once.  " + _
@@ -532,10 +532,10 @@ Private Sub MiscSlider_Change(Index As Integer)
       MiscText(Index).Caption = CStr(MiscSlider(Index).value) + "%"
     Case 1 'Y axis gravity
        TmpOpts.Ygravity = MiscSlider(Index).value / 10
-       MiscText(Index).Caption = TmpOpts.Ygravity
+       MiscText(Index).Caption = CStr(MiscSlider(Index).value)
     Case 2
       TmpOpts.PhysBrown = MiscSlider(Index).value / 10
-      MiscText(Index).Caption = TmpOpts.PhysBrown
+      MiscText(Index).Caption = CStr(MiscSlider(Index).value)
   End Select
 End Sub
 
@@ -594,9 +594,15 @@ Private Sub Form_Activate()
     If .PlanetEaters Then Toggles(1).value = 1
     PlanetEatersText.text = .PlanetEatersG / 10 ^ 3
     
+    If TmpOpts.Tides Then
+      .Ygravity = SimOpts.Ygravity
+      .PhysBrown = SimOpts.PhysBrown
+    End If
+    
     MiscSlider(0).value = .PhysMoving * 100
     MiscSlider(1).value = .Ygravity * 10
     MiscSlider(2).value = .PhysBrown * 10 'EricL 3/21/2006 Changed from 100 to 10 to fix bug where slider set to 10x to high
+
     
     Friction(0).value = .Zgravity * 10
     Friction(1).value = .CoefficientKinetic * 100
@@ -605,26 +611,7 @@ Private Sub Form_Activate()
     FluidText(0).text = .Viscosity * 10 ^ 5
     FluidText(1).text = .Density * 10 ^ 7
     
-    If Int(SimOpts.Ygravity * 10) <> (SimOpts.Ygravity * 10) Then MiscText(1).Caption = "?"
-    
   End With
 End Sub
 
-'Botsareus 9/13/2014 Warnings for Shvarz
-
-Private Function YgravityWarning(oldval, newval) As Boolean
-If Not cstdiff(newval + 50, oldval + 50, 15) Then
-    YgravityWarning = True
-Else
-    YgravityWarning = MsgBox("Making drastic changes to vertical gravity may change the robots behavior and may break your simulation. Are you sure?", vbExclamation + vbYesNo, "Darwinbots Settings") = vbYes
-End If
-End Function
-
-Private Function BrownWarning(oldval, newval) As Boolean
-If Not cstdiff(newval + 50, oldval + 50, 33) Or newval < oldval Then
-    BrownWarning = True
-Else
-    BrownWarning = MsgBox("Making drastic changes to Brownian motion will add alot of chaotic motion and break your simulation. Are you sure?", vbExclamation + vbYesNo, "Darwinbots Settings") = vbYes
-End If
-End Function
 

@@ -157,7 +157,6 @@ Public Type SimOptions
   RepopAmount As Integer
   
   Diffuse As Single
-  VegFeedingMethod As Integer
   VegFeedingToBody As Single
   
   MaxVelocity As Single
@@ -209,6 +208,7 @@ Public Type SimOptions
   SunOnRnd As Boolean
   
   Tides As Integer
+  TidesOf As Integer
      
 End Type
 

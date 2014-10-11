@@ -42,33 +42,34 @@ Begin VB.Form frmGset
       _Version        =   393216
       Style           =   1
       Tabs            =   4
+      Tab             =   1
       TabsPerRow      =   4
       TabHeight       =   520
       BackColor       =   12632256
       TabCaption(0)   =   "Main settings"
       TabPicture(0)   =   "frmGset.frx":0000
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "ffmUI"
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "ffmInitChlr"
       Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "ffmCheatin"
+      Tab(0).Control(1)=   "ffmFBSBO"
       Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).Control(2)=   "Frame1"
+      Tab(0).Control(2)=   "chkSafeMode"
       Tab(0).Control(2).Enabled=   0   'False
       Tab(0).Control(3)=   "ffmMainDir"
       Tab(0).Control(3).Enabled=   0   'False
-      Tab(0).Control(4)=   "chkSafeMode"
+      Tab(0).Control(4)=   "Frame1"
       Tab(0).Control(4).Enabled=   0   'False
-      Tab(0).Control(5)=   "ffmFBSBO"
+      Tab(0).Control(5)=   "ffmCheatin"
       Tab(0).Control(5).Enabled=   0   'False
-      Tab(0).Control(6)=   "ffmInitChlr"
+      Tab(0).Control(6)=   "ffmUI"
       Tab(0).Control(6).Enabled=   0   'False
       Tab(0).ControlCount=   7
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
-      Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ffmSunMut"
+      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).Control(0)=   "ffmEpiReset"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "ffmEpiReset"
+      Tab(1).Control(1)=   "ffmSunMut"
       Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "Leagues"
@@ -306,7 +307,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmInitChlr 
          Caption         =   "Advanced Chloroplast Options"
          Height          =   975
-         Left            =   4920
+         Left            =   -70080
          TabIndex        =   60
          Top             =   3480
          Width           =   5655
@@ -391,7 +392,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmSunMut 
          Caption         =   "Sunline Mutations"
          Height          =   3775
-         Left            =   -74160
+         Left            =   840
          TabIndex        =   30
          Top             =   1280
          Width           =   9135
@@ -595,7 +596,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmEpiReset 
          Caption         =   "Epigenetic Reset"
          Height          =   735
-         Left            =   -73440
+         Left            =   1560
          TabIndex        =   23
          Top             =   460
          Width           =   7575
@@ -645,7 +646,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmFBSBO 
          Caption         =   "Find Best Settings base on:"
          Height          =   915
-         Left            =   4920
+         Left            =   -70080
          TabIndex        =   16
          Top             =   2280
          Width           =   5655
@@ -684,7 +685,7 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkSafeMode 
          Caption         =   "Use Safe Mode"
          Height          =   255
-         Left            =   6720
+         Left            =   -68280
          TabIndex        =   15
          Top             =   1920
          Width           =   1935
@@ -692,7 +693,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmMainDir 
          Caption         =   "Main Directory"
          Height          =   1215
-         Left            =   4920
+         Left            =   -70080
          TabIndex        =   12
          Top             =   480
          Width           =   5655
@@ -716,7 +717,7 @@ Begin VB.Form frmGset
       Begin VB.Frame Frame1 
          Caption         =   "Randomization"
          Height          =   1095
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   9
          Top             =   3960
          Width           =   4695
@@ -740,9 +741,9 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmCheatin 
          Caption         =   "Cheating Prevention"
          Height          =   1575
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   5
-         Top             =   2280
+         Top             =   2375
          Width           =   4695
          Begin VB.CheckBox chkGreedy 
             Caption         =   "Kill robots that are excessively greedy to there kids, using them to dump there energy."
@@ -771,11 +772,19 @@ Begin VB.Form frmGset
       End
       Begin VB.Frame ffmUI 
          Caption         =   "UI Settings"
-         Height          =   1695
-         Left            =   120
+         Height          =   2000
+         Left            =   -74880
          TabIndex        =   3
-         Top             =   480
+         Top             =   360
          Width           =   4695
+         Begin VB.CheckBox chkHide 
+            Caption         =   "Hide Darwinbots on restart mode in system tray"
+            Height          =   255
+            Left            =   240
+            TabIndex        =   90
+            Top             =   1650
+            Width           =   3975
+         End
          Begin VB.CheckBox chkScreenRatio 
             Caption         =   "Fix Screen Ratio when simulation starts"
             Height          =   255
@@ -1115,6 +1124,7 @@ MsgBox "Global settings will take effect the next time DarwinBots starts.", vbIn
       Write #1, y_res_other_veg
       
       Write #1, chkGraphUp.value = 1
+      Write #1, chkHide.value = 1
       
     Close #1
     
@@ -1168,7 +1178,7 @@ If txtSourceDir.Visible Then
         Open App.path & "\autosaved.gset" For Output As #1
          Write #1, False
         Close #1
-        shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+        Call restarter
     End If
 End If
 
@@ -1248,7 +1258,7 @@ If chkSurvivalSimple.value = 1 Or chkSurvivalEco.value = 1 Then
     Open App.path & "\autosaved.gset" For Output As #1
      Write #1, False
     Close #1
-    shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+    Call restarter
 End If
 '4/14/2014
 If chkZBmode.value = 1 Then
@@ -1273,7 +1283,7 @@ If chkZBmode.value = 1 Then
     Open App.path & "\autosaved.gset" For Output As #1
      Write #1, False
     Close #1
-    shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+    Call restarter
 End If
 
 'unload
@@ -1502,7 +1512,8 @@ txtZlength = y_zblen
 '
 If y_eco_im > 0 Then chkIM.value = y_eco_im - 1
 '
-chkGraphUp.value = IIf(Graphup, 1, 0)
+chkGraphUp.value = IIf(GraphUp, 1, 0)
+chkHide.value = IIf(HideDB, 1, 0)
 End Sub
 
 Private Sub lblD2_Click()

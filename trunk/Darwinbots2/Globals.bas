@@ -23,6 +23,7 @@ Public chseedstartnew As Boolean
 Public chseedloadsim As Boolean
 Public UseSafeMode As Boolean
 Public GraphUp As Boolean
+Public HideDB As Boolean
 Public intFindBestV2 As Integer
 Public UseOldColor As Boolean
 Public startnovid As Boolean
@@ -115,6 +116,10 @@ Public LFORcorr As Single 'correction
 Public hidepred As Boolean
 Public target_dna_size As Integer
 
+'Botsareus 9/30/2014 More out of memory preventive stuff
+
+Public globalreprodisable As Boolean
+
 ' var structure, to store the correspondance name<->value
 Public Type var
   Name As String
@@ -175,13 +180,13 @@ Declare Function mciSendString Lib "winmm" Alias "mciSendStringA" (ByVal _
 
 Declare Function CallWindowProc Lib "user32" Alias "CallWindowProcA" _
            (ByVal lpPrevWndFunc As Long, _
-            ByVal hWnd As Long, _
+            ByVal hwnd As Long, _
             ByVal MSG As Long, _
             ByVal wParam As Long, _
             ByVal lParam As Long) As Long
 
 Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongA" _
-           (ByVal hWnd As Long, _
+           (ByVal hwnd As Long, _
             ByVal nIndex As Long, _
             ByVal dwNewLong As Long) As Long
             
@@ -191,26 +196,26 @@ Private Declare Function RegisterWindowMessage Lib "user32" _
 'Windows API calls for GetWinHandle
 'Stolen from MSDN somewhere
 Private Const GW_HWNDNEXT = 2
-Private Declare Function GetParent Lib "user32" (ByVal hWnd As Long) As Long
-Private Declare Function GetWindow Lib "user32" (ByVal hWnd As Long, _
+Private Declare Function GetParent Lib "user32" (ByVal hwnd As Long) As Long
+Private Declare Function GetWindow Lib "user32" (ByVal hwnd As Long, _
   ByVal wCmd As Long) As Long
 Private Declare Function FindWindow Lib "user32" Alias "FindWindowA" _
   (ByVal lpClassName As String, ByVal lpWindowName As String) As Long
 Public Const GWL_WNDPROC = -4
 Public Declare Function GetWindowThreadProcessId Lib "user32" _
-  (ByVal hWnd As Long, lpdwprocessid As Long) As Long
+  (ByVal hwnd As Long, lpdwprocessid As Long) As Long
 'Stuff for close window
 Private Declare Function WaitForSingleObject Lib "kernel32" _
    (ByVal hHandle As Long, _
    ByVal dwMilliseconds As Long) As Long
 Private Declare Function PostMessage Lib "user32" _
    Alias "PostMessageA" _
-   (ByVal hWnd As Long, _
+   (ByVal hwnd As Long, _
    ByVal wMsg As Long, _
    ByVal wParam As Long, _
    ByVal lParam As Long) As Long
 Private Declare Function IsWindow Lib "user32" _
-   (ByVal hWnd As Long) As Long
+   (ByVal hwnd As Long) As Long
 Private Declare Function OpenProcess Lib "kernel32" _
    (ByVal dwDesiredAccess As Long, _
    ByVal bInheritHandle As Long, _
@@ -254,11 +259,11 @@ Function WindowProc(ByVal hw As Long, _
   End Select
 End Function
 
-Private Function ProcIDFromWnd(ByVal hWnd As Long) As Long
+Private Function ProcIDFromWnd(ByVal hwnd As Long) As Long
    Dim idProc As Long
    
    ' Get PID for this HWnd
-   GetWindowThreadProcessId hWnd, idProc
+   GetWindowThreadProcessId hwnd, idProc
    
    ' Return PID
    ProcIDFromWnd = idProc
@@ -312,22 +317,22 @@ Public Sub makepoff(n As Integer)
   Dim vs As Integer
   Dim vx As Integer
   Dim vy As Integer
-  Dim X As Long
-  Dim Y As Long
+  Dim x As Long
+  Dim y As Long
   Dim t As Byte
   For t = 1 To 20
     an = (640 / 20) * t
     vs = Random(RobSize / 40, RobSize / 30)
-    vx = rob(n).vel.X + absx(an / 100, vs, 0, 0, 0)
-    vy = rob(n).vel.Y + absy(an / 100, vs, 0, 0, 0)
+    vx = rob(n).vel.x + absx(an / 100, vs, 0, 0, 0)
+    vy = rob(n).vel.y + absy(an / 100, vs, 0, 0, 0)
     With rob(n)
-    X = Random(.pos.X - .radius, .pos.X + .radius)
-    Y = Random(.pos.Y - .radius, .pos.Y + .radius)
+    x = Random(.pos.x - .radius, .pos.x + .radius)
+    y = Random(.pos.y - .radius, .pos.y + .radius)
     End With
     If Random(1, 2) = 1 Then
-      createshot X, Y, vx, vy, -100, 0, 0, RobSize * 2, rob(n).color
+      createshot x, y, vx, vy, -100, 0, 0, RobSize * 2, rob(n).color
     Else
-      createshot X, Y, vx, vy, -100, 0, 0, RobSize * 2, DBrite(rob(n).color)
+      createshot x, y, vx, vy, -100, 0, 0, RobSize * 2, DBrite(rob(n).color)
     End If
   Next t
 End Sub
@@ -335,7 +340,7 @@ End Sub
 ' not sure where to put this function, so it's going here
 ' adds robots on the fly loading the script of specie(r)
 ' if r=-1 loads a vegetable (used for repopulation)
-Public Sub aggiungirob(ByVal r As Integer, ByVal X As Single, ByVal Y As Single) 'Botsareus 5/22/2014 Bugfix by adding byval
+Public Sub aggiungirob(ByVal r As Integer, ByVal x As Single, ByVal y As Single) 'Botsareus 5/22/2014 Bugfix by adding byval
   Dim k As Integer
   Dim a As Integer
   Dim i As Integer
@@ -359,8 +364,8 @@ Public Sub aggiungirob(ByVal r As Integer, ByVal X As Single, ByVal Y As Single)
       GoTo getout
     End If
     
-    X = fRnd(SimOpts.Specie(r).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(r).Posrg * (SimOpts.FieldWidth - 60))
-    Y = fRnd(SimOpts.Specie(r).Postp * (SimOpts.FieldHeight - 60), SimOpts.Specie(r).Posdn * (SimOpts.FieldHeight - 60))
+    x = fRnd(SimOpts.Specie(r).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(r).Posrg * (SimOpts.FieldWidth - 60))
+    y = fRnd(SimOpts.Specie(r).Postp * (SimOpts.FieldHeight - 60), SimOpts.Specie(r).Posdn * (SimOpts.FieldHeight - 60))
   End If
   
   If SimOpts.Specie(r).Name <> "" And SimOpts.Specie(r).path <> "Invalid Path" Then
@@ -391,7 +396,7 @@ Public Sub aggiungirob(ByVal r As Integer, ByVal X As Single, ByVal Y As Single)
     rob(a).Dead = False
     rob(a).body = 1000
   '  EnergyAddedPerCycle = EnergyAddedPerCycle + 10000
-    rob(a).radius = FindRadius(rob(a).body)
+    rob(a).radius = FindRadius(a)
     rob(a).Mutations = 0
     rob(a).LastMut = 0
     rob(a).generation = 0
@@ -411,8 +416,8 @@ Public Sub aggiungirob(ByVal r As Integer, ByVal X As Single, ByVal Y As Single)
       rob(a).Shape = Random(3, 5)
     End If
     If rob(a).Fixed Then rob(a).mem(216) = 1
-    rob(a).pos.X = X
-    rob(a).pos.Y = Y
+    rob(a).pos.x = x
+    rob(a).pos.y = y
     
     
     rob(a).aim = Rnd * PI * 2 'Botsareus 5/30/2012 Added code to rotate the robot on placment

@@ -51,7 +51,6 @@ Public Sub FindSpecies()
 'counts species of robots at beginning of simulation
   Dim SpeciePointer As Integer
   Dim t As Integer
-  Dim nd As node
   Dim robcol(10) As Long
   Dim realname As String
   TotSpecies = 0
@@ -172,8 +171,7 @@ Public Sub Countpop()
   Dim SpeciePointer As Integer
   Dim SpeciesLeft As Integer
   Dim t As Integer
-  Dim P As Integer
-  Dim nd As node
+  Dim p As Integer
   Dim Winner As String
   Dim Wins As Single
   Dim realname As String
@@ -205,9 +203,9 @@ Static setoldpop As Boolean
   End If
   Contest_Form.Maxrounds.Caption = IIf(optMinRounds < Maxrounds And Contest_Form.Winner.Caption = "" Or Maxrounds = 0, optMinRounds, Maxrounds)
   SpeciesLeft = 0
-  For P = 1 To TotSpecies
-    SpeciesLeft = SpeciesLeft + PopArray(P).exist
-  Next P
+  For p = 1 To TotSpecies
+    SpeciesLeft = SpeciesLeft + PopArray(p).exist
+  Next p
   If SpeciesLeft = 1 And Contests + 1 <= MinRounds And Over = False Then
     For t = 1 To TotSpecies
       If PopArray(t).population <> 0 Then
@@ -403,7 +401,7 @@ won:
             Open App.path & "\Safemode.gset" For Output As #1
              Write #1, False
             Close #1
-            shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+            Call restarter
           Case 3
             If Winner = "robotA" Then populateladder
             If Winner = "robotB" Then
@@ -479,9 +477,9 @@ End If
 'RobotB
 file_name = dir$(leagueSourceDir & "\*.*")
 If file_name = "" Then
-    MsgBox "Go to " & MDIForm1.MainDir & "\league\stepladder to view your results.", vbExclamation, "League Complete!"
     x_restartmode = 0
     Kill App.path & "\restartmode.gset"
+    MsgBox "Go to " & MDIForm1.MainDir & "\league\stepladder to view your results.", vbExclamation, "League Complete!"
     Exit Sub
 Else
 FileCopy leagueSourceDir & "\" & file_name, MDIForm1.MainDir & "\league\robotB.txt"
@@ -501,7 +499,7 @@ Next
 Open App.path & "\Safemode.gset" For Output As #1
  Write #1, False
 Close #1
-shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
+Call restarter
 End Sub
 
 Public Sub dreason(ByVal Name As String, ByVal tag As String, ByVal reason As String)

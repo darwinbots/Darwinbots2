@@ -3,7 +3,7 @@ Object = "{FE0065C0-1B7B-11CF-9D53-00AA003C9CB6}#1.1#0"; "COMCT232.OCX"
 Begin VB.Form EnergyForm 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Energy Management"
-   ClientHeight    =   4620
+   ClientHeight    =   5025
    ClientLeft      =   2760
    ClientTop       =   3750
    ClientWidth     =   5610
@@ -11,34 +11,42 @@ Begin VB.Form EnergyForm
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   4620
+   ScaleHeight     =   5025
    ScaleWidth      =   5610
    ShowInTaskbar   =   0   'False
    Begin VB.Frame Frame1 
       Caption         =   "Incoming Energy"
-      Height          =   3975
+      Height          =   4335
       Left            =   120
       TabIndex        =   1
       Top             =   120
       Width           =   5415
       Begin VB.Frame ffmTides 
          Caption         =   "Tide Simulator (Advanced)"
-         Height          =   615
+         Height          =   975
          Left            =   2040
          TabIndex        =   18
          Top             =   720
          Width           =   3015
+         Begin VB.TextBox txtTideOf 
+            Height          =   285
+            Left            =   600
+            TabIndex        =   22
+            Text            =   "0"
+            Top             =   600
+            Width           =   825
+         End
          Begin VB.TextBox txtTide 
             Height          =   285
-            Left            =   120
+            Left            =   600
             TabIndex        =   19
             Text            =   "0"
             Top             =   240
-            Width           =   1200
+            Width           =   855
          End
          Begin ComCtl2.UpDown TideUpDn 
             Height          =   285
-            Left            =   1440
+            Left            =   1560
             TabIndex        =   21
             ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
             Top             =   240
@@ -48,6 +56,29 @@ Begin VB.Form EnergyForm
             _Version        =   327681
             Value           =   100
             BuddyControl    =   "txtTide"
+            BuddyDispid     =   196612
+            OrigLeft        =   3600
+            OrigTop         =   360
+            OrigRight       =   3855
+            OrigBottom      =   645
+            Increment       =   100
+            Max             =   32000
+            SyncBuddy       =   -1  'True
+            BuddyProperty   =   0
+            Enabled         =   -1  'True
+         End
+         Begin ComCtl2.UpDown OfUpDown 
+            Height          =   285
+            Left            =   1546
+            TabIndex        =   23
+            ToolTipText     =   "Set the length of day and night in game cycles. The value entered here represents one full cycle of both."
+            Top             =   600
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   503
+            _Version        =   327681
+            Value           =   100
+            BuddyControl    =   "txtTideOf"
             BuddyDispid     =   196611
             OrigLeft        =   3600
             OrigTop         =   360
@@ -58,6 +89,22 @@ Begin VB.Form EnergyForm
             SyncBuddy       =   -1  'True
             BuddyProperty   =   0
             Enabled         =   -1  'True
+         End
+         Begin VB.Label Label3 
+            Caption         =   "offset"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   25
+            Top             =   645
+            Width           =   495
+         End
+         Begin VB.Label Label2 
+            Caption         =   "cycles"
+            Height          =   255
+            Left            =   1920
+            TabIndex        =   24
+            Top             =   600
+            Width           =   615
          End
          Begin VB.Label lblTides 
             Caption         =   "cycles (off)"
@@ -82,7 +129,7 @@ Begin VB.Form EnergyForm
          Height          =   2535
          Left            =   120
          TabIndex        =   6
-         Top             =   1320
+         Top             =   1680
          Width           =   5175
          Begin VB.OptionButton ThresholdMode 
             Caption         =   "Advance Sun to Dawn / Dusk"
@@ -160,7 +207,7 @@ Begin VB.Form EnergyForm
             Value           =   100
             AutoBuddy       =   -1  'True
             BuddyControl    =   "SunDownThreshold"
-            BuddyDispid     =   196618
+            BuddyDispid     =   196621
             OrigLeft        =   3600
             OrigTop         =   840
             OrigRight       =   3855
@@ -184,7 +231,7 @@ Begin VB.Form EnergyForm
             Value           =   100
             AutoBuddy       =   -1  'True
             BuddyControl    =   "SunUpThreshold"
-            BuddyDispid     =   196619
+            BuddyDispid     =   196622
             OrigLeft        =   3600
             OrigTop         =   1320
             OrigRight       =   3855
@@ -236,7 +283,7 @@ Begin VB.Form EnergyForm
          Value           =   100
          AutoBuddy       =   -1  'True
          BuddyControl    =   "DNLength"
-         BuddyDispid     =   196621
+         BuddyDispid     =   196624
          OrigLeft        =   3600
          OrigTop         =   360
          OrigRight       =   3855
@@ -262,7 +309,7 @@ Begin VB.Form EnergyForm
       Height          =   375
       Left            =   2160
       TabIndex        =   0
-      Top             =   4200
+      Top             =   4560
       Width           =   1215
    End
 End
@@ -329,10 +376,11 @@ Private Sub Form_Load()
   chkRnd.value = TmpOpts.SunOnRnd * True
   
   txtTide = TmpOpts.Tides
+  txtTideOf = TmpOpts.TidesOf
 End Sub
 
 Private Sub OKButton_Click()
-  Me.Hide
+  Unload Me
 End Sub
 
 Private Sub SunDown_Click()
@@ -366,4 +414,11 @@ If txtTide < 0 Then txtTide = 0
 If txtTide > 32000 Then txtTide = 32000
 If txtTide = 0 Then lblTides = "cycles (off)" Else lblTides = "cycles"
 TmpOpts.Tides = txtTide
+End Sub
+
+Private Sub txtTideOf_Change()
+txtTideOf = Int(val(txtTideOf))
+If txtTideOf < 0 Then txtTideOf = 0
+If txtTideOf > 32000 Then txtTideOf = 32000
+TmpOpts.TidesOf = txtTideOf
 End Sub
