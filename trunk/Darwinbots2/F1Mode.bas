@@ -387,6 +387,16 @@ won:
           Form1.Active = False
           Form1.SecTimer.Enabled = False
           Select Case x_restartmode 'all new league components start with "x_"
+          Case 10
+            If Winner = "robotA" Then FileCopy MDIForm1.MainDir & "\league\robotA.txt", MDIForm1.MainDir & "\league\seeded\" & robotA
+            Open App.path & "\restartmode.gset" For Output As #1
+                Write #1, 10
+                Write #1, x_filenumber
+            Close #1
+            Open App.path & "\Safemode.gset" For Output As #1
+             Write #1, False
+            Close #1
+            Call restarter
           Case 6
             If Winner = "Test" Then UpdateWonF1
             If Winner = "Base" Then UpdateLostF1

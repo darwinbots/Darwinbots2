@@ -355,12 +355,11 @@ Public Sub UpdateSim()
 b:
     End If
   Next t
-  If totlen > 3820000 Then
+  If totlen > 4000000 Then
     Dim calcminenergy As Single
     Dim selectrobot As Integer
     Dim maxdel As Long
 
-    globalreprodisable = True 'Botsareus 9/30/2014 Minor idea from Peter
     maxdel = 1500 * (CLng(TotalRobotsDisplayed) * 425 / totlen)
 
     For i = 0 To maxdel
@@ -375,8 +374,11 @@ b:
         Next t
         Call KillRobot(selectrobot)
     Next i
-  Else
-   globalreprodisable = False 'Botsareus 9/30/2014 Minor idea from Peter
+  End If
+  If totlen > 3000000 Then
+        For t = 1 To MaxRobs
+            rob(t).LastMutDetail = ""
+        Next t
   End If
 
   'Botsareus 5/6/2013 The safemode system
@@ -405,6 +407,21 @@ b:
         Open App.path & "\Safemode.gset" For Output As #1
          Write #1, False
         Close #1
+        Call restarter
+    End If
+    If totnvegsDisplayed > 700 Then
+        FileCopy MDIForm1.MainDir & "\league\Test.txt", NamefileRecursive(MDIForm1.MainDir & "\league\seeded\" & totnvegsDisplayed & ".txt")
+        Open App.path & "\restartmode.gset" For Output As #1
+         Write #1, x_restartmode
+         Write #1, x_filenumber
+        Close #1
+        Open App.path & "\Safemode.gset" For Output As #1
+         Write #1, False
+        Close #1
+        DisplayActivations = False
+        Form1.Active = False
+        Form1.SecTimer.Enabled = False
+        '
         Call restarter
     End If
   End If

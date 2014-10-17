@@ -355,8 +355,8 @@ Help.text = ""
     Help.text = Help.text + "refage" + vbTab + "-----" + vbTab + "How old are you? Returns the number to me" + vbCrLf
     Help.text = Help.text + "refaim" + vbTab + "-----" + vbTab + "Which direction are you facing? Returns the number to me" + vbCrLf
     Help.text = Help.text + "reftie" + vbTab + "-----" + vbTab + "How many .tie commands do you have in your DNA? Returns the number to me" + vbCrLf
-    Help.text = Help.text + "refpoison" + vbTab + "-----" + vbTab + "How many .strpoison commands do you have in your DNA? Returns the number to me" + vbCrLf
-    Help.text = Help.text + "refvenom" + vbTab + "-----" + vbTab + "How many .strvenom commands do you have in your DNA? Returns the number to me" + vbCrLf
+    Help.text = Help.text + "refpoison" + vbTab + "-----" + vbTab + "How many .mkpoison commands do you have in your DNA? Returns the number to me" + vbCrLf
+    Help.text = Help.text + "refvenom" + vbTab + "-----" + vbTab + "How many .mkvenom commands do you have in your DNA? Returns the number to me" + vbCrLf
     Help.text = Help.text + "reffixed" + vbTab + "-----" + vbTab + "Are you fixed to the spot like a blocked veggie? HaHa!" + vbCrLf
     Help.text = Help.text + "refkills" + vbTab + "-----" + vbTab + "How many robots have you killed? If you are too tough then maybe I should run away" + vbCrLf
 
@@ -374,8 +374,8 @@ Help.text = ""
     Help.text = Help.text + "myshoot" + vbTab + "-----" + vbTab + "How many .shoot commands I you have in my DNA? Returns the number to me" + vbCrLf
     Help.text = Help.text + "myeye" + vbTab + "-----" + vbTab + "How many .eye commands I you have in my DNA? Returns the number to me" + vbCrLf
     Help.text = Help.text + "myties" + vbTab + "-----" + vbTab + "How many .tie commands I you have in my DNA? Returns the number to me" + vbCrLf
-    Help.text = Help.text + "mypoison" + vbTab + "-----" + vbTab + "How many .strpoison commands I you have in my DNA? Returns the number to me" + vbCrLf
-    Help.text = Help.text + "myvenom" + vbTab + "-----" + vbTab + "How many .strvenom commands I you have in my DNA? Returns the number to me" + vbCrLf
+    Help.text = Help.text + "mypoison" + vbTab + "-----" + vbTab + "How many .mkpoison commands I you have in my DNA? Returns the number to me" + vbCrLf
+    Help.text = Help.text + "myvenom" + vbTab + "-----" + vbTab + "How many .mkvenom commands I you have in my DNA? Returns the number to me" + vbCrLf
     Help.text = Help.text + "kills" + vbTab + "-----" + vbTab + "How many other robots have I killed? Returns the number to me" + vbCrLf
 
 
@@ -953,8 +953,8 @@ Private Sub Form_Load() ''Botsareus 8/7/2012 mod for new version
     Help.text = Help.text + "refage" + vbTab + "-----" + vbTab + "How old are you? Returns the number to me" + vbCrLf
     Help.text = Help.text + "refaim" + vbTab + "-----" + vbTab + "Which direction are you facing? Returns the number to me" + vbCrLf
     Help.text = Help.text + "reftie" + vbTab + "-----" + vbTab + "How many .tie commands do you have in your DNA? Returns the number to me" + vbCrLf
-    Help.text = Help.text + "refpoison" + vbTab + "-----" + vbTab + "How many .strpoison commands do you have in your DNA? Returns the number to me" + vbCrLf
-    Help.text = Help.text + "refvenom" + vbTab + "-----" + vbTab + "How many .strvenom commands do you have in your DNA? Returns the number to me" + vbCrLf
+    Help.text = Help.text + "refpoison" + vbTab + "-----" + vbTab + "How many .mkpoison commands do you have in your DNA? Returns the number to me" + vbCrLf
+    Help.text = Help.text + "refvenom" + vbTab + "-----" + vbTab + "How many .mkvenom commands do you have in your DNA? Returns the number to me" + vbCrLf
     Help.text = Help.text + "reffixed" + vbTab + "-----" + vbTab + "Are you fixed to the spot like a blocked veggie? HaHa!" + vbCrLf
     Help.text = Help.text + "refkills" + vbTab + "-----" + vbTab + "How many robots have you killed? If you are too tough then maybe I should run away" + vbCrLf
     Help.text = Help.text + "reftype" + vbTab + "-----" + vbTab + "What am I looking at? Returns the type of object in the focus eye. A shape returns one. A bot zero." + vbCrLf
@@ -980,8 +980,8 @@ Private Sub Form_Load() ''Botsareus 8/7/2012 mod for new version
     Help.text = Help.text + "myshoot" + vbTab + "-----" + vbTab + "How many .shoot commands I you have in my DNA? Returns the number to me" + vbCrLf
     Help.text = Help.text + "myeye" + vbTab + "-----" + vbTab + "How many .eye commands I you have in my DNA? Returns the number to me" + vbCrLf
     Help.text = Help.text + "myties" + vbTab + "-----" + vbTab + "How many .tie commands I you have in my DNA? Returns the number to me" + vbCrLf
-    Help.text = Help.text + "mypoison" + vbTab + "-----" + vbTab + "How many .strpoison commands I you have in my DNA? Returns the number to me" + vbCrLf
-    Help.text = Help.text + "myvenom" + vbTab + "-----" + vbTab + "How many .strvenom commands I you have in my DNA? Returns the number to me" + vbCrLf
+    Help.text = Help.text + "mypoison" + vbTab + "-----" + vbTab + "How many .mkpoison commands I you have in my DNA? Returns the number to me" + vbCrLf
+    Help.text = Help.text + "myvenom" + vbTab + "-----" + vbTab + "How many .mkvenom commands I you have in my DNA? Returns the number to me" + vbCrLf
     Help.text = Help.text + "kills" + vbTab + "-----" + vbTab + "How many other robots have I killed? Returns the number to me" + vbCrLf
 
 

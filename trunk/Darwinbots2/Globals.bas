@@ -116,10 +116,6 @@ Public LFORcorr As Single 'correction
 Public hidepred As Boolean
 Public target_dna_size As Integer
 
-'Botsareus 9/30/2014 More out of memory preventive stuff
-
-Public globalreprodisable As Boolean
-
 ' var structure, to store the correspondance name<->value
 Public Type var
   Name As String

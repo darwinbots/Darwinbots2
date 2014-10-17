@@ -42,7 +42,7 @@ Begin VB.Form frmGset
       _Version        =   393216
       Style           =   1
       Tabs            =   4
-      Tab             =   1
+      Tab             =   2
       TabsPerRow      =   4
       TabHeight       =   520
       BackColor       =   12632256
@@ -50,40 +50,41 @@ Begin VB.Form frmGset
       TabPicture(0)   =   "frmGset.frx":0000
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "ffmInitChlr"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "ffmFBSBO"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).Control(2)=   "chkSafeMode"
-      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).Control(3)=   "ffmMainDir"
-      Tab(0).Control(3).Enabled=   0   'False
       Tab(0).Control(4)=   "Frame1"
-      Tab(0).Control(4).Enabled=   0   'False
       Tab(0).Control(5)=   "ffmCheatin"
-      Tab(0).Control(5).Enabled=   0   'False
       Tab(0).Control(6)=   "ffmUI"
-      Tab(0).Control(6).Enabled=   0   'False
       Tab(0).ControlCount=   7
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
-      Tab(1).ControlEnabled=   -1  'True
-      Tab(1).Control(0)=   "ffmEpiReset"
-      Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "ffmSunMut"
-      Tab(1).Control(1).Enabled=   0   'False
+      Tab(1).ControlEnabled=   0   'False
+      Tab(1).Control(0)=   "ffmSunMut"
+      Tab(1).Control(1)=   "ffmEpiReset"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
-      Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Command1"
-      Tab(2).Control(1)=   "chkAddarob"
-      Tab(2).Control(2)=   "ffmDisqualification"
-      Tab(2).Control(3)=   "ffmFudge"
-      Tab(2).Control(4)=   "chkStepladder"
-      Tab(2).Control(5)=   "txtSourceDir"
-      Tab(2).Control(6)=   "chkTournament"
-      Tab(2).Control(7)=   "lblSource"
-      Tab(2).ControlCount=   8
+      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).Control(0)=   "lblSource"
+      Tab(2).Control(0).Enabled=   0   'False
+      Tab(2).Control(1)=   "chkTournament"
+      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(2)=   "txtSourceDir"
+      Tab(2).Control(2).Enabled=   0   'False
+      Tab(2).Control(3)=   "chkStepladder"
+      Tab(2).Control(3).Enabled=   0   'False
+      Tab(2).Control(4)=   "ffmFudge"
+      Tab(2).Control(4).Enabled=   0   'False
+      Tab(2).Control(5)=   "ffmDisqualification"
+      Tab(2).Control(5).Enabled=   0   'False
+      Tab(2).Control(6)=   "chkAddarob"
+      Tab(2).Control(6).Enabled=   0   'False
+      Tab(2).Control(7)=   "Command1"
+      Tab(2).Control(7).Enabled=   0   'False
+      Tab(2).Control(8)=   "chkFilter"
+      Tab(2).Control(8).Enabled=   0   'False
+      Tab(2).ControlCount=   9
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
       Tab(3).ControlEnabled=   0   'False
@@ -94,12 +95,20 @@ Begin VB.Form frmGset
       Tab(3).Control(4)=   "chkSurvivalEco"
       Tab(3).Control(5)=   "btnEvoRES"
       Tab(3).ControlCount=   6
+      Begin VB.CheckBox chkFilter 
+         Caption         =   "Filter by specific robot"
+         Height          =   195
+         Left            =   3000
+         TabIndex        =   91
+         Top             =   2280
+         Width           =   5415
+      End
       Begin VB.CommandButton Command1 
          Caption         =   "League Restrictions"
          Height          =   375
-         Left            =   -68880
+         Left            =   6120
          TabIndex        =   87
-         Top             =   3960
+         Top             =   4080
          Width           =   2175
       End
       Begin VB.CommandButton btnEvoRES 
@@ -113,9 +122,9 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkAddarob 
          Caption         =   "Add a single robot to existing league"
          Height          =   195
-         Left            =   -70200
+         Left            =   4800
          TabIndex        =   85
-         Top             =   2160
+         Top             =   1920
          Visible         =   0   'False
          Width           =   5415
       End
@@ -269,9 +278,9 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmDisqualification 
          Caption         =   "Disqualification Rules on Contest"
          Height          =   975
-         Left            =   -72120
+         Left            =   2880
          TabIndex        =   63
-         Top             =   3600
+         Top             =   3720
          Width           =   3015
          Begin VB.OptionButton optDisqua 
             Caption         =   "F3"
@@ -331,9 +340,9 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmFudge 
          Caption         =   "Fudging on F1 Contest"
          Height          =   975
-         Left            =   -72120
+         Left            =   2880
          TabIndex        =   56
-         Top             =   2520
+         Top             =   2640
          Width           =   5535
          Begin VB.OptionButton optFudging 
             Caption         =   "All possible recognition methods"
@@ -367,32 +376,32 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkStepladder 
          Caption         =   "Stepladder league     (click for more options)"
          Height          =   195
-         Left            =   -72000
+         Left            =   3000
          TabIndex        =   55
-         Top             =   2160
+         Top             =   1920
          Width           =   5415
       End
       Begin VB.TextBox txtSourceDir 
          Height          =   405
-         Left            =   -72000
+         Left            =   3000
          TabIndex        =   54
          Text            =   "C:\"
-         Top             =   1200
+         Top             =   960
          Visible         =   0   'False
          Width           =   5415
       End
       Begin VB.CheckBox chkTournament 
          Caption         =   "Tournament league"
          Height          =   195
-         Left            =   -72000
+         Left            =   3000
          TabIndex        =   52
-         Top             =   1800
+         Top             =   1560
          Width           =   1815
       End
       Begin VB.Frame ffmSunMut 
          Caption         =   "Sunline Mutations"
          Height          =   3775
-         Left            =   840
+         Left            =   -74160
          TabIndex        =   30
          Top             =   1280
          Width           =   9135
@@ -596,7 +605,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmEpiReset 
          Caption         =   "Epigenetic Reset"
          Height          =   735
-         Left            =   1560
+         Left            =   -73440
          TabIndex        =   23
          Top             =   460
          Width           =   7575
@@ -829,9 +838,9 @@ Begin VB.Form frmGset
       Begin VB.Label lblSource 
          Caption         =   "Source Directory"
          Height          =   375
-         Left            =   -72000
+         Left            =   3000
          TabIndex        =   53
-         Top             =   960
+         Top             =   720
          Visible         =   0   'False
          Width           =   1935
       End
@@ -1166,6 +1175,20 @@ If txtSourceDir.Visible Then
             x_filenumber = 0
             populateladder
         End If
+    ElseIf chkFilter.value = 1 Then
+        optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
+        FileCopy robpath, MDIForm1.MainDir & "\league\robotB.txt"
+        Open App.path & "\restartmode.gset" For Output As #1
+            Write #1, 10
+            Write #1, 1
+        Close #1
+        Open App.path & "\Safemode.gset" For Output As #1
+         Write #1, False
+        Close #1
+        Open App.path & "\autosaved.gset" For Output As #1
+         Write #1, False
+        Close #1
+        Call restarter
     Else
         optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
         Open App.path & "\restartmode.gset" For Output As #1
@@ -1338,6 +1361,36 @@ txtMEmp.Enabled = chkEpiReset.value = 1
 txtOP.Enabled = chkEpiReset.value = 1
 End Sub
 
+Private Sub chkFilter_Click()
+If chkFilter.value = 1 Then
+    chkTournament.value = 0
+    chkStepladder.value = 0
+    chkSurvivalSimple.value = 0
+    chkZBmode.value = 0
+    chkSurvivalEco.value = 0
+    lblSource.Visible = True
+    txtSourceDir.Visible = True
+  optionsform.CommonDialog1.FileName = ""
+  optionsform.CommonDialog1.Filter = "Dna file(*.txt)|*.txt" 'Botsareus 1/11/2013 DNA only
+  optionsform.CommonDialog1.InitDir = MDIForm1.MainDir + "\robots"
+  optionsform.CommonDialog1.DialogTitle = WSchoosedna
+  optionsform.CommonDialog1.ShowOpen
+  If optionsform.CommonDialog1.FileName <> "" Then 'Botsareus 1/11/2013 Do not insert robot if filename is blank
+   robpath = optionsform.CommonDialog1.FileName
+  Else
+    GoTo fine
+  End If
+Else
+    If Not chkStepladder.value = 1 And Not chkTournament.value = 1 Then
+        lblSource.Visible = False
+        txtSourceDir.Visible = False
+    End If
+End If
+Exit Sub
+fine:
+chkFilter.value = 0
+End Sub
+
 Private Sub chkNorm_Click()
 txtDnalen.Visible = chkNorm.value = 1
 lblDnalen.Visible = chkNorm.value = 1
@@ -1351,8 +1404,9 @@ If chkStepladder.value = 1 Then
     chkSurvivalSimple.value = 0
     chkSurvivalEco.value = 0
     chkZBmode.value = 0
+    chkFilter.value = 0
 Else
-    If Not chkTournament.value = 1 Then
+    If Not chkTournament.value = 1 And Not chkFilter.value = 1 Then
         lblSource.Visible = False
         txtSourceDir.Visible = False
     End If
@@ -1371,6 +1425,7 @@ If chkSurvivalEco.value = 1 Then
     chkIM.Visible = True
     chkNormSize.Visible = False
     chkNormSize.value = 0
+    chkFilter.value = 0
 End If
 ffmSurvival.Visible = chkSurvivalEco.value = 1
 'default chloroplasts
@@ -1381,6 +1436,7 @@ Private Sub chkSurvivalSimple_Click()
 If chkSurvivalSimple.value = 1 Then
     chkStepladder.value = 0
     chkTournament.value = 0
+    chkFilter.value = 0
     chkZBmode.value = 0
     chkSurvivalEco.value = 0
     chkNormSize.Visible = True
@@ -1399,9 +1455,10 @@ If chkTournament.value = 1 Then
     chkSurvivalSimple.value = 0
     chkZBmode.value = 0
     chkSurvivalEco.value = 0
+    chkFilter.value = 0
 Else
     chkStepladder.Caption = "Stepladder league"
-    If Not chkStepladder.value = 1 Then
+    If Not chkStepladder.value = 1 And Not chkFilter.value = 1 Then
         lblSource.Visible = False
         txtSourceDir.Visible = False
     End If
@@ -1428,6 +1485,7 @@ If chkZBmode.value = 1 Then
     chkNormSize.value = 0
     chkShowGraphs.value = 0
     chkSurvivalEco.value = 0
+    chkFilter.value = 0
 End If
 ffmZeroBot.Visible = chkZBmode.value = 1
 txtStartChlr = 16000 'default chloroplasts
