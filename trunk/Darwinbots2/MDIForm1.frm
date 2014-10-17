@@ -2319,8 +2319,6 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
   TmpOpts.SunUp = False   'Set to a reasonable default value
   TmpOpts.SunDownThreshold = 1000000   'Set to a reasonable default value
   TmpOpts.SunDown = False   'Set to a reasonable default value
-  TmpOpts.AutoSaveStripMutations = False
-  TmpOpts.AutoSaveDeleteOlderFiles = False
   TmpOpts.FixedBotRadii = False
   TmpOpts.SunThresholdMode = 0
   TmpOpts.PhysMoving = 0.66
@@ -2479,6 +2477,36 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     'new seed and run sim
                     chseedstartnew = True
                     optionsform.StartNew_Click
+            Case 10 'Botsareus 10/13/2014 From Peter
+                Set files = getfiles(leagueSourceDir)
+                    If x_filenumber > files.count Then
+                        'Botsareus 2/25/2014 end of normal tournament league
+                        MsgBox "Go to " & MDIForm1.MainDir & "\league\seeded to view your results.", vbExclamation, "League Complete!"
+                        x_restartmode = 0
+                        Kill App.path & "\restartmode.gset"
+                        GoTo skipsetup
+                    End If
+                    SimOpts = TmpOpts
+                    'copy robot
+                    robotA = extractname(files(x_filenumber))
+                    FileCopy files(x_filenumber), MDIForm1.MainDir & "\league\robotA.txt"
+                    'now update file number
+                    x_filenumber = x_filenumber + 1
+                    'load robot
+                    optionsform.additem MDIForm1.MainDir & "\league\robotA.txt"
+                    optionsform.additem MDIForm1.MainDir & "\league\robotB.txt"
+                    'disable mutations
+                    For i = 0 To UBound(TmpOpts.Specie)
+                     If TmpOpts.Specie(i).Name = "robotA.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                     If TmpOpts.Specie(i).Name = "robotB.txt" Then TmpOpts.Specie(i).Mutables.Mutations = False
+                    Next
+                    load_league_res
+                    'F1 desabled
+                    TmpOpts.F1 = True
+                    'new seed and run sim
+                    chseedstartnew = True
+                    optionsform.StartNew_Click
+                    Exit Sub
             Case 1
                 Set files = getfiles(leagueSourceDir)
                     If x_filenumber > files.count Then
