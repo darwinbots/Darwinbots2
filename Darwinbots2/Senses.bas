@@ -464,38 +464,40 @@ Public Sub makeoccurrlist(n As Integer)
     Next t
     t = 1
     k = 1
-    While Not (.DNA(t).tipo = 10 And .DNA(t).value = 1) And t <= 32000 And t < UBound(.DNA) 'Botsareus 6/16/2012 Added code to check upper bounds
+    While Not (.dna(t).tipo = 10 And .dna(t).value = 1) And t <= 32000 And t < UBound(.dna) 'Botsareus 6/16/2012 Added code to check upper bounds
       
-      If .DNA(t).tipo = 0 Then 'number
-        If .DNA(t).value < 8 And .DNA(t).value > 0 Then 'if we are dealing with one of the first 8 sysvars
-          If .DNA(t + 1).tipo = 7 Then 'DNA is going to store to this value, so it's probably a sysvar
-            .occurr(.DNA(t).value) = .occurr(.DNA(t).value) + 1 'then the occur listing for this fxn is incremented
+      If .dna(t).tipo = 0 Then 'number
+      
+        If .dna(t + 1).tipo = 7 Then 'DNA is going to store to this value, so it's probably a sysvar
+          
+          If .dna(t).value < 8 And .dna(t).value > 0 Then 'if we are dealing with one of the first 8 sysvars
+            .occurr(.dna(t).value) = .occurr(.dna(t).value) + 1 'then the occur listing for this fxn is incremented
           End If
+          
+          If .dna(t).value = 826 Then 'referencing .strpoison
+            .occurr(10) = .occurr(10) + 1
+          End If
+        
+          If .dna(t).value = 824 Then  'refencing .strvenom
+            .occurr(11) = .occurr(11) + 1
+          End If
+              
         End If
         
-        If .DNA(t).value = 330 Then 'the bot is referencing .tie 'Botsareus 11/29/2013 Moved to "." list
+        If .dna(t).value = 330 Then 'the bot is referencing .tie 'Botsareus 11/29/2013 Moved to "." list
           .occurr(9) = .occurr(9) + 1 'ties
         End If
         
       End If
       
-      If .DNA(t).tipo = 1 Then '*number
-        If .DNA(t).value > 500 And .DNA(t).value < 510 Then 'the bot is referencing an eye
+      If .dna(t).tipo = 1 Then '*number
+        If .dna(t).value > 500 And .dna(t).value < 510 Then 'the bot is referencing an eye
           .occurr(8) = .occurr(8) + 1 'eyes
-        End If
-           
-        If .DNA(t).value = 826 Or .DNA(t).value = 827 Then 'referencing either .strpoison or .poison
-          .occurr(10) = .occurr(10) + 1   'poison controls
-        End If
-      
-        If .DNA(t).value = 824 Or .DNA(t).value = 825 Then 'refencing either .strvenom or .venom
-          .occurr(11) = .occurr(11) + 1   'venom controls Botsareus 2/17/2014 Bug fix
         End If
       End If
       
       t = t + 1
     Wend
-exitwhile:
 
     'creates the "ownvars" our own readbacks as versions of the refvars seen by others
     For t = 1 To 8
