@@ -244,7 +244,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As file
+  Dim robotFile As File
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -447,7 +447,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As file
+  Dim fileToDelete As File
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -549,21 +549,21 @@ Public Sub SaveSimulation(path As String)
       End If
     Next t
     
-    Put #1, , Len(SimOpts.AutoRobPath)
-    Put #1, , SimOpts.AutoRobPath
-    Put #1, , SimOpts.AutoRobTime
-    Put #1, , Len(SimOpts.AutoSimPath)
-    Put #1, , SimOpts.AutoSimPath
-    Put #1, , SimOpts.AutoSimTime
+    Put #1, , Len("null")
+    Put #1, , "null"
+    Put #1, , 0
+    Put #1, , Len("null")
+    Put #1, , "null"
+    Put #1, , 0
     Put #1, , SimOpts.BlockedVegs
     Put #1, , SimOpts.Costs(SHOTCOST)
     Put #1, , SimOpts.CostExecCond
     Put #1, , SimOpts.Costs(COSTSTORE)
-    Put #1, , SimOpts.DBEnable
-    Put #1, , SimOpts.DBExcludeVegs
-    Put #1, , Len(SimOpts.DBName)
-    Put #1, , SimOpts.DBName
-    Put #1, , SimOpts.DBRecDna
+    Put #1, , False
+    Put #1, , False
+    Put #1, , Len("null")
+    Put #1, , "null"
+    Put #1, , False
     Put #1, , SimOpts.DisableTies
     Put #1, , SimOpts.EnergyExType
     Put #1, , SimOpts.EnergyFix
@@ -709,8 +709,8 @@ Public Sub SaveSimulation(path As String)
     Put #1, , SimOpts.SunUp 'EricL 6/8/2006 Added this
     Put #1, , SimOpts.SunDownThreshold 'EricL 6/8/2006 Added this
     Put #1, , SimOpts.SunDown 'EricL 6/8/2006 Added this
-    Put #1, , SimOpts.AutoSaveStripMutations
-    Put #1, , SimOpts.AutoSaveDeleteOlderFiles
+    Put #1, , False
+    Put #1, , False
     Put #1, , SimOpts.FixedBotRadii
     Put #1, , SimOpts.DayNightCycleCounter
     Put #1, , SimOpts.Daytime
@@ -728,7 +728,7 @@ Public Sub SaveSimulation(path As String)
       SaveObstacle 1, x
     Next x
     
-    Put #1, , SimOpts.AutoSaveDeleteOldBotFiles
+    Put #1, , False
     
     For k = 0 To SimOpts.SpeciesNum - 1
       Put #1, , SimOpts.Specie(k).CantSee
@@ -827,6 +827,10 @@ Public Sub SaveSimulation(path As String)
    Put #1, , SunPosition
    Put #1, , SunRange
    Put #1, , SunChange
+   
+   'Botsareus 10/13/2014
+   Put #1, , SimOpts.Tides
+   Put #1, , SimOpts.TidesOf
        
     Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     
@@ -1086,21 +1090,21 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
     RemapAllTies MaxRobs
 
     
-    Get #1, , k: SimOpts.AutoRobPath = Space(k)
-    Get #1, , SimOpts.AutoRobPath
-    Get #1, , SimOpts.AutoRobTime
-    Get #1, , k: SimOpts.AutoSimPath = Space(k)
-    Get #1, , SimOpts.AutoSimPath
-    Get #1, , SimOpts.AutoSimTime
+    Get #1, , k: temp = Space(k)
+    Get #1, , temp
+    Get #1, , tempint
+    Get #1, , k: temp = Space(k)
+    Get #1, , temp
+    Get #1, , tempint
     Get #1, , SimOpts.BlockedVegs
     Get #1, , SimOpts.Costs(SHOTCOST)
     Get #1, , SimOpts.CostExecCond
     Get #1, , SimOpts.Costs(COSTSTORE)
-    Get #1, , SimOpts.DBEnable
-    Get #1, , SimOpts.DBExcludeVegs
-    Get #1, , k: SimOpts.DBName = Space(k)
-    Get #1, , SimOpts.DBName
-    Get #1, , SimOpts.DBRecDna
+    Get #1, , tempbool
+    Get #1, , tempbool
+    Get #1, , k: temp = Space(k)
+    Get #1, , temp
+    Get #1, , tempbool
     Get #1, , SimOpts.DisableTies
     Get #1, , SimOpts.EnergyExType
     Get #1, , SimOpts.EnergyFix
@@ -1279,11 +1283,8 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
     SimOpts.SunDown = False   'Set to a reasonable default value for older saved sim files
     If Not EOF(1) Then Get #1, , SimOpts.SunDown 'EricL 6/8/2006 Added this
     
-    SimOpts.AutoSaveStripMutations = False
-    If Not EOF(1) Then Get #1, , SimOpts.AutoSaveStripMutations
-    
-    SimOpts.AutoSaveDeleteOlderFiles = False
-    If Not EOF(1) Then Get #1, , SimOpts.AutoSaveDeleteOlderFiles
+    If Not EOF(1) Then Get #1, , tempbool
+    If Not EOF(1) Then Get #1, , tempbool
     
     SimOpts.FixedBotRadii = False
     If Not EOF(1) Then Get #1, , SimOpts.FixedBotRadii
@@ -1319,8 +1320,7 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
       LoadObstacle 1, x
     Next x
     
-    SimOpts.AutoSaveDeleteOldBotFiles = False
-    If Not EOF(1) Then Get #1, , SimOpts.AutoSaveDeleteOldBotFiles
+    If Not EOF(1) Then Get #1, , tempbool
     
     For k = 0 To SimOpts.SpeciesNum - 1
       SimOpts.Specie(k).CantSee = False
@@ -1513,6 +1513,10 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
    If Not EOF(1) Then Get #1, , SunPosition
    If Not EOF(1) Then Get #1, , SunRange
    If Not EOF(1) Then Get #1, , SunChange
+   
+   'Botsareus 10/13/2014
+   If Not EOF(1) Then Get #1, , SimOpts.Tides
+   If Not EOF(1) Then Get #1, , SimOpts.TidesOf
     
    Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     

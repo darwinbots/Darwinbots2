@@ -2080,8 +2080,6 @@ End Sub
 ' ties parent and son, and the miracle of birth is accomplished
 Public Sub Reproduce(n As Integer, per As Integer)
 
-If globalreprodisable Then Exit Sub 'Botsareus 9/30/2014 Out of memory prevention
-
 If reprofix Then If per < 3 Then rob(n).Dead = True 'Botsareus 4/27/2013 kill 8/26/2014 greedy robots
 
 If rob(n).body < 5 Then Exit Sub 'Botsareus 3/27/2014 An attempt to prevent 'robot bursts'
@@ -2393,8 +2391,6 @@ End Sub
 
 ' New Sexual Reproduction routine from EricL Jan 2008  -Botsareus 4/2/2013 Sexrepro fix
 Public Function SexReproduce(female As Integer)
-
-If globalreprodisable Then Exit Function 'Botsareus 9/30/2014 Out of memory prevention
 
 If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).Dead = True 'Botsareus 4/27/2013 kill 8/26/2014 greedy robots
 
@@ -2961,13 +2957,6 @@ End If
  Dim x As Long
  
   If n = -1 Then n = robfocus
-  
-  If SimOpts.DBEnable Then
-    If rob(n).Veg And SimOpts.DBExcludeVegs Then
-    Else
-      AddRecord n
-    End If
-  End If
    
   rob(n).Fixed = False
   rob(n).Veg = False
@@ -2999,6 +2988,7 @@ End If
   ReDim rob(n).delgenes(0)
   ReDim rob(n).delgenes(0).dna(0)
   '
+  rob(n).LastMutDetail = ""
   
   If n = MaxRobs Then
     Dim b As Integer

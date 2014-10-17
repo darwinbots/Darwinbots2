@@ -79,23 +79,13 @@ Public Type SimOptions
   Toroidal As Boolean
   Updnconnected As Boolean
   Dxsxconnected As Boolean
-  '
-  AutoSimPath As String
-  AutoSimTime As Integer
-  AutoRobPath As String
-  AutoRobTime As Integer
-  '
+
   MutCurrMult As Single
   MutOscill As Boolean
   MutCycMax As Long
   MutCycMin As Long
   DisableMutations As Boolean ' Indicates whether all mutations should be disabled
-  '
-  DBName As String
-  DBEnable As Boolean
-  DBExcludeVegs As Boolean
-  DBRecDna As Boolean
-  '
+
   F1 As Boolean
   League As Boolean
   Restart As Boolean
@@ -173,13 +163,10 @@ Public Type SimOptions
   SunDown As Boolean 'EricL 6/7/2006 Indicates if we are using the option to have the sun rise on a nrg threshold
   SunDownThreshold As Long
   DynamicCosts As Boolean ' Indicates whether dynamic cost adjustment is enabled
-  AutoSaveStripMutations As Boolean ' Should mutation details be stripped in auto-saved sim files
-  AutoSaveDeleteOlderFiles As Boolean ' Should old auto-saved files be deleted as new ones are created?
   FixedBotRadii As Boolean
   DayNightCycleCounter As Long
   SunThresholdMode As Integer
-  AutoSaveDeleteOldBotFiles As Boolean ' Should old auto-saved best bot files be deleted as new ones are created?
-  
+ 
   'Shapes Stuff
   shapesAreVisable As Boolean ' Flag indicates whether to populate bot eye values for shapes
   allowVerticalShapeDrift As Boolean

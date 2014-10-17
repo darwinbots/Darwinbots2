@@ -30,11 +30,6 @@ Begin VB.Form Form1
       _ExtentY        =   847
       _Version        =   393216
    End
-   Begin VB.Timer Timer2 
-      Interval        =   60001
-      Left            =   1440
-      Top             =   120
-   End
    Begin VB.Label PlayerBot 
       BackStyle       =   0  'Transparent
       Caption         =   "PlayerBot Mode"
@@ -306,15 +301,11 @@ Private tmppos(50) As tmppostyp
 
 
 Public cyc As Integer          ' cycles/second
-Dim minutescount As Integer
 Public dispskin As Boolean  ' skin drawing enabled?
 Public Active As Boolean    ' sim running?
 Public visiblew As Single     ' field visible portion (for zoom)
 Public visibleh As Long
 
-Private robminutescount As Integer  ' minutes counter for next robot auto save
-Private AutoRobNum As Integer       ' last autosaved rob index
-Private AutoSimNum As Integer       ' last autosaved sim index
 Public DNAMaxConds As Integer   ' max conditions per gene allowed by mutation
 Dim Charts(NUMGRAPHS) As Graph        ' array of graph pointers
 
@@ -332,8 +323,6 @@ Public FortyEightOverTwipWidth As Single
 Public FortyEightOverTwipHeight As Single
 Public xDivisor As Single
 Public yDivisor As Single
-
-Public InTimer2 As Boolean
 
 Private p_reclev As Integer 'Botsareus 8/3/2012 for generational distance
 
@@ -1168,56 +1157,6 @@ Sub changerobcol()
   rob(robfocus).color = ColorForm.color
 End Sub
 
-
-
-' counts minutes for autosaves
-Private Sub Timer2_Timer()
-If lblSaving.Visible Then Exit Sub
-  InTimer2 = True
-  If SimOpts.AutoSimTime > 0 Then
-    minutescount = minutescount + 1
-    If minutescount = SimOpts.AutoSimTime Then
-      minutescount = 0
-      AutoSimNum = AutoSimNum + 1
-      If SimOpts.AutoSaveStripMutations Then
-        MDIForm1.SaveWithoutMutations = True
-      Else
-        MDIForm1.SaveWithoutMutations = False
-      End If
-      SaveSimulation MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum) + ".sim"
-      If SimOpts.AutoSaveDeleteOlderFiles Then
-        If AutoSimNum > 10 Then
-          Dim fso As New FileSystemObject
-          Dim fileToDelete As file
-          On Error GoTo bypass
-          Set fileToDelete = fso.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoSimPath + CStr(AutoSimNum - 10) + ".sim")
-          fileToDelete.Delete
-bypass:
-        End If
-      End If
-    End If
-  End If
-  If SimOpts.AutoRobTime > 0 Then
-    robminutescount = robminutescount + 1
-    If robminutescount = SimOpts.AutoRobTime Then
-      robminutescount = 0
-      AutoRobNum = AutoRobNum + 1
-      SaveOrganism MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum) + ".dbo", fittest()
-      If SimOpts.AutoSaveDeleteOldBotFiles Then
-        If AutoRobNum > 10 Then
-          Dim fso2 As New FileSystemObject
-          Dim fileToDelete2 As file
-          On Error GoTo bypass2
-          Set fileToDelete2 = fso2.GetFile(MDIForm1.MainDir + "/autosave/" + SimOpts.AutoRobPath + CStr(AutoRobNum - 10) + ".dbo")
-          fileToDelete2.Delete
-bypass2:
-        End If
-      End If
-    End If
-  End If
-   InTimer2 = False
-End Sub
-
 ' initializes a simulation.
 Sub StartSimul()
    'Botsareus 5/8/2013 save the safemode for 'start new'
@@ -1277,7 +1216,6 @@ End If
   Over = False
   
   'LoadSysVars
-  LoadLists
   
   If BackPic <> "" Then
     Form1.Picture = LoadPicture(BackPic)
@@ -1365,16 +1303,11 @@ End If
  ' maxshots = 0
  ' MaxAbsNum = 0
   loadrobs
-  If Form1.Active Then Timer2.Enabled = True
   If Form1.Active Then SecTimer.Enabled = True
   SimOpts.TotRunTime = 0
   setfeed
   If MDIForm1.visualize Then DrawAllRobs
   MDIForm1.enablesim
-  If SimOpts.DBEnable Then
-    CreateArchive SimOpts.DBName
-    OpenDB SimOpts.DBName
-  End If
   
   If ContestMode Then
      FindSpecies
@@ -1530,7 +1463,6 @@ Sub startloaded()
   
   MDIForm1.AutoFork.Checked = SimOpts.EnableAutoSpeciation
     
-  Timer2.Enabled = True
   SecTimer.Enabled = True
   setfeed
   If MDIForm1.visualize Then DrawAllRobs
