@@ -1,5 +1,5 @@
 from socket import *
-import glob, os, time,sys,argparse, bz2,traceback
+import glob, os, time,sys,argparse, bz2,traceback,json,zlib
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-in', help='inbound directory')
@@ -20,10 +20,10 @@ inbound = args['in'] if args['in']!= None else 'inbound'
 outbound = args['out'] if args['out']!= None else 'outbound'
 name = args['name'] if args['name']!= None else 'NO_NAME'
 waittime = int(args['waittime']) if args['waittime']!= None else 10
-server = args['server'] if args['server']!= None else "82.72.32.181"
-port = int(args['port']) if args['port']!= None else 21013
+server = args['server'] if args['server']!= None else "198.50.150.51"
+port = int(args['port']) if args['port']!= None else 4669
 hybrid = args['n'] if args['n']!= None else 0
-maxinbound = int(args['maxinbound']) if args['maxinbound']!= None else 25
+defmaxinbound = int(args['maxinbound']) if args['maxinbound']!= None else 25
 
 class Client(socket):
 
@@ -34,16 +34,28 @@ class Client(socket):
         self.name=""
         self.status= "B"
         self.counter=0
-
-
+        self.LENGTH_SIZE=0
+        self.infoByte=0
     def _run(self, counter):
-        files= glob.glob("%s/*.dbo"%outbound)
-        filesInbound= glob.glob("%s/*.dbo"%inbound)
-        while len(files)==0 and len(filesInbound)>maxinbound:
+        maxinbound = defmaxinbound
+        loop=True
+        while loop:
             time.sleep(waittime)
+            maxSent = self.totalReceived*2 - self.totalSend+10
+            maxRec = self.totalSend*2 - self.totalReceived+10
+            if maxRec<0:
+                maxRec=0
+            maxinbound  = min(maxRec,maxinbound)
+            if maxSent<0:
+                maxSent=0
             files= glob.glob("%s/*.dbo"%outbound)
-            filesInbound= glob.glob("%s/*.dbo"%inbound)
-            
+            filesInbound = glob.glob("%s/*.dbo"%inbound)
+
+            if maxSent==0:
+                files=[]
+            elif maxSent<len(files):
+                files = files[:maxSent]
+            loop=len(files)==0 and len(filesInbound)>=maxinbound
         #maxTeleport = maxinbound - len(filesInbound)
         i=0
         self.currentInbound = len(filesInbound)
@@ -70,7 +82,59 @@ class Client(socket):
             else:
                 # Not accepting a bot back should be handled in the first status package
                 pass
-            i+=1        
+            i+=1
+
+        statFiles = glob.glob("%s/*.stats"%outbound)
+        if len(statFiles)>0:
+            if len(statFiles)>5000:
+                self._sendStats(statFiles[:5000])
+            else:
+                self._sendStats(statFiles)
+        time.sleep(waittime)
+
+
+    def _sendStats(self, allFiles):
+    #try except block is kinda double from sendfile
+        allData=[]
+        timestamps={}
+        for filee in allFiles:
+            try:
+                os.rename(filee, filee+".temp")
+                os.rename(filee+".temp", filee)
+                openfile = open(filee, 'r+b')
+            except Exception,e:
+                print e
+                return
+            jsonData= openfile.read()
+            data = json.loads(jsonData)
+            openfile.close()
+            if int(data["unixtime"]) not in timestamps:
+                timestamps[data["unixtime"]]=list()
+                timestamps[data["unixtime"]].append(data["simId"])
+            else:
+                if data["simId"] in timestamps[data["unixtime"]]:
+                    continue
+                else:
+                    timestamps[data["unixtime"]].append(data["simId"])  
+            allData.append(data)
+
+
+        allData =  json.dumps(allData)
+        # print len(bz2.compress(allData))
+        zippedData = zlib.compress(allData)
+
+        # partly copied from _sendfile
+        if len(data) > 999999:
+            print 'too big'
+            return
+        # print self.encode_length(len(zippedData), 's')
+        self.sendall(self.encode_length(len(zippedData), 's'))
+        self.sendall(zippedData)
+        print "sending %s stats" % len(allFiles)
+
+        for filee in allFiles:
+            os.remove(filee)
+
 
     def _sendFile(self, path, status):
         try:
@@ -81,8 +145,9 @@ class Client(socket):
             print 'too quick'
             print e       
             traceback.print_exc()
-            self.sendall(self.encode_length(0,'R'))
-            time.sleep(waittime)            
+            if self.status =='B':
+                self.sendall(self.encode_length(0,'R'))
+            time.sleep(waittime)
             return
         data = bz2.compress(sendfile.read())
         sendfile.close()
@@ -95,7 +160,7 @@ class Client(socket):
         self.sendall(self.encode_length(len(data),status))
         self.sendall(data)
         self.totalSend+=1
-        print 'sending'  ,path      
+        print 'sending'  ,path
         os.remove(path)
         if self.totalSend %100 ==0:
             print "received %s send %s" % (self.totalReceived, self.totalSend)
@@ -105,21 +170,23 @@ class Client(socket):
         return str(l).zfill(5) +self.name.ljust(32) + status
 
     def _recvFile(self, inbound):
-        LENGTH_SIZE = 5
+        if self.LENGTH_SIZE==0:
+            self.LENGTH_SIZE = 38
         strLength=""
         timesWaited = 0
-        while (LENGTH_SIZE) > 0:
-            rec = self.recv(LENGTH_SIZE)
+        while (self.LENGTH_SIZE) > 0:
+            rec = self.recv(self.LENGTH_SIZE)
             strLength+=rec
-            LENGTH_SIZE -= len(strLength)
-            if LENGTH_SIZE != 0:
+            self.LENGTH_SIZE -= len(strLength)
+            if self.LENGTH_SIZE != 0:
                 print "waiting..."
                 timesWaited+=1
-                sleep(timesWaited)
+                time.sleep(timesWaited)
                 if timesWaited >10:
                     raise Exception("Waited too long")
 
-        length = self.decode_length(strLength)
+        (length, username, infoByte) = self.decode_length(strLength)
+        self.infoByte = infoByte
         if  length==0:
             print 'server got no bots'
             if self.status == "R":
@@ -128,7 +195,6 @@ class Client(socket):
             return
         fileInMemory=""
         while (length) > 0:
-            # print length
             rec = self.recv(min(1024, length))
             fileInMemory+=rec
             length -= len(rec)
@@ -136,6 +202,7 @@ class Client(socket):
         dup_file= True
         while dup_file:
             dup_file=False
+            kill_infinite_loop = 10
             try:
                 path = "%s/neworganism_%s"%(inbound,str(self.counter))
                 writefile = open(path+".temp", 'w+b')
@@ -147,15 +214,22 @@ class Client(socket):
                 self.counter+=1
                 #print 'file already exists!!'
                 print e
-                traceback.print_exc()                
-        print "received",path
+                traceback.print_exc()
+                kill_infinite_loop-=1
+                if kill_infinite_loop<0:
+                    dup_file=False;
+        print "received bot from", username
         self.totalReceived+=1
         if self.totalReceived %100 ==0:
             print "received %s send %s" % (self.totalReceived, self.totalSend)
 
-    def decode_length(self, l):
-        # print l
-        return int(l)
+    def decode_length(self, headerInMemory):
+        length = int(headerInMemory[:5])
+        name = headerInMemory[5:36]
+        status = headerInMemory[37]
+        return (length, name, status)
+
+
 
 counter=0
 while True:
