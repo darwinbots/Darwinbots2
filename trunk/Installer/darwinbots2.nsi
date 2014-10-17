@@ -4,7 +4,7 @@
 
 # Settings
 	Name "Darwinbots 2"
-	OutFile "Darwinbots-2-48-11-Setup.exe"
+	OutFile "Darwinbots-2-48-21-Setup.exe"
 	SetCompress auto
 	SetCompressor lzma
 	
@@ -85,7 +85,8 @@
 		CreateDirectory "$INSTDIR\Autosave"
 		CreateDirectory "$INSTDIR\Robots"
 		CreateDirectory "$INSTDIR\settings"
-		File Darwin2.48.11.exe
+		File Darwin2.48.21.exe
+		File DarwinTrue2.48.21.exe
 		File DBLaunch.exe
 		File DarwinbotsIM.exe
 		File "DB THEME GOLD.mp3"
@@ -93,16 +94,7 @@
 		File "Snapshot Search.exe"
 		File "Restarter.exe"
 		File "ManualSexRepro.exe"
-		File "_ssl.pyd"
-		File "bz2.pyd" 
 		File "DarwinBotsIM.exe" 
-		File "library.zip" 
-		File "python27.dll" 
-		File "select.pyd" 
-		File "unicodedata.pyd" 
-		File "w9xpopen.exe" 
-		File "_hashlib.pyd" 
-		File "_socket.pyd"
 		File License.rtf
 		File keys.txt
 		SetOutPath "$INSTDIR\LocalIM"
@@ -138,6 +130,7 @@
 		!insertmacro VB6RunTimeInstall vb6runtime $AlreadyInstalled
 		  
 		# Register our controls if they are not already there
+		!insertmacro InstallLib REGDLL $AlreadyInstalled REBOOT_NOTPROTECTED MSINET.OCX $SYSDIR\MSINET.OCX $SYSDIR
 		!insertmacro InstallLib REGDLL $AlreadyInstalled REBOOT_NOTPROTECTED COMCT232.OCX $SYSDIR\COMCT232.OCX $SYSDIR
 		!insertmacro InstallLib REGDLL $AlreadyInstalled REBOOT_NOTPROTECTED COMDLG32.OCX $SYSDIR\COMDLG32.OCX $SYSDIR
 		!insertmacro InstallLib REGDLL $AlreadyInstalled REBOOT_NOTPROTECTED MSCOMCTL.OCX $SYSDIR\MSCOMCTL.OCX $SYSDIR
@@ -159,6 +152,7 @@
 		RMDir /r "$INSTDIR\evolution"
 		RMDir /r "$INSTDIR\league"
 		Delete $INSTDIR\Darwin2*.exe
+		Delete $INSTDIR\DarwinTrue2*.exe
 		Delete $INSTDIR\*.gset
 		Delete $INSTDIR\keys.txt
 		Delete $INSTDIR\DBLaunch.exe
@@ -168,10 +162,6 @@
 		Delete "$INSTDIR\Snapshot Search.exe"
 		Delete "$INSTDIR\Restarter.exe"
 		Delete "$INSTDIR\ManualSexRepro.exe"
-		Delete "$INSTDIR\*.pyd"
-		Delete "$INSTDIR\library.zip"
-		Delete "$INSTDIR\python27.dll"
-		Delete "$INSTDIR\w9xpopen.exe"
 		Delete $INSTDIR\intsett.ini
 		Delete $INSTDIR\License.rtf
 		Delete $INSTDIR\Uninstall.exe
@@ -193,6 +183,7 @@
 		!insertmacro VB6RunTimeUnInstall
 		
 		# Get rid of the controls if nothing is using them
+		!insertmacro UnInstallLib REGDLL SHARED REBOOT_NOTPROTECTED $SYSDIR\MSINET.OCX
 		!insertmacro UnInstallLib REGDLL SHARED REBOOT_NOTPROTECTED $SYSDIR\COMCT232.OCX
 		!insertmacro UnInstallLib REGDLL SHARED REBOOT_NOTPROTECTED $SYSDIR\COMDLG32.OCX
 		!insertmacro UnInstallLib REGDLL SHARED REBOOT_NOTPROTECTED $SYSDIR\MSCOMCTL.OCX
