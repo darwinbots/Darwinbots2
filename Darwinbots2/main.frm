@@ -3055,7 +3055,11 @@ End Function
 
 
 Private Function IMgetname(i As Integer)
-IMgetname = extractexactname(rob(i).FName) & IIf(y_eco_im > 0, "(" & rob(i).tag & ")", "")
+IMgetname = extractexactname(rob(i).FName) & IIf(y_eco_im > 0, "(" & Trim(Left(rob(i).tag, 45)) & ")", "")
+
+Dim blank As String * 50
+If Left(rob(i).tag, 45) = Left(blank, 45) Then IMgetname = extractexactname(rob(i).FName)
+
 IMgetname = Replace(IMgetname, "[", "")
 IMgetname = Replace(IMgetname, "]", "")
 IMgetname = Replace(IMgetname, "{", "")
