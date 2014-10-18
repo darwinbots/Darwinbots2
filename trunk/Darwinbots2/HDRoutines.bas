@@ -244,7 +244,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As File
+  Dim robotFile As file
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -447,7 +447,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As File
+  Dim fileToDelete As file
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -2194,7 +2194,7 @@ Sub salvarob(n As Integer, path As String, Optional nombox As Boolean)
   Print #1, hold
   Print #1, ""
   If Not nombox Then Print #1, "'#hash: " + hashed
-  If UBound(rob(n).delgenes) > 0 And (y_eco_im > 0 And nombox) Then Print #1, "'#Corruptions:True"
+  If UBound(rob(n).delgenes) > 0 And (y_eco_im > 0 And nombox) Then Print #1, "'#corruptions:True"
   Close #1
   
   'Botsareus 12/11/2013 Save mrates file
