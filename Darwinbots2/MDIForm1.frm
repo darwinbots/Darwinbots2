@@ -2426,6 +2426,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     TmpOpts.F1 = True
                     'new seed and run sim
                     chseedstartnew = True
+                    Corruptions = 0 'Needs a reset here because next function grabs a fresh revision of dna directly from file
                     optionsform.StartNew_Click
             Case 4
                 'setup evo
