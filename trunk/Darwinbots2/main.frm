@@ -3053,6 +3053,16 @@ End Function
 
 ''''''''''''''''''''''''''''''''''''''''''
 
+
+Private Function IMgetname(i As Integer)
+IMgetname = extractexactname(rob(i).FName) & IIf(y_eco_im > 0, "(" & rob(i).tag & ")", "")
+IMgetname = Replace(IMgetname, "[", "")
+IMgetname = Replace(IMgetname, "]", "")
+IMgetname = Replace(IMgetname, "{", "")
+IMgetname = Replace(IMgetname, "}", "")
+IMgetname = Replace(IMgetname, ",", "")
+End Function
+
 Private Sub writeIMdata()
     Dim i As Integer
     Dim b As Integer
@@ -3069,7 +3079,7 @@ Private Sub writeIMdata()
        If rob(i).exist Then
          datehit = False
          For b = 1 To upperbound
-          If simpopulations(b).Name = .FName And simpopulations(b).vegy = .Veg Then
+          If simpopulations(b).Name = IMgetname(i) And simpopulations(b).vegy = .Veg Then
            datehit = True
            Exit For
           End If
@@ -3077,7 +3087,7 @@ Private Sub writeIMdata()
          If Not datehit Then
            upperbound = upperbound + 1
            ReDim Preserve simpopulations(upperbound)
-           simpopulations(upperbound).Name = .FName
+           simpopulations(upperbound).Name = IMgetname(i)
            simpopulations(upperbound).vegy = .Veg
          End If
        End If
@@ -3088,7 +3098,7 @@ Private Sub writeIMdata()
       With rob(i)
        If rob(i).exist Then
          For b = 1 To upperbound
-          If simpopulations(b).Name = .FName And simpopulations(b).vegy = .Veg Then
+          If simpopulations(b).Name = IMgetname(i) And simpopulations(b).vegy = .Veg Then
            simpopulations(b).pop = simpopulations(b).pop + 1
           End If
          Next
@@ -3109,6 +3119,8 @@ Private Sub writeIMdata()
      Print #299, simdata
     Close #299
 End Sub
+
+
 
 
 '
