@@ -197,6 +197,10 @@ Public Function Min(ByVal x As Single, ByVal y As Single) As Single
 End Function
 
 Public Sub restarter()
+Static called As Boolean
+If called Then Exit Sub
+called = True
+
     traycleanup
     shell App.path & "\Restarter.exe " & App.path & "\" & App.EXEName
 End Sub
