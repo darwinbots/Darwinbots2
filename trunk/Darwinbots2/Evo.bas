@@ -74,7 +74,7 @@ Dim gotdnalen As Integer
 'lets grab a test robot to figure out dna length
 For t = 1 To MaxRobs
         If rob(t).exist And rob(t).FName = "Test.txt" Then
-            gotdnalen = DnaLen(rob(t).dna)
+            gotdnalen = DnaLen(rob(t).DNA)
             Exit For
         End If
 Next
@@ -233,7 +233,7 @@ If rob(bestrob).Mutations > 0 And (totnvegsDisplayed >= 15 Or y_eco_im = 0) Then
               Next t
               
               'save and kill the robot
-              MkDir MDIForm1.MainDir & "\evolution\testrob" & ecocount
+              If dir(MDIForm1.MainDir & "\evolution\testrob" & ecocount, vbDirectory) = "" Then MkDir MDIForm1.MainDir & "\evolution\testrob" & ecocount
               salvarob fit, MDIForm1.MainDir & "\evolution\testrob" & ecocount & "\Test.txt", True
               rob(fit).exist = False
               
