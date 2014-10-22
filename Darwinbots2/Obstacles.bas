@@ -408,7 +408,7 @@ Dim botbottomedge As Single
   End If
 End Function
 
-Public Function DoShotObstacleCollisions(n As Long)
+Public Function DoShotObstacleCollisions(ByVal n As Long)
 Dim i As Integer
   
   With Shots(n)
