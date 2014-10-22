@@ -161,7 +161,9 @@ Public Function VectorInvMagnitude(V1 As vector) As Single
   End If
 End Function
 
-Public Function VectorMagnitudeSquare(V1 As vector) As Single
+Public Function VectorMagnitudeSquare(ByRef V1 As vector) As Single
+  If Abs(V1.x) > 32000 Then V1.x = Sgn(V1.x) * 32000
+  If Abs(V1.y) > 32000 Then V1.y = Sgn(V1.y) * 32000
   VectorMagnitudeSquare = V1.x * V1.x + V1.y * V1.y
 End Function
 
