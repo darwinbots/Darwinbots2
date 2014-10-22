@@ -118,7 +118,10 @@ Public Function VectorSub(V1 As vector, V2 As vector) As vector
   VectorSub.y = V1.y - V2.y
 End Function
 
-Public Function VectorScalar(V1 As vector, k As Single) As vector
+Public Function VectorScalar(ByRef V1 As vector, ByRef k As Single) As vector
+If Abs(k) > 32000 Then k = Sgn(k) * 32000
+If Abs(V1.x) > 32000 Then V1.x = Sgn(V1.x) * 32000
+If Abs(V1.y) > 32000 Then V1.y = Sgn(V1.y) * 32000
   VectorScalar.x = V1.x * k
   VectorScalar.y = V1.y * k
 End Function
