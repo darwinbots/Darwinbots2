@@ -27,7 +27,7 @@ Public Type shot
  memloc As Integer      ' Memory location for custom poison and venom
  Memval As Integer      ' Value to insert into custom venom location
  
- dna() As block         ' Somewhere to store genetic code for a virus or sperm
+ DNA() As block         ' Somewhere to store genetic code for a virus or sperm
  DnaLen As Integer      ' length of DNA  stored on this shot
  genenum As Integer     ' which gene to copy in host bot
  stored As Boolean      ' for virus shots (and maybe future types) this shot is stored
@@ -187,7 +187,7 @@ Public Function newshot(n As Integer, ByVal shottype As Integer, ByVal val As Si
   ' sperm shot
   If shottype = -8 Then
     'ReDim Shots(a).DNA(rob(n).dnalen)
-    Shots(a).dna = rob(n).dna
+    Shots(a).DNA = rob(n).DNA
     Shots(a).DnaLen = rob(n).DnaLen
   End If
       
@@ -430,7 +430,7 @@ Public Sub CompactShots()
       End If
       If i <> j Then
         If (Shots(j).shottype = -8 Or Shots(j).shottype = -7) And Shots(i).DnaLen > 0 Then
-          ReDim Shots(j).dna(Shots(i).DnaLen)
+          ReDim Shots(j).DNA(Shots(i).DnaLen)
         End If
         Shots(j) = Shots(i)
         Shots(i).exist = False
@@ -490,7 +490,7 @@ Public Sub defacate(n As Integer) 'only used to get rid of massive amounts of wa
 End Sub
 
 ' robot n, hit by shot t, releases energy
-Public Sub releasenrg(n As Integer, t As Long)
+Public Sub releasenrg(ByVal n As Integer, ByVal t As Long)
   'n=robot number
   't=shot number
   Dim vel As vector
@@ -584,7 +584,7 @@ Public Sub releasenrg(n As Integer, t As Long)
   End If
 getout:
 End Sub
-Private Sub releasebod(n As Integer, t As Long) 'a robot is shot by a -6 shot and releases energy directly from body points
+Private Sub releasebod(ByVal n As Integer, ByVal t As Long) 'a robot is shot by a -6 shot and releases energy directly from body points
   'much more effective against a corpse
   Dim vel As vector
   Dim Range As Single
@@ -706,7 +706,7 @@ getout:
 End Sub
 
 ' robot n takes the energy carried by shot t
-Private Sub takenrg(n As Integer, t As Long)
+Private Sub takenrg(ByVal n As Integer, ByVal t As Long)
   Dim partial As Single
   Dim overflow As Single
      
@@ -743,7 +743,7 @@ Private Sub takenrg(n As Integer, t As Long)
 getout:
 End Sub
 '  robot takes a venomous shot and becomes seriously messed up
-Private Sub takeven(n As Integer, t As Long)
+Private Sub takeven(ByVal n As Integer, ByVal t As Long)
   Dim power As Single
   Dim temp As Single
    
@@ -800,7 +800,7 @@ Private Sub takeven(n As Integer, t As Long)
 getout:
 End Sub
 '  Robot n takes shot t and adds its value to his waste reservoir
-Private Sub takewaste(n As Integer, t As Long)
+Private Sub takewaste(ByVal n As Integer, ByVal t As Long)
   Dim power As Single
   
 '  If rob(n).wall Then goto getout
@@ -812,7 +812,7 @@ Private Sub takewaste(n As Integer, t As Long)
 getout:
 End Sub
 ' Robot receives poison shot and becomes disorientated
-Private Sub takepoison(n As Integer, t As Long)
+Private Sub takepoison(ByVal n As Integer, ByVal t As Long)
   Dim power As Single
    
   'If rob(n).Corpse Or rob(n).wall Then goto getout
@@ -842,7 +842,7 @@ getout:
 End Sub
 
 'Robot is hit by sperm shot and becomes fertilized for potential sexual reproduction
-Private Sub takesperm(n As Integer, t As Long)
+Private Sub takesperm(ByVal n As Integer, ByVal t As Long)
 If rob(n).fertilized < -10 Then Exit Sub 'block sex repro when necessary
 
   Dim x As Integer
@@ -851,7 +851,7 @@ If rob(n).fertilized < -10 Then Exit Sub 'block sex repro when necessary
   rob(n).fertilized = 10                      ' bots stay fertilized for 10 cycles currently
   rob(n).mem(SYSFERTILIZED) = 10
   ReDim rob(n).spermDNA(Shots(t).DnaLen)      ' copy the male's DNA to the female's bot structure
-  rob(n).spermDNA = Shots(t).dna
+  rob(n).spermDNA = Shots(t).DNA
   rob(n).spermDNAlen = Shots(t).DnaLen
 getout:
 End Sub
@@ -1125,8 +1125,8 @@ Public Function copygene(n As Long, ByVal p As Integer) As Boolean
     GoTo getout
   End If
   
-  GeneStart = genepos(rob(parent).dna, p)
-  GeneEnding = GeneEnd(rob(parent).dna, GeneStart)
+  GeneStart = genepos(rob(parent).DNA, p)
+  GeneEnding = GeneEnd(rob(parent).DNA, GeneStart)
   genelen = GeneEnding - GeneStart + 1
   
   If genelen < 1 Then
@@ -1134,14 +1134,14 @@ Public Function copygene(n As Long, ByVal p As Integer) As Boolean
     GoTo getout
   End If
   
-  ReDim Shots(n).dna(genelen)
+  ReDim Shots(n).DNA(genelen)
   
   ' Put an end on it just in case...
  ' Shots(n).DNA(genelen).tipo = 10
   'Shots(n).DNA(genelen).value = 1
   
   For t = 0 To genelen - 1
-    Shots(n).dna(t) = rob(parent).dna(GeneStart + t)
+    Shots(n).DNA(t) = rob(parent).DNA(GeneStart + t)
   Next t
   
   Shots(n).DnaLen = genelen
@@ -1150,11 +1150,11 @@ Public Function copygene(n As Long, ByVal p As Integer) As Boolean
 getout:
 End Function
 ' adds gene from shot p to robot n dna
-Public Function addgene(n As Integer, ByVal p As Long) As Integer
+Public Function addgene(ByVal n As Integer, ByVal p As Long) As Integer
   Dim t As Long
   Dim Insert As Long
   Dim vlen As Long   'length of the DNA code of the virus
-  Dim position As Integer   'gene position to insert the virus
+  Dim Position As Integer   'gene position to insert the virus
   Dim power As Single
   
   'Dead bodies and virus immune bots can't catch a virus
@@ -1171,11 +1171,11 @@ Public Function addgene(n As Integer, ByVal p As Long) As Integer
     If rob(n).Slime < 0.5 Then rob(n).Slime = 0
   End If
   
-  position = Random(0, rob(n).genenum)                  'randomize the gene number
-  If position = 0 Then
+  Position = Random(0, rob(n).genenum)                  'randomize the gene number
+  If Position = 0 Then
     Insert = 0
   Else
-    Insert = GeneEnd(rob(n).dna, genepos(rob(n).dna, position))
+    Insert = GeneEnd(rob(n).DNA, genepos(rob(n).DNA, Position))
     If Insert = (rob(n).DnaLen) Then
       Insert = rob(n).DnaLen
     End If
@@ -1184,15 +1184,15 @@ Public Function addgene(n As Integer, ByVal p As Long) As Integer
 '  vlen = DnaLen(Shots(P).DNA())
   vlen = Shots(p).DnaLen
   
-  If MakeSpace(rob(n).dna, Insert, vlen) Then 'Moves genes back to make space
+  If MakeSpace(rob(n).DNA, Insert, vlen) Then 'Moves genes back to make space
     For t = Insert To Insert + vlen - 1
-      rob(n).dna(t + 1) = Shots(p).dna(t - Insert)
+      rob(n).DNA(t + 1) = Shots(p).DNA(t - Insert)
     Next t
   End If
   
   makeoccurrlist n
-  rob(n).DnaLen = DnaLen(rob(n).dna())
-  rob(n).genenum = CountGenes(rob(n).dna)
+  rob(n).DnaLen = DnaLen(rob(n).DNA())
+  rob(n).genenum = CountGenes(rob(n).DNA)
   rob(n).mem(DnaLenSys) = rob(n).DnaLen
   rob(n).mem(GenesSys) = rob(n).genenum
   
