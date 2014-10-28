@@ -55,6 +55,7 @@ Begin VB.Form datirob
          _ExtentX        =   11562
          _ExtentY        =   11827
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"robdata.frx":0E42
@@ -581,6 +582,7 @@ Begin VB.Form datirob
          Height          =   225
          Left            =   1140
          TabIndex        =   2
+         ToolTipText     =   "Double click to copy"
          Top             =   240
          Width           =   1860
       End
@@ -606,6 +608,10 @@ Public Senses As Boolean
 Public enlarged As Boolean
 Public showingMemory As Boolean
 Public ShowMemoryEarlyCycle As Boolean
+
+Private Sub robfname_DblClick() 'Botsareus 10/26/2014 Should make forking easyer
+Clipboard.SetText robfname.Caption
+End Sub
 
 Public Sub ShowDna()
   dnashow_Click 'Botsareus 1/25/2013 Show dna using the button
@@ -653,7 +659,7 @@ robtag.Caption = Left(rob(robfocus).tag, 45) 'Botsareus 1/28/2014 New short desc
 End Sub
 
 Private Sub Form_Activate()
-  SetWindowPos hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
+  SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
 End Sub
 
 Private Sub MemoryCommand_Click()
@@ -710,11 +716,11 @@ Private Function GiveMutationDetails(robfocus) As String
 End Function
 
 Private Sub robtag_DblClick() 'Botsareus 1/28/2014 Enter short description for robot
-    SetWindowPos hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
+    SetWindowPos hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
     rob(robfocus).tag = InputBox("Enter short description for robot. Can not be more then 45 characters long.", , Left(rob(robfocus).tag, 45))
     rob(robfocus).tag = Left(replacechars(rob(robfocus).tag), 45)
     robtag.Caption = rob(robfocus).tag
-    SetWindowPos hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
+    SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE 'Botsareus 12/12/2012 Info form is always on top
 End Sub
 
 Private Sub ShrinkWin_Click()

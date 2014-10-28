@@ -244,7 +244,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As File
+  Dim robotFile As file
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -447,7 +447,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As File
+  Dim fileToDelete As file
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -511,6 +511,7 @@ End Function
 
 ' saves a whole simulation
 Public Sub SaveSimulation(path As String)
+On Error GoTo tryagain
   Dim t As Integer
   Dim n As Integer
   Dim x As Integer
@@ -836,6 +837,9 @@ Public Sub SaveSimulation(path As String)
     
   Close #1
   Form1.MousePointer = vbArrow
+Exit Sub
+tryagain:
+SaveSimulation path
 End Sub
 
 'Botsareus 3/15/2013 load global settings
@@ -1659,7 +1663,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     If FileContinue(n) Then Get #n, , .Waste
     If FileContinue(n) Then Get #n, , .poison
     If FileContinue(n) Then Get #n, , .venom
-    If FileContinue(n) Then Get #n, , .Shape
+    If FileContinue(n) Then Get #n, , inttmp
     If FileContinue(n) Then Get #n, , .exist
     If FileContinue(n) Then Get #n, , .Dead
     
@@ -2032,7 +2036,7 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     Put #n, , .Waste
     Put #n, , .poison
     Put #n, , .venom
-    Put #n, , .Shape
+    Put #n, , k
     Put #n, , .exist
     Put #n, , .Dead
     

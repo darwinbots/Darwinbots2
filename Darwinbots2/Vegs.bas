@@ -218,6 +218,7 @@ End If
     If .nrg > 0 And .exist And Not (.FName = "Base.txt" And hidepred) Then
     
     'Botsareus 8/16/2014 Allow robots to share chloroplasts again
+    If .chloroplasts > 0 Then
       If .Chlr_Share_Delay > 0 Then
         .Chlr_Share_Delay = .Chlr_Share_Delay - 1
       End If
@@ -246,10 +247,12 @@ End If
       SubtractEnergyRate = (.chloroplasts / 32000) ^ 2
           
       acttok = (AddEnergyRate - SubtractEnergyRate) * tok
+    End If
       .mem(218) = 1 'Botsareus 8/16/2014 Now it is time view the sun
       
 nextrob:
       
+      If .chloroplasts > 0 Then
       acttok = acttok - CSng(.age) * CSng(.chloroplasts) / 4500000000#
       
       .nrg = .nrg + acttok * (1 - SimOpts.VegFeedingToBody)
@@ -262,6 +265,7 @@ nextrob:
         .body = 32000
       End If
       .radius = FindRadius(t)
+      End If
     
     End If
   End With

@@ -590,6 +590,12 @@ Begin VB.MDIForm MDIForm1
       Begin VB.Menu DisableArep 
          Caption         =   "Disable asexual reproduction for non-repopulating robots"
       End
+      Begin VB.Menu sspp 
+         Caption         =   "-"
+      End
+      Begin VB.Menu Autotag 
+         Caption         =   "Automatically tag by name..."
+      End
       Begin VB.Menu AutoFork 
          Caption         =   "Enable Automatic Forking"
       End
@@ -998,6 +1004,30 @@ Private Sub DeleteShape_Click()
     DeleteShape.Enabled = False
   End If
 End Sub
+
+'Botsareus 10/26/2014 A good idea from 'Spyke'
+Private Sub AutoTag_Click()
+Dim t As Integer
+Dim robname As String
+Dim robtag As String
+
+robname = InputBox("Please enter the exact name of the robot you wish append with a new tag.")
+If robname = "" Then GoTo fine
+robtag = InputBox("Please enter the new tag. It can not be more then 45 characters long.")
+robtag = Left(replacechars(robtag), 45)
+
+For t = 1 To MaxRobs
+    If rob(t).exist Then
+        If rob(t).FName = robname Then
+        rob(t).tag = robtag
+        End If
+    End If
+Next t
+Exit Sub
+fine:
+MsgBox "Cancel or blank entry", vbCritical
+End Sub
+
 
 Private Sub DeleteTeleporterMenu_Click()
  If teleporterFocus <> 0 Then
