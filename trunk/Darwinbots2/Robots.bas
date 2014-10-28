@@ -169,8 +169,8 @@ Private Type ancestorType
 End Type
 
 Private Type delgenerestore 'Botsareus 9/16/2014 A new bug fix from Billy
-position As Integer
-dna() As block
+Position As Integer
+DNA() As block
 End Type
 
 ' robot structure
@@ -178,7 +178,6 @@ Private Type robot
 
   exist As Boolean        ' the robot exists?
   radius As Single
-  Shape As Integer        ' shape of the robot, how many sides
   
   Veg As Boolean          ' is it a vegetable?
   NoChlr As Boolean       ' no chloroplasts?
@@ -260,7 +259,7 @@ Private Type robot
   ' virtual machine
   epimem(14) As Integer
   mem(1000) As Integer      ' memory array
-  dna() As block            ' program array
+  DNA() As block            ' program array
   
   lastopp As Long           ' Index of last object in the focus eye.  Could be a bot or shape or something else.
   lastopptype As Integer    ' Indicates the type of lastopp.
@@ -527,19 +526,19 @@ Dim ndna1() As block3
 Dim ndna2() As block3
 Dim length1 As Integer
 Dim length2 As Integer
-length1 = UBound(rob(r1).dna)
-length2 = UBound(rob(r2).dna)
+length1 = UBound(rob(r1).DNA)
+length2 = UBound(rob(r2).DNA)
 ReDim ndna1(length1)
 ReDim ndna2(length2)
 
 'map to nucli
 
 'if step is 1 then normal nucli
-For t = 0 To UBound(rob(r1).dna)
- ndna1(t).nucli = DNAtoInt(rob(r1).dna(t).tipo, rob(r1).dna(t).value)
+For t = 0 To UBound(rob(r1).DNA)
+ ndna1(t).nucli = DNAtoInt(rob(r1).DNA(t).tipo, rob(r1).DNA(t).value)
 Next
-For t = 0 To UBound(rob(r2).dna)
- ndna2(t).nucli = DNAtoInt(rob(r2).dna(t).tipo, rob(r2).dna(t).value)
+For t = 0 To UBound(rob(r2).DNA)
+ ndna2(t).nucli = DNAtoInt(rob(r2).DNA(t).tipo, rob(r2).DNA(t).value)
 Next
       
 'Step3 Figure out genetic distance
@@ -1031,8 +1030,8 @@ Public Function genelength(n As Integer, p As Integer) As Long
   'measures the length of gene p in robot n
   Dim pos As Long
  
-  pos = genepos(rob(n).dna(), p)
-  genelength = GeneEnd(rob(n).dna(), pos) - pos + 1
+  pos = genepos(rob(n).DNA(), p)
+  genelength = GeneEnd(rob(n).DNA(), pos) - pos + 1
   
 End Function
 
@@ -2133,9 +2132,9 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       
       SimOpts.TotBorn = SimOpts.TotBorn + 1
       If rob(n).Veg Then totvegs = totvegs + 1
-      ReDim rob(nuovo).dna(UBound(rob(n).dna))
-      For t = 1 To UBound(rob(nuovo).dna)
-        rob(nuovo).dna(t) = rob(n).dna(t)
+      ReDim rob(nuovo).DNA(UBound(rob(n).DNA))
+      For t = 1 To UBound(rob(nuovo).DNA)
+        rob(nuovo).DNA(t) = rob(n).DNA(t)
       Next t
       
       rob(nuovo).delgenes = rob(n).delgenes
@@ -2220,7 +2219,6 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       rob(nuovo).CantReproduce = rob(n).CantReproduce
       rob(nuovo).VirusImmune = rob(n).VirusImmune
       If rob(nuovo).Fixed Then rob(nuovo).mem(Fixed) = 1
-      rob(nuovo).Shape = rob(n).Shape
       rob(nuovo).SubSpecies = rob(n).SubSpecies
       
       'Botsareus 4/9/2013 we need to copy some variables for genetic distance
@@ -2348,8 +2346,8 @@ skip:
       End If
       
       makeoccurrlist nuovo
-      rob(nuovo).DnaLen = DnaLen(rob(nuovo).dna())
-      rob(nuovo).genenum = CountGenes(rob(nuovo).dna())
+      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())
+      rob(nuovo).genenum = CountGenes(rob(nuovo).DNA())
       rob(nuovo).mem(DnaLenSys) = rob(nuovo).DnaLen
       rob(nuovo).mem(GenesSys) = rob(nuovo).genenum
 
@@ -2465,10 +2463,10 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       Dim dna1() As block2
       Dim dna2() As block2
 
-      ReDim dna1(UBound(rob(female).dna))
+      ReDim dna1(UBound(rob(female).DNA))
       For t = 0 To UBound(dna1)
-       dna1(t).tipo = rob(female).dna(t).tipo
-       dna1(t).value = rob(female).dna(t).value
+       dna1(t).tipo = rob(female).DNA(t).tipo
+       dna1(t).value = rob(female).DNA(t).value
       Next
       
       ReDim dna2(UBound(rob(female).spermDNA))
@@ -2574,15 +2572,15 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
           
       'Step4 after robot is created store the dna
       
-      rob(nuovo).dna = Outdna
+      rob(nuovo).DNA = Outdna
           
-      rob(nuovo).DnaLen = DnaLen(rob(nuovo).dna())     ' Set the DNA length of the offspring
+      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())     ' Set the DNA length of the offspring
 
       'Bugfix actual length = virtual length
-      ReDim Preserve rob(nuovo).dna(rob(nuovo).DnaLen)
+      ReDim Preserve rob(nuovo).DNA(rob(nuovo).DnaLen)
       
       
-      rob(nuovo).genenum = CountGenes(rob(nuovo).dna())
+      rob(nuovo).genenum = CountGenes(rob(nuovo).DNA())
       rob(nuovo).Mutables = rob(female).Mutables
       rob(nuovo).Mutations = rob(female).Mutations
       rob(nuovo).LastMut = 0
@@ -2671,7 +2669,6 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       rob(nuovo).CantReproduce = rob(female).CantReproduce
       rob(nuovo).VirusImmune = rob(female).VirusImmune
       If rob(nuovo).Fixed Then rob(nuovo).mem(Fixed) = 1
-      rob(nuovo).Shape = rob(female).Shape
       rob(nuovo).SubSpecies = rob(female).SubSpecies
     
       'Botsareus 4/9/2013 we need to copy some variables for genetic distance
@@ -2778,8 +2775,8 @@ skip:
       End If
         
       makeoccurrlist nuovo
-      rob(nuovo).DnaLen = DnaLen(rob(nuovo).dna())
-      rob(nuovo).genenum = CountGenes(rob(nuovo).dna())
+      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())
+      rob(nuovo).genenum = CountGenes(rob(nuovo).DNA())
       rob(nuovo).mem(DnaLenSys) = rob(nuovo).DnaLen
       rob(nuovo).mem(GenesSys) = rob(nuovo).genenum
             
@@ -2986,7 +2983,7 @@ End If
   ReDim rob(n).spermDNA(0)
   '
   ReDim rob(n).delgenes(0)
-  ReDim rob(n).delgenes(0).dna(0)
+  ReDim rob(n).delgenes(0).DNA(0)
   '
   rob(n).LastMutDetail = ""
   

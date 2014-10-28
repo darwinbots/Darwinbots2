@@ -333,32 +333,69 @@ Public Sub makepoff(n As Integer)
   Next t
 End Sub
 
+Private Function checkvegstatus(ByVal r As Integer) As Boolean
+Dim t As Integer
+
+Dim FName As String
+Dim splitname() As String 'just incase original species is dead
+Dim robname As String
+
+FName = extractname(SimOpts.Specie(r).Name)
+
+checkvegstatus = False
+
+If SimOpts.Specie(r).Veg = True And SimOpts.Specie(r).Native Then
+
+    'see if any active robots have chloroplasts
+      For t = 1 To MaxRobs
+        With rob(t)
+            If .exist And .chloroplasts > 0 Then
+            
+                'remove old nick name
+                splitname = Split(.FName, ")")
+                'if it is a nick name only
+                If Left(splitname(0), 1) = "(" And IsNumeric(Right(splitname(0), Len(splitname(0)) - 1)) Then
+                    robname = splitname(1)
+                Else
+                    robname = .FName
+                End If
+                
+                If SimOpts.Specie(r).Name = robname Then
+                
+                    checkvegstatus = True
+                    Exit Function
+                    
+                End If
+                
+            End If
+        End With
+      Next
+
+End If
+
+End Function
+
 ' not sure where to put this function, so it's going here
 ' adds robots on the fly loading the script of specie(r)
 ' if r=-1 loads a vegetable (used for repopulation)
 Public Sub aggiungirob(ByVal r As Integer, ByVal x As Single, ByVal y As Single) 'Botsareus 5/22/2014 Bugfix by adding byval
-  Dim k As Integer
   Dim a As Integer
   Dim i As Integer
-  Dim counter As Integer
+  Dim anyvegy As Boolean
   
   If r = -1 Then
-    counter = 0
+    'run one loop to check vegy status
+    For i = 0 To SimOpts.SpeciesNum - 1
+        If checkvegstatus(i) Then
+            anyvegy = True
+            Exit For
+        End If
+    Next
+    If Not anyvegy Then Exit Sub
+  
+    Do
     r = Random(0, SimOpts.SpeciesNum - 1)  ' start randomly in the list of species
-    
-    'Now walk all the species to find a veg.  Should repopulate randomly form all the vegs in the sim
-    While ((Not SimOpts.Specie(r).Veg) Or (Not SimOpts.Specie(r).Native)) And counter < SimOpts.SpeciesNum
-       r = r + 1
-       If r = SimOpts.SpeciesNum Then r = 0
-       counter = counter + 1
-    Wend
-    
-    If Not SimOpts.Specie(r).Veg Or Not SimOpts.Specie(r).Native Then
-    '  MsgBox "Cannot repopulate with vegetables: add autotroph species or disable repopulation", vbOKOnly + vbCritical, "Warning!"
-      'Active = False
-      'Form1.SecTimer.Enabled = False
-      GoTo getout
-    End If
+    Loop Until checkvegstatus(r)
     
     x = fRnd(SimOpts.Specie(r).Poslf * (SimOpts.FieldWidth - 60), SimOpts.Specie(r).Posrg * (SimOpts.FieldWidth - 60))
     y = fRnd(SimOpts.Specie(r).Postp * (SimOpts.FieldHeight - 60), SimOpts.Specie(r).Posdn * (SimOpts.FieldHeight - 60))
@@ -408,9 +445,6 @@ Public Sub aggiungirob(ByVal r As Integer, ByVal x As Single, ByVal y As Single)
     rob(a).aim = Rnd(PI)
     Erase rob(a).mem
     'If rob(a).Veg Then rob(a).Feed = 8
-    If rob(a).Shape = 0 Then
-      rob(a).Shape = Random(3, 5)
-    End If
     If rob(a).Fixed Then rob(a).mem(216) = 1
     rob(a).pos.x = x
     rob(a).pos.y = y
@@ -429,10 +463,10 @@ Public Sub aggiungirob(ByVal r As Integer, ByVal x As Single, ByVal y As Single)
     
     rob(a).Vtimer = 0
     rob(a).virusshot = 0
-    rob(a).genenum = CountGenes(rob(a).dna)
+    rob(a).genenum = CountGenes(rob(a).DNA)
     
     
-    rob(a).DnaLen = DnaLen(rob(a).dna())
+    rob(a).DnaLen = DnaLen(rob(a).DNA())
     rob(a).GenMut = rob(a).DnaLen / GeneticSensitivity 'Botsareus 4/9/2013 automatically apply genetic to inserted robots
     
     

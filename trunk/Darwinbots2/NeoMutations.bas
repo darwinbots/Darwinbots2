@@ -201,7 +201,7 @@ skip:
                 Else
                     robname = .FName
                 End If
-                    robname = "(" & SimOpts.SpeciationForkInterval & ")" & .FName
+                    robname = "(" & SimOpts.SpeciationForkInterval & ")" & robname
                 'do we have room for new specie?
                 If SimOpts.SpeciesNum < 49 Then
                     .FName = robname

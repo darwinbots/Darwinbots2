@@ -1516,9 +1516,6 @@ Private Sub loadrobs()
       rob(a).mem(SetAim) = rob(a).aim * 200
       If rob(a).Veg Then rob(a).chloroplasts = StartChlr 'Botsareus 2/12/2014 Start a robot with chloroplasts
       rob(a).Dead = False
-      If rob(a).Shape = 0 Then
-        rob(a).Shape = Random(3, 5)
-      End If
             
       rob(a).Mutables = SimOpts.Specie(k).Mutables
       
@@ -1535,9 +1532,9 @@ Private Sub loadrobs()
       rob(a).VirusImmune = SimOpts.Specie(k).VirusImmune
       rob(a).virusshot = 0
       rob(a).Vtimer = 0
-      rob(a).genenum = CountGenes(rob(a).dna)
+      rob(a).genenum = CountGenes(rob(a).DNA)
       
-      rob(a).DnaLen = DnaLen(rob(a).dna())
+      rob(a).DnaLen = DnaLen(rob(a).DNA())
       rob(a).GenMut = rob(a).DnaLen / GeneticSensitivity 'Botsareus 4/9/2013 automatically apply genetic to inserted robots
       
       rob(a).mem(DnaLenSys) = rob(a).DnaLen
@@ -2362,7 +2359,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
       With rob(t)
       'If Not .wall And .exist Then
       If .exist Then
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, MUTATIONS_GRAPH) = dati(p, MUTATIONS_GRAPH) + .LastMut + .Mutations
         dati(p, AVGAGE_GRAPH) = dati(p, AVGAGE_GRAPH) + (.age / 100) ' EricL 4/7/2006 Graph age in 100's of cycles
@@ -2455,7 +2452,7 @@ Private Sub CalcStats(ByRef nomi, ByRef dati, graphNum As Integer) 'Botsareus 8/
           With rob(t)
           If .exist And Not .Corpse Then
     
-            p = Flex.position(rob(t).FName, nomi)
+            p = Flex.Position(rob(t).FName, nomi)
     
             If .GenMut > 0 Then 'If there is not enough mutations for a graph check, skip it
     
@@ -2561,7 +2558,7 @@ getout2:
       With rob(t)
      ' If Not .wall And .exist Then
       If .exist Then
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
       End If
       End With
@@ -2573,7 +2570,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
   '    numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, MUTATIONS_GRAPH) = dati(p, MUTATIONS_GRAPH) + .LastMut + .Mutations
       End If
@@ -2591,7 +2588,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
   '      numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, AVGAGE_GRAPH) = dati(p, AVGAGE_GRAPH) + (.age / 100) ' EricL 4/7/2006 Graph age in 100's of cycles
       End If
@@ -2608,7 +2605,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, OFFSPRING_GRAPH) = dati(p, OFFSPRING_GRAPH) + .SonNumber
       End If
@@ -2626,7 +2623,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, ENERGY_GRAPH) = dati(p, ENERGY_GRAPH) + .nrg
       End If
@@ -2644,7 +2641,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, DNALENGTH_GRAPH) = dati(p, DNALENGTH_GRAPH) + .DnaLen
       End If
@@ -2662,7 +2659,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
       '  numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, DNACOND_GRAPH) = dati(p, DNACOND_GRAPH) + .condnum
       End If
@@ -2680,7 +2677,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, MUT_DNALENGTH_GRAPH) = dati(p, MUT_DNALENGTH_GRAPH) + (.LastMut + .Mutations) / .DnaLen * 1000
       End If
@@ -2698,7 +2695,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, ENERGY_SPECIES_GRAPH) = dati(p, ENERGY_SPECIES_GRAPH) + (.nrg + .body * 10) * 0.001
       End If
       End With
@@ -2726,7 +2723,7 @@ getout2:
     For t = 1 To MaxRobs
       With rob(t)
       If .exist Then
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         
         'Look through the subspecies we have seen so far and see if this bot has the same as any of them
         i = 0
@@ -2750,7 +2747,7 @@ getout2:
       'If Not .wall And .exist Then
       If .exist Then
        ' numbots = numbots + 1
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
         dati(p, POPULATION_GRAPH) = dati(p, POPULATION_GRAPH) + 1
         dati(p, AVGCHLR_GRAPH) = dati(p, AVGCHLR_GRAPH) + .chloroplasts
       End If
@@ -2780,7 +2777,7 @@ getout3:
       With rob(t)
       If .exist And Not .Corpse Then
 
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
 
         If .GenMut > 0 Then 'If there is not enough mutations for a graph check, skip it
 
@@ -2833,7 +2830,7 @@ getout3:
     For t = 1 To MaxRobs
       With rob(t)
       If .exist And Not .Corpse Then
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
            'Botsareus 8/3/2012 Generational Distance Graph
            ll = FindGenerationalDistance(t)
            If ll > dati(p, GENERATION_DIST_GRAPH) Then dati(p, GENERATION_DIST_GRAPH) = ll
@@ -2855,7 +2852,7 @@ getout3:
     For t = 1 To MaxRobs
       With rob(t)
       If .exist And Not .Corpse Then
-        p = Flex.position(rob(t).FName, nomi)
+        p = Flex.Position(rob(t).FName, nomi)
             For x = t + 1 To MaxRobs
             If rob(x).exist And Not rob(x).Corpse And rob(x).FName = .FName Then  ' Must exist, and be of same species
                 l = DoGeneticDistance(t, x) * 1000
