@@ -373,6 +373,20 @@ If SimOpts.Specie(r).Veg = True And SimOpts.Specie(r).Native Then
 
 End If
 
+'If there is no robots at all with chlr then repop everything
+
+checkvegstatus = True
+
+For t = 1 To MaxRobs
+        With rob(t)
+            If .exist And .Veg Then
+                    checkvegstatus = False
+                    Exit Function
+            End If
+        End With
+Next
+
+
 End Function
 
 ' not sure where to put this function, so it's going here
