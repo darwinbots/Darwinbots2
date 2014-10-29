@@ -4,7 +4,7 @@
 
 # Settings
 	Name "Darwinbots 2"
-	OutFile "Darwinbots-2-48-21-Setup.exe"
+	OutFile "Darwinbots-2-48-25-Setup.exe"
 	SetCompress auto
 	SetCompressor lzma
 	
@@ -85,14 +85,15 @@
 		CreateDirectory "$INSTDIR\Autosave"
 		CreateDirectory "$INSTDIR\Robots"
 		CreateDirectory "$INSTDIR\settings"
-		File Darwin2.48.21.exe
-		File DarwinTrue2.48.21.exe
+		File Darwin2.48.25.exe
+		File DarwinTrue2.48.25.exe
 		File DBLaunch.exe
 		File DarwinbotsIM.exe
 		File "DB THEME GOLD.mp3"
 		File "Graph Join.exe"
 		File "Snapshot Search.exe"
 		File "Restarter.exe"
+		File "SafeModeBackup.exe"
 		File "ManualSexRepro.exe"
 		File "DarwinBotsIM.exe" 
 		File License.rtf
@@ -119,6 +120,7 @@
 			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Darwinbots 2.lnk" "$INSTDIR\DBLaunch.exe"
 			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Graph Join.lnk" "$INSTDIR\Graph Join.exe"
+			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Safemode backup.lnk" "$INSTDIR\SafeModeBackup.exe"
 			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Snapshot search.lnk" "$INSTDIR\Snapshot Search.exe"
 			CreateShortCut "$SMPROGRAMS\$StartMenuFolder\ManualSexRepro.lnk" "$INSTDIR\ManualSexRepro.exe"
 
@@ -161,6 +163,7 @@
 		Delete "$INSTDIR\Graph Join.exe"
 		Delete "$INSTDIR\Snapshot Search.exe"
 		Delete "$INSTDIR\Restarter.exe"
+		Delete "$INSTDIR\SafeModeBackup.exe"
 		Delete "$INSTDIR\ManualSexRepro.exe"
 		Delete $INSTDIR\intsett.ini
 		Delete $INSTDIR\License.rtf
@@ -172,6 +175,7 @@
 		Delete "$SMPROGRAMS\$StartMenuFolder\Snapshot search.lnk"
 		Delete "$SMPROGRAMS\$StartMenuFolder\Graph Join.lnk"
 		Delete "$SMPROGRAMS\$StartMenuFolder\ManualSexRepro.lnk"
+		Delete "$SMPROGRAMS\$StartMenuFolder\Safemode backup.lnk"
 		Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
 		RMDir "$SMPROGRAMS\$StartMenuFolder"
 
