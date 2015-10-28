@@ -111,11 +111,11 @@ Public Sub BrownianForces(n As Integer)
   Dim Impulse As Single
   Dim RandomAngle As Single
 
-    Impulse = SimOpts.PhysBrown * 0.5 * Rnd
+    Impulse = SimOpts.PhysBrown * 0.5 * Rndy
     
-    RandomAngle = Rnd * 2 * PI
+    RandomAngle = Rndy * 2 * PI
     rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(Cos(RandomAngle) * Impulse, Sin(RandomAngle) * Impulse))
-    rob(n).ma = rob(n).ma + (Impulse / 100) * (Rnd - 0.5) ' turning motion due to brownian motion
+    rob(n).ma = rob(n).ma + (Impulse / 100) * (Rndy - 0.5) ' turning motion due to brownian motion
 
 getout:
 End Sub

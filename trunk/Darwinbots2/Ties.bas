@@ -335,252 +335,317 @@ Public Sub Update_Ties(t As Integer)
       
      
       
-      If .mem(tp + 2) < 0 And .mem(tp + 2) > -1001 Then  '.tieloc value  (should we mod this for more mem values?)
-        If .mem(tp + 2) = -1 And .mem(tp + 3) <> 0 Then   'tieloc = -1 and .tieval not zero
-          k = 1
-          l = .mem(tp + 3) ' l is amount of energy to exchange, positive to give nrg away, negative to take it
-          
+        'Botsareus 7/22/2015 Code more coherent
+        If .mem(tp + 2) < 0 Then  'we are checking values that are negative such as -1 or -6
+        
+            If .mem(tp + 2) = -1 And .mem(tp + 3) <> 0 Then   'tieloc = -1 and .tieval not zero
+                  
+                l = .mem(tp + 3) ' l is amount of energy to exchange, positive to give nrg away, negative to take it
+                                
+                'Limits on Tie feeding as a function of body attempting to do the feeding (or sharing)
+                If .body < 0 Then l = 0                        ' If your body has gone negative, you can't take or give nrg.
+                If .nrg < 0 Then l = 0                         ' If you nrg has gone negative, you can't take or give nrg.
+                If .age = 0 Then l = 0                         ' The just born can't trasnfer nrg
+                If l > 1000 Then l = 1000                      ' Upper limt on sharing
+                If l < -3000 Then l = -3000                    ' Upper limit on tie feeding
+                  
+                k = 1
+                While .Ties(k).pnt > 0        'tie actually points at something
+                    If .Ties(k).Port = tn Then  'tienum indicates this tie
+                       
+                        'Giving nrg away
+                        If l > 0 Then
                         
-          'Limits on Tie feeding as a function of body attempting to do the feeding (or sharing)
-          If .body < 0 Then l = 0                        ' If your body has gone negative, you can't take or give nrg.
-          If .nrg < 0 Then l = 0                         ' If you nrg has gone negative, you can't take or give nrg.
-          If l > 0 And l > .nrg Then l = .nrg            ' Can't give away more nrg than you have
-          If .age = 0 Then l = 0                         ' The just born can't trasnfer nrg
-          If l > 1000 Then l = 1000                      ' Upper limt on sharing
-          If l < -3000 Then l = -3000                    ' Upper limit on tie feeding
-          
-          While .Ties(k).pnt > 0        'tie actually points at something
-            If .Ties(k).Port = tn Then  'tienum indicates this tie
-               
-              'Giving nrg away
-              If l > 0 Then
-                rob(.Ties(k).pnt).nrg = rob(.Ties(k).pnt).nrg + l * 0.7               'tied robot receives energy
-                If rob(.Ties(k).pnt).nrg > 32000 Then rob(.Ties(k).pnt).nrg = 32000
-                rob(.Ties(k).pnt).body = rob(.Ties(k).pnt).body + l * 0.029           'tied robot stores some fat
-                If rob(.Ties(k).pnt).body > 32000 Then rob(.Ties(k).pnt).body = 32000
-                rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l * 0.01          'tied robot receives waste
-                rob(.Ties(k).pnt).radius = FindRadius(.Ties(k).pnt)
-                .nrg = .nrg - l                                                       'tying robot gives up energy
-                If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "giving energy to opponent"
-                If Not SimOpts.F1 And .dq = 1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then rob(t).Dead = True 'safe kill robot
-              End If
-              
-              'Taking nrg
-              If l < 0 Then
-                If Abs(l) > .body / 10# Then l = Abs(.body) / -10#    'fixes maximum energy drain proportional to body
-                If Abs(l) > rob(.Ties(k).pnt).nrg Then
-                  If rob(.Ties(k).pnt).nrg > 0 Then
-                    l = -(rob(.Ties(k).pnt).nrg)                      'Can't take more nrg than robot has
-                  Else
-                    l = 0 ' Can't taken nrg from a bot that has none
-                  End If
-                If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "taking energy from opponent"
-                If Not SimOpts.F1 And .dq = 1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then rob(t).Dead = True 'safe kill robot
-              End If
-                
-                'Poison
-                ptag = Abs(l / 4)
-                If rob(.Ties(k).pnt).poison > ptag Then 'target robot has poison
-                  If rob(.Ties(k).pnt).FName <> .FName Then 'can't poison your brother
-                    .Poisoned = True
-                    .Poisoncount = .Poisoncount + ptag
-                    If .Poisoncount > 32000 Then .Poisoncount = 32000
-                    l = 0
-                    rob(.Ties(k).pnt).poison = rob(.Ties(k).pnt).poison - ptag
-                    rob(.Ties(k).pnt).mem(827) = rob(.Ties(k).pnt).poison
-                    If rob(.Ties(k).pnt).mem(834) > 0 Then
-                      .Ploc = ((rob(.Ties(k).pnt).mem(834) - 1) Mod 1000) + 1  'sets .Ploc to targets .mem(ploc) EricL - 3/29/2006 Added Mod to fix overflow
-                    Else
-                      .Ploc = Random(1, 1000)
+                            If l > .nrg Then l = .nrg ' Can't give away more nrg than you have
+                        
+                            rob(.Ties(k).pnt).nrg = rob(.Ties(k).pnt).nrg + l * 0.7               'tied robot receives energy
+                            If rob(.Ties(k).pnt).nrg > 32000 Then rob(.Ties(k).pnt).nrg = 32000
+                            rob(.Ties(k).pnt).body = rob(.Ties(k).pnt).body + l * 0.029           'tied robot stores some fat
+                            If rob(.Ties(k).pnt).body > 32000 Then rob(.Ties(k).pnt).body = 32000
+                            rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l * 0.01          'tied robot receives waste
+                            rob(.Ties(k).pnt).radius = FindRadius(.Ties(k).pnt)
+                            
+                            .nrg = .nrg - l                                                       'tying robot gives up energy
+                            
+                            If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "giving energy to opponent"
+                            If Not SimOpts.F1 And .dq = 1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then rob(t).Dead = True 'safe kill robot
+                        
+                        End If
+                        
+                        'Taking nrg
+                        If l < 0 Then
+                                            
+                            If l < -rob(.Ties(k).pnt).nrg Then l = -rob(.Ties(k).pnt).nrg ' Can't give away more nrg than you have
+                                           
+                            'Poison
+                            ptag = Abs(l / 4)
+                            If rob(.Ties(k).pnt).poison > ptag Then 'target robot has poison
+                                If rob(.Ties(k).pnt).FName <> .FName Then 'can't poison your brother
+                                
+                                    .Poisoned = True
+                                    .Poisoncount = .Poisoncount + ptag
+                                    If .Poisoncount > 32000 Then .Poisoncount = 32000
+                                    
+                                    l = 0
+                                    
+                                    rob(.Ties(k).pnt).poison = rob(.Ties(k).pnt).poison - ptag
+                                    rob(.Ties(k).pnt).mem(827) = rob(.Ties(k).pnt).poison
+                                    
+                                    If rob(.Ties(k).pnt).mem(834) > 0 Then
+                                     .Ploc = ((rob(.Ties(k).pnt).mem(834) - 1) Mod 1000) + 1  'sets .Ploc to targets .mem(ploc) EricL - 3/29/2006 Added Mod to fix overflow
+                                     If .Ploc = 340 Then .Ploc = 0
+                                    Else
+                                     Do
+                                      .Ploc = Random(1, 1000)
+                                     Loop Until .Ploc <> 340
+                                    End If
+        
+                                    .Pval = rob(.Ties(k).pnt).mem(839)
+        
+                                End If
+                            End If
+                                                
+                            .nrg = .nrg - l * 0.7                'tying robot receives energy
+                            If .nrg > 32000 Then .nrg = 32000
+                            .body = .body - l * 0.029            'tying robot stores some fat
+                            If .body > 32000 Then .body = 32000
+                            .Waste = .Waste - l * 0.01      'tying robot adds waste
+                            .radius = FindRadius(t)
+                            
+                            rob(.Ties(k).pnt).nrg = rob(.Ties(k).pnt).nrg + l 'Take the nrg
+                            
+                            If rob(.Ties(k).pnt).nrg <= 0 And rob(.Ties(k).pnt).Dead = False Then 'Botsareus 3/11/2014 Tie feeding kills
+                                .Kills = .Kills + 1
+                                If .Kills > 32000 Then .Kills = 32000
+                                .mem(220) = .Kills
+                            End If
+                            
+                            If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "taking energy from opponent"
+                            If Not SimOpts.F1 And .dq = 1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then rob(t).Dead = True 'safe kill robot
+                        
+                        End If
+                        
+                        If Not .Ties(k).back Then   'forward ties
+                            .Ties(k).nrgused = True   'red ties
+                        Else                        'backward ties
+                            rob(.Ties(k).pnt).Ties(.Ties(k).ptt).nrgused = True 'red ties
+                        End If
+                        
                     End If
-                  End If
-                End If
-                
-                
-                rob(.Ties(k).pnt).nrg = rob(.Ties(k).pnt).nrg + l 'Take the nrg
-             
-                If rob(.Ties(k).pnt).nrg <= 0 And rob(.Ties(k).pnt).Dead = False Then 'Botsareus 3/11/2014 Tie feeding kills
-                  .Kills = .Kills + 1
-                  If .Kills > 32000 Then .Kills = 32000
-                  .mem(220) = .Kills
-                End If
-                
-                
-                .nrg = .nrg - l * 0.7                'tying robot receives energy
-                If .nrg > 32000 Then .nrg = 32000
-                .body = .body - l * 0.029            'tying robot stores some fat
-                If .body > 32000 Then .body = 32000
-                .radius = FindRadius(t)
-                .Waste = .Waste + Abs(l / 100#)      'tying robot adds waste
-              End If ' Taking nrg
-              
-              If Not .Ties(k).back Then   'forward ties
-                .Ties(k).nrgused = True   'red ties
-              Else                        'backward ties
-                rob(.Ties(k).pnt).Ties(.Ties(k).ptt).nrgused = True 'red ties
-              End If
+                        
+                k = k + 1
+                Wend
             End If
-            k = k + 1
-          Wend
-        End If
-        
-        If .mem(tp + 2) = -3 And .mem(tp + 3) <> 0 Then  'inject or steal venom
-          If .mem(tp + 3) > 100 Then .mem(tp + 3) = 100
-          If .mem(tp + 3) > .venom Then .mem(tp + 3) = .venom
-          If .mem(tp + 3) < -100 Then .mem(tp + 3) = -100
-          k = 1
-          While .Ties(k).pnt > 0
-            If .Ties(k).Port = tn Then
-              'If .mem(tp + 3) < rob(.Ties(k).pnt).Venom Then .mem(tp + 3) = rob(.Ties(k).pnt).Venom
-              If .mem(tp + 3) > 0 Then
-                rob(.Ties(k).pnt).Paracount = rob(.Ties(k).pnt).Paracount + .mem(tp + 3) 'paralysis counter set
-                rob(.Ties(k).pnt).Paralyzed = True         'robot paralyzed
-                If .mem(835) > 0 Then
-                  If .mem(835) > 999 Then .mem(835) = 999
-                  rob(.Ties(k).pnt).Vloc = .mem(835)
-                Else
-                  rob(.Ties(k).pnt).Vloc = Random(1, 1000)
-                End If
-                rob(.Ties(k).pnt).Vval = .mem(836)
-                .venom = .venom - .mem(tp + 3)
-                .mem(825) = .venom
-              Else
-                If rob(.Ties(k).pnt).venom > Abs(.mem(tp + 3)) Then
-                  rob(.Ties(k).pnt).venom = rob(.Ties(k).pnt).venom + .mem(tp + 3)
-                  .venom = .venom - .mem(tp + 3)  'robot steals venom from tied target
-                Else
-                  .venom = .venom + rob(.Ties(k).pnt).venom
-                  rob(.Ties(k).pnt).venom = 0
-                End If
-                .mem(825) = .venom
-              End If
-              If Not .Ties(k).back Then   'forward ties
-                .Ties(k).nrgused = True   'red ties
-              Else                        'backward ties
-                rob(.Ties(k).pnt).Ties(.Ties(k).ptt).nrgused = True 'red ties
-              End If
-            End If
-            k = k + 1
-          Wend
-        End If
-        If .mem(tp + 2) = -4 And .mem(tp + 3) <> 0 Then 'trade waste via ties
-          If .mem(tp + 3) > 1000 Then .mem(tp + 3) = 1000
-          If .mem(tp + 3) > .Waste Then .mem(tp + 3) = .Waste
-          If .mem(tp + 3) < -1000 Then .mem(tp + 3) = -1000
-          k = 1
-          While .Ties(k).pnt > 0
-            If .Ties(k).Port = tn Then
-              'If .mem(tp + 3) < rob(.Ties(k).pnt).Waste Then .mem(tp + 3) = rob(.Ties(k).pnt).Waste
-              If .mem(tp + 3) > 0 Then
-                rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + .mem(tp + 3)
-                .Waste = .Waste - .mem(tp + 3)
-                .Pwaste = .Pwaste + (.mem(tp + 3) / 1000)
-              Else
-                If rob(.Ties(k).pnt).Waste > Abs(.mem(tp + 3)) Then
-                  rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + .mem(tp + 3)
-                  .Waste = .Waste - .mem(tp + 3)  'robot steals waste from tied target
-                  rob(.Ties(k).pnt).Pwaste = rob(.Ties(k).pnt).Pwaste - .mem(tp + 3) / 10
-                Else
-                  .Waste = .Waste + rob(.Ties(k).pnt).Waste
-                  rob(.Ties(k).pnt).Pwaste = rob(.Ties(k).pnt).Pwaste + rob(.Ties(k).pnt).Waste / 10
-                  rob(.Ties(k).pnt).Waste = 0
-                End If
-                rob(.Ties(k).pnt).Pwaste = rob(.Ties(k).pnt).Pwaste - .mem(tp + 3)
-              End If
-              If Not .Ties(k).back Then   'forward ties
-                .Ties(k).nrgused = True   'red ties
-              Else                        'backward ties
-                rob(.Ties(k).pnt).Ties(.Ties(k).ptt).nrgused = True 'red ties
-              End If
-            End If
-            k = k + 1
-          Wend
-        End If
-        
-        If .mem(tp + 2) = -6 And .mem(tp + 3) <> 0 Then   'tieloc = -6 and .tieval not zero
-          k = 1
-          l = .mem(tp + 3)
-          
-          'If we are giving body away, make sure it's not more than we have
-          If l > 0 And l > .body Then l = .body
+                
+            If .mem(tp + 2) = -3 And .mem(tp + 3) <> 0 Then  'inject or steal venom
+            
+                l = .mem(tp + 3) 'amount of venom to take or inject
+            
+                'limits on injecting or taking venum
+                If l > 100 Then l = 100
+                If l < -100 Then l = -100
+                  
+                k = 1
+                While .Ties(k).pnt > 0
+                    If .Ties(k).Port = tn Then
                     
-          If .body < 0 Then l = 0 ' If your body has gone negative, you can't take or give body.
-          If .nrg < 0 Then l = 0 ' If you nrg has gone negative, you can't take or give body
-          If .age = 0 Then l = 0
-          If l > 100 Then l = 100
-          If l < -300 Then l = -300
-          
-          While .Ties(k).pnt > 0     'tie actually points at something
-            If .Ties(k).Port = tn Then
-              If l > 0 Then
-                rob(.Ties(k).pnt).nrg = rob(.Ties(k).pnt).nrg + l * 1#   'tied robot receives 10% energy
-                rob(.Ties(k).pnt).body = rob(.Ties(k).pnt).body + l * 0.89 'tied robot stores 89% fat
-                rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l * 0.001 'tied robot receives 1 % waste
-                If rob(.Ties(k).pnt).body > 32000 Then rob(.Ties(k).pnt).body = 32000
-                If rob(.Ties(k).pnt).nrg > 32000 Then rob(.Ties(k).pnt).nrg = 32000
-                rob(.Ties(k).pnt).radius = FindRadius(.Ties(k).pnt)
-                .body = .body - l   'tying robot gives up body
-              End If
-              If l < 0 Then
-                If Abs(l) > .body / 10# Then
-                  If .body > 0 Then l = Abs(.body) / -10#    'fixes maximum energy drain proportional to body
-                Else
-                  l = 0
-                End If
-                
-                If Abs(l) > rob(.Ties(k).pnt).body Then
-                  If rob(.Ties(k).pnt).body > 0 Then
-                    l = (rob(.Ties(k).pnt).body) * -1 'limits body taken from tied robot
-                  Else
-                    l = 0 ' Bot has no body to give.
-                  End If
-                End If
-                ptag = Abs(l / 4)
-                If rob(.Ties(k).pnt).poison > ptag Then 'target robot has poison
-                  If rob(.Ties(k).pnt).FName <> .FName Then 'can't poison your brother
-                    .Poisoned = True
-                    .Poisoncount = .Poisoncount + ptag
-                    If .Poisoncount > 32000 Then .Poisoncount = 32000
-                    l = 0
-                    rob(.Ties(k).pnt).poison = rob(.Ties(k).pnt).poison - ptag
-                    rob(.Ties(k).pnt).mem(827) = rob(.Ties(k).pnt).poison
-                    If rob(.Ties(k).pnt).mem(834) > 0 Then
-                      .Ploc = ((rob(.Ties(k).pnt).mem(834) - 1) Mod 1000) + 1  'sets .Ploc to targets .mem(ploc) EricL - 3/29/2006 Added Mod to fix overflow
-                    Else
-                      .Ploc = Random(1, 1000)
+                        If l > .venom Then l = .venom
+                        
+                        If l > 0 Then 'works the same as a venom injection
+                                                
+                            rob(.Ties(k).pnt).Paracount = rob(.Ties(k).pnt).Paracount + l 'paralysis counter set
+                            If rob(.Ties(k).pnt).Paracount > 32000 Then rob(.Ties(k).pnt).Paracount = 32000
+                            rob(.Ties(k).pnt).Paralyzed = True         'robot paralyzed
+                            
+                            If .mem(835) > 0 Then
+                             rob(.Ties(k).pnt).Vloc = ((.mem(835) - 1) Mod 1000) + 1
+                             If rob(.Ties(k).pnt).Vloc = 340 Then rob(.Ties(k).pnt).Vloc = 0
+                            Else
+                             Do
+                              rob(.Ties(k).pnt).Vloc = Random(1, 1000)
+                             Loop Until rob(.Ties(k).pnt).Vloc <> 340
+                            End If
+                            
+                            rob(.Ties(k).pnt).Vval = .mem(836)
+                            .venom = .venom - l
+                            .mem(825) = .venom
+                        
+                        End If
+                      
+                        If l < 0 Then 'Taking venom
+                    
+                            If l < -rob(.Ties(k).pnt).venom Then l = -rob(.Ties(k).pnt).venom ' Can't give away more venom than you have
+                            
+                            'robot steals venom from tied target
+                            rob(.Ties(k).pnt).venom = rob(.Ties(k).pnt).venom + l
+                            .venom = .venom - l
+                            If .venom > 32000 Then .venom = 32000
+                            .mem(825) = .venom
+                        
+                        End If
+                      
+                        If Not .Ties(k).back Then   'forward ties
+                            .Ties(k).nrgused = True   'red ties
+                        Else                        'backward ties
+                            rob(.Ties(k).pnt).Ties(.Ties(k).ptt).nrgused = True 'red ties
+                        End If
+                      
                     End If
-                  End If
-                End If
-                rob(.Ties(k).pnt).body = rob(.Ties(k).pnt).body + l 'tied robot loses energy.
-                'If rob(.Ties(k).pnt).nrg = 0 Then rob(.Ties(k).pnt).nrg = -100 'ensures that robots with nrg = 0 actually die
-                'If rob(.Ties(k).pnt).nrg < 0 And rob(.Ties(k).pnt).Dead = False Then
-                '  rob(.Ties(k).pnt).Dead = True
-                '  .Kills = .Kills + 1
-                '  If .Kills > 32000 Then .Kills = 32000
-                '  .mem(220) = .Kills
-                'End If
-                .nrg = .nrg - l * 1#  'tying robot receives energy
-                .body = .body - l * 0.89 'tying robot stores some fat
-                .Waste = .Waste - l * 0.001
-                If .body > 32000 Then .body = 32000
-                If .nrg > 32000 Then .nrg = 32000
-                .radius = FindRadius(t)
-              End If
-              
-              If Not .Ties(k).back Then   'forward ties
-                .Ties(k).nrgused = True   'red ties
-              Else                        'backward ties
-                rob(.Ties(k).pnt).Ties(.Ties(k).ptt).nrgused = True 'red ties
-              End If
+                    
+                k = k + 1
+                Wend
             End If
-            k = k + 1
-          Wend
-        End If
+            
+            If .mem(tp + 2) = -4 And .mem(tp + 3) <> 0 Then 'trade waste via ties
+            
+                l = .mem(tp + 3) ' l is amount of waste to exchange, positive to give waste away, negative to take it
+            
+                'limits on giving or taking waste
+                If l > 1000 Then l = 1000
+                If l < -1000 Then l = -1000
+                
+                k = 1
+                While .Ties(k).pnt > 0
+                    If .Ties(k).Port = tn Then
+                    
+                        'giving waste away
+                        If l > 0 Then
+                        
+                            If l > .Waste Then l = .Waste
+                            
+                            rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l * 0.99
+                            .Waste = .Waste - l
+                            .Pwaste = .Pwaste + l * 0.01 'some waste is converted into perminent waste rather then given away
+                        
+                        End If
+                        
+                        'taking waste
+                        If l < 0 Then
+                        
+                            If l < -rob(.Ties(k).pnt).Waste Then l = -rob(.Ties(k).pnt).Waste
+                        
+                            .Waste = .Waste - l * 0.99 'robot reseaves waste from opponent
+                            rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l 'opponent losing some waste
+                            rob(.Ties(k).pnt).Pwaste = rob(.Ties(k).pnt).Pwaste - l * 0.01 'some waste is converted into perminent waste rather then given away
+            
+                        End If
+                        
+                        If Not .Ties(k).back Then   'forward ties
+                            .Ties(k).nrgused = True   'red ties
+                        Else                        'backward ties
+                            rob(.Ties(k).pnt).Ties(.Ties(k).ptt).nrgused = True 'red ties
+                        End If
+            
+                    End If
+            
+                k = k + 1
+                Wend
+            End If
+                
+            If .mem(tp + 2) = -6 And .mem(tp + 3) <> 0 Then   'tieloc = -6 and .tieval not zero
+                  
+                l = .mem(tp + 3) ' l is amount of body to exchange, positive to give body away, negative to take it
+                                
+                'Limits on Tie feeding as a function of body attempting to do the feeding (or sharing)
+                If .body < 0 Then l = 0                        ' If your body has gone negative, you can't take or give body.
+                If .nrg < 0 Then l = 0                         ' If you nrg has gone negative, you can't take or give body.
+                If .age = 0 Then l = 0                         ' The just born can't trasnfer body
+                If l > 100 Then l = 100                      ' Upper limt on sharing
+                If l < -300 Then l = -300                    ' Upper limit on tie feeding
+                  
+                k = 1
+                While .Ties(k).pnt > 0        'tie actually points at something
+                    If .Ties(k).Port = tn Then  'tienum indicates this tie
+                       
+                        'Giving body away
+                        If l > 0 Then
+                        
+                            If l > .body Then l = .body ' Can't give away more body than you have
+                        
+                            rob(.Ties(k).pnt).nrg = rob(.Ties(k).pnt).nrg + l * 0.029                'tied robot receives energy
+                            If rob(.Ties(k).pnt).nrg > 32000 Then rob(.Ties(k).pnt).nrg = 32000
+                            rob(.Ties(k).pnt).body = rob(.Ties(k).pnt).body + l * 0.7         'tied robot stores some fat
+                            If rob(.Ties(k).pnt).body > 32000 Then rob(.Ties(k).pnt).body = 32000
+                            rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l * 0.01          'tied robot receives waste
+                            rob(.Ties(k).pnt).radius = FindRadius(.Ties(k).pnt)
+                            
+                            .body = .body - l                                                       'tying robot gives up energy
+                            
+                            If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "giving body to opponent"
+                            If Not SimOpts.F1 And .dq = 1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then rob(t).Dead = True 'safe kill robot
+                        
+                        End If
+                        
+                        'Taking body
+                        If l < 0 Then
+                                            
+                            If l < -rob(.Ties(k).pnt).body Then l = -rob(.Ties(k).pnt).body ' Can't give away more body than you have
+                                           
+                            'Poison (Yes tiefeeding body is a reason enough to get poisoned)
+                            ptag = Abs(l / 4)
+                            If rob(.Ties(k).pnt).poison > ptag Then 'target robot has poison
+                                If rob(.Ties(k).pnt).FName <> .FName Then 'can't poison your brother
+                                
+                                    .Poisoned = True
+                                    .Poisoncount = .Poisoncount + ptag
+                                    If .Poisoncount > 32000 Then .Poisoncount = 32000
+                                    
+                                    l = 0
+                                    
+                                    rob(.Ties(k).pnt).poison = rob(.Ties(k).pnt).poison - ptag
+                                    rob(.Ties(k).pnt).mem(827) = rob(.Ties(k).pnt).poison
+                                    
+                                    If rob(.Ties(k).pnt).mem(834) > 0 Then
+                                     .Ploc = ((rob(.Ties(k).pnt).mem(834) - 1) Mod 1000) + 1  'sets .Ploc to targets .mem(ploc) EricL - 3/29/2006 Added Mod to fix overflow
+                                     If .Ploc = 340 Then .Ploc = 0
+                                    Else
+                                     Do
+                                      .Ploc = Random(1, 1000)
+                                     Loop Until .Ploc <> 340
+                                    End If
         
-        .mem(tp + 2) = 0
-        .mem(tp + 3) = 0
-      End If
-   ' End If
+                                    .Pval = rob(.Ties(k).pnt).mem(839)
+                                    
+                                End If
+                            End If
+                                                
+                            .nrg = .nrg - l * 0.029                'tying robot receives energy
+                            If .nrg > 32000 Then .nrg = 32000
+                            .body = .body - l * 0.7          'tying robot stores some fat
+                            If .body > 32000 Then .body = 32000
+                            .Waste = .Waste - l * 0.01      'tying robot adds waste
+                            .radius = FindRadius(t)
+                            
+                            rob(.Ties(k).pnt).body = rob(.Ties(k).pnt).body + l 'Take the body
+                            
+                            If rob(.Ties(k).pnt).body <= 0 And rob(.Ties(k).pnt).Dead = False Then 'Botsareus 3/11/2014 Tie feeding kills
+                                .Kills = .Kills + 1
+                                If .Kills > 32000 Then .Kills = 32000
+                                .mem(220) = .Kills
+                            End If
+                            
+                            If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "taking body from opponent"
+                            If Not SimOpts.F1 And .dq = 1 And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then rob(t).Dead = True 'safe kill robot
+                        
+                        End If
+                        
+                        If Not .Ties(k).back Then   'forward ties
+                            .Ties(k).nrgused = True   'red ties
+                        Else                        'backward ties
+                            rob(.Ties(k).pnt).Ties(.Ties(k).ptt).nrgused = True 'red ties
+                        End If
+                        
+                    End If
+                        
+                k = k + 1
+                Wend
+            End If
+                
+            .mem(tp + 2) = 0
+            .mem(tp + 3) = 0
+        End If
+
+      
     .mem(tp + 5) = 0 ' .tienum should be reset every cycle
 getout:
   End With
@@ -649,9 +714,7 @@ End Sub
 'Reads the Tie Refvars for tie k into the mem of bot t
 Public Sub ReadTRefVars(t As Integer, k As Integer)
   Dim l As Integer ' just a loop counter
-  Dim n As Integer
-  
-  n = rob(t).Ties(k).pnt
+
   With rob(t)
     If rob(.Ties(k).pnt).nrg < 32000 And rob(.Ties(k).pnt).nrg > -32000 Then
       .mem(464) = CInt(rob(.Ties(k).pnt).nrg) 'copies tied robot's energy into memory cell *trefnrg
@@ -674,12 +737,12 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
     If .FName <> rob(.Ties(k).pnt).FName Then
      'Botsareus 2/11/2014 Tie Eye Fudge
      If FudgeEyes Or FudgeAll Then
-      If .mem(455 + 8) < 2 Then .mem(455 + 8) = Int(Rnd * 2) + 1 Else .mem(455 + 8) = .mem(455 + 8) + Int(Rnd * 2) * 2 - 1
+      If .mem(455 + 8) < 2 Then .mem(455 + 8) = Int(Rndy * 2) + 1 Else .mem(455 + 8) = .mem(455 + 8) + Int(Rndy * 2) * 2 - 1
      End If
      'Fudge the rest of Tie occurr
      If FudgeAll Then
       For l = 1 To 7
-       If .mem(455 + l) < 2 Then .mem(455 + l) = Int(Rnd * 2) + 1 Else .mem(455 + l) = .mem(455 + l) + Int(Rnd * 2) * 2 - 1
+       If .mem(455 + l) < 2 Then .mem(455 + l) = Int(Rndy * 2) + 1 Else .mem(455 + l) = .mem(455 + l) + Int(Rndy * 2) * 2 - 1
       Next l
      End If
     End If
@@ -697,12 +760,7 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
     End If
     
     .mem(479) = rob(.Ties(k).pnt).mem(AimSys)
-    
-    .mem(TREFUPSYS) = rob(n).mem(dirup)
-    .mem(TREFDNSYS) = rob(n).mem(dirdn)
-    .mem(TREFSXSYS) = rob(n).mem(dirsx)
-    .mem(TREFDXSYS) = rob(n).mem(dirdx)
-    
+        
     .mem(trefxpos) = rob(.Ties(k).pnt).mem(219)
     .mem(trefypos) = rob(.Ties(k).pnt).mem(217)
     .mem(trefvelyourup) = rob(.Ties(k).pnt).mem(velup)
@@ -730,7 +788,7 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
     'Fudge tin/tout
     If FudgeAll And .FName <> rob(.Ties(k).pnt).FName Then
       For l = 410 To 419
-       If .mem(l + 10) <> 0 Then .mem(l + 10) = .mem(l + 10) + Int(Rnd * 2) * 2 - 1
+       If .mem(l + 10) <> 0 Then .mem(l + 10) = .mem(l + 10) + Int(Rndy * 2) * 2 - 1
       Next l
     End If
         

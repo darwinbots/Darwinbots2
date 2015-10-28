@@ -63,8 +63,10 @@ Public Function LoadDNA(path As String, n As Integer) As Boolean
   Dim b As String
   Dim pos As Long
   Dim DNApos As Long
-  Dim hold As String
   Dim path2 As String
+  
+  Dim hold As String
+  Dim clonea As String
   
 inizio:
 
@@ -72,11 +74,9 @@ inizio:
   b = ""
   pos = 0
   DNApos = 0
-  hold = ""
    
   ReDim rob(n).dna(0)
-  ReDim rob(n).delgenes(0) 'Botsareus 9/16/2014 Bug fix from Billy
-  ReDim rob(n).delgenes(0).dna(0)
+
   DNApos = 0
   If path = "" Then
     LoadDNA = False
@@ -85,17 +85,13 @@ inizio:
   Open path For Input As #1
   While Not EOF(1)
         Line Input #1, a
-    
+        clonea = a
+            
     ' eliminate comments at the end of a line
     ' but preserves comments-only lines
     pos = InStr(a, "'")
     If pos > 1 Then a = Left(a, pos - 1)
     If Right(a, 2) = vbCrLf Then a = Left(a, Len(a) - 2)
-      
-    'Ignore empty lines for purposes of computing hash
-    If Len(a) <> 0 Then
-      hold = hold + a + vbCrLf
-    End If
     
     'Replace any tabs with spaces
     a = Replace(a, vbTab, " ")
@@ -151,6 +147,9 @@ inizio:
       End If
     End If
 here:
+          
+  hold = hold & clonea & vbCrLf  'Botsareus 10/8/2015 Simpler hold
+  
   Wend
   Close 1
   LoadDNA = True
@@ -768,14 +767,11 @@ End Function
 Private Sub getvals(n As Integer, ByVal a As String, hold As String)
 'Botsareus 4/30/2013 Do not need to grab FName since we are no longer displaying a message
 
-'NOTE: HASH IS BROKEN FOR SOME REASON, MAY BE DUE TO THE FACT THAT THE DNA NOW PARSES TO FILE CORRECTLY
-
 On Error GoTo skip 'Botsareus 8/22/2014 Fix for messed up tags
-
- Static generation As Long
- Static Mutations As Long
+ 
  Dim Name As String
  Dim value As String
+ Dim value2 As String
  
  ' here we divide the string in its two parts
  ' parameter's name and value, which shall be separated by ':'
@@ -785,39 +781,39 @@ On Error GoTo skip 'Botsareus 8/22/2014 Fix for messed up tags
  Name = Mid$(Name, 3)
  value = Trim(value)
  
+ ' Botsareus 10/8/2015
  ' here we take the appropriate action
  ' depending on the parameter's name
- ' we record it in the rob structure or, if we want to wait
- ' to check the hash before, in a temporary static variable
+ ' we record it in the rob structure
+ 
  If Name = "generation" Then
-   generation = val(value)
+   rob(n).generation = val(value)
  End If
- If Name = "mutations" Then
-   Mutations = val(value)
+ 
+ If Name = "mutations" Then 'Botsareus 10/8/2015 Preserve old mutations to calculate on header save
+   rob(n).OldMutations = val(value)
  End If
+ 
  If Name = "tag" Then 'Botsareus 1/28/2014 New short description feature
    rob(n).tag = Left(replacechars(value), 45)
- End If
- If Name = "corruptions" Then
-   Corruptions = Corruptions + 1
  End If
 ' If Name = "image" Then
 '   SimOpts.Specie(SpeciesFromBot(n)).DisplayImage = LoadPicture(value)
 ' End If
- 
+  
+  
+ ' Botsareus 10/8/2015
  ' if the current parameter is the hash string, we take its value,
  ' calculate the hash for the dna string from the beginning to
- ' the hash parameter, and compare the two. If they are the same,
- ' we can set the "important" parameters of the robot
- ' (until now they were recorded in static variables)
+ ' the hash parameter, and compare the two. If they are the different,
+ ' we reset the "important" parameters of the robot
  If Name = "hash" Then
-   hold = Left(hold, InStr(hold, "'#hash:") - 1)
-   If Hash(hold, 20) = value Then
-     rob(n).generation = generation
-     rob(n).Mutations = Mutations
+   value2 = Hash(hold, 20)
+   If value2 <> value Then
+     rob(n).generation = 0
+     rob(n).OldMutations = 0
    End If
  End If
-
 skip:
 End Sub
 
@@ -852,11 +848,14 @@ End Function
 ' saves a robot's header informations; can be padded with any
 ' other information, such as color, base energy, etc.
 Public Function SaveRobHeader(n As Integer) As String
-  'SaveRobHeader = "'#name: " + rob(n).FName + vbCrLf +
-    SaveRobHeader = "'#generation: " + CStr(rob(n).generation) + vbCrLf + _
-    "'#mutations: " + CStr(rob(n).Mutations) + vbCrLf
-    Dim blank As String * 50
-    If Left(rob(n).tag, 45) <> Left(blank, 45) Then SaveRobHeader = SaveRobHeader & "'#tag:" + Left(rob(n).tag, 45) + vbCrLf
+
+  Dim totmut As Long
+  totmut = rob(n).Mutations + rob(n).OldMutations
+  If totmut > 2000000000 Then totmut = 2000000000 'Overflow prevention
+  
+    SaveRobHeader = _
+    "'#generation: " + CStr(rob(n).generation) + vbCrLf + _
+    "'#mutations: " + CStr(totmut) + vbCrLf
 End Function
 
 ' loads the sysvars.txt file
@@ -1632,7 +1631,7 @@ Public Sub LoadSysVars()
 
 End Sub
 
-Public Function DetokenizeDNA(n As Integer, Optional position As Integer, Optional delgenes As Boolean) As String
+Public Function DetokenizeDNA(n As Integer, Optional position As Integer) As String
   Dim temp As String, t As Long
   Dim tempint As Integer
   Dim converttosysvar As Boolean
@@ -1648,22 +1647,23 @@ Public Function DetokenizeDNA(n As Integer, Optional position As Integer, Option
   Dim Insert As Integer
   dna = rob(n).dna
   
-  If delgenes Then
-  With rob(n)
-    For x = UBound(.delgenes) To 1 Step -1
-
-    'a slightely modified version of addgene
-     vlen = UBound(.delgenes(x).dna)
-     Insert = .delgenes(x).position - 1
-     If MakeSpace(dna, Insert, vlen) Then
-      For t = Insert To Insert + vlen - 1
-        dna(t + 1) = .delgenes(x).dna(t - Insert)
-      Next t
-     End If
-
-    Next
-  End With
-  End If
+  'Botsareus 10/5/2015 Replaced with something better
+'  If delgenes Then
+'  With rob(n)
+'    For x = UBound(.delgenes) To 1 Step -1
+'
+'    'a slightely modified version of addgene
+'     vlen = UBound(.delgenes(x).dna)
+'     Insert = .delgenes(x).position - 1
+'     If MakeSpace(dna, Insert, vlen) Then
+'      For t = Insert To Insert + vlen - 1
+'        dna(t + 1) = .delgenes(x).dna(t - Insert)
+'      Next t
+'     End If
+'
+'    Next
+'  End With
+'  End If
   
   
   ingene = False

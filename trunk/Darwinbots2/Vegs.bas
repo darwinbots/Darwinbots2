@@ -48,8 +48,8 @@ Dim Srange As Byte
 Sposition = SunChange Mod 10
 Srange = SunChange \ 10
 
-If Int(Rnd * 2000) = 0 Then Srange = IIf(Srange = 0, 1, 0)
-If Int(Rnd * 2000) = 0 Then Sposition = Int(Rnd * 3)
+If Int(Rndy * 2000) = 0 Then Srange = IIf(Srange = 0, 1, 0)
+If Int(Rndy * 2000) = 0 Then Sposition = Int(Rndy * 3)
 
     If Srange = 1 Then SunRange = SunRange + 0.0005
     If Srange = 0 Then SunRange = SunRange - 0.0005
@@ -67,7 +67,6 @@ End If
   Dim t As Integer
   Dim tok As Single
   Dim depth As Long
-  Dim daymod As Single
   Dim FeedThisCycle As Boolean
   Dim OverrideDayNight As Boolean
   
@@ -165,8 +164,6 @@ End If
   Next
   
   If Not FeedThisCycle Then GoTo getout
-   
-  If SimOpts.Daytime Then daymod = 1 Else daymod = 0
   
   ScreenArea = CDbl(SimOptModule.SimOpts.FieldWidth) * CDbl(SimOptModule.SimOpts.FieldHeight) 'Botsareus 12/28/2013 Formula simplified, people are getting resonable frame rates with 3ghz cpus
   
@@ -230,13 +227,11 @@ End If
       If SimOpts.Pondmode Then
         depth = (.pos.y / 2000) + 1
         If depth < 1 Then depth = 1
-        tok = (SimOpts.LightIntensity / depth ^ SimOpts.Gradient) * daymod 'Botsareus 3/26/2013 No longer add one, robots get fed more accuratly
+        tok = (SimOpts.LightIntensity / depth ^ SimOpts.Gradient) 'Botsareus 3/26/2013 No longer add one, robots get fed more accuratly
       Else
         tok = totnrg
       End If
-      
-      If TmpOpts.Tides > 0 Then tok = tok * (1 - BouyancyScaling)
-      
+            
       If tok < 0 Then tok = 0
       
       tok = tok / 3.5 'Botsareus 2/25/2014 A little mod for PhinotPi
@@ -253,7 +248,9 @@ End If
 nextrob:
       
       If .chloroplasts > 0 Then
-      acttok = acttok - CSng(.age) * CSng(.chloroplasts) / 4500000000#
+      acttok = acttok - CSng(.age) * CSng(.chloroplasts) / 1000000000# 'Botsareus 10/6/2015 Robots should start losing body at around 32000 cycles
+      
+      If TmpOpts.Tides > 0 Then acttok = acttok * (1 - BouyancyScaling) 'Botsareus 10/6/2015 Cancer effect corrected for
       
       .nrg = .nrg + acttok * (1 - SimOpts.VegFeedingToBody)
       .body = .body + (acttok * SimOpts.VegFeedingToBody) / 10
@@ -282,16 +279,46 @@ Public Sub feedveg2(t As Integer) 'gives veg an additional meal based on waste '
    Energy = .chloroplasts / 64000 * (1 - SimOpts.VegFeedingToBody)
    body = (.chloroplasts / 64000 * SimOpts.VegFeedingToBody) / 10
    
-   If .Waste > 0 Then
-    If .nrg + Energy < 32000 Then
-     .nrg = .nrg + Energy
-     .Waste = .Waste - .chloroplasts / 32000 * (1 - SimOpts.VegFeedingToBody)
-    End If
-    If .body + body < 32000 Then
-     .body = .body + body
-     .Waste = .Waste - .chloroplasts / 32000 * SimOpts.VegFeedingToBody
-    End If
-    If .Waste < 0 Then .Waste = 0
+   If Int(Rndy * 2) = 0 Then
+   
+   'energy first
+   
+        If .Waste > 0 Then
+         If .nrg + Energy < 32000 Then
+          .nrg = .nrg + Energy
+          .Waste = .Waste - .chloroplasts / 32000 * (1 - SimOpts.VegFeedingToBody)
+         End If
+         If .Waste < 0 Then .Waste = 0
+        End If
+        
+        If .Waste > 0 Then
+         If .body + body < 32000 Then
+          .body = .body + body
+          .Waste = .Waste - .chloroplasts / 32000 * SimOpts.VegFeedingToBody
+         End If
+         If .Waste < 0 Then .Waste = 0
+        End If
+   
+   Else
+   
+       'body first
+    
+       If .Waste > 0 Then
+        If .body + body < 32000 Then
+         .body = .body + body
+         .Waste = .Waste - .chloroplasts / 32000 * SimOpts.VegFeedingToBody
+        End If
+        If .Waste < 0 Then .Waste = 0
+       End If
+       
+       If .Waste > 0 Then
+        If .nrg + Energy < 32000 Then
+         .nrg = .nrg + Energy
+         .Waste = .Waste - .chloroplasts / 32000 * (1 - SimOpts.VegFeedingToBody)
+        End If
+        If .Waste < 0 Then .Waste = 0
+       End If
+   
    End If
    
   End With

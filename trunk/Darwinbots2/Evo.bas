@@ -1,4 +1,5 @@
 Attribute VB_Name = "Evo"
+Option Explicit
 ' * * * * * * * * * * * * * * * * * * *
 ' All special evolution modes are here
 ' * * * * * * * * * * * * * * * * * * *
@@ -53,13 +54,15 @@ LFOR = LFOR - LFORcorr / n10(LFOR)
 If LFOR < 1 / n10(tmpLFOR) Then LFOR = 1 / n10(tmpLFOR)
 If LFOR < 0.01 Then LFOR = 0.01
 '
-hidePredCycl = Init_hidePredCycl + 300 * Rnd - 150
+hidePredCycl = Init_hidePredCycl + 300 * rndy - 150
 '
 If hidePredCycl < 150 Then hidePredCycl = 150
 If hidePredCycl > 15000 Then hidePredCycl = 15000
 End Sub
 
 Private Sub Next_Stage()
+Dim t As Integer
+
 'Reset F1 test
 y_Stgwins = 0
 
@@ -74,7 +77,7 @@ Dim gotdnalen As Integer
 'lets grab a test robot to figure out dna length
 For t = 1 To MaxRobs
         If rob(t).exist And rob(t).FName = "Test.txt" Then
-            gotdnalen = DnaLen(rob(t).DNA)
+            gotdnalen = DnaLen(rob(t).dna)
             Exit For
         End If
 Next
@@ -153,7 +156,7 @@ End If
 LFOR = LFOR + LFORcorr / n10(LFOR)
 If LFOR > 100 Then LFOR = 100
 '
-hidePredCycl = Init_hidePredCycl + 300 * Rnd - 150
+hidePredCycl = Init_hidePredCycl + 300 * rndy - 150
 '
 If hidePredCycl < 150 Then hidePredCycl = 150
 If hidePredCycl > 15000 Then hidePredCycl = 15000
@@ -164,7 +167,7 @@ If rob(bestrob).Mutations > 0 And (totnvegsDisplayed >= 15 Or y_eco_im = 0) Then
     logevo "Evolving robot changed, testing robot."
     'F1 mode init
     If y_eco_im = 0 Then
-        salvarob bestrob, MDIForm1.MainDir & "\evolution\Test.txt", True
+        salvarob bestrob, MDIForm1.MainDir & "\evolution\Test.txt"
     Else
 
         'The Eco Calc
@@ -234,7 +237,7 @@ If rob(bestrob).Mutations > 0 And (totnvegsDisplayed >= 15 Or y_eco_im = 0) Then
               
               'save and kill the robot
               If dir(MDIForm1.MainDir & "\evolution\testrob" & ecocount, vbDirectory) = "" Then MkDir MDIForm1.MainDir & "\evolution\testrob" & ecocount
-              salvarob fit, MDIForm1.MainDir & "\evolution\testrob" & ecocount & "\Test.txt", True
+              salvarob fit, MDIForm1.MainDir & "\evolution\testrob" & ecocount & "\Test.txt"
               rob(fit).exist = False
               
         Next
@@ -303,33 +306,31 @@ End Sub
 ' Zerobot - Botsareus 4/14/2014
 ' * * * * * * * * * * * * * * * * * * *
 Private Sub ZBreadyforTest(ByVal bestrob As Integer)
-salvarob bestrob, MDIForm1.MainDir & "\evolution\Test.txt", True
+salvarob bestrob, MDIForm1.MainDir & "\evolution\Test.txt"
 'the robot did evolve, so lets update
 x_filenumber = x_filenumber + 1
 FileCopy MDIForm1.MainDir & "\evolution\Test.txt", MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".txt"
 FileCopy MDIForm1.MainDir & "\evolution\Test.mrate", MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".mrate"
-        Dim dbnnxtmut As Integer
-        Dim dbnnxtbase As Integer
-        '
-        Do
-            dbnnxtmut = Int(x_filenumber - 15 + Rnd * 16)
-        Loop Until dbnnxtmut >= 0 And dbnnxtmut <= x_filenumber
-        '
-        Do
-            dbnnxtbase = Int(x_filenumber - 15 + Rnd * 16)
-        Loop Until dbnnxtbase >= 0 And dbnnxtbase <= x_filenumber
-        '
-        logevo "Progress. New Base: " & dbnnxtbase & " New Mutate: " & dbnnxtmut
-        FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & dbnnxtbase & ".txt", MDIForm1.MainDir & "\evolution\Base.txt"
-        FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & dbnnxtmut & ".txt", MDIForm1.MainDir & "\evolution\Mutate.txt"
-        If dbnnxtmut = 0 Then
-            If dir(MDIForm1.MainDir & "\evolution\Mutate.mrate") <> "" Then Kill MDIForm1.MainDir & "\evolution\Mutate.mrate"
-        Else
-            FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & dbnnxtmut & ".mrate", MDIForm1.MainDir & "\evolution\Mutate.mrate"
-        End If
-        '
+
+        Dim ecocount As Integer
+        Dim lowestindex As Integer
+        Dim dbn As Integer
+        
+        'what is our lowest index?
+        lowestindex = x_filenumber - 7
+        If lowestindex < 0 Then lowestindex = 0
+             
+        logevo "Progress."
+        For ecocount = 1 To 8
+            'calculate index and copy robots
+            dbn = lowestindex + (ecocount - 1) Mod (x_filenumber + 1)
+            FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & dbn & ".txt", MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.txt"
+            If dir(MDIForm1.MainDir & "\evolution\stages\stage" & dbn & ".mrate") <> "" Then FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & dbn & ".mrate", MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.mrate"
+            FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & dbn & ".txt", MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt"
+        Next
+        
 x_restartmode = 9
-SimOpts.TotRunCycle = 2001 'make sure we skip the message
+SimOpts.TotRunCycle = 8001 'make sure we skip the message
 'restart now
 Open App.path & "\restartmode.gset" For Output As #1
  Write #1, x_restartmode
@@ -379,7 +380,6 @@ Public Sub calculateZB(ByVal robid As Long, ByVal Mx As Double, ByVal bestrob As
 If rob(bestrob).LastMut > 0 Then
 Static oldid As Long
 Static oldMx As Double
-Static hits As Byte
 
   Dim MratesMax As Long 'used to correct out of range mutations
   MratesMax = IIf(NormMut, CLng(rob(bestrob).DnaLen) * CLng(valMaxNormMut), 2000000000)
@@ -399,21 +399,15 @@ End If
 
 
 If oldid = robid And Mx > oldMx Then
-    hits = hits + 1
-    If hits = 2 Then
-        ZBreadyforTest bestrob
-    Else
-        logevo "'GoodTest' reason: oldid(" & oldid & ") comp. id(" & robid & ") Mx(" & Mx & ") comp. oldMx(" & oldMx & ")", x_filenumber
-        With rob(bestrob) 'robot is doing well, why not?
-                .Mutables.mutarray(PointUP) = .Mutables.mutarray(PointUP) * 1.15
-                If .Mutables.mutarray(PointUP) > MratesMax Then .Mutables.mutarray(PointUP) = MratesMax
-                .Mutables.mutarray(P2UP) = .Mutables.mutarray(P2UP) * 1.15
-                If .Mutables.mutarray(P2UP) > MratesMax Then .Mutables.mutarray(P2UP) = MratesMax
-        End With
-    End If
+    With rob(bestrob) 'robot is doing well, why not?
+            .Mutables.mutarray(PointUP) = .Mutables.mutarray(PointUP) * 1.75
+            If .Mutables.mutarray(PointUP) > MratesMax Then .Mutables.mutarray(PointUP) = MratesMax
+            .Mutables.mutarray(P2UP) = .Mutables.mutarray(P2UP) * 1.75
+            If .Mutables.mutarray(P2UP) > MratesMax Then .Mutables.mutarray(P2UP) = MratesMax
+    End With
+    ZBreadyforTest bestrob
 Else
     If Not goodtest Then logevo "'Reset' reason: oldid(" & oldid & ") comp. id(" & robid & ") Mx(" & Mx & ") comp. oldMx(" & oldMx & ")", x_filenumber
-    hits = 0
 End If
 
 oldMx = Mx

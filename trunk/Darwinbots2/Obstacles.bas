@@ -198,7 +198,7 @@ Dim i As Integer
     If SimOpts.makeAllShapesBlack Then
       Obstacles(numObstacles).color = vbBlack
     Else
-      Obstacles(numObstacles).color = Rnd(255) * 65536 + Rnd(255) * 255 + Rnd(255) ' Random Color
+      Obstacles(numObstacles).color = Rnd * 65536 + Rnd * 255 + Rnd ' Random Color
     End If
    End If
  
@@ -300,7 +300,7 @@ Dim i As Integer
   
   For i = 1 To numObstacles
     If color < 0 Then
-      Obstacles(i).color = Rnd(255) * 65536 + Rnd(255) * 255 + Rnd(255) ' Random Color
+      Obstacles(i).color = Rnd * 65536 + Rnd * 255 + Rnd ' Random Color
     Else
       Obstacles(i).color = color
     End If
@@ -355,10 +355,10 @@ Dim i As Integer
   For i = 1 To numObstacles
     If Obstacles(i).exist And (i <> leftCompactor And i <> rightCompactor) Then
       If SimOpts.allowHorizontalShapeDrift Then
-        Obstacles(i).vel.x = Obstacles(i).vel.x + Random(-SimOpts.shapeDriftRate, SimOpts.shapeDriftRate) * Rnd * 0.01
+        Obstacles(i).vel.x = Obstacles(i).vel.x + Random(-SimOpts.shapeDriftRate, SimOpts.shapeDriftRate) * Rndy * 0.01
       End If
       If SimOpts.allowVerticalShapeDrift Then
-        Obstacles(i).vel.y = Obstacles(i).vel.y + Random(-SimOpts.shapeDriftRate, SimOpts.shapeDriftRate) * Rnd * 0.01
+        Obstacles(i).vel.y = Obstacles(i).vel.y + Random(-SimOpts.shapeDriftRate, SimOpts.shapeDriftRate) * Rndy * 0.01
       End If
       If VectorMagnitude(Obstacles(i).vel) > SimOpts.MaxVelocity Then
         Obstacles(i).vel = VectorScalar(Obstacles(i).vel, VectorMagnitude(Obstacles(i).vel) / SimOpts.MaxVelocity)

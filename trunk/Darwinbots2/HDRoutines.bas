@@ -832,6 +832,12 @@ On Error GoTo tryagain
    'Botsareus 10/13/2014
    Put #1, , SimOpts.Tides
    Put #1, , SimOpts.TidesOf
+   
+   'Botsareus 10/8/2015
+   Put #1, , SimOpts.MutOscillSine
+   
+   'Botsareus 10/20/2015
+   Put #1, , stagnent
        
     Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     
@@ -851,7 +857,9 @@ chseedloadsim = True
 GraphUp = False
 HideDB = False
 MDIForm1.MainDir = App.path
-UseSafeMode = False
+UseSafeMode = True 'Botsareus 10/5/2015
+UseEpiGene = False 'Botsareus 10/8/2015
+UseIntRnd = False 'Botsareus 10/8/2015
 intFindBestV2 = 100
 UseOldColor = True
 'mutations tab
@@ -952,6 +960,9 @@ If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
       If Not EOF(1) Then Input #1, y_robdir
       If Not EOF(1) Then Input #1, y_graphs
       If Not EOF(1) Then Input #1, y_normsize
+      'Botsareus 10/6/2015 Overwrite y_normsize
+      If x_restartmode < 4 Or x_restartmode = 10 Then y_normsize = False
+      
       If Not EOF(1) Then Input #1, y_hidePredCycl
       If Not EOF(1) Then Input #1, y_LFOR
       '
@@ -978,6 +989,11 @@ If dir(MDIForm1.MainDir & "\Global.gset") <> "" Then
       '
       If Not EOF(1) Then Input #1, GraphUp
       If Not EOF(1) Then Input #1, HideDB
+      '
+      If Not EOF(1) Then Input #1, UseEpiGene
+      '
+      If Not EOF(1) Then Input #1, UseIntRnd
+      
     Close #1
 End If
 
@@ -1008,7 +1024,10 @@ If autosaved And x_restartmode = 4 Then
     x_restartmode = 5
      MDIForm1.y_info.Visible = True
 End If
-If autosaved And x_restartmode = 7 Then x_restartmode = 8 'Botsareus 4/14/2014 same deal for zb evo
+If autosaved And x_restartmode = 7 Then
+    x_restartmode = 8 'Botsareus 4/14/2014 same deal for zb evo
+    intFindBestV2 = 20 + Rnd(-(x_filenumber + 1)) * 40 'Botsareus 10/26/2015 Value more interesting
+End If
 
 'Botsareus 3/19/2014 Load data for evo mode
 If x_restartmode = 4 Or x_restartmode = 5 Or x_restartmode = 6 Then
@@ -1038,6 +1057,14 @@ hidePredOffset = hidePredCycl / 6
 If UseSafeMode = False Then simalreadyrunning = False
 
 If simalreadyrunning = False Then autosaved = False
+
+
+If UseIntRnd Then
+'Use pictures from internet as randomizer
+cprndy = 0
+ReDim rndylist(3999)
+MDIForm1.grabfile
+End If
 
 End Sub
 
@@ -1521,6 +1548,12 @@ Form1.camfix = False 'Botsareus 2/23/2013 When simulation starts the screen is n
    'Botsareus 10/13/2014
    If Not EOF(1) Then Get #1, , SimOpts.Tides
    If Not EOF(1) Then Get #1, , SimOpts.TidesOf
+   
+   'Botsareus 10/8/2015
+   If Not EOF(1) Then Get #1, , SimOpts.MutOscillSine
+   
+   'Botsareus 10/20/2015
+   If Not EOF(1) Then Get #1, , stagnent
     
    Form1.lblSaving.Visible = False 'Botsareus 1/14/2014
     
@@ -1542,8 +1575,8 @@ Public Sub LoadRobot(fnum As Integer, ByVal n As Integer)
     insertsysvars n
     ScanUsedVars n
     makeoccurrlist n
-    rob(n).DnaLen = DnaLen(rob(n).DNA())
-    rob(n).genenum = CountGenes(rob(n).DNA())
+    rob(n).DnaLen = DnaLen(rob(n).dna())
+    rob(n).genenum = CountGenes(rob(n).dna())
     rob(n).mem(DnaLenSys) = rob(n).DnaLen
     rob(n).mem(GenesSys) = rob(n).genenum
    ' UpdateBotBucket n
@@ -1571,6 +1604,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
 'file #n,
   Dim t As Integer, k As Integer, ind As Integer, Fe As Byte, L1 As Long, inttmp As Integer
   Dim MessedUpMutations As Boolean
+  Dim longtmp As Long 'Botsareus 10/5/2015 freeing up memory from Eric's obsolete ancestors code
   
   MessedUpMutations = False
   With rob(r)
@@ -1619,16 +1653,16 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     
     ' macchina virtuale
     Get #n, , .mem()       ' memoria dati
-    Get #n, , k: ReDim .DNA(k)
+    Get #n, , k: ReDim .dna(k)
     
     For t = 1 To k
-      Get #n, , .DNA(t).tipo
-      Get #n, , .DNA(t).value
+      Get #n, , .dna(t).tipo
+      Get #n, , .dna(t).value
     Next t
     
     'Force an end base pair to protect against DNA corruption
-    .DNA(k).tipo = 10
-    .DNA(k).value = 1
+    .dna(k).tipo = 10
+    .dna(k).value = 1
         
         
     'EricL Set reasonable default values to protect against corrupted sims that don't read these values
@@ -1790,11 +1824,12 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     .fertilized = -1
     If FileContinue(n) Then Get #n, , .fertilized
     
-    If FileContinue(n) Then Get #n, , .AncestorIndex
+    'Botsareus 10/5/2015 freeing up memory from Eric's obsolete ancestors code
+    If FileContinue(n) Then Get #n, , inttmp
     For t = 0 To 500
-      If FileContinue(n) Then Get #n, , .Ancestors(t).mut
-      If FileContinue(n) Then Get #n, , .Ancestors(t).num
-      If FileContinue(n) Then Get #n, , .Ancestors(t).sim
+      If FileContinue(n) Then Get #n, , longtmp
+      If FileContinue(n) Then Get #n, , longtmp
+      If FileContinue(n) Then Get #n, , longtmp
     Next t
     
     .sim = 0
@@ -1843,6 +1878,9 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     If FileContinue(n) Then Get #n, , .Chlr_Share_Delay
     If FileContinue(n) Then Get #n, , .dq
     
+    'Botsareus 10/8/2015 Keep track of mutations from old dna file
+    If FileContinue(n) Then Get #n, , .OldMutations
+    
     .dq = .dq - IIf(.dq > 1, 2, 0)
     
     If Not .Veg Then
@@ -1859,31 +1897,32 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
      If TotalChlr > SimOpts.MaxPopulation Then .Dead = True
     End If
     
+    'Botsareus 10/5/2015 Replaced with something better
     'Botsareus 9/16/2014 Read gene kill resrictions
-    ReDim .delgenes(0)
-    ReDim .delgenes(0).DNA(0)
-    Dim x As Integer
-    Dim y As Integer
-    Dim poz As Long
-    poz = Seek(n)
-    Get #n, , x
-    If x < 0 Then
-        Get #n, poz - 1, Fe
-        If y_eco_im > 0 And Form1.lblSaving.Visible = False Then
-            .dq = 2 + (.dq = 1) * True
-        End If
-        GoTo OldFile
-    End If
-    ReDim .delgenes(x)
-    For y = 0 To x
-        Get #n, , .delgenes(y).Position
-        Get #n, , k
-        ReDim .delgenes(y).DNA(k)
-        For t = 0 To k
-          Get #n, , .delgenes(y).DNA(t).tipo
-          Get #n, , .delgenes(y).DNA(t).value
-        Next t
-    Next
+'    ReDim .delgenes(0)
+'    ReDim .delgenes(0).dna(0)
+'    Dim x As Integer
+'    Dim y As Integer
+'    Dim poz As Long
+'    poz = Seek(n)
+'    Get #n, , x
+'    If x < 0 Then
+'        Get #n, poz - 1, Fe
+'        If y_eco_im > 0 And Form1.lblSaving.Visible = False Then
+'            .dq = 2 + (.dq = 1) * True
+'        End If
+'        GoTo OldFile
+'    End If
+'    ReDim .delgenes(x)
+'    For y = 0 To x
+'        Get #n, , .delgenes(y).position
+'        Get #n, , k
+'        ReDim .delgenes(y).dna(k)
+'        For t = 0 To k
+'          Get #n, , .delgenes(y).dna(t).tipo
+'          Get #n, , .delgenes(y).dna(t).value
+'        Next t
+'    Next
     
     'read in any future data here
     
@@ -1918,11 +1957,11 @@ Private Function FileContinue(filenumber As Integer) As Boolean
   'three FE bytes (ie: 254) means we are at the end of the record
   
   Dim Fe As Byte
-  Dim Position As Long
+  Dim position As Long
   Dim k As Integer
   
   FileContinue = False
-  Position = Seek(filenumber)
+  position = Seek(filenumber)
    
   Do
     If Not EOF(filenumber) Then
@@ -1941,7 +1980,7 @@ Private Function FileContinue(filenumber As Integer) As Boolean
   Loop While Not FileContinue And k < 3
   
   'reset position
-  Get #filenumber, Position - 1, Fe
+  Get #filenumber, position - 1, Fe
 End Function
 ' saves the body of the robot
 Private Sub SaveRobotBody(n As Integer, r As Integer)
@@ -1949,6 +1988,7 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
   Dim s As String
   Dim s2 As String
   Dim temp As String
+  Dim longtmp As Long
   
   Const Fe As Byte = 254
  ' Dim space As Integer
@@ -2002,10 +2042,10 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     
     ' macchina virtuale
     Put #n, , .mem()
-    k = DnaLen(rob(r).DNA()): Put #n, , k
+    k = DnaLen(rob(r).dna()): Put #n, , k
     For t = 1 To k
-      Put #n, , .DNA(t).tipo
-      Put #n, , .DNA(t).value
+      Put #n, , .dna(t).tipo
+      Put #n, , .dna(t).value
     Next t
     
     For t = 0 To 20
@@ -2101,11 +2141,12 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     Next t
     Put #n, , .fertilized
     
-    Put #n, , .AncestorIndex
+    'Botsareus 10/5/2015 freeing up memory from Eric's obsolete ancestors code
+    Put #n, , t
     For t = 0 To 500
-      Put #n, , .Ancestors(t).mut
-      Put #n, , .Ancestors(t).num
-      Put #n, , .Ancestors(t).sim
+      Put #n, , longtmp
+      Put #n, , longtmp
+      Put #n, , longtmp
     Next t
     
     Put #n, , .sim
@@ -2158,19 +2199,24 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     Put #n, , .Chlr_Share_Delay
     Put #n, , .dq
     
-    'Botsareus 9/16/2014 Write gene kill resrictions
+    'Botsareus 10/8/2015 Keep track of mutations from old dna file
     
-    Dim x As Integer
-    Dim y As Integer
-    x = UBound(.delgenes): Put #n, , x
-    For y = 0 To x
-        Put #n, , .delgenes(y).Position
-        k = UBound(.delgenes(y).DNA): Put #n, , k
-        For t = 0 To k
-          Put #n, , .delgenes(y).DNA(t).tipo
-          Put #n, , .delgenes(y).DNA(t).value
-        Next t
-    Next
+    Put #n, , .OldMutations
+    
+    'Botsareus 10/5/2015 Replaced with something better
+'    'Botsareus 9/16/2014 Write gene kill resrictions
+'
+'    Dim x As Integer
+'    Dim y As Integer
+'    x = UBound(.delgenes): Put #n, , x
+'    For y = 0 To x
+'        Put #n, , .delgenes(y).position
+'        k = UBound(.delgenes(y).dna): Put #n, , k
+'        For t = 0 To k
+'          Put #n, , .delgenes(y).dna(t).tipo
+'          Put #n, , .delgenes(y).dna(t).value
+'        Next t
+'    Next
     
     'write any future data here
     
@@ -2181,35 +2227,56 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
 End Sub
 
 ' saves a robot dna     !!!New routine from Carlo!!!
-Sub salvarob(n As Integer, path As String, Optional nombox As Boolean)
-  Dim t As Integer
-  Dim a As String
-  Dim ti As Byte
-  Dim va As Integer
+'Botsareus 10/8/2015 Code simplification
+Sub salvarob(n As Integer, path As String)
+
   Dim hold As String
   Dim hashed As String
-  t = 1
+  
+  Dim a As Integer
+  Dim epigene As String
+  
+  
   Close #1
   Open path For Output As #1
   hold = SaveRobHeader(n)
+  
+  'Botsareus 10/8/2015 New code to save epigenetic memory as gene
+  
+  If UseEpiGene Then
+  
+      For a = 971 To 990
+          If rob(n).mem(a) <> 0 Then epigene = epigene & rob(n).mem(a) & " " & a & " store" & vbCrLf
+      Next
+    
+      If epigene <> "" Then
+      
+          epigene = "start" & vbCrLf & epigene & "*.thisgene .delgene store" & vbCrLf & "stop"
+          
+          hold = hold + epigene
+      
+      End If
+
+  End If
+    
   savingtofile = True 'Botsareus 2/28/2014 when saving to file the def sysvars should not save
-  hold = hold + DetokenizeDNA(n, 0, y_eco_im > 0 And nombox And Int(Rnd * 2) = 0)
+  hold = hold + DetokenizeDNA(n, 0)
   savingtofile = False
   hashed = Hash(hold, 20)
   Print #1, hold
   Print #1, ""
-  If Not nombox Then Print #1, "'#hash: " + hashed
-  If UBound(rob(n).delgenes) > 0 And (y_eco_im > 0 And nombox) Then Print #1, "'#corruptions:True"
+  Print #1, "'#hash: " + hashed
+  Dim blank As String * 50
+  If Left(rob(n).tag, 45) <> Left(blank, 45) Then Print #1, "'#tag:" + Left(rob(n).tag, 45) + vbCrLf
   Close #1
   
   'Botsareus 12/11/2013 Save mrates file
   Save_mrates rob(n).Mutables, extractpath(path) & "\" & extractexactname(extractname(path)) & ".mrate"
   
-  If y_eco_im > 0 Then Exit Sub 'Under eco restart mode you will not be able to rename a robot
-  If Not nombox Then
-    If MsgBox("Do you want to change robot's name to " + extractname(path) + " ?", vbYesNo, "Robot DNA saved") = vbYes Then
-      rob(n).FName = extractname(path)
-    End If
+  If x_restartmode > 0 Then Exit Sub 'Botsareus 10/8/2015 Can not rename robot in any special restart mode
+  
+  If MsgBox("Do you want to change robot's name to " + extractname(path) + " ?", vbYesNo, "Robot DNA saved") = vbYes Then
+   rob(n).FName = extractname(path)
   End If
 End Sub
 
@@ -2382,8 +2449,8 @@ Private Sub SaveShot(n As Integer, t As Long)
     If (.shottype = -7 Or .shottype = -8) And .exist And .DnaLen > 0 Then
       Put #n, , .DnaLen
       For x = 1 To .DnaLen
-        Put #n, , .DNA(x).tipo
-        Put #n, , .DNA(x).value
+        Put #n, , .dna(x).tipo
+        Put #n, , .dna(x).value
       Next x
     Else
       k = 0: Put #n, , k
@@ -2434,10 +2501,10 @@ Private Sub LoadShot(n As Integer, t As Long)
     ' Somewhere to store genetic code for a virus
     Get #n, , k
     If k > 0 Then
-      ReDim .DNA(k)
+      ReDim .dna(k)
       For x = 1 To k
-        Get #n, , .DNA(x).tipo
-        Get #n, , .DNA(x).value
+        Get #n, , .dna(x).tipo
+        Get #n, , .dna(x).value
       Next x
     End If
     

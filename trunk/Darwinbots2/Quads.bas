@@ -20,7 +20,7 @@ Public eyeDistance(10) As Single  ' used for exact distances to viewed objects f
 
 'also erases array elements to retrieve memory
 Public Sub Init_Buckets()
-  Dim X As Integer: Dim Y As Integer: Dim z As Integer
+  Dim x As Integer: Dim y As Integer: Dim z As Integer
   
   'Determine the nubmer of buckets.
   NumXBuckets = Int(SimOpts.FieldWidth / BucketSize)
@@ -29,37 +29,37 @@ Public Sub Init_Buckets()
   ReDim Buckets(NumXBuckets, NumYBuckets)
     
   'Buckets count along rows, top row, then next...
-  For Y = 0 To NumYBuckets - 1
-    For X = 0 To NumXBuckets - 1
-      ReDim Buckets(X, Y).arr(0)
-      Buckets(X, Y).size = 0
+  For y = 0 To NumYBuckets - 1
+    For x = 0 To NumXBuckets - 1
+      ReDim Buckets(x, y).arr(0)
+      Buckets(x, y).size = 0
       
       'Zero out the list of adjacent buckets
       For z = 1 To 8
-        Buckets(X, Y).adjBucket(z).X = -1
+        Buckets(x, y).adjBucket(z).x = -1
       Next z
       
       z = 1
       'Set the list of adjacent buckets for this bucket
       'We take the time to do this here to save the time it would take to compute these every cycle.
-      If X > 0 Then Buckets(X, Y).adjBucket(z).X = X - 1: Buckets(X, Y).adjBucket(z).Y = Y: z = z + 1 ' Bucket to the Left
-      If X < NumXBuckets - 1 Then Buckets(X, Y).adjBucket(z).X = X + 1: Buckets(X, Y).adjBucket(z).Y = Y: z = z + 1 ' Bucket to the Right
-      If Y > 0 Then Buckets(X, Y).adjBucket(z).Y = Y - 1: Buckets(X, Y).adjBucket(z).X = X: z = z + 1 ' Bucket on top
-      If Y < NumYBuckets - 1 Then Buckets(X, Y).adjBucket(z).Y = Y + 1: Buckets(X, Y).adjBucket(z).X = X: z = z + 1 ' Bucket below
-      If X > 0 And Y > 0 Then Buckets(X, Y).adjBucket(z).X = X - 1: Buckets(X, Y).adjBucket(z).Y = Y - 1: z = z + 1 ' Bucket to the Left and Up
-      If X > 0 And Y < NumYBuckets - 1 Then Buckets(X, Y).adjBucket(z).X = X - 1: Buckets(X, Y).adjBucket(z).Y = Y + 1: z = z + 1 ' Bucket to the Left and Down
-      If X < NumXBuckets - 1 And Y > 0 Then Buckets(X, Y).adjBucket(z).X = X + 1: Buckets(X, Y).adjBucket(z).Y = Y - 1: z = z + 1 ' Bucket to the Right and Up
-      If X < NumXBuckets - 1 And Y < NumYBuckets - 1 Then Buckets(X, Y).adjBucket(z).X = X + 1: Buckets(X, Y).adjBucket(z).Y = Y + 1: z = z + 1  ' Bucket to the Right and Down
-    Next X
-  Next Y
+      If x > 0 Then Buckets(x, y).adjBucket(z).x = x - 1: Buckets(x, y).adjBucket(z).y = y: z = z + 1 ' Bucket to the Left
+      If x < NumXBuckets - 1 Then Buckets(x, y).adjBucket(z).x = x + 1: Buckets(x, y).adjBucket(z).y = y: z = z + 1 ' Bucket to the Right
+      If y > 0 Then Buckets(x, y).adjBucket(z).y = y - 1: Buckets(x, y).adjBucket(z).x = x: z = z + 1 ' Bucket on top
+      If y < NumYBuckets - 1 Then Buckets(x, y).adjBucket(z).y = y + 1: Buckets(x, y).adjBucket(z).x = x: z = z + 1 ' Bucket below
+      If x > 0 And y > 0 Then Buckets(x, y).adjBucket(z).x = x - 1: Buckets(x, y).adjBucket(z).y = y - 1: z = z + 1 ' Bucket to the Left and Up
+      If x > 0 And y < NumYBuckets - 1 Then Buckets(x, y).adjBucket(z).x = x - 1: Buckets(x, y).adjBucket(z).y = y + 1: z = z + 1 ' Bucket to the Left and Down
+      If x < NumXBuckets - 1 And y > 0 Then Buckets(x, y).adjBucket(z).x = x + 1: Buckets(x, y).adjBucket(z).y = y - 1: z = z + 1 ' Bucket to the Right and Up
+      If x < NumXBuckets - 1 And y < NumYBuckets - 1 Then Buckets(x, y).adjBucket(z).x = x + 1: Buckets(x, y).adjBucket(z).y = y + 1: z = z + 1  ' Bucket to the Right and Down
+    Next x
+  Next y
   
-  For X = 1 To MaxRobs
-    If rob(X).exist Then
-      rob(X).BucketPos.X = -2
-      rob(X).BucketPos.Y = -2
-      UpdateBotBucket X
+  For x = 1 To MaxRobs
+    If rob(x).exist Then
+      rob(x).BucketPos.x = -2
+      rob(x).BucketPos.y = -2
+      UpdateBotBucket x
     End If
-  Next X
+  Next x
 End Sub
 
 Public Sub UpdateBotBucket(n As Integer)
@@ -76,22 +76,22 @@ Public Sub UpdateBotBucket(n As Integer)
    
   
     newbucket = rob(n).BucketPos
-    currbucket = Int(rob(n).pos.X / BucketSize)
+    currbucket = Int(rob(n).pos.x / BucketSize)
     If currbucket < 0 Then currbucket = 0 ' Possible bot is off the field
     If currbucket >= NumXBuckets Then currbucket = NumXBuckets - 1 ' Possible bot is off the field
   
-    If rob(n).BucketPos.X <> currbucket Then
+    If rob(n).BucketPos.x <> currbucket Then
       'we've moved off the bucket, update bucket
-      newbucket.X = currbucket
+      newbucket.x = currbucket
       changed = True
     End If
   
-    currbucket = Int(rob(n).pos.Y / BucketSize)
+    currbucket = Int(rob(n).pos.y / BucketSize)
     If currbucket < 0 Then currbucket = 0 ' Possible bot is off the field
     If currbucket >= NumYBuckets Then currbucket = NumYBuckets - 1 ' Possible bot is off the field
   
-    If rob(n).BucketPos.Y <> currbucket Then
-      newbucket.Y = currbucket
+    If rob(n).BucketPos.y <> currbucket Then
+      newbucket.y = currbucket
       changed = True
     End If
   
@@ -112,7 +112,7 @@ Public Sub Add_Bot(n As Integer, pos As vector)
 'Array is packed.  Code can assume no more bots exist in the bucket if a -1 is encounterred
 
     
-  With Buckets(pos.X, pos.Y)
+  With Buckets(pos.x, pos.y)
 
     For a = 1 To .size
       If .arr(a) = -1 Then
@@ -140,28 +140,28 @@ Public Sub Delete_Bot(n As Integer, pos As vector)
 'Keeps the array packed
 'Redimension the array to recover memory if warrented
 
-  If pos.X < 0 Or pos.Y < 0 Then GoTo getout ' Can happen for new bots.  They arn't in any buckets.
-  If pos.X > NumXBuckets - 1 Or pos.Y > NumYBuckets - 1 Then GoTo getout ' Can happen when field is resized
+  If pos.x < 0 Or pos.y < 0 Then GoTo getout ' Can happen for new bots.  They arn't in any buckets.
+  If pos.x > NumXBuckets - 1 Or pos.y > NumYBuckets - 1 Then GoTo getout ' Can happen when field is resized
   
-    For a = 1 To Buckets(pos.X, pos.Y).size
-      If Buckets(pos.X, pos.Y).arr(a) = n Then 'we've found the bot
+    For a = 1 To Buckets(pos.x, pos.y).size
+      If Buckets(pos.x, pos.y).arr(a) = n Then 'we've found the bot
                  
         'Slide all the bots in the bucket down one slot, effectivly deleting the specific bot
-        While Buckets(pos.X, pos.Y).arr(a) <> -1 And a < Buckets(pos.X, pos.Y).size
-          Buckets(pos.X, pos.Y).arr(a) = Buckets(pos.X, pos.Y).arr(a + 1)
+        While Buckets(pos.x, pos.y).arr(a) <> -1 And a < Buckets(pos.x, pos.y).size
+          Buckets(pos.x, pos.y).arr(a) = Buckets(pos.x, pos.y).arr(a + 1)
           a = a + 1
         Wend
         
         'a now points to either .size or the last -1 slot.  If .size, we need to set the location to -1
         'Either way, it doesn't hurt to stomp on it.
-        Buckets(pos.X, pos.Y).arr(a) = -1
+        Buckets(pos.x, pos.y).arr(a) = -1
                 
         'The array is now compact and a now points to the first -1 slot in the array.
         'We should reclaim memory if there is a lot to reclaim, up to a point.
         'For now, we only reclaim memory if more than 50 open slots
-        If Buckets(pos.X, pos.Y).size - a > 50 And Buckets(pos.X, pos.Y).size > 55 Then 'last bot in array, collapse array
-          ReDim Preserve Buckets(pos.X, pos.Y).arr(Buckets(pos.X, pos.Y).size - 50)
-          Buckets(pos.X, pos.Y).size = Buckets(pos.X, pos.Y).size - 50
+        If Buckets(pos.x, pos.y).size - a > 50 And Buckets(pos.x, pos.y).size > 55 Then 'last bot in array, collapse array
+          ReDim Preserve Buckets(pos.x, pos.y).arr(Buckets(pos.x, pos.y).size - 50)
+          Buckets(pos.x, pos.y).size = Buckets(pos.x, pos.y).size - 50
         End If
               
         GoTo getout
@@ -173,7 +173,7 @@ End Sub
 
 Public Function BucketsProximity(n As Integer) As Integer
   'mirror of proximity function.  Checks all the bots in the same bucket and surrounding buckets
-  Dim X As Long, Y As Long
+  Dim x As Long, y As Long
   Dim BucketPos As vector
   Dim adjBucket As vector
 
@@ -181,22 +181,22 @@ Public Function BucketsProximity(n As Integer) As Integer
   rob(n).lastopp = 0
   rob(n).lastopptype = 0 ' set the default type of object seen to a bot.
   rob(n).mem(EYEF) = 0
-  For X = EyeStart + 1 To EyeEnd - 1
-    rob(n).mem(X) = 0
-  Next X
+  For x = EyeStart + 1 To EyeEnd - 1
+    rob(n).mem(x) = 0
+  Next x
   
   'Check the bucket the bot is in
   CheckBotBucketForVision n, BucketPos
   
   'Check all the adjacent buckets
-  For X = 1 To 8
-    adjBucket = Buckets(BucketPos.X, BucketPos.Y).adjBucket(X)
-    If adjBucket.X <> -1 Then
+  For x = 1 To 8
+    adjBucket = Buckets(BucketPos.x, BucketPos.y).adjBucket(x)
+    If adjBucket.x <> -1 Then
       CheckBotBucketForVision n, adjBucket
     Else
       GoTo done
     End If
-  Next X
+  Next x
 done:
         
   If SimOpts.shapesAreVisable And rob(n).exist Then CompareShapes n, 12
@@ -207,7 +207,7 @@ End Function
 Private Sub CheckBotBucketForVision(n As Integer, pos As vector)
   Dim a As Integer, robnumber As Integer
   
-  With Buckets(pos.X, pos.Y)
+  With Buckets(pos.x, pos.y)
   If .size = 0 Then GoTo getout
   a = 1
   While .arr(a) <> -1
@@ -222,7 +222,7 @@ End Sub
 
 Public Sub BucketsCollision(n As Integer)
   'mirror of proximity function.  Checks all the bots in the same bucket and surrounding buckets
-  Dim X As Long, Y As Long
+  Dim x As Long, y As Long
   Dim BucketPos As vector
   Dim adjBucket As vector
 
@@ -232,14 +232,14 @@ Public Sub BucketsCollision(n As Integer)
   CheckBotBucketForCollision n, BucketPos
   
   'Check all the adjacent buckets
-  For X = 1 To 8
-    adjBucket = Buckets(BucketPos.X, BucketPos.Y).adjBucket(X)
-    If adjBucket.X <> -1 Then
+  For x = 1 To 8
+    adjBucket = Buckets(BucketPos.x, BucketPos.y).adjBucket(x)
+    If adjBucket.x <> -1 Then
       CheckBotBucketForCollision n, adjBucket
     Else
       GoTo done
     End If
-  Next X
+  Next x
 done:
 
 End Sub
@@ -252,10 +252,10 @@ Private Sub CheckBotBucketForCollision(n As Integer, pos As vector)
   Dim dist As Single
   'If pos.x = -2 Or pos.Y = -2 Then goto getout
 
-  If Buckets(pos.X, pos.Y).size = 0 Then GoTo getout
+  If Buckets(pos.x, pos.y).size = 0 Then GoTo getout
   a = 1
-    While Buckets(pos.X, pos.Y).arr(a) <> -1
-      robnumber = Buckets(pos.X, pos.Y).arr(a)
+    While Buckets(pos.x, pos.y).arr(a) <> -1
+      robnumber = Buckets(pos.x, pos.y).arr(a)
       If robnumber > n Then ' only have to check bots higher than n otherwise we do it twice for each bot pair
         If Not (rob(robnumber).FName = "Base.txt" And hidepred) Then
             distvector = VectorSub(rob(n).pos, rob(robnumber).pos)
@@ -263,7 +263,7 @@ Private Sub CheckBotBucketForCollision(n As Integer, pos As vector)
             If VectorMagnitudeSquare(distvector) < (dist * dist) Then Repel3 n, robnumber
         End If
       End If
-      If a = Buckets(pos.X, pos.Y).size Then GoTo getout
+      If a = Buckets(pos.x, pos.y).size Then GoTo getout
       a = a + 1
     Wend
 getout:
@@ -303,10 +303,10 @@ Dim numerator As Single
   ShapeBlocksBot = False
   
   'Cheap weed out check
-  If (Obstacles.Obstacles(o).pos.X > Max(rob(n1).pos.X, rob(n2).pos.X)) Or _
-     (Obstacles.Obstacles(o).pos.X + Obstacles.Obstacles(o).Width < Min(rob(n1).pos.X, rob(n2).pos.X)) Or _
-     (Obstacles.Obstacles(o).pos.Y > Max(rob(n1).pos.Y, rob(n2).pos.Y)) Or _
-     (Obstacles.Obstacles(o).pos.Y + Obstacles.Obstacles(o).Height < Min(rob(n1).pos.Y, rob(n2).pos.Y)) Then GoTo getout
+  If (Obstacles.Obstacles(o).pos.x > Max(rob(n1).pos.x, rob(n2).pos.x)) Or _
+     (Obstacles.Obstacles(o).pos.x + Obstacles.Obstacles(o).Width < Min(rob(n1).pos.x, rob(n2).pos.x)) Or _
+     (Obstacles.Obstacles(o).pos.y > Max(rob(n1).pos.y, rob(n2).pos.y)) Or _
+     (Obstacles.Obstacles(o).pos.y + Obstacles.Obstacles(o).Height < Min(rob(n1).pos.y, rob(n2).pos.y)) Then GoTo getout
   
   D1(1) = VectorSet(0, Obstacles.Obstacles(o).Width) ' top
   D1(2) = VectorSet(Obstacles.Obstacles(o).Height, 0) ' left side
@@ -383,8 +383,8 @@ End Function
 Private Function eyestrength(n1 As Integer) As Single 'Botsareus 2/3/2013 eye strength mod
 Const EyeEffectiveness As Byte = 3  'Botsareus 3/26/2013 For eye strength formula
 
-If SimOpts.Pondmode And rob(n1).pos.Y > 1 Then 'Botsareus 3/26/2013 Bug fix if robot Y pos is almost zero
-  eyestrength = (EyeEffectiveness / (rob(n1).pos.Y / 2000) ^ SimOpts.Gradient) ^ (6828 / SimOpts.FieldHeight)  'Botsareus 3/26/2013 Robots only effected by density, not light intensity
+If SimOpts.Pondmode And rob(n1).pos.y > 1 Then 'Botsareus 3/26/2013 Bug fix if robot Y pos is almost zero
+  eyestrength = (EyeEffectiveness / (rob(n1).pos.y / 2000) ^ SimOpts.Gradient) ^ (6828 / SimOpts.FieldHeight)  'Botsareus 3/26/2013 Robots only effected by density, not light intensity
 Else
   eyestrength = 1
 End If
@@ -453,47 +453,47 @@ If (rob(n2).FName = "Base.txt" And hidepred) Then Exit Sub
       ac = VectorScalar(ab, invdist)
       'ac is now unit vector
       
-      ad = VectorSet(ac.Y, -ac.X)
+      ad = VectorSet(ac.y, -ac.x)
       ad = VectorScalar(ad, rob(n2).radius)
       ad = VectorAdd(ab, ad)
       
-      ac = VectorSet(-ac.Y, ac.X)
+      ac = VectorSet(-ac.y, ac.x)
       ac = VectorScalar(ac, rob(n2).radius)
       ac = VectorAdd(ab, ac)
             
 
       'Coordinates are in the 4th quadrant, so make the y values negative so the math works
-      ad.Y = -ad.Y
-      ac.Y = -ac.Y
+      ad.y = -ad.y
+      ac.y = -ac.y
       
       ' theta is the angle to the left edge of the viewed bot
       ' beta is the andgle to the right edge of the viewed bot
       
-      If ad.X = 0 Then ' Divide by zero protection
-        If ad.Y > 0 Then
+      If ad.x = 0 Then ' Divide by zero protection
+        If ad.y > 0 Then
           theta = PI / 2 ' left edge of viewed bot is at 90 degrees
         Else
           theta = 3 * PI / 2 ' left edge of viewed bot is at 270 degrees
         End If
       Else
-        If ad.X > 0 Then
-          theta = Atn(ad.Y / ad.X)
+        If ad.x > 0 Then
+          theta = Atn(ad.y / ad.x)
         Else
-          theta = Atn(ad.Y / ad.X) + PI
+          theta = Atn(ad.y / ad.x) + PI
         End If
       End If
       
-      If ac.X = 0 Then
-        If ac.Y > 0 Then
+      If ac.x = 0 Then
+        If ac.y > 0 Then
           beta = PI / 2
         Else
           beta = 3 * PI / 2
         End If
       Else
-        If ac.X > 0 Then
-          beta = Atn(ac.Y / ac.X)
+        If ac.x > 0 Then
+          beta = Atn(ac.y / ac.x)
         Else
-          beta = Atn(ac.Y / ac.X) + PI
+          beta = Atn(ac.y / ac.x) + PI
         End If
       End If
       
@@ -635,15 +635,15 @@ Dim percentdist As Single
   If Obstacles.Obstacles(o).exist Then
   
     'Cheap weed out check - check to see if shape is too far away to be seen
-    If (Obstacles.Obstacles(o).pos.X > rob(n).pos.X + sightdist) Or _
-       (Obstacles.Obstacles(o).pos.X + Obstacles.Obstacles(o).Width < rob(n).pos.X - sightdist) Or _
-       (Obstacles.Obstacles(o).pos.Y > rob(n).pos.Y + sightdist) Or _
-       (Obstacles.Obstacles(o).pos.Y + Obstacles.Obstacles(o).Height < rob(n).pos.Y - sightdist) Then
+    If (Obstacles.Obstacles(o).pos.x > rob(n).pos.x + sightdist) Or _
+       (Obstacles.Obstacles(o).pos.x + Obstacles.Obstacles(o).Width < rob(n).pos.x - sightdist) Or _
+       (Obstacles.Obstacles(o).pos.y > rob(n).pos.y + sightdist) Or _
+       (Obstacles.Obstacles(o).pos.y + Obstacles.Obstacles(o).Height < rob(n).pos.y - sightdist) Then
        'Do nothing.  Shape is too far away.  Move on to next shape.
-    ElseIf (Obstacles.Obstacles(o).pos.X < rob(n).pos.X) And _
-       (Obstacles.Obstacles(o).pos.X + Obstacles.Obstacles(o).Width > rob(n).pos.X) And _
-       (Obstacles.Obstacles(o).pos.Y < rob(n).pos.Y) And _
-       (Obstacles.Obstacles(o).pos.Y + Obstacles.Obstacles(o).Height > rob(n).pos.Y) Then
+    ElseIf (Obstacles.Obstacles(o).pos.x < rob(n).pos.x) And _
+       (Obstacles.Obstacles(o).pos.x + Obstacles.Obstacles(o).Width > rob(n).pos.x) And _
+       (Obstacles.Obstacles(o).pos.y < rob(n).pos.y) And _
+       (Obstacles.Obstacles(o).pos.y + Obstacles.Obstacles(o).Height > rob(n).pos.y) Then
        'Bot is inside shape!
        For i = 0 To 8
          rob(n).mem(EyeStart + 1 + i) = 32000
@@ -662,7 +662,7 @@ Dim percentdist As Single
 
       'Here are the four corners
       p(1) = Obstacles.Obstacles(o).pos ' NW corner
-      p(2) = p(1): p(2).Y = p(1).Y + Obstacles.Obstacles(o).Height ' SW Corner
+      p(2) = p(1): p(2).y = p(1).y + Obstacles.Obstacles(o).Height ' SW Corner
       p(3) = VectorAdd(p(1), D1(1)) ' NE Corner
       p(4) = VectorAdd(p(2), D1(1)) ' SE Corner
        
@@ -680,25 +680,25 @@ Dim percentdist As Single
       ' 8 NW - Center is North or top and West of left edge
       ' We first need to figure out which the bot is in.
       
-      If P0.X < p(1).X Then 'Must be NW, W or SW
+      If P0.x < p(1).x Then 'Must be NW, W or SW
         botLocation = 4 ' Set to West for default
-        If P0.Y < p(1).Y Then
+        If P0.y < p(1).y Then
           botLocation = 8  ' Must be NW
           nearestCorner = p(1)
-        ElseIf P0.Y > p(2).Y Then
+        ElseIf P0.y > p(2).y Then
           botLocation = 7  ' Must be SW
           nearestCorner = p(2)
         End If
-      ElseIf P0.X > p(3).X Then ' Must be NE, E or SE
+      ElseIf P0.x > p(3).x Then ' Must be NE, E or SE
         botLocation = 2 ' Set to East for default
-        If P0.Y < p(1).Y Then
+        If P0.y < p(1).y Then
           botLocation = 5  ' Must be NE
           nearestCorner = p(3)
-        ElseIf P0.Y > p(2).Y Then
+        ElseIf P0.y > p(2).y Then
           botLocation = 6  ' Must be SE
           nearestCorner = p(4)
         End If
-      ElseIf P0.Y < p(1).Y Then
+      ElseIf P0.y < p(1).y Then
         botLocation = 1 ' Must be North
       Else
         botLocation = 3 ' Must be South
@@ -714,10 +714,10 @@ Dim percentdist As Single
         'Now we check to see if the sight distance for this specific eye is far enough to see this specific shape
         eyedist = EyeSightDistance(AbsoluteEyeWidth(rob(n).mem(EYE1WIDTH + a)), n)
         
-        If (Obstacles.Obstacles(o).pos.X > rob(n).pos.X + eyedist) Or _
-           (Obstacles.Obstacles(o).pos.X + Obstacles.Obstacles(o).Width < rob(n).pos.X - eyedist) Or _
-           (Obstacles.Obstacles(o).pos.Y > rob(n).pos.Y + eyedist) Or _
-           (Obstacles.Obstacles(o).pos.Y + Obstacles.Obstacles(o).Height < rob(n).pos.Y - eyedist) Then
+        If (Obstacles.Obstacles(o).pos.x > rob(n).pos.x + eyedist) Or _
+           (Obstacles.Obstacles(o).pos.x + Obstacles.Obstacles(o).Width < rob(n).pos.x - eyedist) Or _
+           (Obstacles.Obstacles(o).pos.y > rob(n).pos.y + eyedist) Or _
+           (Obstacles.Obstacles(o).pos.y + Obstacles.Obstacles(o).Height < rob(n).pos.y - eyedist) Then
           '  Do nothing - shape is too far away
         Else
         
@@ -756,8 +756,8 @@ Dim percentdist As Single
         eyeaimrightvector = VectorSet(Cos(eyeaimright), Sin(eyeaimright))
         eyeaimrightvector = VectorScalar(VectorUnit(eyeaimrightvector), eyedist)
         
-        eyeaimleftvector.Y = -eyeaimleftvector.Y
-        eyeaimrightvector.Y = -eyeaimrightvector.Y
+        eyeaimleftvector.y = -eyeaimleftvector.y
+        eyeaimrightvector.y = -eyeaimrightvector.y
                 
         distleft = 0
         distright = 0
@@ -771,10 +771,10 @@ Dim percentdist As Single
         'it is, it is closer then either eye edge.
         'Perhaps do this before edges and not do edges if found?
         Select Case botLocation
-          Case 1: closestPoint = P0: closestPoint.Y = p(1).Y ' North side
-          Case 2: closestPoint = P0: closestPoint.X = p(4).X ' East side
-          Case 3: closestPoint = P0: closestPoint.Y = p(4).Y ' South side
-          Case 4: closestPoint = P0: closestPoint.X = p(1).X ' West side
+          Case 1: closestPoint = P0: closestPoint.y = p(1).y ' North side
+          Case 2: closestPoint = P0: closestPoint.x = p(4).x ' East side
+          Case 3: closestPoint = P0: closestPoint.y = p(4).y ' South side
+          Case 4: closestPoint = P0: closestPoint.x = p(1).x ' West side
           Case 5: closestPoint = p(3) ' NE Corner
           Case 6: closestPoint = p(4) ' SE corner
           Case 7: closestPoint = p(2) ' SW corner
@@ -783,20 +783,20 @@ Dim percentdist As Single
         
         ab = VectorSub(closestPoint, P0) ' Vector from bot to corner of shape
           'Coordinates are in the 4th quadrant, so make the y values negative so the math works
-        ab.Y = -ab.Y
+        ab.y = -ab.y
    
         ' theta is the angle to the closest point on the shape
-        If ab.X = 0 Then ' Divide by zero protection
-           If ab.Y > 0 Then
+        If ab.x = 0 Then ' Divide by zero protection
+           If ab.y > 0 Then
              theta = PI / 2 '
            Else
              theta = 3 * PI / 2 '
            End If
         Else
-          If ab.X > 0 Then
-            theta = Atn(ab.Y / ab.X)
+          If ab.x > 0 Then
+            theta = Atn(ab.y / ab.x)
           Else
-             theta = Atn(ab.Y / ab.X) + PI
+             theta = Atn(ab.y / ab.x) + PI
           End If
         End If
         theta = angnorm(theta)
@@ -951,12 +951,12 @@ Dim s As Single
 Dim t As Single
 
   SegmentSegmentIntersect = 0
-  dotPerp = D0.X * D1.Y - D1.X * D0.Y ' Test for intersection
+  dotPerp = D0.x * D1.y - D1.x * D0.y ' Test for intersection
         
   If dotPerp <> 0 Then
     Delta = VectorSub(P1, P0)
-    s = Dot(Delta, VectorSet(D1.Y, -D1.X)) / dotPerp
-    t = Dot(Delta, VectorSet(D0.Y, -D0.X)) / dotPerp
+    s = Dot(Delta, VectorSet(D1.y, -D1.x)) / dotPerp
+    t = Dot(Delta, VectorSet(D0.y, -D0.x)) / dotPerp
     If s >= 0 And s <= 1 And t >= 0 And t <= 1 Then SegmentSegmentIntersect = s
   End If
         
