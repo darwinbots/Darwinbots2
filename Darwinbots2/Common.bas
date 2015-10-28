@@ -21,6 +21,10 @@ Public timerthis As Long
 
 Declare Function GetTickCount Lib "kernel32.dll" () As Long
 
+Public rndylist() As Single
+Public cprndy As Integer
+Public filemem As String
+
 Public Function nextlowestmultof2(ByVal value As Integer) 'Botsareus 2/18/2014
 Dim a As Integer
 a = 1
@@ -47,12 +51,12 @@ End Function
 
 
 Public Function Random(low, hi) As Long
-  Random = Int((hi - low + 1) * Rnd + low)
+  Random = Int((hi - low + 1) * rndy + low)
   If hi < low And hi = 0 Then Random = 0
 End Function
 
 Public Function fRnd(ByVal low As Long, ByVal up As Long) As Long
-  fRnd = CLng(Rnd * (up - low + 1) + low)
+  fRnd = CLng(rndy * (up - low + 1) + low)
 End Function
 
 'Gauss returns a gaussian number centered at the
@@ -85,8 +89,8 @@ Private Function gasdev() As Single
   
   If (iset = 0) Then
     Do
-      V1 = 2# * Rnd() - 1#
-      V2 = 2# * Rnd() - 1#
+      V1 = 2# * rndy - 1#
+      V2 = 2# * rndy - 1#
       rsq = V1 * V1 + V2 * V2
     Loop While (rsq >= 1# Or rsq = 0#)
     fac = Sqr(-2# * Log(rsq) / rsq)
@@ -219,4 +223,33 @@ If HideDB Then
 End If
 End Sub
 
+'Botsareus 10/5/2015 Randomize 'Y' with Y being a more interesting randomization source
+
+Public Function rndy() As Single
+If UseIntRnd Then
+
+Static y As Integer
+
+If y = 0 Then
+    Randomize rndylist(cprndy)
+    cprndy = cprndy + 1
+    If cprndy = 3900 Then savenow = True 'Time for an autosave
+    If cprndy > 3999 Then
+        cprndy = 0
+        Kill App.path & "\" & filemem 'kill current file and grab the next
+        MDIForm1.grabfile
+    End If
+    y = (Rnd * 4000) + 1
+End If
+
+rndy = Rnd
+
+y = y - 1
+
+Else
+
+rndy = Rnd
+
+End If
+End Function
 

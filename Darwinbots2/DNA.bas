@@ -32,7 +32,7 @@ Private Type Stack
 End Type
 
 Private Type Queue
-  Memloc As Integer
+  memloc As Integer
   Memval As Integer
 End Type
 
@@ -82,24 +82,24 @@ Private Sub ExecuteDNA(ByVal n As Integer)
   With rob(n)
   a = 1
   rob(n).condnum = 0 ' EricL 4/6/2006 reset the COND statement counter to 0
-  While Not (.DNA(a).tipo = 10 And .DNA(a).value = 1) And a <= 32000 And a < UBound(.DNA) 'Botsareus 6/16/2012 Added upper bounds check (This seems like overkill but I had situations where 'end' command did not exisit)
-    tipo = .DNA(a).tipo
+  While Not (.dna(a).tipo = 10 And .dna(a).value = 1) And a <= 32000 And a < UBound(.dna) 'Botsareus 6/16/2012 Added upper bounds check (This seems like overkill but I had situations where 'end' command did not exisit)
+    tipo = .dna(a).tipo
     Select Case tipo
       Case 0 'number
         If CurrentFlow <> CLEAR Then
-          PushIntStack .DNA(a).value
+          PushIntStack .dna(a).value
           rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(NUMCOST) * SimOpts.Costs(COSTMULTIPLIER))
         End If
       Case 1 '*number
         If CurrentFlow <> CLEAR Then 'And .DNA(a).value <= 1000 And .DNA(a).value > 0 Then
         
-          b = .DNA(a).value
+          b = .dna(a).value
           If b > MaxMem Or b < 1 Then
-              b = Abs(.DNA(a).value) Mod MaxMem
+              b = Abs(.dna(a).value) Mod MaxMem
               If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
     
               '2/28/2014 New code from Botsareus if it is a real sysvar then put it into range
-              If Not IsNumeric(SysvarDetok(b, n)) Then .DNA(a).value = b
+              If Not IsNumeric(SysvarDetok(b, n)) Then .dna(a).value = b
           End If
           
           PushIntStack .mem(b)
@@ -110,43 +110,43 @@ Private Sub ExecuteDNA(ByVal n As Integer)
         End If
       Case 2 'commands (add, sub, etc.)
         If CurrentFlow <> CLEAR Then
-          ExecuteBasicCommand .DNA(a).value
+          ExecuteBasicCommand .dna(a).value
         End If
       Case 3 'advanced commands
         If CurrentFlow <> CLEAR Then
-          ExecuteAdvancedCommand .DNA(a).value, a
+          ExecuteAdvancedCommand .dna(a).value, a
         End If
       Case 4 'bitwise commands
         If CurrentFlow <> CLEAR Then
-          ExecuteBitwiseCommand .DNA(a).value
+          ExecuteBitwiseCommand .dna(a).value
         End If
       Case 5 'conditions
         'EricL  11/2007 New execution paradym.  Conditions can now be executeed anywhere in the gene
         If CurrentFlow = COND Or CurrentFlow = body Or CurrentFlow = ELSEBODY Then
-          ExecuteConditions .DNA(a).value
+          ExecuteConditions .dna(a).value
         End If
       Case 6 'logic commands (and, or, etc.)
         'EricL  11/2007 New execution paradym.  Conditions can now be executeed anywhere in the gene
         If CurrentFlow = COND Or CurrentFlow = body Or CurrentFlow = ELSEBODY Then
-          ExecuteLogic .DNA(a).value
+          ExecuteLogic .dna(a).value
         End If
       Case 7 'store, inc and dec
       
           '2/28/2014 New code from Botsareus if it is a real sysvar then put it into range
           If a > 0 Then
-              b = .DNA(a - 1).value
-              If (b > MaxMem Or b < 1) And .DNA(a - 1).tipo = 0 Then
-                b = Abs(.DNA(a - 1).value) Mod MaxMem
+              b = .dna(a - 1).value
+              If (b > MaxMem Or b < 1) And .dna(a - 1).tipo = 0 Then
+                b = Abs(.dna(a - 1).value) Mod MaxMem
                 If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
                 
                 '2/28/2014 New code from Botsareus if it is a real sysvar then put it into range
-                If Not IsNumeric(SysvarDetok(b, n)) Then .DNA(a - 1).value = b
+                If Not IsNumeric(SysvarDetok(b, n)) Then .dna(a - 1).value = b
               End If
           End If
 '
         If CurrentFlow = body Or CurrentFlow = ELSEBODY Then
           If CondStateIsTrue Then  ' Check the Bool stack.  If empty or True on top, do the stores.  Don't if False.
-            ExecuteStores .DNA(a).value
+            ExecuteStores .dna(a).value
             If n = robfocus Or Not (rob(n).console Is Nothing) Then rob(n).ga(currgene) = True   'EricL  This gene fired this cycle!  Populate ga()
           End If
         End If
@@ -154,7 +154,7 @@ Private Sub ExecuteDNA(ByVal n As Integer)
       Case 9 'flow commands
       
         ' EricL 4/6/2006 Added If statement.  This counts the number of COND statements in each bot.
-        If Not ExecuteFlowCommands(.DNA(a).value, n) Then
+        If Not ExecuteFlowCommands(.dna(a).value, n) Then
           rob(n).condnum = rob(n).condnum + 1
         End If
         
@@ -367,6 +367,13 @@ Private Sub DNAanglecmp() 'Allowes a robot to quickly calculate the difference b
     
     b = PopIntStack
     a = PopIntStack
+    
+    'Botsareus 10/5/2015 Value normalization
+    b = b Mod 1256
+    If b < 0 Then b = b + 1256
+    
+    a = a Mod 1256
+    If a < 0 Then a = a + 1256
     
     c = AngDiff(a / 200, b / 200) * 200
         
@@ -887,13 +894,6 @@ Private Sub DNAstore()
      b = Abs(b) Mod MaxMem  ' Make sure the location hits the bot's memory to increase the chance of mutations hitting sysvars.
      If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
      a = PopIntStack
-     If a > 0 Then
-       a = a Mod 32000
-       If a = 0 Then a = 32000  ' Special case 32000
-     ElseIf a < 0 Then
-       a = a Mod 32000
-       If a = 0 Then a = -32000 ' special case -32000
-     End If
      
      'Botsareus 3/22/2013 handle tieang...tielen 1...4 overwrites
      Dim k As Byte
@@ -902,7 +902,7 @@ Private Sub DNAstore()
       If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
      Next
      
-     rob(currbot).mem(b) = a
+     rob(currbot).mem(b) = mod32000(a)
      rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER))
    End If
 End Sub
@@ -913,8 +913,8 @@ Private Sub DNAinc()
    If a <> 0 Then
      a = Abs(a) Mod MaxMem
      If a = 0 Then a = 1000
-     b = (rob(currbot).mem(a) + 1) Mod 32000
-     rob(currbot).mem(a) = b
+     b = rob(currbot).mem(a) + 1
+     rob(currbot).mem(a) = mod32000(b)
      rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 10
    End If
 End Sub
@@ -924,8 +924,9 @@ Private Sub DNAdec()
    a = PopIntStack
     If a <> 0 Then
      a = Abs(a) Mod MaxMem
-     b = (rob(currbot).mem(a) - 1) Mod 32000
-     rob(currbot).mem(a) = b
+     If a = 0 Then a = 1000
+     b = rob(currbot).mem(a) - 1
+     rob(currbot).mem(a) = mod32000(b)
      rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 10
    End If
 End Sub
@@ -938,7 +939,6 @@ Private Sub DNAaddstore()
      b = Abs(b) Mod MaxMem  ' Make sure the location hits the bot's memory to increase the chance of mutations hitting sysvars.
      If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
      a = PopIntStack + rob(currbot).mem(b)
-     a = a Mod 32000
      
      'Botsareus 3/22/2013 handle tieang...tielen 1...4 overwrites
      Dim k As Byte
@@ -947,7 +947,7 @@ Private Sub DNAaddstore()
       If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
      Next
      
-     rob(currbot).mem(b) = a
+     rob(currbot).mem(b) = mod32000(a)
      rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
    End If
 End Sub
@@ -960,7 +960,6 @@ Private Sub DNAsubstore()
      b = Abs(b) Mod MaxMem  ' Make sure the location hits the bot's memory to increase the chance of mutations hitting sysvars.
      If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
      a = rob(currbot).mem(b) - PopIntStack
-     a = a Mod 32000
      
      'Botsareus 3/22/2013 handle tieang...tielen 1...4 overwrites
      Dim k As Byte
@@ -969,7 +968,7 @@ Private Sub DNAsubstore()
       If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
      Next
      
-     rob(currbot).mem(b) = a
+     rob(currbot).mem(b) = mod32000(a)
      rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
    End If
 End Sub
@@ -985,11 +984,9 @@ Private Sub DNAmultstore()
      'Botsareus 11/30/2013 Small bugfix to prevent overflow
      Dim c As Long
      c = PopIntStack
-     c = c Mod 32000
-     
+     c = mod32000(c)
      
      a = rob(currbot).mem(b) * c
-     a = a Mod 32000
      
      'Botsareus 3/22/2013 handle tieang...tielen 1...4 overwrites
      Dim k As Byte
@@ -998,7 +995,7 @@ Private Sub DNAmultstore()
       If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
      Next
      
-     rob(currbot).mem(b) = a
+     rob(currbot).mem(b) = mod32000(a)
      rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
    End If
 End Sub
@@ -1047,17 +1044,8 @@ Private Sub DNAceilstore()
       If b = 480 + k Then rob(currbot).TieAngOverwrite(k) = True
       If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
      Next
-     
-     'Botsareus 10/12/2013 Fix for out of range ceil
-     If a > 0 Then
-       a = a Mod 32000
-       If a = 0 Then a = 32000  ' Special case 32000
-     ElseIf a < 0 Then
-       a = a Mod 32000
-       If a = 0 Then a = -32000 ' special case -32000
-     End If
-     
-     rob(currbot).mem(b) = a
+          
+     rob(currbot).mem(b) = mod32000(a)
      rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
    End If
 End Sub
@@ -1079,8 +1067,15 @@ Private Sub DNAfloorstore()
       If b = 480 + k Then rob(currbot).TieAngOverwrite(k) = True
       If b = 484 + k Then rob(currbot).TieLenOverwrite(k) = True
      Next
-     
-     'Botsareus 10/12/2013 Fix for out of range floor
+     rob(currbot).mem(b) = mod32000(a)
+     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
+   End If
+End Sub
+
+
+Private Function mod32000(ByVal a As Long) As Integer
+'Botsareus 10/6/2015 Fix for out of range
+
      If a > 0 Then
        a = a Mod 32000
        If a = 0 Then a = 32000  ' Special case 32000
@@ -1088,11 +1083,9 @@ Private Sub DNAfloorstore()
        a = a Mod 32000
        If a = 0 Then a = -32000 ' special case -32000
      End If
-     
-     rob(currbot).mem(b) = a
-     rob(currbot).nrg = rob(currbot).nrg - (SimOpts.Costs(COSTSTORE) * SimOpts.Costs(COSTMULTIPLIER)) / 5
-   End If
-End Sub
+
+mod32000 = a
+End Function
 
 Private Sub DNArndstore()
    Dim a As Long, b As Long

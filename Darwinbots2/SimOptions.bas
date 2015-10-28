@@ -82,6 +82,7 @@ Public Type SimOptions
 
   MutCurrMult As Single
   MutOscill As Boolean
+  MutOscillSine As Boolean
   MutCycMax As Long
   MutCycMin As Long
   DisableMutations As Boolean ' Indicates whether all mutations should be disabled

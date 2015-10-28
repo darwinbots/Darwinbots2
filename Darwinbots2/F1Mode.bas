@@ -94,9 +94,11 @@ Public Sub FindSpecies()
   End If
   'Botsareus 2/11/2014 reset time limit and stuff
   If TotSpecies > 2 And (MaxCycles > 0 Or MaxPop > 0) Then
-    MaxCycles = 0
+    optMaxCycles = 0
     MaxPop = 0
     MsgBox "You have selected more then two species for combat. Cycle limit and max population disabled", vbOKOnly
+  Else
+    optMaxCycles = MaxCycles
   End If
   '
   If PopArray(1).SpName <> "" Then
@@ -319,10 +321,10 @@ Static setoldpop As Boolean
     End If
     If ModeChangeCycles > 1000 Then
         If PopArray(1).population > PopArray(2).population Then
-            If (PopArray(1).population - oldpop1) < (PopArray(2).population - oldpop2) And PopArray(2).population > 10 Then optMaxCycles = optMaxCycles + 1000 / (MaxCycles / (MaxCycles * PopArray(1).population / PopArray(2).population - MaxCycles) + 1)
+            If (PopArray(1).population - oldpop1) < (PopArray(2).population - oldpop2) And PopArray(2).population > 10 Then optMaxCycles = optMaxCycles + 1000 / (1 / (PopArray(1).population / PopArray(2).population - 1) + 1)
         End If
         If PopArray(2).population > PopArray(1).population Then
-            If (PopArray(2).population - oldpop2) < (PopArray(1).population - oldpop1) And PopArray(1).population > 10 Then optMaxCycles = optMaxCycles + 1000 / (MaxCycles / (MaxCycles * PopArray(2).population / PopArray(1).population - MaxCycles) + 1)
+            If (PopArray(2).population - oldpop2) < (PopArray(1).population - oldpop1) And PopArray(1).population > 10 Then optMaxCycles = optMaxCycles + 1000 / (1 / (PopArray(2).population / PopArray(1).population - 1) + 1)
         End If
         oldpop1 = PopArray(1).population
         oldpop2 = PopArray(2).population
@@ -330,11 +332,6 @@ Static setoldpop As Boolean
     End If
     If SimOpts.TotRunCycle > optMaxCycles Then 'Botsareus 2/14/2014 kill losing species
         If PopArray(1).population > PopArray(2).population Then
-        
-            optMaxCycles = MaxCycles
-            SimOpts.TotRunCycle = 0
-            setoldpop = False
-            
             For t = 1 To MaxRobs
                 If rob(t).exist Then
                     If Left(rob(t).FName, Len(rob(t).FName) - 4) = PopArray(2).SpName Then KillRobot t
@@ -342,12 +339,6 @@ Static setoldpop As Boolean
             Next
         End If
         If PopArray(2).population > PopArray(1).population Then
-        
-            optMaxCycles = MaxCycles
-            SimOpts.TotRunCycle = 0
-            setoldpop = False
-            
-        
             For t = 1 To MaxRobs
                 If rob(t).exist Then
                     If Left(rob(t).FName, Len(rob(t).FName) - 4) = PopArray(1).SpName Then KillRobot t
@@ -402,6 +393,7 @@ won:
             If Winner = "Base" Then UpdateLostF1
           Case 0
             MsgBox Winner & " has won.", , "F1 mode"
+            MinRounds = optMinRounds
           Case 2
           'R E S T A R T  N E X T
             'first we make sure next round folder is there
@@ -440,6 +432,8 @@ won:
       Contests = Contests + 1
       StartAnotherRound = True
       startnovid = loadstartnovid 'Botsareus bugfix for no vedio
+      SimOpts.TotRunCycle = 0
+      setoldpop = False
     Else
       StartAnotherRound = False
     End If

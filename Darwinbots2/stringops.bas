@@ -33,6 +33,11 @@ Function extractname(path As String) As String
 End Function
 
 Function extractexactname(Name As String) As String 'Botsareus 3/16/2014 Bug fix
+'Botsareus 10/21/2015 Bug fix monitoring corpses
+If Name = "Corpse" Then
+extractexactname = "Corpse"
+Exit Function
+End If
 'Botsareus 12/11/2013 Extracts the name portion of fname
 Dim sp() As String
 sp = Split(Name, ".")

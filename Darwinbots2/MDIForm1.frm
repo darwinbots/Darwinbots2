@@ -1,6 +1,7 @@
 VERSION 5.00
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "MSINET.OCX"
 Begin VB.MDIForm MDIForm1 
    AutoShowChildren=   0   'False
    BackColor       =   &H00400000&
@@ -14,6 +15,13 @@ Begin VB.MDIForm MDIForm1
    Picture         =   "MDIForm1.frx":08CA
    StartUpPosition =   2  'CenterScreen
    Tag             =   "1000"
+   Begin InetCtlsObjects.Inet Inet1 
+      Left            =   2520
+      Top             =   2160
+      _ExtentX        =   1005
+      _ExtentY        =   1005
+      _Version        =   393216
+   End
    Begin VB.Timer unpause 
       Interval        =   200
       Left            =   4200
@@ -903,7 +911,8 @@ Attribute VB_Exposed = False
 ' Modifications by Purple Youko and Numsgil - 2004, 2005
 ' Post V2.42 modifications copyright (c) 2006, 2007 Eric Lockard  eric@sulaadventures.com
 '
-' Post V2.45 modifications copyright (c) 2012, 2013, 2014 Paul Kononov:
+' Post V2.45 modifications copyright (c) 2012, 2013, 2014, 2015 Paul Kononov
+'a.k.a
 '______________________________________________1$$$___108033_____$$______________________________
 '____1$$$$$$$3________________011_______________$$__$$$$$$$$$$8_1$_________1$$$1__8$$$1_______3$$
 '____3$$811$$$0______________1$$3_______________0___$$$$__1$$$8____________0$$$__1$$$$______0$$8_
@@ -969,6 +978,131 @@ Public SaveWithoutMutations As Boolean
 Public HandlingMenuItem As Boolean ' global used to prevent recursion between internet mode button and menu
 
 Public exitDB As Boolean
+
+'USE INTERNET AS RANDOMIZER SECTION
+
+Private Declare Function URLDownloadToFile Lib "urlmon" Alias "URLDownloadToFileA" (ByVal pCaller As Long, ByVal szURL As String, ByVal szFileName As String, ByVal dwReserved As Long, ByVal lpfnCB As Long) As Long
+
+Dim picinc As Integer
+
+Private Sub extract(ByVal url As String) 'outputs picture data to hard drive
+Dim iDoc As HTMLDocument
+Dim Element As Object
+Set iDoc = New HTMLDocument
+iDoc.body.innerHTML = Inet1.OpenURL(url)
+For Each Element In iDoc.All
+    If Element.tagName = "IMG" Then
+        If Element.href <> "" Then
+            URLDownloadToFile 0, Element.href, App.path & "\" & picinc & ".bmp", 0, 0
+            picinc = picinc + 1
+        End If
+    End If
+Next
+End Sub
+
+
+Private Sub newdata()
+Dim oldcp As String
+oldcp = MDIForm1.Caption
+MDIForm1.Visible = True
+MDIForm1.Caption = "Seeding Randomizer... Please wait..."
+DoEvents
+'step1 extract pictures
+picinc = 0
+'Lets user castumize the websites to extract images
+Dim urllist As String
+Open App.path & "\web.gset" For Input As #477
+Do
+    Input #477, urllist
+    extract urllist
+    Loop Until EOF(477)
+Close #477
+'step2 compress using 7zip
+shell """" & App.path & "\7z.exe"" a -t7z """ & App.path & "\file.7z"" """ & App.path & "\*.bmp"""
+'wait for process to finish
+wait 3
+'step3 delete pictures
+Dim l As Integer
+For l = 0 To picinc - 1
+    On Error GoTo tryagain:
+tryagain:
+    If dir(App.path & "\" & l & ".bmp") <> "" Then Kill App.path & "\" & l & ".bmp"
+Next
+'step4 open binary file and insert into byte array
+Dim c As Long
+Dim byt() As Byte
+ReDim byt(c)
+Open App.path & "\file.7z" For Binary As #477
+Do While Not EOF(477)
+    Get #477, , byt(c)
+    c = c + 1
+    ReDim Preserve byt(c)
+Loop
+c = c - 1
+ReDim Preserve byt(c)
+Close #477
+'step5 delete file (data in memory)
+Kill App.path & "\file.7z"
+'step6 write seporate files
+Dim f As Integer
+c = 0
+Do
+    If UBound(byt) - c > 4000 Then
+        Open App.path & "\" & f & ".bin" For Binary As #477
+        For l = 0 To 3999
+            Put #477, , byt(c)
+            c = c + 1
+        Next
+        Close #477
+        f = f + 1
+        MDIForm1.Caption = "Seeding Randomizer " & Int(c / UBound(byt) * 100) & "% Please wait..."
+        DoEvents
+    Else
+        Exit Sub
+    End If
+Loop
+MDIForm1.Caption = oldcp
+End Sub
+
+Sub wait(n As Byte)
+Dim e As Long
+e = Timer
+Do
+    DoEvents
+Loop Until ((e + n) Mod 86400) < Timer And IIf((e + n) > 86400, Timer < 100, True)
+End Sub
+
+Public Sub grabfile()
+Dim fl As String
+fl = dir(App.path & "\*.bin")
+If fl = "" Then
+    'if no more bin files generate some more and attempt to grab file again
+    
+    'new data is memory intensive so while it is running redim rndylist to 0
+    ReDim rndylist(0)
+    newdata
+    ReDim rndylist(3999)
+    
+    grabfile 'try again
+    
+Else
+    filemem = fl
+    'compute file to rndylist
+    Dim l As Integer
+    Dim bt As Byte
+    Dim h As Single
+    Open App.path & "\" & filemem For Binary As #477
+        h = 1 'Starting seed
+        For l = 0 To 3999
+            Get #477, , bt 'we have 1 byte
+            rndylist(l) = Rnd(-Abs(angle(0, 0, h - 0.5, Rnd(-bt - 1) - 0.5)))   'seed optimize
+            h = rndylist(l)
+        Next
+    Close #477
+End If
+End Sub
+
+'END USE INTERNET AS RANDOMIZER SECTION
 
 Private Sub AddTenObstacles_Click()
   AddRandomObstacles (10)
@@ -1147,6 +1281,10 @@ If x_restartmode = 9 Then
     MsgBox "Can not enable Internet during zerobot testing."
     Exit Sub
 End If
+If x_restartmode = 10 Then 'Botsareus 10/6/2015
+    MsgBox "Can not enable Internet during robot filter mode."
+    Exit Sub
+End If
 
   Dim i As Integer
   Dim b As Integer
@@ -1202,9 +1340,7 @@ tryagain:
      & " -in " & iq _
      & " -out " & oq _
      & " -name " & Chr(34) & IntOpts.IName & Chr(34) _
-     & " -port " & Chr(34) & "1050" & Chr(34) _
-     & " -pid " & Str(GetCurrentProcessId()) _
-     & " -port " & Chr(34) & IIf(IntOpts.ServPort = "", "4669", IntOpts.ServPort) & Chr(34) _
+     & " -port " & Chr(34) & IIf(IntOpts.ServPort = "", "79", IntOpts.ServPort) & Chr(34) _
      & " -server " & Chr(34) & IIf(IntOpts.ServIP = "PeterIM", "198.50.150.51", IntOpts.ServIP) & Chr(34)
 
     IntOpts.pid = shell(s, vbNormalFocus)
@@ -1535,37 +1671,17 @@ If x_restartmode > 0 And HideDB Then
       If SimOpts.F1 Then Contest_Form.WindowState = vbMinimized
 End If
 
-Dim c As Byte
-Dim t As Integer
-
-'Botsareus 9/16/2014 Balance out eco test round
-If Corruptions > 0 And y_eco_im > 0 And (x_restartmode = 6) Then
-    For c = 0 To Corruptions \ 4
-    
-     'kill one robot and exit nested loop
-     For t = 1 To MaxRobs
-      If rob(t).exist And (Not rob(t).Dead) And rob(t).FName = "Base.txt" Then
-        rob(t).Dead = True
-        Exit For
-      End If
-     Next
-     
-    Next
-    Corruptions = 0
-End If
-
 'Botsareus 9/12/2014 Simulation now always starts with ignoreerror on
 If UseSafeMode = False Then
  ignoreerror = True
  Toolbar1.Buttons(24).value = tbrPressed
 End If
 'Botsareus 2/9/2014 Based on collected data we need to figure out fudging here
-If SimOpts.F1 Or x_restartmode > 3 Then
+If SimOpts.F1 Or (x_restartmode <> 1 And x_restartmode <> 9 And x_restartmode <> 0) Then   'Botsareus 10/6/2015 Do not fudge under sertain modes
     Select Case x_fudge
     Case 1: FudgeEyes = True
     Case 2: FudgeAll = True
     End Select
-    optMaxCycles = MaxCycles 'Botsareus 2/14/2014 Move max cycles to optimized max cycles
 End If
 pbOn.Enabled = Not SimOpts.F1 And Not y_eco_im = 2
 showEyeDesign.Enabled = Not SimOpts.F1 And Not y_eco_im = 2
@@ -1686,7 +1802,7 @@ Private Sub Toolbar1_ButtonClick(ByVal Button As MSComctlLib.Button)
     Case "Ignore"
       'ignores errors when it encounters them with the hope that they'll fix themselves
       ignoreerror = Not ignoreerror
-      If ignoreerror Then
+      If Not ignoreerror Then
         Button.value = tbrUnpressed
       Else
         Button.value = tbrPressed
@@ -2255,7 +2371,8 @@ strMsgSendData = "Please go to " & MDIForm1.MainDir & " and give the administrat
 "league\Test.txt" & vbCrLf & _
 "league\robotA.txt" & vbCrLf & _
 "league\robotB.txt" & vbCrLf & vbCrLf & _
-"If you where running evolution please give the administrator the \evolution\ folder (subfolders not required)."
+"If you where running evolution please give the administrator the \evolution\ folder (subfolders not required)." & vbCrLf & vbCrLf & _
+IIf(UseIntRnd, "Please also give the administrator the  " & App.path & "\" & filemem & " file.", "")
 'Botsareus 5/8/2013 If the program didcrash and autosave prompt to enter safemode
 strMsgEnterDiagMode = "Warning: Diagnostic mode does not check for errors by user generated events. If the error happened immediacy after you manipulated the simulation. Please press NO and tell what you did to the administrator. Otherwise, it is recommended that you run diagnostic mode." & vbCrLf & vbCrLf & _
 "Do you want to run diagnostic mode?"
@@ -2385,6 +2502,7 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                   Dim files As Collection
                   Dim seeded As Collection
                   Dim i As Byte
+                  Dim ecocount As Byte
 
   If Not (x_restartmode = 0 Or x_restartmode = 5 Or x_restartmode = 8) Then
         If Not simalreadyrunning Then
@@ -2407,19 +2525,24 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                 'setup a zb evo
                     SimOpts = TmpOpts
                     'load robot
-                    optionsform.additem MDIForm1.MainDir & "\evolution\Base.txt"
-                    optionsform.additem MDIForm1.MainDir & "\evolution\Mutate.txt"
+                    For ecocount = 1 To 8
+                        optionsform.additem MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt"
+                        optionsform.additem MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.txt"
+                        MDIForm1.Caption = "Loading... " & Int((ecocount - 1) * 100 / 15) & "% Please wait..."
+                    Next
                     'disable mutations
                     For i = 0 To UBound(TmpOpts.Specie)
                      If TmpOpts.Specie(i).Name = "Base.txt" Then
                         TmpOpts.Specie(i).Mutables.Mutations = False
-                        TmpOpts.Specie(i).qty = Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / 80
+                        TmpOpts.Specie(i).qty = Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / (80 * 8 * (x_filenumber + 1) ^ 0.5)
+                        If TmpOpts.Specie(i).qty = 0 Then TmpOpts.Specie(i).qty = 1
                      End If
-                     If TmpOpts.Specie(i).Name = "Mutate.txt" Then TmpOpts.Specie(i).qty = Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / 80
+                     If TmpOpts.Specie(i).Name = "Mutate.txt" Then TmpOpts.Specie(i).qty = Sqr(CDbl(TmpOpts.FieldHeight) * CDbl(TmpOpts.FieldWidth)) / (80 * 8 * (x_filenumber + 1) ^ 0.5)
+                     If TmpOpts.Specie(i).qty = 0 Then TmpOpts.Specie(i).qty = 1
                     Next
                     'Randomize find best
                     Randomize
-                    intFindBestV2 = Choose(Int(Rnd * 4) + 1, 0, 0, 0, 200)
+                    intFindBestV2 = 20 + Rnd(-(x_filenumber + 1)) * 40 'Botsareus 10/26/2015 Value more interesting
                     load_evo_res 'load evolution restrictions
                     'F1 desabled
                     TmpOpts.F1 = False
@@ -2431,7 +2554,6 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     SimOpts = TmpOpts
                     'load robot
                     If y_eco_im > 0 Then
-                        Dim ecocount As Byte
                         For ecocount = 1 To 15
                             optionsform.additem MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt"
                             optionsform.additem MDIForm1.MainDir & "\evolution\testrob" & ecocount & "\Test.txt"
@@ -2456,7 +2578,6 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     TmpOpts.F1 = True
                     'new seed and run sim
                     chseedstartnew = True
-                    Corruptions = 0 'Needs a reset here because next function grabs a fresh revision of dna directly from file
                     optionsform.StartNew_Click
             Case 4
                 'setup evo
@@ -2977,7 +3098,7 @@ MsgBox "Target DNA size: " & IIf(y_normsize, curr_dna_size, "N/A") & vbCrLf & _
         "Next DNA size change: " & IIf(y_normsize, target_dna_size, "N/A") & vbCrLf & _
         "Reduction unit: " & LFOR & vbCrLf & _
         "On/Off cycles: " & hidePredCycl & _
-        IIf(x_restartmode <> 6, vbCrLf & "Current Handicap: " & energydifXP & " - " & energydifXP2 & " = " & (energydifXP - energydifXP2), "") _
+        IIf(x_restartmode = 4 Or x_restartmode = 5, vbCrLf & "Current Handicap: " & energydifXP & " - " & energydifXP2 & " = " & (energydifXP - energydifXP2), "") _
         , vbInformation, "Survival information"
 End Sub
 

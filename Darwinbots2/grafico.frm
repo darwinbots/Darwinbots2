@@ -3806,12 +3806,12 @@ End Sub
 
 
 Public Function SwapSeries(i As Integer, t As Integer)
-Dim X As Integer
-  For X = 0 To MaxData
-     data(X, MaxItems) = data(X, i)
-     data(X, i) = data(X, t)
-     data(X, t) = data(X, MaxItems)
-  Next X
+Dim x As Integer
+  For x = 0 To MaxData
+     data(x, MaxItems) = data(x, i)
+     data(x, i) = data(x, t)
+     data(x, t) = data(x, MaxItems)
+  Next x
   Label1(MaxItems).Caption = Label1(i).Caption
   Shape3(MaxItems).FillColor = Shape3(i).FillColor
   popnum(MaxItems).Caption = popnum(i).Caption
@@ -3909,7 +3909,7 @@ Dim t As Integer
     popnum(t).Visible = False
     popnum(t).Height = 255
   Next t
-  SetWindowPos hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
+  SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
   Me.Height = 4000
   Me.Width = 8400
   XLabel.Caption = Str(SimOpts.chartingInterval) + " cycles per data point"
@@ -4000,7 +4000,7 @@ If Left <> Screen.Width Then graphleft(WhichGraphAmI) = Left 'A little mod here 
 If Top <> Screen.Height Then graphtop(WhichGraphAmI) = Top
   
   Dim k, p As Integer
-  Dim t, X As Integer
+  Dim t, x As Integer
   Dim maxv As Single
   Dim xunit As Single, yunit As Single
   maxv = -1000
@@ -4049,22 +4049,22 @@ If Top <> Screen.Height Then graphtop(WhichGraphAmI) = Top
   Wend
   
   If t > 10 Then
-    For X = (MaxSeries - 1) To 0 Step -1
-      If Sum(X) = 0 Then
-        DelSeries (X)
+    For x = (MaxSeries - 1) To 0 Step -1
+      If Sum(x) = 0 Then
+        DelSeries (x)
       End If
-    Next X
+    Next x
   End If
   
   p = Pivot - 1
   If p < 0 Then p = MaxData
   
   If t > 50 Or SimOpts.EnableAutoSpeciation Then 'Botsareus attempt to fix forking issue, may lead to graph instability
-   For X = (MaxSeries - 1) To 0 Step -1
-      If data(p, X) = 0 Then
-        DelSeries (X)
+   For x = (MaxSeries - 1) To 0 Step -1
+      If data(p, x) = 0 Then
+        DelSeries (x)
       End If
-    Next X
+    Next x
   End If
     
   maxy = maxv
@@ -4091,8 +4091,8 @@ If Top <> Screen.Height Then graphtop(WhichGraphAmI) = Top
         Print #100, strCGraph
         'write headers
         strCGraph = ""
-        For X = 0 To MaxSeries - 1
-            strCGraph = strCGraph & Shape3(X).FillColor & ":" & Label1(X).Caption & ","
+        For x = 0 To MaxSeries - 1
+            strCGraph = strCGraph & Shape3(x).FillColor & ":" & Label1(x).Caption & ","
         Next
         Print #100, strCGraph
         Dim k2, t2 As Integer

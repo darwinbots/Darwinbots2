@@ -42,48 +42,49 @@ Begin VB.Form frmGset
       _Version        =   393216
       Style           =   1
       Tabs            =   4
-      Tab             =   2
       TabsPerRow      =   4
       TabHeight       =   520
       BackColor       =   12632256
       TabCaption(0)   =   "Main settings"
       TabPicture(0)   =   "frmGset.frx":0000
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "ffmInitChlr"
-      Tab(0).Control(1)=   "ffmFBSBO"
-      Tab(0).Control(2)=   "chkSafeMode"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "ffmUI"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).Control(1)=   "ffmCheatin"
+      Tab(0).Control(1).Enabled=   0   'False
+      Tab(0).Control(2)=   "Frame1"
+      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).Control(3)=   "ffmMainDir"
-      Tab(0).Control(4)=   "Frame1"
-      Tab(0).Control(5)=   "ffmCheatin"
-      Tab(0).Control(6)=   "ffmUI"
-      Tab(0).ControlCount=   7
+      Tab(0).Control(3).Enabled=   0   'False
+      Tab(0).Control(4)=   "chkSafeMode"
+      Tab(0).Control(4).Enabled=   0   'False
+      Tab(0).Control(5)=   "ffmFBSBO"
+      Tab(0).Control(5).Enabled=   0   'False
+      Tab(0).Control(6)=   "ffmInitChlr"
+      Tab(0).Control(6).Enabled=   0   'False
+      Tab(0).Control(7)=   "chkEpiGene"
+      Tab(0).Control(7).Enabled=   0   'False
+      Tab(0).Control(8)=   "chkIntRnd"
+      Tab(0).Control(8).Enabled=   0   'False
+      Tab(0).ControlCount=   9
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ffmSunMut"
-      Tab(1).Control(1)=   "ffmEpiReset"
+      Tab(1).Control(0)=   "ffmEpiReset"
+      Tab(1).Control(1)=   "ffmSunMut"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
-      Tab(2).ControlEnabled=   -1  'True
-      Tab(2).Control(0)=   "lblSource"
-      Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "chkTournament"
-      Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "txtSourceDir"
-      Tab(2).Control(2).Enabled=   0   'False
-      Tab(2).Control(3)=   "chkStepladder"
-      Tab(2).Control(3).Enabled=   0   'False
+      Tab(2).ControlEnabled=   0   'False
+      Tab(2).Control(0)=   "chkFilter"
+      Tab(2).Control(1)=   "Command1"
+      Tab(2).Control(2)=   "chkAddarob"
+      Tab(2).Control(3)=   "ffmDisqualification"
       Tab(2).Control(4)=   "ffmFudge"
-      Tab(2).Control(4).Enabled=   0   'False
-      Tab(2).Control(5)=   "ffmDisqualification"
-      Tab(2).Control(5).Enabled=   0   'False
-      Tab(2).Control(6)=   "chkAddarob"
-      Tab(2).Control(6).Enabled=   0   'False
-      Tab(2).Control(7)=   "Command1"
-      Tab(2).Control(7).Enabled=   0   'False
-      Tab(2).Control(8)=   "chkFilter"
-      Tab(2).Control(8).Enabled=   0   'False
+      Tab(2).Control(5)=   "chkStepladder"
+      Tab(2).Control(6)=   "txtSourceDir"
+      Tab(2).Control(7)=   "chkTournament"
+      Tab(2).Control(8)=   "lblSource"
       Tab(2).ControlCount=   9
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
@@ -95,10 +96,26 @@ Begin VB.Form frmGset
       Tab(3).Control(4)=   "chkSurvivalEco"
       Tab(3).Control(5)=   "btnEvoRES"
       Tab(3).ControlCount=   6
+      Begin VB.CheckBox chkIntRnd 
+         Caption         =   "Use Internet Pictures to seed Randomizer"
+         Height          =   255
+         Left            =   7080
+         TabIndex        =   93
+         Top             =   1920
+         Width           =   3375
+      End
+      Begin VB.CheckBox chkEpiGene 
+         Caption         =   "Save epigenetic memory as a temporary gene when saving robot DNA to file.        Warning: This uses delgene."
+         Height          =   375
+         Left            =   5520
+         TabIndex        =   92
+         Top             =   4560
+         Width           =   4815
+      End
       Begin VB.CheckBox chkFilter 
          Caption         =   "Filter by specific robot"
          Height          =   195
-         Left            =   3000
+         Left            =   -72000
          TabIndex        =   91
          Top             =   2280
          Width           =   5415
@@ -106,7 +123,7 @@ Begin VB.Form frmGset
       Begin VB.CommandButton Command1 
          Caption         =   "League Restrictions"
          Height          =   375
-         Left            =   6120
+         Left            =   -68880
          TabIndex        =   87
          Top             =   4080
          Width           =   2175
@@ -122,7 +139,7 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkAddarob 
          Caption         =   "Add a single robot to existing league"
          Height          =   195
-         Left            =   4800
+         Left            =   -70200
          TabIndex        =   85
          Top             =   1920
          Visible         =   0   'False
@@ -188,7 +205,7 @@ Begin VB.Form frmGset
          Begin VB.CheckBox chkNormSize 
             Caption         =   "Dynamically normalize DNA size"
             Height          =   255
-            Left            =   240
+            Left            =   120
             TabIndex        =   76
             Top             =   2400
             Visible         =   0   'False
@@ -278,7 +295,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmDisqualification 
          Caption         =   "Disqualification Rules on Contest"
          Height          =   975
-         Left            =   2880
+         Left            =   -72120
          TabIndex        =   63
          Top             =   3720
          Width           =   3015
@@ -316,7 +333,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmInitChlr 
          Caption         =   "Advanced Chloroplast Options"
          Height          =   975
-         Left            =   -70080
+         Left            =   4920
          TabIndex        =   60
          Top             =   3480
          Width           =   5655
@@ -340,7 +357,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmFudge 
          Caption         =   "Fudging on F1 Contest"
          Height          =   975
-         Left            =   2880
+         Left            =   -72120
          TabIndex        =   56
          Top             =   2640
          Width           =   5535
@@ -376,14 +393,14 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkStepladder 
          Caption         =   "Stepladder league     (click for more options)"
          Height          =   195
-         Left            =   3000
+         Left            =   -72000
          TabIndex        =   55
          Top             =   1920
          Width           =   5415
       End
       Begin VB.TextBox txtSourceDir 
          Height          =   405
-         Left            =   3000
+         Left            =   -72000
          TabIndex        =   54
          Text            =   "C:\"
          Top             =   960
@@ -393,7 +410,7 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkTournament 
          Caption         =   "Tournament league"
          Height          =   195
-         Left            =   3000
+         Left            =   -72000
          TabIndex        =   52
          Top             =   1560
          Width           =   1815
@@ -655,7 +672,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmFBSBO 
          Caption         =   "Find Best Settings base on:"
          Height          =   915
-         Left            =   -70080
+         Left            =   4920
          TabIndex        =   16
          Top             =   2280
          Width           =   5655
@@ -694,15 +711,15 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkSafeMode 
          Caption         =   "Use Safe Mode"
          Height          =   255
-         Left            =   -68280
+         Left            =   5160
          TabIndex        =   15
          Top             =   1920
-         Width           =   1935
+         Width           =   1575
       End
       Begin VB.Frame ffmMainDir 
          Caption         =   "Main Directory"
          Height          =   1215
-         Left            =   -70080
+         Left            =   4920
          TabIndex        =   12
          Top             =   480
          Width           =   5655
@@ -726,7 +743,7 @@ Begin VB.Form frmGset
       Begin VB.Frame Frame1 
          Caption         =   "Randomization"
          Height          =   1095
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   9
          Top             =   3960
          Width           =   4695
@@ -750,7 +767,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmCheatin 
          Caption         =   "Cheating Prevention"
          Height          =   1575
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   5
          Top             =   2375
          Width           =   4695
@@ -782,7 +799,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmUI 
          Caption         =   "UI Settings"
          Height          =   2000
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   3
          Top             =   360
          Width           =   4695
@@ -838,7 +855,7 @@ Begin VB.Form frmGset
       Begin VB.Label lblSource 
          Caption         =   "Source Directory"
          Height          =   375
-         Left            =   3000
+         Left            =   -72000
          TabIndex        =   53
          Top             =   720
          Visible         =   0   'False
@@ -968,6 +985,10 @@ If txtSourceDir.Visible Then
                 End If
             Next
         Else
+            If x_restartmode = 1 Or x_restartmode = 2 Or x_restartmode = 3 Or x_restartmode = 10 Then  'Botsareus 10/6/2015 Bug fix
+             Kill App.path & "\restartmode.gset"
+             x_restartmode = 0
+            End If
             Exit Sub
         End If
     End If
@@ -1015,6 +1036,10 @@ If chkSurvivalSimple.value = 1 Or chkSurvivalEco.value = 1 Then
                 End If
             Next
         Else
+            If x_restartmode = 4 Or x_restartmode = 5 Or x_restartmode = 6 Then   'Botsareus 10/6/2015 Bug fix
+             Kill App.path & "\restartmode.gset"
+             x_restartmode = 0
+            End If
             Exit Sub
         End If
     End If
@@ -1052,6 +1077,10 @@ If chkZBmode.value Then
                 End If
             Next
         Else
+            If x_restartmode = 7 Or x_restartmode = 8 Or x_restartmode = 9 Then 'Botsareus 10/6/2015 Bug fix
+             Kill App.path & "\restartmode.gset"
+             x_restartmode = 0
+            End If
             Exit Sub
         End If
     End If
@@ -1135,6 +1164,14 @@ MsgBox "Global settings will take effect the next time DarwinBots starts.", vbIn
       Write #1, chkGraphUp.value = 1
       Write #1, chkHide.value = 1
       
+      'New way to preserve epigenetic memory
+      
+      Write #1, chkEpiGene.value = 1
+      
+      'Use internet as randomizer
+      
+      Write #1, chkIntRnd.value = 1
+      
     Close #1
     
 'Botsareus 1/31/2014 Setup a league
@@ -1214,6 +1251,10 @@ If chkSurvivalSimple.value = 1 Or chkSurvivalEco.value = 1 Then
         FileCopy txtRob, MDIForm1.MainDir & "\evolution\Mutate.txt"
         FileCopy txtRob, MDIForm1.MainDir & "\evolution\stages\stage0.txt"
     Else
+        'Botsareus 10/21/2015 Append tag at start of eco evo
+        Open txtRob For Append As #1
+         Print #1, vbCrLf & "'#tag:" & extractname(txtRob)
+        Close #1
         Dim ecocount As Byte
         For ecocount = 1 To 15
              MkDir MDIForm1.MainDir & "\evolution\baserob" & ecocount
@@ -1285,15 +1326,21 @@ If chkSurvivalSimple.value = 1 Or chkSurvivalEco.value = 1 Then
 End If
 '4/14/2014
 If chkZBmode.value = 1 Then
-    'first we need to generate the zb file
-    Open MDIForm1.MainDir & "\evolution\Base.txt" For Output As #1
-        Dim zerocount As Integer
-        For zerocount = 1 To val(txtZlength)
-            Write #1, 0
-        Next
-    Close #1
-    FileCopy MDIForm1.MainDir & "\evolution\Base.txt", MDIForm1.MainDir & "\evolution\Mutate.txt"
-    FileCopy MDIForm1.MainDir & "\evolution\Base.txt", MDIForm1.MainDir & "\evolution\stages\stage0.txt"
+    For ecocount = 1 To 8
+        'generate folders for multi
+        MkDir MDIForm1.MainDir & "\evolution\baserob" & ecocount
+        MkDir MDIForm1.MainDir & "\evolution\mutaterob" & ecocount
+        'generate the zb file (multi)
+        Open MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt" For Output As #1
+            Dim zerocount As Integer
+            For zerocount = 1 To val(txtZlength)
+                Write #1, 0
+            Next
+        Close #1
+        FileCopy MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt", MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.txt"
+    Next
+    'Botsareus 10/22/2015 the stages are singuler
+    FileCopy MDIForm1.MainDir & "\evolution\baserob1\Base.txt", MDIForm1.MainDir & "\evolution\stages\stage0.txt"
     optionsform.savesett MDIForm1.MainDir + "\settings\lastexit.set" 'save last settings
     'other
     Open App.path & "\restartmode.gset" For Output As #1
@@ -1389,6 +1436,12 @@ End If
 Exit Sub
 fine:
 chkFilter.value = 0
+End Sub
+
+Private Sub chkIntRnd_Click()
+If chkIntRnd.value = 1 And Visible Then
+     MsgBox "Please make sure you have 7zip installed when using this feature. The pictures are loaded from urls listed in the " & App.path & "\web.gset file.", vbInformation
+End If
 End Sub
 
 Private Sub chkNorm_Click()
@@ -1572,6 +1625,10 @@ If y_eco_im > 0 Then chkIM.value = y_eco_im - 1
 '
 chkGraphUp.value = IIf(GraphUp, 1, 0)
 chkHide.value = IIf(HideDB, 1, 0)
+'
+chkEpiGene = IIf(UseEpiGene, 1, 0)
+'
+chkIntRnd = IIf(UseIntRnd, 1, 0)
 End Sub
 
 Private Sub lblD2_Click()

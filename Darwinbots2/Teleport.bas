@@ -164,7 +164,7 @@ Dim randomV As vector
     If Teleporters(i).Out Or Teleporters(i).local Or (Teleporters(i).Internet And Teleporters(i).PollCountDown <= 0) Then
       If (TeleportCollision(n, i) Or rob(n).dq > 1) And rob(n).exist Then
         If Teleporters(i).Out Or Teleporters(i).Internet Then
-          If rob(n).dq = 2 Then GoTo forceteleport
+          If rob(n).dq > 1 Then GoTo forceteleport
           If (rob(n).Veg And Not Teleporters(i).teleportVeggies) Or _
              (rob(n).Corpse And Not Teleporters(i).teleportCorpses) Or _
              ((Not rob(n).Veg) And (Not Teleporters(i).teleportHeterotrophs)) Then
@@ -184,7 +184,7 @@ forceteleport:
             'Don't Teleport
           Else
             If Teleporters(i).local Then Teleporters(i).NumTeleported = Teleporters(i).NumTeleported + 1 ' Don't update the counter for Internet Mode teleporters
-            randomV = VectorSet(SimOpts.FieldWidth * Rnd, SimOpts.FieldHeight * Rnd)
+            randomV = VectorSet(SimOpts.FieldWidth * Rndy, SimOpts.FieldHeight * Rndy)
             If MDIForm1.visualize Then Form1.Line (rob(n).pos.x, rob(n).pos.y)-(randomV.x, randomV.y), vbWhite
             ReSpawn n, CLng(randomV.x), CLng(randomV.y)
           End If
@@ -305,10 +305,10 @@ Public Function DriftTeleporter(i As Integer)
   
   vel = SimOpts.MaxVelocity / 4#
   If Teleporters(i).driftHorizontal Then
-    Teleporters(i).vel.x = Teleporters(i).vel.x + (Rnd - 0.5)
+    Teleporters(i).vel.x = Teleporters(i).vel.x + (Rndy - 0.5)
   End If
   If Teleporters(i).driftVertical Then
-    Teleporters(i).vel.y = Teleporters(i).vel.y + (Rnd - 0.5)
+    Teleporters(i).vel.y = Teleporters(i).vel.y + (Rndy - 0.5)
   End If
   If VectorMagnitude(Teleporters(i).vel) > vel Then
     Teleporters(i).vel = VectorScalar(Teleporters(i).vel, vel / VectorMagnitude(Teleporters(i).vel))
@@ -427,7 +427,7 @@ If SimOpts.SpeciesNum > 45 Then Exit Function 'Botsareus 3/25/2014 keeps amount 
           ReDim Preserve sAns(lElement) As String
           sAns(lElement) = sFile
           If Right(sFile, 3) = "dbo" Then
-            randomV = VectorSet(SimOpts.FieldWidth * Rnd, SimOpts.FieldHeight * Rnd)
+            randomV = VectorSet(SimOpts.FieldWidth * Rndy, SimOpts.FieldHeight * Rndy)
             n = LoadOrganism(Teleporters(i).intInPath + "\" + sAns(lElement), randomV.x, randomV.y)
             Teleporters(i).NumTeleportedIn = Teleporters(i).NumTeleportedIn + 1
             Kill (Teleporters(i).intInPath + "\" + sAns(lElement))

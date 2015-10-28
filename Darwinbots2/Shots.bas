@@ -27,7 +27,7 @@ Public Type shot
  memloc As Integer      ' Memory location for custom poison and venom
  Memval As Integer      ' Value to insert into custom venom location
  
- DNA() As block         ' Somewhere to store genetic code for a virus or sperm
+ dna() As block         ' Somewhere to store genetic code for a virus or sperm
  DnaLen As Integer      ' length of DNA  stored on this shot
  genenum As Integer     ' which gene to copy in host bot
  stored As Boolean      ' for virus shots (and maybe future types) this shot is stored
@@ -43,7 +43,7 @@ Public ShotsThisCycle As Long ' Shots this cycle.  Only updated at end of Update
 Public maxshotarray As Long
 Const shotdecay As Integer = 40 'increase to have shots lose power slower
 Const ShellEffectiveness As Integer = 20 'how strong each unit of shell is
-Const SlimeEffectiveness As Integer = 20 'how strong each unit of slime is against viruses
+Const SlimeEffectiveness As Single = 1 / 20 'how strong each unit of slime is against viruses 'Botsareus 10/5/2015 Virus more effective
 Const VenumEffectivenessVSShell As Integer = 25 'Botsareus 3/15/2013 Multiply strength of venum agenst shell
 Const MinBotRadius = 0.2 'A total hack.  Used to bypass checking the rest of the bots if the collision occurred during this
                            'intial fraction of the cycle.  We assume that no bot is small enough to possibly have been hit earlier
@@ -122,8 +122,8 @@ Public Function newshot(n As Integer, ByVal shottype As Integer, ByVal val As Si
   End If
   If shottype = -2 Then Shots(a).color = vbWhite
   Shots(a).memloc = rob(n).mem(835)     'location for venom to target
-  If Shots(a).memloc < 1 Then Shots(a).memloc = ((Shots(a).memloc - 1) Mod 1000) + 1
-  If Shots(a).memloc > 1000 Then Shots(a).memloc = ((Shots(a).memloc - 1) Mod 1000) + 1
+  'If Shots(a).memloc < 1 Then Shots(a).memloc = ((Shots(a).memloc - 1) Mod 1000) + 1 'Botsareus 10/6/2015 Normalized on reseaving side
+  'If Shots(a).memloc > 1000 Then Shots(a).memloc = ((Shots(a).memloc - 1) Mod 1000) + 1
   Shots(a).Memval = rob(n).mem(836)     'value to insert into venom target location
   
   'If val > 32000 Then val = 32000 'EricL March 16, 2006 This line commented out since moved to above
@@ -187,7 +187,7 @@ Public Function newshot(n As Integer, ByVal shottype As Integer, ByVal val As Si
   ' sperm shot
   If shottype = -8 Then
     'ReDim Shots(a).DNA(rob(n).dnalen)
-    Shots(a).DNA = rob(n).DNA
+    Shots(a).dna = rob(n).dna
     Shots(a).DnaLen = rob(n).DnaLen
   End If
       
@@ -240,12 +240,13 @@ Public Sub createshot(ByVal x As Long, ByVal y As Long, ByVal vx As Integer, _
     Shots(a).shottype = -(Abs(loc) Mod 8)  ' EricL 6/2006 essentially Mod 8 so as to increse probabiltiy that mutations do something interesting
     If Shots(a).shottype = 0 Then Shots(a).shottype = -8 ' want multiples of -8 to be -8
   End If
-  If rob(par).mem(834) <= 0 Then
-    Shots(a).memloc = 0
-  Else
-    Shots(a).memloc = rob(par).mem(834) Mod 1000
-    If Shots(a).memloc = 0 Then Shots(a).memloc = 1000
-  End If
+'  If rob(par).mem(834) <= 0 Then
+'    Shots(a).memloc = 0
+'  Else
+'    Shots(a).memloc = rob(par).mem(834) Mod 1000
+'    If Shots(a).memloc = 0 Then Shots(a).memloc = 1000
+'  End If
+  Shots(a).memloc = rob(par).mem(834) 'Botsareus 10/6/2015 Normalized on reseaving side
   
   If Shots(a).shottype = -5 Then Shots(a).Memval = rob(Shots(a).parent).mem(839)
   
@@ -338,12 +339,11 @@ Public Sub updateshots()
           
         
           If Shots(t).shottype > 0 Then
-            Shots(t).shottype = Shots(t).shottype Mod 1000 ' EricL 6/2006 Mod 1000 so as to increse probabiltiy that mutations do something interesting
+          'Botsareus 10/6/2015 Minor bug fixing and redundent code removal
+            Shots(t).shottype = (Shots(t).shottype - 1) Mod 1000 + 1 ' EricL 6/2006 Mod 1000 so as to increse probabiltiy that mutations do something interesting
+            
             If Shots(t).shottype <> DelgeneSys Then
-              If Shots(t).shottype = 312 Or Shots(t).shottype = 313 Or _
-                Shots(t).shottype = 824 Or Shots(t).shottype = 826 And _
-                Shots(t).value > 100 Then Shots(t).value = 100
-                
+    
               If (Shots(t).nrg / 2 > rob(h).poison) Or (rob(h).poison = 0) Then
                 rob(h).mem(Shots(t).shottype) = Shots(t).value
               Else
@@ -353,6 +353,7 @@ Public Sub updateshots()
                 If rob(h).poison < 0 Then rob(h).poison = 0
                 rob(h).mem(poison) = rob(h).poison
               End If
+              
             End If
           Else
             ' Shots(t).shottype = -(Abs(Shots(t).shottype) Mod 8)  ' EricL 6/2006 essentially Mod 8 so as to increse probabiltiy that mutations do something interesting
@@ -430,7 +431,7 @@ Public Sub CompactShots()
       End If
       If i <> j Then
         If (Shots(j).shottype = -8 Or Shots(j).shottype = -7) And Shots(i).DnaLen > 0 Then
-          ReDim Shots(j).DNA(Shots(i).DnaLen)
+          ReDim Shots(j).dna(Shots(i).DnaLen)
         End If
         Shots(j) = Shots(i)
         Shots(i).exist = False
@@ -449,7 +450,7 @@ Public Sub Decay(n As Integer) 'corpse decaying as waste shot, energy shot or no
   If rob(n).DecayTimer >= SimOpts.Decaydelay Then
     rob(n).DecayTimer = 0
     
-    rob(n).aim = Rnd * 2 * PI
+    rob(n).aim = Rndy * 2 * PI
     rob(n).aimvector = VectorSet(Cos(rob(n).aim), Sin(rob(n).aim))
     
     If rob(n).body > SimOpts.Decay / 10 Then
@@ -752,7 +753,7 @@ Private Sub takeven(ByVal n As Integer, ByVal t As Long)
   
   power = CSng(Shots(t).nrg / CSng((Shots(t).Range * (RobSize / 3))) * Shots(t).value)
   
-  If Shots(t).memloc = 340 Or power < 1 Then GoTo getout 'protection from delgene attacks
+  If power < 1 Then GoTo getout
   
   If Shots(t).FromSpecie = rob(n).FName Then   'Robot is immune to venom from his own species
     rob(n).venom = rob(n).venom + power   'Robot absorbs venom fired by conspec
@@ -776,7 +777,7 @@ Private Sub takeven(ByVal n As Integer, ByVal t As Long)
     End If
     power = power / VenumEffectivenessVSShell 'Botsareus 3/6/2013 after shell conversion devide
     
-    If power < 0 Then GoTo getout
+    If power < 1 Then GoTo getout
     
     rob(n).Paralyzed = True
     
@@ -787,11 +788,13 @@ Private Sub takeven(ByVal n As Integer, ByVal t As Long)
       rob(n).Paracount = rob(n).Paracount + power
     End If
         
-    If Shots(t).memloc > 0 Then
-      If Shots(t).memloc > 1000 Then Shots(t).memloc = (Shots(t).memloc - 1) Mod 1000 + 1
-      rob(n).Vloc = Shots(t).memloc
+    If Shots(t).memloc > 0 Then 'Botsareus 10/6/2015 Minor bug fixing
+      rob(n).Vloc = (Shots(t).memloc - 1) Mod 1000 + 1
+      If rob(n).Vloc = 340 Then rob(n).Vloc = 0 'protection from delgene attacks Botsareus 10/7/2015 Moved here after mod
     Else
-      rob(n).Vloc = Random(1, 1000)
+      Do
+       rob(n).Vloc = Random(1, 1000)
+      Loop Until rob(n).Vloc <> 340
     End If
     
     rob(n).Vval = Shots(t).Memval
@@ -820,7 +823,7 @@ Private Sub takepoison(ByVal n As Integer, ByVal t As Long)
   
   power = Shots(t).nrg / (Shots(t).Range * 40) * Shots(t).value
   
-  If Shots(t).memloc = 340 Or power < 1 Then GoTo getout 'protection from delgene attacks
+  If power < 1 Then GoTo getout
   
   If Shots(t).FromSpecie = rob(n).FName Then    'Robot is immune to poison from his own species
     rob(n).poison = rob(n).poison + power 'Robot absorbs poison fired by conspecs
@@ -830,10 +833,13 @@ Private Sub takepoison(ByVal n As Integer, ByVal t As Long)
     rob(n).Poisoned = True
     rob(n).Poisoncount = rob(n).Poisoncount + power
     If rob(n).Poisoncount > 32000 Then rob(n).Poisoncount = 32000
-    If Shots(t).memloc > 0 Then
-      rob(n).Ploc = (Shots(t).memloc - 1 Mod 1000) + 1
+    If Shots(t).memloc > 0 Then 'Botsareus 10/6/2015 Minor bug fixing
+      rob(n).Ploc = (Shots(t).memloc - 1) Mod 1000 + 1
+      If rob(n).Ploc = 340 Then rob(n).Ploc = 0 'protection from delgene attacks Botsareus 10/7/2015 Moved here after mod
     Else
-      rob(n).Ploc = Random(1, 1000)
+      Do
+       rob(n).Ploc = Random(1, 1000)
+      Loop Until rob(n).Ploc <> 340
     End If
     rob(n).Pval = Shots(t).Memval
   End If
@@ -851,7 +857,7 @@ If rob(n).fertilized < -10 Then Exit Sub 'block sex repro when necessary
   rob(n).fertilized = 10                      ' bots stay fertilized for 10 cycles currently
   rob(n).mem(SYSFERTILIZED) = 10
   ReDim rob(n).spermDNA(Shots(t).DnaLen)      ' copy the male's DNA to the female's bot structure
-  rob(n).spermDNA = Shots(t).DNA
+  rob(n).spermDNA = Shots(t).dna
   rob(n).spermDNAlen = Shots(t).DnaLen
 getout:
 End Sub
@@ -1059,7 +1065,7 @@ FinialCollisionDetected:
   End If
 End Function
 
-
+'Botsareus 10/5/2015 Bug fix for negative values in virus
 Public Sub Vshoot(n As Integer, thisshot As Long)
 'here we shoot a virus
   
@@ -1069,18 +1075,17 @@ Dim ShAngle As Single
   If Not Shots(thisshot).exist Then GoTo getout
   If Not Shots(thisshot).stored Then GoTo getout
   
+  If rob(n).mem(VshootSys) < 0 Then rob(n).mem(VshootSys) = 1
+  
   tempa = CSng(rob(n).mem(VshootSys)) * 20# '.vshoot * 20
   If tempa > 32000 Then tempa = 32000
   If tempa < 0 Then tempa = 0
     
   Shots(thisshot).nrg = tempa
   rob(n).nrg = rob(n).nrg - (tempa / 20#) - (SimOpts.Costs(SHOTCOST) * SimOpts.Costs(COSTMULTIPLIER))
-  If rob(n).mem(VshootSys) < 0 Then
-    Shots(thisshot).Range = 11
-  Else
-    Shots(thisshot).Range = 11 + CInt((rob(n).mem(VshootSys)) / 2)
-    rob(n).nrg = rob(n).nrg - CSng(rob(n).mem(VshootSys)) - (SimOpts.Costs(SHOTCOST) * SimOpts.Costs(COSTMULTIPLIER))
-  End If
+  
+  Shots(thisshot).Range = 11 + CInt((rob(n).mem(VshootSys)) / 2)
+  rob(n).nrg = rob(n).nrg - CSng(rob(n).mem(VshootSys)) - (SimOpts.Costs(SHOTCOST) * SimOpts.Costs(COSTMULTIPLIER))
     
   With Shots(thisshot)
     ShAngle = Random(1, 1256) / 200
@@ -1125,8 +1130,8 @@ Public Function copygene(n As Long, ByVal p As Integer) As Boolean
     GoTo getout
   End If
   
-  GeneStart = genepos(rob(parent).DNA, p)
-  GeneEnding = GeneEnd(rob(parent).DNA, GeneStart)
+  GeneStart = genepos(rob(parent).dna, p)
+  GeneEnding = GeneEnd(rob(parent).dna, GeneStart)
   genelen = GeneEnding - GeneStart + 1
   
   If genelen < 1 Then
@@ -1134,14 +1139,14 @@ Public Function copygene(n As Long, ByVal p As Integer) As Boolean
     GoTo getout
   End If
   
-  ReDim Shots(n).DNA(genelen)
+  ReDim Shots(n).dna(genelen)
   
   ' Put an end on it just in case...
  ' Shots(n).DNA(genelen).tipo = 10
   'Shots(n).DNA(genelen).value = 1
   
   For t = 0 To genelen - 1
-    Shots(n).DNA(t) = rob(parent).DNA(GeneStart + t)
+    Shots(n).dna(t) = rob(parent).dna(GeneStart + t)
   Next t
   
   Shots(n).DnaLen = genelen
@@ -1154,7 +1159,7 @@ Public Function addgene(ByVal n As Integer, ByVal p As Long) As Integer
   Dim t As Long
   Dim Insert As Long
   Dim vlen As Long   'length of the DNA code of the virus
-  Dim Position As Integer   'gene position to insert the virus
+  Dim position As Integer   'gene position to insert the virus
   Dim power As Single
   
   'Dead bodies and virus immune bots can't catch a virus
@@ -1171,11 +1176,11 @@ Public Function addgene(ByVal n As Integer, ByVal p As Long) As Integer
     If rob(n).Slime < 0.5 Then rob(n).Slime = 0
   End If
   
-  Position = Random(0, rob(n).genenum)                  'randomize the gene number
-  If Position = 0 Then
+  position = Random(0, rob(n).genenum)                  'randomize the gene number
+  If position = 0 Then
     Insert = 0
   Else
-    Insert = GeneEnd(rob(n).DNA, genepos(rob(n).DNA, Position))
+    Insert = GeneEnd(rob(n).dna, genepos(rob(n).dna, position))
     If Insert = (rob(n).DnaLen) Then
       Insert = rob(n).DnaLen
     End If
@@ -1184,20 +1189,20 @@ Public Function addgene(ByVal n As Integer, ByVal p As Long) As Integer
 '  vlen = DnaLen(Shots(P).DNA())
   vlen = Shots(p).DnaLen
   
-  If MakeSpace(rob(n).DNA, Insert, vlen) Then 'Moves genes back to make space
+  If MakeSpace(rob(n).dna, Insert, vlen) Then 'Moves genes back to make space
     For t = Insert To Insert + vlen - 1
-      rob(n).DNA(t + 1) = Shots(p).DNA(t - Insert)
+      rob(n).dna(t + 1) = Shots(p).dna(t - Insert)
     Next t
   End If
   
   makeoccurrlist n
-  rob(n).DnaLen = DnaLen(rob(n).DNA())
-  rob(n).genenum = CountGenes(rob(n).DNA)
+  rob(n).DnaLen = DnaLen(rob(n).dna())
+  rob(n).genenum = CountGenes(rob(n).dna)
   rob(n).mem(DnaLenSys) = rob(n).DnaLen
   rob(n).mem(GenesSys) = rob(n).genenum
   
   rob(n).SubSpecies = NewSubSpecies(n) ' Infection with a virus counts as a new subspecies
-  rob(n).LastMutDetail = "Infected with virus of length " + Str(vlen) + " during cycle " + Str(SimOpts.TotRunCycle) + " at pos " + Str(Insert) + vbCrLf + rob(n).LastMutDetail
+  logmutation n, "Infected with virus of length " + Str(vlen) + " during cycle " + Str(SimOpts.TotRunCycle) + " at pos " + Str(Insert)
   rob(n).Mutations = rob(n).Mutations + 1
   rob(n).LastMut = rob(n).LastMut + 1
 getout:

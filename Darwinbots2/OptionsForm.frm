@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{FE0065C0-1B7B-11CF-9D53-00AA003C9CB6}#1.1#0"; "COMCT232.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
 Begin VB.Form optionsform 
@@ -128,11 +128,8 @@ Begin VB.Form optionsform
       TabPicture(3)   =   "OptionsForm.frx":0054
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "Frame13"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "Frame14"
-      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).Control(2)=   "DisableMutationsCheck"
-      Tab(3).Control(2).Enabled=   0   'False
       Tab(3).ControlCount=   3
       TabCaption(4)   =   "Restart and League"
       TabPicture(4)   =   "OptionsForm.frx":0070
@@ -1422,6 +1419,14 @@ Begin VB.Form optionsform
          TabIndex        =   39
          Top             =   1320
          Width           =   4335
+         Begin VB.CheckBox MutOscillSin 
+            Caption         =   "Sine wave instead of saw wave"
+            Height          =   615
+            Left            =   360
+            TabIndex        =   211
+            Top             =   1080
+            Width           =   1095
+         End
          Begin VB.TextBox CyclesHi 
             Height          =   330
             Left            =   2850
@@ -1441,12 +1446,12 @@ Begin VB.Form optionsform
          Begin VB.CheckBox MutOscill 
             Alignment       =   1  'Right Justify
             Caption         =   "Rendi la frequenza di mutazione oscilante fra 20x e 1/20x, alternativamente."
-            Height          =   645
-            Left            =   120
+            Height          =   525
+            Left            =   240
             TabIndex        =   40
             Tag             =   "5101"
-            Top             =   300
-            Width           =   3780
+            Top             =   360
+            Width           =   3660
          End
          Begin ComCtl2.UpDown CycLoUpDn 
             Height          =   330
@@ -1459,7 +1464,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   100000
             BuddyControl    =   "CyclesHi"
-            BuddyDispid     =   196700
+            BuddyDispid     =   196701
             OrigLeft        =   3570
             OrigTop         =   3465
             OrigRight       =   3810
@@ -1482,7 +1487,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   10000
             BuddyControl    =   "CyclesLo"
-            BuddyDispid     =   196701
+            BuddyDispid     =   196702
             OrigLeft        =   3570
             OrigTop         =   2940
             OrigRight       =   3810
@@ -1666,7 +1671,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   5
             BuddyControl    =   "txtMaxRounds"
-            BuddyDispid     =   196732
+            BuddyDispid     =   196716
             OrigLeft        =   3480
             OrigTop         =   1140
             OrigRight       =   3735
@@ -1685,7 +1690,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   5
             BuddyControl    =   "txtMinRounds"
-            BuddyDispid     =   196731
+            BuddyDispid     =   196715
             OrigLeft        =   3240
             OrigTop         =   960
             OrigRight       =   3480
@@ -1849,7 +1854,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Prop"
-            BuddyDispid     =   196755
+            BuddyDispid     =   196739
             OrigLeft        =   4260
             OrigTop         =   2760
             OrigRight       =   4500
@@ -1900,7 +1905,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "Fixed"
-            BuddyDispid     =   196754
+            BuddyDispid     =   196738
             OrigLeft        =   4245
             OrigTop         =   2340
             OrigRight       =   4485
@@ -1990,7 +1995,6 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0547
@@ -2222,7 +2226,7 @@ Begin VB.Form optionsform
             _ExtentY        =   503
             _Version        =   327681
             BuddyControl    =   "SpecQty"
-            BuddyDispid     =   196775
+            BuddyDispid     =   196759
             OrigLeft        =   2310
             OrigTop         =   525
             OrigRight       =   2550
@@ -2244,7 +2248,7 @@ Begin VB.Form optionsform
             _Version        =   327681
             Value           =   1000
             BuddyControl    =   "SpecNrg"
-            BuddyDispid     =   196777
+            BuddyDispid     =   196761
             OrigLeft        =   1560
             OrigTop         =   240
             OrigRight       =   1800
@@ -2734,6 +2738,13 @@ Private Sub MaxPopF1Text_LostFocus()
     MaxPopF1Text.text = MaxPop
 End Sub
 
+
+Private Sub MutOscillSin_Click()
+  TmpOpts.MutOscillSine = False
+  If MutOscillSin.value = 1 Then TmpOpts.MutOscillSine = True
+  Label3.Caption = IIf(MutOscillSin.value = 1, "Max at 20x", "Cycles at 16x")
+  Label9.Caption = IIf(MutOscillSin.value = 1, "Max at 1/20x", "Cycles at 1/16x")
+End Sub
 
 Private Sub tmrLight_Timer()
 Static dir As Boolean
@@ -3260,7 +3271,7 @@ Sub additem(path As String)
   TmpOpts.Specie(k).VirusImmune = False
     
   Randomize 'Botsareus 4/27/2013 Added randomize here so we have interesting colors
-  TmpOpts.Specie(k).color = IIf(UseOldColor, RGB(Rnd * 200 + 55, Rnd * 200 + 55, Rnd * 255), RGB(Rnd * 255, Rnd * 255, Rnd * 255))
+  TmpOpts.Specie(k).color = IIf(UseOldColor, RGB(rnd * 200 + 55, rnd * 200 + 55, rnd * 255), RGB(rnd * 255, rnd * 255, rnd * 255))
   
   'Special overwrites for unique robot names
   If TmpOpts.Specie(k).Name = "Base.txt" Then TmpOpts.Specie(k).color = vbBlue
@@ -3415,12 +3426,12 @@ Dim dbls() As Double
 
 ReDim dbls(Len(robname) - 1)
 For x = 1 To Len(robname)
-dbls(x - 1) = Rnd(-Asc(Mid(robname, x, 1)))
+dbls(x - 1) = rnd(-Asc(Mid(robname, x, 1)))
 Next 'pre seeds
 
 For x = 1 To Len(robname)
 newR = dbls(x - 1)
-nextR = Rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
+nextR = rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
 Next 'randomize by name
 
 nameR = nextR
@@ -3434,12 +3445,12 @@ nextR = 0
     
     ReDim dbls(UBound(rob(0).dna))
     For x = 0 To UBound(rob(0).dna)
-    dbls(x) = Rnd(-(angle(0, 0, Rnd(-rob(0).dna(x).value) - 0.5, Rnd(-rob(0).dna(x).tipo) - 0.5)))
+    dbls(x) = rnd(-(angle(0, 0, rnd(-rob(0).dna(x).value) - 0.5, rnd(-rob(0).dna(x).tipo) - 0.5)))
     Next 'pre seeds
     
     For x = 0 To UBound(rob(0).dna)
     newR = dbls(x)
-    nextR = Rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
+    nextR = rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
     Next 'randomize by dna
     
     If MaxRobs = 0 Then ReDim rob(0)
@@ -3451,12 +3462,12 @@ Randomize nextR * 1000
   Dim i As Integer
   If k > -1 Then
     For i = 0 To 7 Step 2
-      TmpOpts.Specie(k).Skin(i) = Random(0, half)
+      TmpOpts.Specie(k).Skin(i) = Int(rnd * (half + 1))
       If i = 4 Then Randomize nameR * 1000
-      TmpOpts.Specie(k).Skin(i + 1) = Random(0, 628)
+      TmpOpts.Specie(k).Skin(i + 1) = Int(rnd * 629)
     Next i
     Randomize
-    TmpOpts.Specie(k).Skin(6) = (TmpOpts.Specie(k).Skin(6) + Random(0, half) * 2) / 3
+    TmpOpts.Specie(k).Skin(6) = (TmpOpts.Specie(k).Skin(6) + Int(rnd * (half + 1)) * 2) / 3
   End If
 End Sub
 
@@ -3641,9 +3652,9 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
       b = 228
     Case "Random" 'Botsareus 4/27/2013 This was very broken
       Randomize
-      r = IIf(UseOldColor, Rnd * 200 + 55, Rnd * 255)
-      g = IIf(UseOldColor, Rnd * 200 + 55, Rnd * 255)
-      b = Rnd * 255
+      r = IIf(UseOldColor, rnd * 200 + 55, rnd * 255)
+      g = IIf(UseOldColor, rnd * 200 + 55, rnd * 255)
+      b = rnd * 255
     Case "Custom"
       col = TmpOpts.Specie(k).color
       MakeColor col, respath(TmpOpts.Specie(k).path) + "\" + TmpOpts.Specie(k).Name
@@ -4795,7 +4806,7 @@ If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 
   While StartAnotherRound
     StartAnotherRound = False
     Form1.StartSimul
-    SimOpts.UserSeedNumber = Rnd * 2147483647 'Botsareus 6/11/2013 Randomize seed on restart, moved to after first sim
+    SimOpts.UserSeedNumber = rnd * 2147483647 'Botsareus 6/11/2013 Randomize seed on restart, moved to after first sim
   Wend
   
 End Sub
@@ -4886,6 +4897,17 @@ End If
   End If
    
   MutOscill.value = TmpOpts.MutOscill * True
+  MutOscillSin.value = TmpOpts.MutOscillSine * True
+  '
+  MutOscillSin.Visible = MutOscill.value = 1
+  Label3.Visible = MutOscill.value = 1
+  Label9.Visible = MutOscill.value = 1
+  CyclesHi.Visible = MutOscill.value = 1
+  CyclesLo.Visible = MutOscill.value = 1
+  CycHiUpDn.Visible = MutOscill.value = 1
+  CycLoUpDn.Visible = MutOscill.value = 1
+  '
+  
   DisableMutationsCheck.value = TmpOpts.DisableMutations * True
   
   CyclesHi.text = TmpOpts.MutCycMax
@@ -5314,6 +5336,9 @@ skipthisspecie4:
   'Botsareus 8/23/2014 Tides
   Write #1, TmpOpts.Tides
   Write #1, TmpOpts.TidesOf
+  
+  'Botsareus 8/10/2015
+  Write #1, TmpOpts.MutOscillSine
 
   Close 1
   Exit Sub
@@ -5681,6 +5706,9 @@ Public Sub ReadSettFromFile()
   If Not EOF(1) Then Input #1, TmpOpts.Tides
   If Not EOF(1) Then Input #1, TmpOpts.TidesOf
   
+  'Botsareus 10/8/2015
+  If Not EOF(1) Then Input #1, TmpOpts.MutOscillSine
+  
   If (Not EOF(1)) Then MsgBox "This settings file is a newer version than this version can read.  " + vbCrLf + _
                               "Not all the information it contains can be " + vbCrLf + _
                               "transfered."
@@ -5759,6 +5787,13 @@ End Sub
 Private Sub MutOscill_Click()
   TmpOpts.MutOscill = False
   If MutOscill.value = 1 Then TmpOpts.MutOscill = True
+  MutOscillSin.Visible = MutOscill.value = 1
+  Label3.Visible = MutOscill.value = 1
+  Label9.Visible = MutOscill.value = 1
+  CyclesHi.Visible = MutOscill.value = 1
+  CyclesLo.Visible = MutOscill.value = 1
+  CycHiUpDn.Visible = MutOscill.value = 1
+  CycLoUpDn.Visible = MutOscill.value = 1
 End Sub
 
 '

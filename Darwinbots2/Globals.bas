@@ -22,6 +22,8 @@ Public reprofix As Boolean
 Public chseedstartnew As Boolean
 Public chseedloadsim As Boolean
 Public UseSafeMode As Boolean
+Public UseEpiGene As Boolean
+Public UseIntRnd As Boolean
 Public GraphUp As Boolean
 Public HideDB As Boolean
 Public intFindBestV2 As Integer
@@ -102,7 +104,6 @@ Public y_Stgwins As Integer
 Public y_zblen As Integer
 
 Public y_eco_im As Byte
-Public Corruptions As Integer
 
 'actual evolution globals
 
@@ -217,7 +218,8 @@ Private Declare Function OpenProcess Lib "kernel32" _
    ByVal bInheritHandle As Long, _
    ByVal dwProcessId As Long) As Long
 'For args to the IM client
-Public Declare Function GetCurrentProcessId Lib "kernel32" () As Long
+'Botsareus 10/21/2015 No longer a required feature
+'Public Declare Function GetCurrentProcessId Lib "kernel32" () As Long
    
 Const WM_CLOSE = &H10
 Const INFINITE = &HFFFFFFFF
@@ -371,22 +373,20 @@ If SimOpts.Specie(r).Veg = True And SimOpts.Specie(r).Native Then
         End With
       Next
 
+    'If there is no robots at all with chlr then repop everything
+    
+    checkvegstatus = True
+    
+    For t = 1 To MaxRobs
+            With rob(t)
+                If .exist And .Veg Then
+                        checkvegstatus = False
+                        Exit Function
+                End If
+            End With
+    Next
+
 End If
-
-'If there is no robots at all with chlr then repop everything
-
-checkvegstatus = True
-
-For t = 1 To MaxRobs
-        With rob(t)
-            If .exist And .Veg Then
-                    checkvegstatus = False
-                    Exit Function
-            End If
-        End With
-Next
-
-
 End Function
 
 ' not sure where to put this function, so it's going here
@@ -445,18 +445,19 @@ Public Sub aggiungirob(ByVal r As Integer, ByVal x As Single, ByVal y As Single)
   '  EnergyAddedPerCycle = EnergyAddedPerCycle + 10000
     rob(a).radius = FindRadius(a)
     rob(a).Mutations = 0
+    rob(a).OldMutations = 0 'Botsareus 10/8/2015
     rob(a).LastMut = 0
     rob(a).generation = 0
     rob(a).SonNumber = 0
     rob(a).parent = 0
-    rob(a).mem(468) = 32000
-    rob(a).mem(AimSys) = Random(1, 1256) / 200
-    rob(a).mem(SetAim) = rob(a).aim * 200
-'    rob(a).mem(480) = 32000 Botsareus 2/21/2013 Broken
+'    rob(a).mem(468) = 32000 Botsareus 10/5/2015 why set memory right before an erase call?
+'    rob(a).mem(AimSys) = Random(1, 1256) / 200
+'    rob(a).mem(SetAim) = rob(a).aim * 200
+'    rob(a).mem(480) = 32000
 '    rob(a).mem(481) = 32000
 '    rob(a).mem(482) = 32000
 '    rob(a).mem(483) = 32000
-    rob(a).aim = Rnd(PI)
+'    rob(a).aim = Rnd(PI)
     Erase rob(a).mem
     'If rob(a).Veg Then rob(a).Feed = 8
     If rob(a).Fixed Then rob(a).mem(216) = 1
@@ -464,7 +465,7 @@ Public Sub aggiungirob(ByVal r As Integer, ByVal x As Single, ByVal y As Single)
     rob(a).pos.y = y
     
     
-    rob(a).aim = Rnd * PI * 2 'Botsareus 5/30/2012 Added code to rotate the robot on placment
+    rob(a).aim = rndy * PI * 2 'Botsareus 5/30/2012 Added code to rotate the robot on placment
     rob(a).mem(SetAim) = rob(a).aim * 200
     
     'Bot is already in a bucket due to the prepare routine
@@ -477,15 +478,19 @@ Public Sub aggiungirob(ByVal r As Integer, ByVal x As Single, ByVal y As Single)
     
     rob(a).Vtimer = 0
     rob(a).virusshot = 0
-    rob(a).genenum = CountGenes(rob(a).DNA)
+    rob(a).genenum = CountGenes(rob(a).dna)
     
     
-    rob(a).DnaLen = DnaLen(rob(a).DNA())
+    rob(a).DnaLen = DnaLen(rob(a).dna())
     rob(a).GenMut = rob(a).DnaLen / GeneticSensitivity 'Botsareus 4/9/2013 automatically apply genetic to inserted robots
     
     
     rob(a).mem(DnaLenSys) = rob(a).DnaLen
     rob(a).mem(GenesSys) = rob(a).genenum
+    
+    'Botsareus 10/8/2015 New kill restrictions
+    rob(a).multibot_time = IIf(SimOpts.Specie(r).kill_mb, 210, 0)
+    rob(a).dq = IIf(SimOpts.Specie(r).dq_kill, 1, 0)
     
     
     For i = 0 To 7 'Botsareus 5/20/2012 fix for skin engine

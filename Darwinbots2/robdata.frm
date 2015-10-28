@@ -55,7 +55,6 @@ Begin VB.Form datirob
          _ExtentX        =   11562
          _ExtentY        =   11827
          _Version        =   393217
-         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"robdata.frx":0E42
@@ -610,6 +609,7 @@ Public showingMemory As Boolean
 Public ShowMemoryEarlyCycle As Boolean
 
 Private Sub robfname_DblClick() 'Botsareus 10/26/2014 Should make forking easyer
+Clipboard.CLEAR
 Clipboard.SetText robfname.Caption
 End Sub
 

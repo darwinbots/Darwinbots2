@@ -162,16 +162,18 @@ Public Const rmchlr As Integer = 922 'Panda 8/15/2013 The remove chloroplast var
 Public Const light As Integer = 923 'Botsareus 8/14/2013 A variable to let robots know how much light is available
 Public Const sharechlr As Integer = 924 'Panda 08/26/2013 Share Chloroplasts between ties variable
 
-Private Type ancestorType
-  num As Long ' unique ID of ancestor
-  mut As Long ' mutations this ancestor had at time next descendent was born
-  sim As Long ' the sim this ancestor was born in
-End Type
+'Botsareus 10/5/2015 freeing up memory from Eric's obsolete ancestors code
+'Private Type ancestorType
+'  num As Long ' unique ID of ancestor
+'  mut As Long ' mutations this ancestor had at time next descendent was born
+'  sim As Long ' the sim this ancestor was born in
+'End Type
 
-Private Type delgenerestore 'Botsareus 9/16/2014 A new bug fix from Billy
-Position As Integer
-DNA() As block
-End Type
+'Botsareus 10/5/2015 Replaced with something better
+'Private Type delgenerestore 'Botsareus 9/16/2014 A new bug fix from Billy
+'position As Integer
+'dna() As block
+'End Type
 
 ' robot structure
 Private Type robot
@@ -259,7 +261,7 @@ Private Type robot
   ' virtual machine
   epimem(14) As Integer
   mem(1000) As Integer      ' memory array
-  DNA() As block            ' program array
+  dna() As block            ' program array
   
   lastopp As Long           ' Index of last object in the focus eye.  Could be a bot or shape or something else.
   lastopptype As Integer    ' Indicates the type of lastopp.
@@ -287,6 +289,9 @@ Private Type robot
   SonNumber As Integer      ' number of sons
   
   Mutations As Long         ' total mutations
+  OldMutations As Long      ' total mutations from dna file
+  
+  
   GenMut As Single          ' figure out how many mutations before the next genetic test
   OldGD As Single           ' our old genetic distance
   LastMut As Long           ' last mutations
@@ -327,8 +332,8 @@ Private Type robot
   CantReproduce As Boolean          ' Indicates whether reproduction for this robot has been disabled
   VirusImmune As Boolean            ' Indicates whether this robot is immune to viruses
   SubSpecies As Integer             ' Indicates this bot's subspecies.  Changed when mutation or virus infection occurs
-  Ancestors(500) As ancestorType    ' Orderred list of ancestor bot numbers.
-  AncestorIndex As Integer          ' Index into the Ancestors array.  Points to the bot's immediate parent.  Older ancestors have lower numbers then wrap.
+'  Ancestors(500) As ancestorType    ' Orderred list of ancestor bot numbers.
+'  AncestorIndex As Integer          ' Index into the Ancestors array.  Points to the bot's immediate parent.  Older ancestors have lower numbers then wrap.
   
   fertilized As Integer             ' If non-zero, indicates this bot has been fertilized via a sperm shot.  This bot can choose to sexually reproduce
                                     ' with this DNA until the counter hits 0.  Will be zero if unfertilized.
@@ -345,7 +350,7 @@ Private Type robot
   Chlr_Share_Delay As Byte
   dq As Byte
   
-  delgenes() As delgenerestore  'Botsareus 9/16/2014 A new bug fix from Billy
+  'delgenes() As delgenerestore  'Botsareus 9/16/2014 A new bug fix from Billy
 
 End Type
 
@@ -526,19 +531,19 @@ Dim ndna1() As block3
 Dim ndna2() As block3
 Dim length1 As Integer
 Dim length2 As Integer
-length1 = UBound(rob(r1).DNA)
-length2 = UBound(rob(r2).DNA)
+length1 = UBound(rob(r1).dna)
+length2 = UBound(rob(r2).dna)
 ReDim ndna1(length1)
 ReDim ndna2(length2)
 
 'map to nucli
 
 'if step is 1 then normal nucli
-For t = 0 To UBound(rob(r1).DNA)
- ndna1(t).nucli = DNAtoInt(rob(r1).DNA(t).tipo, rob(r1).DNA(t).value)
+For t = 0 To UBound(rob(r1).dna)
+ ndna1(t).nucli = DNAtoInt(rob(r1).dna(t).tipo, rob(r1).dna(t).value)
 Next
-For t = 0 To UBound(rob(r2).DNA)
- ndna2(t).nucli = DNAtoInt(rob(r2).DNA(t).tipo, rob(r2).DNA(t).value)
+For t = 0 To UBound(rob(r2).dna)
+ ndna2(t).nucli = DNAtoInt(rob(r2).dna(t).tipo, rob(r2).dna(t).value)
 Next
       
 'Step3 Figure out genetic distance
@@ -582,7 +587,7 @@ res2 = scanfromn(rob2, n2, i)
 
 'subloop
 If res1 - n1 > 0 And res2 - n2 > 0 Then 'run both sides
-    If Int(Rnd * 2) = 0 Then 'which side?
+    If Int(Rndy * 2) = 0 Then 'which side?
         ReDim Preserve Outdna(upperbound + res1 - n1)
         For a = n1 To res1 - 1
             Outdna(upperbound + 1 + a - n1).tipo = rob1(a).tipo
@@ -596,7 +601,7 @@ If res1 - n1 > 0 And res2 - n2 > 0 Then 'run both sides
         Next
     End If
 ElseIf res1 - n1 > 0 Then 'run one side
-    If Int(Rnd * 2) = 0 Then
+    If Int(Rndy * 2) = 0 Then
         ReDim Preserve Outdna(upperbound + res1 - n1)
         For a = n1 To res1 - 1
             Outdna(upperbound + 1 + a - n1).tipo = rob1(a).tipo
@@ -604,7 +609,7 @@ ElseIf res1 - n1 > 0 Then 'run one side
         Next
     End If
 ElseIf res2 - n2 > 0 Then 'run other side
-    If Int(Rnd * 2) = 0 Then
+    If Int(Rndy * 2) = 0 Then
         ReDim Preserve Outdna(upperbound + res2 - n2)
         For a = n2 To res2 - 1
             Outdna(upperbound + 1 + a - n2).tipo = rob2(a).tipo
@@ -623,7 +628,7 @@ nn = res1
 resn = scanfromn(rob1(), nn, i)
 ReDim Preserve Outdna(upperbound + resn - nn)
 
-whatside = Int(Rnd * 2) = 0
+whatside = Int(Rndy * 2) = 0
 
 ''''debug
 'Dim debugme As Boolean
@@ -636,7 +641,7 @@ whatside = Int(Rnd * 2) = 0
 
 For a = nn To resn - 1
     Outdna(upperbound + 1 + a - nn).tipo = IIf(whatside, rob1(a).tipo, rob2(a - nn + res2).tipo) 'left hand side or right hand?
-    Outdna(upperbound + 1 + a - nn).value = IIf(IIf(rob1(a).tipo = rob2(a - nn + res2).tipo And Abs(rob1(a).value) > 999 And Abs(rob2(a - nn + res2).value) > 999, Int(Rnd * 2) = 0, whatside), rob1(a).value, rob2(a - nn + res2).value)  'if typo is different or in var range then all left/right hand, else choose a random side
+    Outdna(upperbound + 1 + a - nn).value = IIf(IIf(rob1(a).tipo = rob2(a - nn + res2).tipo And Abs(rob1(a).value) > 999 And Abs(rob2(a - nn + res2).value) > 999, Int(Rndy * 2) = 0, whatside), rob1(a).value, rob2(a - nn + res2).value)  'if typo is different or in var range then all left/right hand, else choose a random side
     'If rob1(a).tipo = rob2(a - nn + res2).tipo And Abs(rob1(a).value) > 999 And Abs(rob2(a - nn + res2).value) > 999 And rob1(a).value <> rob2(a - nn + res2).value Then debugme = True 'debug
 Next
 
@@ -1030,8 +1035,8 @@ Public Function genelength(n As Integer, p As Integer) As Long
   'measures the length of gene p in robot n
   Dim pos As Long
  
-  pos = genepos(rob(n).DNA(), p)
-  genelength = GeneEnd(rob(n).DNA(), pos) - pos + 1
+  pos = genepos(rob(n).dna(), p)
+  genelength = GeneEnd(rob(n).dna(), pos) - pos + 1
   
 End Function
 
@@ -1077,7 +1082,7 @@ Dim Length As Long
   End If
   
   'shoot it!
-  If .mem(VshootSys) > 0 And .Vtimer = 1 Then
+  If .mem(VshootSys) <> 0 And .Vtimer = 1 Then 'Botsareus 10/5/2015 Bugfix for negative values in vshoot
     If .virusshot <= maxshotarray And .virusshot > 0 Then Vshoot n, rob(n).virusshot
     
     .mem(VshootSys) = 0
@@ -1172,7 +1177,7 @@ Private Sub MakeStuff(ByVal n As Integer)
 End Sub
 
 Private Sub HandleWaste(ByVal n As Integer)
-    If rob(n).Waste > 0 Then feedveg2 n 'Botsareus 8/25/2013 Mod to effect all robots
+    If rob(n).Waste > 0 And rob(n).chloroplasts > 0 Then feedveg2 n  'Botsareus 8/25/2013 Mod to effect all robots
     If SimOpts.BadWastelevel = 0 Then SimOpts.BadWastelevel = 400
     If SimOpts.BadWastelevel > 0 And rob(n).Pwaste + rob(n).Waste > SimOpts.BadWastelevel Then altzheimer n
     If rob(n).Waste > 32000 Then defacate n
@@ -1223,6 +1228,7 @@ End Sub
 
 
 Private Sub ChangeChlr(t As Integer)  'Panda 8/15/2013 change the number of chloroplasts
+Dim newnrg As Single 'Botsareus 10/6/2015 This will prevent robots from killing themselfs using chloroplasts
 With rob(t)
  
   Dim tmpchlr As Single 'Botsareus 8/24/2013 used to charge energy for adding chloroplasts
@@ -1236,10 +1242,12 @@ With rob(t)
   
   If tmpchlr < .chloroplasts Then
   
-    If TotalChlr > SimOpts.MaxPopulation And .Veg = True Then 'Botsareus 12/3/2013 Attempt to stop vegy spikes
+    newnrg = .nrg - (.chloroplasts - tmpchlr) * SimOpts.Costs(CHLRCOST) * SimOpts.Costs(COSTMULTIPLIER)
+  
+    If (TotalChlr > SimOpts.MaxPopulation And .Veg = True) Or newnrg < 100 Then 'Botsareus 12/3/2013 Attempt to stop vegy spikes
       .chloroplasts = tmpchlr
     Else
-     .nrg = .nrg - (.chloroplasts - tmpchlr) * SimOpts.Costs(CHLRCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 8/24/2013 only charge energy for adding chloroplasts to prevent robots from cheating by adding and subtracting there chlroplasts in 3 cycles
+     .nrg = newnrg  'Botsareus 8/24/2013 only charge energy for adding chloroplasts to prevent robots from cheating by adding and subtracting there chlroplasts in 3 cycles
     End If
     
   End If
@@ -1607,9 +1615,9 @@ Public Sub UpdateBots()
       Shooting t
       If Not rob(t).NoChlr Then ManageChlr t 'Botsareus 3/28/2014 Disable Chloroplasts
       ManageBody t
-      Shock t
       ManageBouyancy t
       ManageReproduction t
+      Shock t
       WriteSenses t
       FireTies t
     End If
@@ -1645,7 +1653,7 @@ Private Sub ReproduceAndKill()
   While t < rp
     If rep(t) > 0 Then
        If rob(rep(t)).mem(mrepro) > 0 And rob(rep(t)).mem(Repro) > 0 Then
-         If Rnd > 0.5 Then
+         If Rndy > 0.5 Then
            temp = rob(rep(t)).mem(Repro)
          Else
            temp = rob(rep(t)).mem(mrepro)
@@ -1676,12 +1684,12 @@ Private Sub ReproduceAndKill()
 End Sub
 
 Private Sub storebody(t As Integer)
-  If rob(t).mem(313) > 100 Then rob(t).mem(313) = 100
-  rob(t).nrg = rob(t).nrg - rob(t).mem(313)
-  rob(t).body = rob(t).body + rob(t).mem(313) / 10
+  If rob(t).mem(strbody) > 100 Then rob(t).mem(strbody) = 100
+  rob(t).nrg = rob(t).nrg - rob(t).mem(strbody)
+  rob(t).body = rob(t).body + rob(t).mem(strbody) / 10
   If rob(t).body > 32000 Then rob(t).body = 32000
   rob(t).radius = FindRadius(t)
-  rob(t).mem(313) = 0
+  rob(t).mem(strbody) = 0
 End Sub
 
 Private Sub feedbody(t As Integer)
@@ -1811,7 +1819,8 @@ Private Sub robshoot(n As Integer)
     value = Abs(value)
     If value > rob(n).Waste Then value = rob(n).Waste
     rob(n).Waste = rob(n).Waste - value
-    If value < 0 Then value = rob(n).Waste / 10 'default waste shot.
+    If value = 0 Then value = rob(n).Waste / 20# 'default waste shot. 'Botsareus 10/5/2015 Fix for waste
+    rob(n).Waste = rob(n).Waste - value * 0.99 'Botsareus 10/5/2015 Fix for waste
     rob(n).Pwaste = rob(n).Pwaste + value / 100
     EnergyLost = SimOpts.Costs(SHOTCOST) * SimOpts.Costs(COSTMULTIPLIER) / (IIf(rob(n).numties < 0, 0, rob(n).numties) + 1)
     If EnergyLost > rob(n).nrg Then
@@ -2132,17 +2141,18 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       
       SimOpts.TotBorn = SimOpts.TotBorn + 1
       If rob(n).Veg Then totvegs = totvegs + 1
-      ReDim rob(nuovo).DNA(UBound(rob(n).DNA))
-      For t = 1 To UBound(rob(nuovo).DNA)
-        rob(nuovo).DNA(t) = rob(n).DNA(t)
+      ReDim rob(nuovo).dna(UBound(rob(n).dna))
+      For t = 1 To UBound(rob(nuovo).dna)
+        rob(nuovo).dna(t) = rob(n).dna(t)
       Next t
-      
-      rob(nuovo).delgenes = rob(n).delgenes
-        
+              
       rob(nuovo).DnaLen = rob(n).DnaLen
       rob(nuovo).genenum = rob(n).genenum
       rob(nuovo).Mutables = rob(n).Mutables
+      
       rob(nuovo).Mutations = rob(n).Mutations
+      rob(nuovo).OldMutations = rob(n).OldMutations 'Botsareus 10/8/2015
+      
       rob(nuovo).LastMut = 0
       rob(nuovo).LastMutDetail = rob(n).LastMutDetail
       
@@ -2179,6 +2189,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       rob(nuovo).Dead = False
       rob(nuovo).NewMove = rob(n).NewMove
       rob(nuovo).generation = rob(n).generation + 1
+      If rob(nuovo).generation > 32000 Then rob(nuovo).generation = 32000  'Botsareus 10/9/2015 Overflow protection
       rob(nuovo).BirthCycle = SimOpts.TotRunCycle
       rob(nuovo).vnum = 1
       
@@ -2233,14 +2244,15 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       If rob(n).multibot_time > 0 Then rob(nuovo).multibot_time = rob(n).multibot_time / 2 + 2
       rob(nuovo).dq = rob(n).dq
     
-      For i = 0 To 500
-        rob(nuovo).Ancestors(i) = rob(n).Ancestors(i)  ' copy the parents ancestor list
-      Next i
-      rob(nuovo).AncestorIndex = rob(n).AncestorIndex + 1  ' increment the ancestor index
-      If rob(nuovo).AncestorIndex > 500 Then rob(nuovo).AncestorIndex = 0  ' wrap it
-      rob(nuovo).Ancestors(rob(nuovo).AncestorIndex).num = rob(n).AbsNum  ' add the parent as the most recent ancestor
-      rob(nuovo).Ancestors(rob(nuovo).AncestorIndex).mut = rob(n).LastMut ' add the number of mutations the parent has had up until now.
-      rob(nuovo).Ancestors(rob(nuovo).AncestorIndex).sim = SimOpts.SimGUID ' Use this seed to uniqufiy this ancestor in Internet mode
+'Botsareus 10/5/2015 freeing up memory from Eric's obsolete ancestors code
+'      For i = 0 To 500
+'        rob(nuovo).Ancestors(i) = rob(n).Ancestors(i)  ' copy the parents ancestor list
+'      Next i
+'      rob(nuovo).AncestorIndex = rob(n).AncestorIndex + 1  ' increment the ancestor index
+'      If rob(nuovo).AncestorIndex > 500 Then rob(nuovo).AncestorIndex = 0  ' wrap it
+'      rob(nuovo).Ancestors(rob(nuovo).AncestorIndex).num = rob(n).AbsNum  ' add the parent as the most recent ancestor
+'      rob(nuovo).Ancestors(rob(nuovo).AncestorIndex).mut = rob(n).LastMut ' add the number of mutations the parent has had up until now.
+'      rob(nuovo).Ancestors(rob(nuovo).AncestorIndex).sim = SimOpts.SimGUID ' Use this seed to uniqufiy this ancestor in Internet mode
         
       'BucketsProximity n, 12
       'BucketsProximity nuovo, 12
@@ -2269,7 +2281,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
             'dynamic mutation overload correction
             Dim dmoc As Double
             dmoc = 1 + (rob(nuovo).DnaLen - curr_dna_size) / 500
-            If Not y_normsize Or (x_restartmode < 4) Then dmoc = 1
+            If Not y_normsize Then dmoc = 1
             'zerobot stabilization
             If x_restartmode = 7 Or x_restartmode = 8 Then
                 If .FName = "Mutate.txt" Then
@@ -2282,11 +2294,11 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
             End If
             '
             Dim mrep As Byte
-            For mrep = 0 To (Int(3 * Rnd) + 1) * -(rob(n).mem(mrepro) > 0)   '2x to 4x
+            For mrep = 0 To (Int(3 * Rndy) + 1) * -(rob(n).mem(mrepro) > 0)   '2x to 4x
                 For t = 1 To 10
                  If t = 9 Then GoTo skip 'ignore PM2 mutation here
                  If .Mutables.mutarray(t) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
-                 If Rnd < DeltaMainChance / 100 Then
+                 If Rndy < DeltaMainChance / 100 Then
                     If DeltaMainExp <> 0 Then
                         '
                         If (t = CopyErrorUP Or t = TranslocationUP Or t = ReversalUP Or t = CE2UP) Then
@@ -2295,17 +2307,17 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
                           If Not (t = MinorDeletionUP Or t = MajorDeletionUP) Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * dmoc 'dynamic mutation overload correction
                         End If
                         '
-                        .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
+                        .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rndy * 2 - 1) / DeltaMainExp)
                     End If
-                  .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rnd * 2 - 1) * DeltaMainLn
+                  .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rndy * 2 - 1) * DeltaMainLn
                   If .Mutables.mutarray(t) < 1 Then .Mutables.mutarray(t) = 1
                   If .Mutables.mutarray(t) > MratesMax Then .Mutables.mutarray(t) = MratesMax
                  End If
-                 If Rnd < DeltaDevChance / 100 Then
-                  If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
-                  .Mutables.StdDev(t) = .Mutables.StdDev(t) + (Rnd * 2 - 1) * DeltaDevLn
-                  If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
-                  .Mutables.Mean(t) = .Mutables.Mean(t) + (Rnd * 2 - 1) * DeltaDevLn
+                 If Rndy < DeltaDevChance / 100 Then
+                  If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((Rndy * 2 - 1) / DeltaDevExp)
+                  .Mutables.StdDev(t) = .Mutables.StdDev(t) + (Rndy * 2 - 1) * DeltaDevLn
+                  If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((Rndy * 2 - 1) / DeltaDevExp)
+                  .Mutables.Mean(t) = .Mutables.Mean(t) + (Rndy * 2 - 1) * DeltaDevLn
                   'Max range is always 0 to 800
                   If .Mutables.StdDev(t) < 0 Then .Mutables.StdDev(t) = 0
                   If .Mutables.StdDev(t) > 200 Then .Mutables.StdDev(t) = 200
@@ -2314,7 +2326,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
                  End If
 skip:
                 Next
-                .Mutables.CopyErrorWhatToChange = .Mutables.CopyErrorWhatToChange + (Rnd * 2 - 1) * DeltaWTC
+                .Mutables.CopyErrorWhatToChange = .Mutables.CopyErrorWhatToChange + (Rndy * 2 - 1) * DeltaWTC
                 If .Mutables.CopyErrorWhatToChange < 0 Then .Mutables.CopyErrorWhatToChange = 0
                 If .Mutables.CopyErrorWhatToChange > 100 Then .Mutables.CopyErrorWhatToChange = 100
                 Mutate nuovo, True
@@ -2346,8 +2358,8 @@ skip:
       End If
       
       makeoccurrlist nuovo
-      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())
-      rob(nuovo).genenum = CountGenes(rob(nuovo).DNA())
+      rob(nuovo).DnaLen = DnaLen(rob(nuovo).dna())
+      rob(nuovo).genenum = CountGenes(rob(nuovo).dna())
       rob(nuovo).mem(DnaLenSys) = rob(nuovo).DnaLen
       rob(nuovo).mem(GenesSys) = rob(nuovo).genenum
 
@@ -2463,10 +2475,10 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       Dim dna1() As block2
       Dim dna2() As block2
 
-      ReDim dna1(UBound(rob(female).DNA))
+      ReDim dna1(UBound(rob(female).dna))
       For t = 0 To UBound(dna1)
-       dna1(t).tipo = rob(female).DNA(t).tipo
-       dna1(t).value = rob(female).DNA(t).value
+       dna1(t).tipo = rob(female).dna(t).tipo
+       dna1(t).value = rob(female).dna(t).value
       Next
       
       ReDim dna2(UBound(rob(female).spermDNA))
@@ -2572,17 +2584,20 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
           
       'Step4 after robot is created store the dna
       
-      rob(nuovo).DNA = Outdna
+      rob(nuovo).dna = Outdna
           
-      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())     ' Set the DNA length of the offspring
+      rob(nuovo).DnaLen = DnaLen(rob(nuovo).dna())     ' Set the DNA length of the offspring
 
       'Bugfix actual length = virtual length
-      ReDim Preserve rob(nuovo).DNA(rob(nuovo).DnaLen)
+      ReDim Preserve rob(nuovo).dna(rob(nuovo).DnaLen)
       
       
-      rob(nuovo).genenum = CountGenes(rob(nuovo).DNA())
+      rob(nuovo).genenum = CountGenes(rob(nuovo).dna())
       rob(nuovo).Mutables = rob(female).Mutables
+      
       rob(nuovo).Mutations = rob(female).Mutations
+      rob(nuovo).OldMutations = rob(female).OldMutations 'Botsareus 10/8/2015
+      
       rob(nuovo).LastMut = 0
       rob(nuovo).LastMutDetail = rob(female).LastMutDetail
       
@@ -2620,6 +2635,7 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       rob(nuovo).Dead = False
       rob(nuovo).NewMove = rob(female).NewMove
       rob(nuovo).generation = rob(female).generation + 1
+      If rob(nuovo).generation > 32000 Then rob(nuovo).generation = 32000  'Botsareus 10/9/2015 Overflow protection
       rob(nuovo).BirthCycle = SimOpts.TotRunCycle
       rob(nuovo).vnum = 1
       
@@ -2682,17 +2698,16 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       'Botsareus 7/29/2014 New kill restrictions
       If rob(female).multibot_time > 0 Then rob(nuovo).multibot_time = rob(female).multibot_time / 2 + 2
       rob(nuovo).dq = rob(female).dq
-      
-      rob(nuovo).delgenes = rob(female).delgenes
-  
-      For i = 0 To 500
-        rob(nuovo).Ancestors(i) = rob(female).Ancestors(i)  ' copy the parents ancestor list
-      Next i
-      rob(nuovo).AncestorIndex = rob(female).AncestorIndex + 1  ' increment the ancestor index
-      If rob(nuovo).AncestorIndex > 500 Then rob(nuovo).AncestorIndex = 0  ' wrap it
-      rob(nuovo).Ancestors(rob(nuovo).AncestorIndex).num = rob(female).AbsNum  ' add the parent as the most recent ancestor
-      rob(nuovo).Ancestors(rob(nuovo).AncestorIndex).mut = rob(female).LastMut ' add the number of mutations the parent has had up until now.
-      rob(nuovo).Ancestors(rob(nuovo).AncestorIndex).sim = SimOpts.SimGUID ' Use this seed to uniqufiy this ancestor in Internet mode
+        
+'Botsareus 10/5/2015 freeing up memory from Eric's obsolete ancestors code
+'      For i = 0 To 500
+'        rob(nuovo).Ancestors(i) = rob(female).Ancestors(i)  ' copy the parents ancestor list
+'      Next i
+'      rob(nuovo).AncestorIndex = rob(female).AncestorIndex + 1  ' increment the ancestor index
+'      If rob(nuovo).AncestorIndex > 500 Then rob(nuovo).AncestorIndex = 0  ' wrap it
+'      rob(nuovo).Ancestors(rob(nuovo).AncestorIndex).num = rob(female).AbsNum  ' add the parent as the most recent ancestor
+'      rob(nuovo).Ancestors(rob(nuovo).AncestorIndex).mut = rob(female).LastMut ' add the number of mutations the parent has had up until now.
+'      rob(nuovo).Ancestors(rob(nuovo).AncestorIndex).sim = SimOpts.SimGUID ' Use this seed to uniqufiy this ancestor in Internet mode
       
          
       rob(nuovo).Vtimer = 0
@@ -2712,9 +2727,8 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       Next i
       
       
-      rob(nuovo).LastMutDetail = "Female DNA len " + Str(rob(female).DnaLen) + " and male DNA len " + _
-      Str(UBound(rob(female).spermDNA)) + " had offspring DNA len " + Str(rob(nuovo).DnaLen) + " during cycle " + Str(SimOpts.TotRunCycle) + _
-      vbCrLf + rob(nuovo).LastMutDetail
+      logmutation nuovo, "Female DNA len " + Str(rob(female).DnaLen) + " and male DNA len " + _
+      Str(UBound(rob(female).spermDNA)) + " had offspring DNA len " + Str(rob(nuovo).DnaLen) + " during cycle " + Str(SimOpts.TotRunCycle)
             
       If Delta2 Then
         With rob(nuovo)
@@ -2723,7 +2737,7 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
             'dynamic mutation overload correction
             Dim dmoc As Double
             dmoc = 1 + (rob(nuovo).DnaLen - curr_dna_size) / 500
-            If Not y_normsize Or (x_restartmode < 4) Then dmoc = 1
+            If Not y_normsize Then dmoc = 1
             'zerobot stabilization
             If x_restartmode = 7 Or x_restartmode = 8 Then
                 If .FName = "Mutate.txt" Then
@@ -2738,7 +2752,7 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
             For t = 1 To 10
              If t = 9 Then GoTo skip 'ignore PM2 mutation here
              If .Mutables.mutarray(t) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
-             If Rnd < DeltaMainChance / 100 Then
+             If Rndy < DeltaMainChance / 100 Then
                 If DeltaMainExp <> 0 Then
                     '
                     If (t = CopyErrorUP Or t = TranslocationUP Or t = ReversalUP Or t = CE2UP) Then
@@ -2746,17 +2760,17 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
                     Else
                       If Not (t = MinorDeletionUP Or t = MajorDeletionUP) Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * dmoc 'dynamic mutation overload correction
                     End If                    '
-                    .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rnd * 2 - 1) / DeltaMainExp)
+                    .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rndy * 2 - 1) / DeltaMainExp)
                 End If
-              .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rnd * 2 - 1) * DeltaMainLn
+              .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rndy * 2 - 1) * DeltaMainLn
               If .Mutables.mutarray(t) < 1 Then .Mutables.mutarray(t) = 1
               If .Mutables.mutarray(t) > MratesMax Then .Mutables.mutarray(t) = MratesMax
              End If
-             If Rnd < DeltaDevChance / 100 Then
-              If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
-              .Mutables.StdDev(t) = .Mutables.StdDev(t) + (Rnd * 2 - 1) * DeltaDevLn
-              If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((Rnd * 2 - 1) / DeltaDevExp)
-              .Mutables.Mean(t) = .Mutables.Mean(t) + (Rnd * 2 - 1) * DeltaDevLn
+             If Rndy < DeltaDevChance / 100 Then
+              If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((Rndy * 2 - 1) / DeltaDevExp)
+              .Mutables.StdDev(t) = .Mutables.StdDev(t) + (Rndy * 2 - 1) * DeltaDevLn
+              If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((Rndy * 2 - 1) / DeltaDevExp)
+              .Mutables.Mean(t) = .Mutables.Mean(t) + (Rndy * 2 - 1) * DeltaDevLn
               'Max range is always 0 to 800
               If .Mutables.StdDev(t) < 0 Then .Mutables.StdDev(t) = 0
               If .Mutables.StdDev(t) > 200 Then .Mutables.StdDev(t) = 200
@@ -2765,7 +2779,7 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
              End If
 skip:
             Next
-            .Mutables.CopyErrorWhatToChange = .Mutables.CopyErrorWhatToChange + (Rnd * 2 - 1) * DeltaWTC
+            .Mutables.CopyErrorWhatToChange = .Mutables.CopyErrorWhatToChange + (Rndy * 2 - 1) * DeltaWTC
             If .Mutables.CopyErrorWhatToChange < 0 Then .Mutables.CopyErrorWhatToChange = 0
             If .Mutables.CopyErrorWhatToChange > 100 Then .Mutables.CopyErrorWhatToChange = 100
             Mutate nuovo, True
@@ -2775,8 +2789,8 @@ skip:
       End If
         
       makeoccurrlist nuovo
-      rob(nuovo).DnaLen = DnaLen(rob(nuovo).DNA())
-      rob(nuovo).genenum = CountGenes(rob(nuovo).DNA())
+      rob(nuovo).DnaLen = DnaLen(rob(nuovo).dna())
+      rob(nuovo).genenum = CountGenes(rob(nuovo).dna())
       rob(nuovo).mem(DnaLenSys) = rob(nuovo).DnaLen
       rob(nuovo).mem(GenesSys) = rob(nuovo).genenum
             
@@ -2981,9 +2995,6 @@ End If
   
   rob(n).spermDNAlen = 0
   ReDim rob(n).spermDNA(0)
-  '
-  ReDim rob(n).delgenes(0)
-  ReDim rob(n).delgenes(0).DNA(0)
   '
   rob(n).LastMutDetail = ""
   

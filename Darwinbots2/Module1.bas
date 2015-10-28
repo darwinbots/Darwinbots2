@@ -13,8 +13,8 @@ Public Function RobScriptLoad(path As String) As Integer
     insertsysvars n         ' count system vars among used vars
     ScanUsedVars n          ' count other used locations
     makeoccurrlist n        ' creates the ref* array
-    rob(n).DnaLen = DnaLen(rob(n).DNA())  ' measures dna length
-    rob(n).genenum = CountGenes(rob(n).DNA())
+    rob(n).DnaLen = DnaLen(rob(n).dna())  ' measures dna length
+    rob(n).genenum = CountGenes(rob(n).dna())
     rob(n).mem(DnaLenSys) = rob(n).DnaLen
     rob(n).mem(GenesSys) = rob(n).genenum
     RobScriptLoad = n       ' returns the index of the created rob
@@ -61,9 +61,9 @@ Public Function IsRobDNABounded(ByRef ArrayIn() As block) As Boolean
 done:
 End Function
 
-Public Function DnaLen(DNA() As block) As Integer
+Public Function DnaLen(dna() As block) As Integer
   DnaLen = 1
-  While Not (DNA(DnaLen).tipo = 10 And DNA(DnaLen).value = 1) And DnaLen <= 32000 And DnaLen < UBound(DNA) 'Botsareus 6/16/2012 Added upper bounds check
+  While Not (dna(DnaLen).tipo = 10 And dna(DnaLen).value = 1) And DnaLen <= 32000 And DnaLen < UBound(dna) 'Botsareus 6/16/2012 Added upper bounds check
     DnaLen = DnaLen + 1
   Wend
   
@@ -81,11 +81,11 @@ Dim k As Integer
 Dim a As Integer
 Dim used As Boolean
 used = False
-  While Not (rob(n).DNA(t).tipo = 10 And rob(n).DNA(t).value = 1)
+  While Not (rob(n).dna(t).tipo = 10 And rob(n).dna(t).value = 1)
     t = t + 1
-    If UBound(rob(n).DNA()) < t Then GoTo getout
-    If rob(n).DNA(t).tipo = 1 Then
-      a = rob(n).DNA(t).value
+    If UBound(rob(n).dna()) < t Then GoTo getout
+    If rob(n).dna(t).tipo = 1 Then
+      a = rob(n).dna(t).value
       For k = 1 To rob(n).maxusedvars
         If rob(n).usedvars(k) = a Then used = True
       Next k
@@ -291,7 +291,7 @@ Public Function PopBoolStack() As Integer
   PopBoolStack = Condst.val(Condst.pos)
 End Function
 
-Public Function CountGenes(ByRef DNA() As block) As Integer
+Public Function CountGenes(ByRef dna() As block) As Integer
   Dim counter As Long
   Dim k As Integer
   Dim genenum As Integer
@@ -301,61 +301,61 @@ Public Function CountGenes(ByRef DNA() As block) As Integer
    
   counter = 1
   
-   While counter <= 32000 And counter <= UBound(DNA) 'Botsareus 5/29/2012 Added upper bounds check
-   If DNA(counter).tipo = 10 And DNA(counter).value = 1 Then GoTo getout
+   While counter <= 32000 And counter <= UBound(dna) 'Botsareus 5/29/2012 Added upper bounds check
+   If dna(counter).tipo = 10 And dna(counter).value = 1 Then GoTo getout
     ' If a Start or Else
-    If DNA(counter).tipo = 9 And (DNA(counter).value = 2 Or DNA(counter).value = 3) Then
+    If dna(counter).tipo = 9 And (dna(counter).value = 2 Or dna(counter).value = 3) Then
       If Not ingene Then 'that does not follow a Cond
         CountGenes = CountGenes + 1
       End If
       ingene = False ' that follows a cond
     End If
     ' If a Cond
-    If DNA(counter).tipo = 9 And (DNA(counter).value = 1) Then
+    If dna(counter).tipo = 9 And (dna(counter).value = 1) Then
       ingene = True
       CountGenes = CountGenes + 1
     End If
     ' If a stop
-    If DNA(counter).tipo = 9 And DNA(counter).value = 4 Then ingene = False
+    If dna(counter).tipo = 9 And dna(counter).value = 4 Then ingene = False
     counter = counter + 1
   Wend
 getout:
 End Function
 
-Public Function NextStop(ByRef DNA() As block, ByVal inizio As Long) As Integer
+Public Function NextStop(ByRef dna() As block, ByVal inizio As Long) As Integer
   NextStop = inizio
-  While Not ((DNA(NextStop).tipo = 9 And (DNA(NextStop).value = 4)) Or DNA(NextStop).tipo = 10) And (NextStop <= 32000)
+  While Not ((dna(NextStop).tipo = 9 And (dna(NextStop).value = 4)) Or dna(NextStop).tipo = 10) And (NextStop <= 32000)
     '_ And (DNA(NextStop).value = 2 Or DNA(NextStop).value = 3 Or DNA(NextStop).value = 4))
     NextStop = NextStop + 1
   Wend
 End Function
 
 'Returns the position of the last base pair of the gene beginnign at position
-Public Function GeneEnd(ByRef DNA() As block, ByVal Position As Integer) As Integer
+Public Function GeneEnd(ByRef dna() As block, ByVal position As Integer) As Integer
   Dim condgene As Boolean
   condgene = False
     
-  GeneEnd = Position
-  If DNA(GeneEnd).tipo = 9 And DNA(GeneEnd).value = 1 Then condgene = True
+  GeneEnd = position
+  If dna(GeneEnd).tipo = 9 And dna(GeneEnd).value = 1 Then condgene = True
   
   While GeneEnd + 1 <= 32000
-    If (DNA(GeneEnd + 1).tipo = 10) Then GoTo getout ' end of genome
-    If (DNA(GeneEnd + 1).tipo = 9 And ((DNA(GeneEnd + 1).value = 1) Or DNA(GeneEnd + 1).value = 4)) Then  ' cond or stop
-      If (DNA(GeneEnd + 1).value = 4) Then GeneEnd = GeneEnd + 1 ' Include the stop as part of the gene
+    If (dna(GeneEnd + 1).tipo = 10) Then GoTo getout ' end of genome
+    If (dna(GeneEnd + 1).tipo = 9 And ((dna(GeneEnd + 1).value = 1) Or dna(GeneEnd + 1).value = 4)) Then  ' cond or stop
+      If (dna(GeneEnd + 1).value = 4) Then GeneEnd = GeneEnd + 1 ' Include the stop as part of the gene
       GoTo getout
     End If
-    If (DNA(GeneEnd + 1).tipo = 9 And ((DNA(GeneEnd + 1).value = 2) Or DNA(GeneEnd + 1).value = 3)) And Not condgene Then GoTo getout ' start or else
-    If (DNA(GeneEnd + 1).tipo = 9 And ((DNA(GeneEnd + 1).value = 2) Or DNA(GeneEnd + 1).value = 3)) And condgene Then condgene = False ' start or else
+    If (dna(GeneEnd + 1).tipo = 9 And ((dna(GeneEnd + 1).value = 2) Or dna(GeneEnd + 1).value = 3)) And Not condgene Then GoTo getout ' start or else
+    If (dna(GeneEnd + 1).tipo = 9 And ((dna(GeneEnd + 1).value = 2) Or dna(GeneEnd + 1).value = 3)) And condgene Then condgene = False ' start or else
     GeneEnd = GeneEnd + 1
-    If (GeneEnd + 1) > UBound(DNA) Then GoTo getout 'Botsareus 5/29/2012 Added upper bounds check
+    If (GeneEnd + 1) > UBound(dna) Then GoTo getout 'Botsareus 5/29/2012 Added upper bounds check
   Wend
 getout:
 End Function
 
-Public Function PrevStop(ByRef DNA() As block, ByVal inizio As Long) As Integer
+Public Function PrevStop(ByRef dna() As block, ByVal inizio As Long) As Integer
   PrevStop = inizio
-  While Not ((DNA(PrevStop).tipo = 9 And _
-    DNA(PrevStop).value <> 4) Or DNA(PrevStop).tipo = 10)
+  While Not ((dna(PrevStop).tipo = 9 And _
+    dna(PrevStop).value <> 4) Or dna(PrevStop).tipo = 10)
     PrevStop = PrevStop - 1
     If PrevStop < 1 Then GoTo getout
   Wend
@@ -363,7 +363,7 @@ getout:
 End Function
 
 'returns position of gene n
-Public Function genepos(ByRef DNA() As block, ByVal n As Integer) As Integer
+Public Function genepos(ByRef dna() As block, ByVal n As Integer) As Integer
   Dim k As Integer
   Dim genenum As Integer
   Dim ingene As Boolean
@@ -379,7 +379,7 @@ Public Function genepos(ByRef DNA() As block, ByVal n As Integer) As Integer
   
   While k > 0 And genepos = 0 And k <= 32000
     'A start or else
-    If DNA(k).tipo = 9 And (DNA(k).value = 2 Or DNA(k).value = 3) Then
+    If dna(k).tipo = 9 And (dna(k).value = 2 Or dna(k).value = 3) Then
       If Not ingene Then ' Does not follow a cond.  Make it a new gene
         genenum = genenum + 1
         If genenum = n Then
@@ -392,7 +392,7 @@ Public Function genepos(ByRef DNA() As block, ByVal n As Integer) As Integer
     End If
  
     ' If a Cond
-    If DNA(k).tipo = 9 And (DNA(k).value = 1) Then
+    If dna(k).tipo = 9 And (dna(k).value = 1) Then
       ingene = True
       genenum = genenum + 1
       If genenum = n Then
@@ -401,10 +401,10 @@ Public Function genepos(ByRef DNA() As block, ByVal n As Integer) As Integer
       End If
     End If
     ' If a stop
-    If DNA(k).tipo = 9 And DNA(k).value = 4 Then ingene = False
+    If dna(k).tipo = 9 And dna(k).value = 4 Then ingene = False
     
     k = k + 1
-    If DNA(k).tipo = 10 And DNA(k).value = 1 Then k = -1
+    If dna(k).tipo = 10 And dna(k).value = 1 Then k = -1
   Wend
 getout:
 End Function
