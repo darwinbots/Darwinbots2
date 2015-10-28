@@ -4,7 +4,7 @@
 
 # Settings
 	Name "Darwinbots 2"
-	OutFile "Darwinbots-2-48-25-Setup.exe"
+	OutFile "Darwinbots-2-48-26-Setup.exe"
 	SetCompress auto
 	SetCompressor lzma
 	
@@ -85,8 +85,7 @@
 		CreateDirectory "$INSTDIR\Autosave"
 		CreateDirectory "$INSTDIR\Robots"
 		CreateDirectory "$INSTDIR\settings"
-		File Darwin2.48.25.exe
-		File DarwinTrue2.48.25.exe
+		File Darwin2.48.26.exe
 		File DBLaunch.exe
 		File DarwinbotsIM.exe
 		File "DB THEME GOLD.mp3"
@@ -96,6 +95,8 @@
 		File "SafeModeBackup.exe"
 		File "ManualSexRepro.exe"
 		File "DarwinBotsIM.exe" 
+		File "7z.exe"
+		File "web.gset"
 		File License.rtf
 		File keys.txt
 		SetOutPath "$INSTDIR\LocalIM"
@@ -133,6 +134,7 @@
 		  
 		# Register our controls if they are not already there
 		!insertmacro InstallLib REGDLL $AlreadyInstalled REBOOT_NOTPROTECTED MSINET.OCX $SYSDIR\MSINET.OCX $SYSDIR
+		!insertmacro InstallLib REGDLL $AlreadyInstalled REBOOT_NOTPROTECTED MSINET.OCX $SYSDIR\MSHTML.TLB $SYSDIR
 		!insertmacro InstallLib REGDLL $AlreadyInstalled REBOOT_NOTPROTECTED COMCT232.OCX $SYSDIR\COMCT232.OCX $SYSDIR
 		!insertmacro InstallLib REGDLL $AlreadyInstalled REBOOT_NOTPROTECTED COMDLG32.OCX $SYSDIR\COMDLG32.OCX $SYSDIR
 		!insertmacro InstallLib REGDLL $AlreadyInstalled REBOOT_NOTPROTECTED MSCOMCTL.OCX $SYSDIR\MSCOMCTL.OCX $SYSDIR
@@ -154,8 +156,8 @@
 		RMDir /r "$INSTDIR\evolution"
 		RMDir /r "$INSTDIR\league"
 		Delete $INSTDIR\Darwin2*.exe
-		Delete $INSTDIR\DarwinTrue2*.exe
 		Delete $INSTDIR\*.gset
+		Delete $INSTDIR\*.bin
 		Delete $INSTDIR\keys.txt
 		Delete $INSTDIR\DBLaunch.exe
 		Delete $INSTDIR\DarwinbotsIM.exe
@@ -165,6 +167,7 @@
 		Delete "$INSTDIR\Restarter.exe"
 		Delete "$INSTDIR\SafeModeBackup.exe"
 		Delete "$INSTDIR\ManualSexRepro.exe"
+		Delete "$INSTDIR\7z.exe"
 		Delete $INSTDIR\intsett.ini
 		Delete $INSTDIR\License.rtf
 		Delete $INSTDIR\Uninstall.exe
@@ -188,6 +191,7 @@
 		
 		# Get rid of the controls if nothing is using them
 		!insertmacro UnInstallLib REGDLL SHARED REBOOT_NOTPROTECTED $SYSDIR\MSINET.OCX
+		!insertmacro UnInstallLib REGDLL SHARED REBOOT_NOTPROTECTED $SYSDIR\MSHTML.TLB
 		!insertmacro UnInstallLib REGDLL SHARED REBOOT_NOTPROTECTED $SYSDIR\COMCT232.OCX
 		!insertmacro UnInstallLib REGDLL SHARED REBOOT_NOTPROTECTED $SYSDIR\COMDLG32.OCX
 		!insertmacro UnInstallLib REGDLL SHARED REBOOT_NOTPROTECTED $SYSDIR\MSCOMCTL.OCX
