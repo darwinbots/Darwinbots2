@@ -1,12 +1,7 @@
-' Alga minimalis, version 2
+' Alga minimalis, version 3
 '
 ' Vegetable
 '
-' This robot has a single gene,
-' necessary for it to reproduce.
-' Energy is given to it by the program,
-' by checking the "autotroph" box.
-' Added a chloroplast gene
 
 cond 'new gene from Botsareus and Panda
   *.chlr
@@ -14,6 +9,11 @@ cond 'new gene from Botsareus and Panda
   <
 start
 160 .mkchlr store
+stop
+cond 'new gene from Botsareus viral defense for a plant is now a must
+*.waste 5000 <
+start
+*.nrg 500 div .mkslime store
 stop
 cond
   *.nrg
