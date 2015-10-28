@@ -20,7 +20,7 @@ Private Const overtime As Double = 30 'Time correction across all mutations
 
 Sub logmutation(ByVal n As Integer, ByVal strmut As String) 'Botsareus 10/8/2015 Wrap mutations to prevent crash
  With rob(n)
-  If Len(.LastMutDetail) > 2000000000 Then .LastMutDetail = "" 'The wrap aprox. 2 billion characters
+  If Len(.LastMutDetail) > 100000000 Then .LastMutDetail = "" 'The wrap aprox. 2 billion characters
   .LastMutDetail = strmut + vbCrLf + .LastMutDetail
  End With
 End Sub
@@ -139,17 +139,17 @@ Public Sub Mutate(ByVal robn As Integer, Optional reproducing As Boolean = False
         Dim t As Byte
         For t = 0 To 9 Step 9 'Point and Point2
         If .Mutables.mutarray(t) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
-         If Rndy < DeltaMainChance / 100 Then
-          If DeltaMainExp <> 0 Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rndy * 2 - 1) / DeltaMainExp)
-          .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rndy * 2 - 1) * DeltaMainLn
+         If rndy < DeltaMainChance / 100 Then
+          If DeltaMainExp <> 0 Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((rndy * 2 - 1) / DeltaMainExp)
+          .Mutables.mutarray(t) = .Mutables.mutarray(t) + (rndy * 2 - 1) * DeltaMainLn
           If .Mutables.mutarray(t) < 1 Then .Mutables.mutarray(t) = 1
           If .Mutables.mutarray(t) > MratesMax Then .Mutables.mutarray(t) = MratesMax
          End If
-         If Rndy < DeltaDevChance / 100 Then
-          If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((Rndy * 2 - 1) / DeltaDevExp)
-          .Mutables.StdDev(t) = .Mutables.StdDev(t) + (Rndy * 2 - 1) * DeltaDevLn
-          If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((Rndy * 2 - 1) / DeltaDevExp)
-          .Mutables.Mean(t) = .Mutables.Mean(t) + (Rndy * 2 - 1) * DeltaDevLn
+         If rndy < DeltaDevChance / 100 Then
+          If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((rndy * 2 - 1) / DeltaDevExp)
+          .Mutables.StdDev(t) = .Mutables.StdDev(t) + (rndy * 2 - 1) * DeltaDevLn
+          If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((rndy * 2 - 1) / DeltaDevExp)
+          .Mutables.Mean(t) = .Mutables.Mean(t) + (rndy * 2 - 1) * DeltaDevLn
           'Max range is always 0 to 800
           If .Mutables.StdDev(t) < 0 Then .Mutables.StdDev(t) = 0
           If .Mutables.StdDev(t) > 200 Then .Mutables.StdDev(t) = 200
@@ -158,7 +158,7 @@ Public Sub Mutate(ByVal robn As Integer, Optional reproducing As Boolean = False
          End If
 skip:
         Next
-        .Mutables.PointWhatToChange = .Mutables.PointWhatToChange + (Rndy * 2 - 1) * DeltaWTC
+        .Mutables.PointWhatToChange = .Mutables.PointWhatToChange + (rndy * 2 - 1) * DeltaWTC
         If .Mutables.PointWhatToChange < 0 Then .Mutables.PointWhatToChange = 0
         If .Mutables.PointWhatToChange > 100 Then .Mutables.PointWhatToChange = 100
         .Point2MutCycle = 0
@@ -252,7 +252,7 @@ On Error GoTo getout:
   t = 1
   Do
   t = t + 1
-    If Rndy < 1 / (.Mutables.mutarray(AmplificationUP) / SimOpts.MutCurrMult) Then
+    If rndy < 1 / (.Mutables.mutarray(AmplificationUP) / SimOpts.MutCurrMult) Then
       Length = Gauss(.Mutables.StdDev(AmplificationUP), .Mutables.Mean(AmplificationUP))
       Length = Length Mod UBound(.dna)
       If Length < 1 Then Length = 1
@@ -324,7 +324,7 @@ On Error GoTo getout:
   Dim counter As Long
   
   For t = 1 To UBound(.dna) - 1
-    If Rndy < 1 / (.Mutables.mutarray(TranslocationUP) / SimOpts.MutCurrMult) Then
+    If rndy < 1 / (.Mutables.mutarray(TranslocationUP) / SimOpts.MutCurrMult) Then
 
       Length = Gauss(.Mutables.StdDev(TranslocationUP), .Mutables.Mean(TranslocationUP))
       Length = Length Mod UBound(.dna)
@@ -398,13 +398,13 @@ With rob(robn)
     Dim datahit() As Boolean 'operation repeat prevention
     ReDim datahit(DNASize)
     For e = 0 To DNASize
-        If Rndy < (1 / (.Mutables.mutarray(CE2UP) / SimOpts.MutCurrMult * 28 / 300)) Then    'chance
+        If rndy < (1 / (.Mutables.mutarray(CE2UP) / SimOpts.MutCurrMult * 28 / 300)) Then    'chance
             Do
-                e2 = Int(Rndy * (DNASize + 1))
+                e2 = Int(rndy * (DNASize + 1))
             Loop Until datahit(e2) = False
             datahit(e2) = True
             Do
-                randomsysvar = Int(Rndy * 1000)
+                randomsysvar = Int(rndy * 1000)
             Loop Until sysvar(randomsysvar).Name <> ""
             .dna(e2).tipo = 1
             If .dna(e2 + 1).tipo = 7 Then .dna(e2).tipo = 0 'if store , inc , or dec then type 0
@@ -416,21 +416,21 @@ With rob(robn)
                 'for .shoot store
                 If .dna(e2 + 1).tipo = 0 And .dna(e2 + 1).value = shoot _
                 And .dna(e2 + 2).tipo = 7 And .dna(e2 + 2).value = 1 Then
-                    .dna(e2).value = Choose(Int(Rndy * 7) + 1, -1, -2, -3, -4, -6, -8, sysvar(randomsysvar).value) 'Botsareus 10/6/2015 Better values
+                    .dna(e2).value = Choose(Int(rndy * 7) + 1, -1, -2, -3, -4, -6, -8, sysvar(randomsysvar).value) 'Botsareus 10/6/2015 Better values
                     .dna(e2).tipo = 0
                     holddetail = "CopyError2 changed dna location " & e2 & " to " & .dna(e2).value
                 End If
                 'for .focuseye store
                 If .dna(e2 + 1).tipo = 0 And .dna(e2 + 1).value = FOCUSEYE _
                 And .dna(e2 + 2).tipo = 7 And .dna(e2 + 2).value = 1 Then
-                    .dna(e2).value = Int(Rndy * 9) - 4
+                    .dna(e2).value = Int(rndy * 9) - 4
                     .dna(e2).tipo = 0
                     holddetail = "CopyError2 changed dna location " & e2 & " to " & .dna(e2).value
                 End If
                 'for .tieloc store
                 If .dna(e2 + 1).tipo = 0 And .dna(e2 + 1).value = tieloc _
                 And .dna(e2 + 2).tipo = 7 And .dna(e2 + 2).value = 1 Then
-                    .dna(e2).value = Choose(Int(Rndy * 5) + 1, -1, -3, -4, -6, Int(Rndy * 1000) + 1) 'Botsareus 10/6/2015 Better values
+                    .dna(e2).value = Choose(Int(rndy * 5) + 1, -1, -3, -4, -6, Int(rndy * 1000) + 1) 'Botsareus 10/6/2015 Better values
                     .dna(e2).tipo = 0
                     holddetail = "CopyError2 changed dna location " & e2 & " to " & .dna(e2).value
                 End If
@@ -460,21 +460,21 @@ Private Sub PointMutation2(robn As Integer) 'Botsareus 12/10/2013
  If .Mutables.mutarray(P2UP) < floor Then .Mutables.mutarray(P2UP) = floor 'Botsareus 10/5/2015 Prevent freezing
 
   
-    If .age = 0 Or .Point2MutCycle < .age Then Point2MutWhen Rndy, robn
+    If .age = 0 Or .Point2MutCycle < .age Then Point2MutWhen rndy, robn
     
     'Do it again in case we get two point mutations in a single cycle
     While .age = .Point2MutCycle And .age > 0 And .DnaLen > 1 ' Avoid endless loop when .age = 0 and/or .DNALen = 1
         
         'sysvar mutation
             DNASize = DnaLen(.dna) - 1 'get aprox length
-            randompos = Int(Rndy * (DNASize + 1))
+            randompos = Int(rndy * (DNASize + 1))
             
             Do
-                randomsysvar = Int(Rndy * 1000)
+                randomsysvar = Int(rndy * 1000)
             Loop Until sysvar(randomsysvar).Name <> ""
             
             
-            If .dna(randompos).tipo = 1 And Int(Rndy * 2) = 0 Then 'sometimes we need to introduce more stores
+            If .dna(randompos).tipo = 1 And Int(rndy * 2) = 0 Then 'sometimes we need to introduce more stores
             
               .dna(randompos).tipo = 7
               .dna(randompos).value = 1
@@ -496,21 +496,21 @@ Private Sub PointMutation2(robn As Integer) 'Botsareus 12/10/2013
                 'for .shoot store
                 If .dna(randompos + 1).tipo = 0 And .dna(randompos + 1).value = shoot _
                 And .dna(randompos + 2).tipo = 7 And .dna(randompos + 2).value = 1 Then
-                    .dna(randompos).value = Choose(Int(Rndy * 7) + 1, -1, -2, -3, -4, -6, -8, sysvar(randomsysvar).value) 'Botsareus 10/6/2015 Better values
+                    .dna(randompos).value = Choose(Int(rndy * 7) + 1, -1, -2, -3, -4, -6, -8, sysvar(randomsysvar).value) 'Botsareus 10/6/2015 Better values
                     .dna(randompos).tipo = 0
                     holddetail = "PointMutation2 changed dna location " & randompos & " to " & .dna(randompos).value
                 End If
                 'for .focuseye store
                 If .dna(randompos + 1).tipo = 0 And .dna(randompos + 1).value = FOCUSEYE _
                 And .dna(randompos + 2).tipo = 7 And .dna(randompos + 2).value = 1 Then
-                    .dna(randompos).value = Int(Rndy * 9) - 4
+                    .dna(randompos).value = Int(rndy * 9) - 4
                     .dna(randompos).tipo = 0
                     holddetail = "PointMutation2 changed dna location " & randompos & " to " & .dna(randompos).value
                 End If
                 'for .tieloc store
                 If .dna(randompos + 1).tipo = 0 And .dna(randompos + 1).value = tieloc _
                 And .dna(randompos + 2).tipo = 7 And .dna(randompos + 2).value = 1 Then
-                    .dna(randompos).value = Choose(Int(Rndy * 5) + 1, -1, -3, -4, -6, Int(Rndy * 1000) + 1) 'Botsareus 10/6/2015 Better values
+                    .dna(randompos).value = Choose(Int(rndy * 5) + 1, -1, -3, -4, -6, Int(rndy * 1000) + 1) 'Botsareus 10/6/2015 Better values
                     .dna(randompos).tipo = 0
                     holddetail = "PointMutation2 changed dna location " & randompos & " to " & .dna(randompos).value
                 End If
@@ -521,7 +521,7 @@ Private Sub PointMutation2(robn As Integer) 'Botsareus 12/10/2013
             logmutation robn, holddetail & " during cycle" & Str(SimOpts.TotRunCycle)
       
         
-      Point2MutWhen Rndy, robn
+      Point2MutWhen rndy, robn
     Wend
   End With
 End Sub
@@ -541,14 +541,14 @@ Private Sub PointMutation(robn As Integer)
 
 
   
-    If .age = 0 Or .PointMutCycle < .age Then PointMutWhereAndWhen Rndy, robn, .PointMutBP
+    If .age = 0 Or .PointMutCycle < .age Then PointMutWhereAndWhen rndy, robn, .PointMutBP
     
     'Do it again in case we get two point mutations in a single cycle
     While .age = .PointMutCycle And .age > 0 And .DnaLen > 1 ' Avoid endless loop when .age = 0 and/or .DNALen = 1
       temp = Gauss(.Mutables.StdDev(PointUP), .Mutables.Mean(PointUP))
       temp2 = Int(temp) Mod 32000        '<- Overflow was here when huge single is assigned to a Long
       ChangeDNA robn, .PointMutBP, temp2, .Mutables.PointWhatToChange
-      PointMutWhereAndWhen Rndy, robn, .PointMutBP
+      PointMutWhereAndWhen rndy, robn, .PointMutBP
     Wend
   End With
 End Sub
@@ -622,7 +622,7 @@ Private Sub DeltaMut(robn As Integer)
     
   With rob(robn)
 
-  If Rndy > 1 - 1 / (100 * .Mutables.mutarray(DeltaUP) / SimOpts.MutCurrMult) Then
+  If rndy > 1 - 1 / (100 * .Mutables.mutarray(DeltaUP) / SimOpts.MutCurrMult) Then
     If .Mutables.StdDev(DeltaUP) = 0 Then .Mutables.Mean(DeltaUP) = 50
     If .Mutables.Mean(DeltaUP) = 0 Then .Mutables.Mean(DeltaUP) = 25
     
@@ -658,7 +658,7 @@ Private Sub CopyError(robn As Integer)
   
   For t = 1 To (.DnaLen - 1) 'note that DNA(.dnalen) = end, and we DON'T mutate that.
    
-    If Rndy < 1 / (rob(robn).Mutables.mutarray(CopyErrorUP) / SimOpts.MutCurrMult) Then
+    If rndy < 1 / (rob(robn).Mutables.mutarray(CopyErrorUP) / SimOpts.MutCurrMult) Then
       Length = Gauss(rob(robn).Mutables.StdDev(CopyErrorUP), _
         rob(robn).Mutables.Mean(CopyErrorUP)) 'length
         
@@ -806,7 +806,7 @@ Private Sub Insertion(robn As Integer)
  If .Mutables.mutarray(InsertionUP) < floor Then .Mutables.mutarray(InsertionUP) = floor  'Botsareus 10/5/2015 Prevent freezing
 
   For t = 1 To (.DnaLen - 1)
-    If Rndy < 1 / (.Mutables.mutarray(InsertionUP) / SimOpts.MutCurrMult) Then
+    If rndy < 1 / (.Mutables.mutarray(InsertionUP) / SimOpts.MutCurrMult) Then
       If .Mutables.Mean(InsertionUP) = 0 Then .Mutables.Mean(InsertionUP) = 1
       Do
         Length = Gauss(.Mutables.StdDev(InsertionUP), .Mutables.Mean(InsertionUP))
@@ -848,7 +848,7 @@ Private Sub Reversal(robn As Integer)
 
   
     For t = 1 To (.DnaLen - 1)
-      If Rndy < 1 / (.Mutables.mutarray(ReversalUP) / SimOpts.MutCurrMult) Then
+      If rndy < 1 / (.Mutables.mutarray(ReversalUP) / SimOpts.MutCurrMult) Then
         If .Mutables.Mean(ReversalUP) < 2 Then .Mutables.Mean(ReversalUP) = 2
         
         Do
@@ -893,7 +893,7 @@ Private Sub MinorDeletion(robn As Integer)
 
     If .Mutables.Mean(MinorDeletionUP) < 1 Then .Mutables.Mean(MinorDeletionUP) = 1
     For t = 1 To (.DnaLen - 1)
-      If Rndy < 1 / (.Mutables.mutarray(MinorDeletionUP) / SimOpts.MutCurrMult) Then
+      If rndy < 1 / (.Mutables.mutarray(MinorDeletionUP) / SimOpts.MutCurrMult) Then
         Do
           Length = Gauss(.Mutables.StdDev(MinorDeletionUP), .Mutables.Mean(MinorDeletionUP))
         Loop While Length <= 0
@@ -926,7 +926,7 @@ Private Sub MajorDeletion(robn As Integer)
 
     If .Mutables.Mean(MajorDeletionUP) < 1 Then .Mutables.Mean(MajorDeletionUP) = 1
     For t = 1 To (.DnaLen - 1)
-      If Rndy < 1 / (.Mutables.mutarray(MajorDeletionUP) / SimOpts.MutCurrMult) Then
+      If rndy < 1 / (.Mutables.mutarray(MajorDeletionUP) / SimOpts.MutCurrMult) Then
         Do
           Length = Gauss(.Mutables.StdDev(MajorDeletionUP), .Mutables.Mean(MajorDeletionUP))
         Loop While Length <= 0
