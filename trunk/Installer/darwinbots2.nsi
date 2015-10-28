@@ -96,6 +96,7 @@
 		File "ManualSexRepro.exe"
 		File "DarwinBotsIM.exe" 
 		File "7z.exe"
+		File "7z.dll"
 		File "web.gset"
 		File License.rtf
 		File keys.txt
@@ -168,6 +169,7 @@
 		Delete "$INSTDIR\SafeModeBackup.exe"
 		Delete "$INSTDIR\ManualSexRepro.exe"
 		Delete "$INSTDIR\7z.exe"
+		Delete "$INSTDIR\7z.dll"
 		Delete $INSTDIR\intsett.ini
 		Delete $INSTDIR\License.rtf
 		Delete $INSTDIR\Uninstall.exe

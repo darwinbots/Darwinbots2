@@ -405,7 +405,7 @@ scanfromn = UBound(rob) + 1
 End Function
 
 Private Function GeneticDistance(ByRef rob1() As block3, ByRef rob2() As block3) As Single
-Dim diffcount As Integer
+Dim diffcount As Long
 Dim a As Integer
 
 For a = 0 To UBound(rob1)
@@ -587,7 +587,7 @@ res2 = scanfromn(rob2, n2, i)
 
 'subloop
 If res1 - n1 > 0 And res2 - n2 > 0 Then 'run both sides
-    If Int(Rndy * 2) = 0 Then 'which side?
+    If Int(rndy * 2) = 0 Then 'which side?
         ReDim Preserve Outdna(upperbound + res1 - n1)
         For a = n1 To res1 - 1
             Outdna(upperbound + 1 + a - n1).tipo = rob1(a).tipo
@@ -601,7 +601,7 @@ If res1 - n1 > 0 And res2 - n2 > 0 Then 'run both sides
         Next
     End If
 ElseIf res1 - n1 > 0 Then 'run one side
-    If Int(Rndy * 2) = 0 Then
+    If Int(rndy * 2) = 0 Then
         ReDim Preserve Outdna(upperbound + res1 - n1)
         For a = n1 To res1 - 1
             Outdna(upperbound + 1 + a - n1).tipo = rob1(a).tipo
@@ -609,7 +609,7 @@ ElseIf res1 - n1 > 0 Then 'run one side
         Next
     End If
 ElseIf res2 - n2 > 0 Then 'run other side
-    If Int(Rndy * 2) = 0 Then
+    If Int(rndy * 2) = 0 Then
         ReDim Preserve Outdna(upperbound + res2 - n2)
         For a = n2 To res2 - 1
             Outdna(upperbound + 1 + a - n2).tipo = rob2(a).tipo
@@ -628,7 +628,7 @@ nn = res1
 resn = scanfromn(rob1(), nn, i)
 ReDim Preserve Outdna(upperbound + resn - nn)
 
-whatside = Int(Rndy * 2) = 0
+whatside = Int(rndy * 2) = 0
 
 ''''debug
 'Dim debugme As Boolean
@@ -641,7 +641,7 @@ whatside = Int(Rndy * 2) = 0
 
 For a = nn To resn - 1
     Outdna(upperbound + 1 + a - nn).tipo = IIf(whatside, rob1(a).tipo, rob2(a - nn + res2).tipo) 'left hand side or right hand?
-    Outdna(upperbound + 1 + a - nn).value = IIf(IIf(rob1(a).tipo = rob2(a - nn + res2).tipo And Abs(rob1(a).value) > 999 And Abs(rob2(a - nn + res2).value) > 999, Int(Rndy * 2) = 0, whatside), rob1(a).value, rob2(a - nn + res2).value)  'if typo is different or in var range then all left/right hand, else choose a random side
+    Outdna(upperbound + 1 + a - nn).value = IIf(IIf(rob1(a).tipo = rob2(a - nn + res2).tipo And Abs(rob1(a).value) > 999 And Abs(rob2(a - nn + res2).value) > 999, Int(rndy * 2) = 0, whatside), rob1(a).value, rob2(a - nn + res2).value)  'if typo is different or in var range then all left/right hand, else choose a random side
     'If rob1(a).tipo = rob2(a - nn + res2).tipo And Abs(rob1(a).value) > 999 And Abs(rob2(a - nn + res2).value) > 999 And rob1(a).value <> rob2(a - nn + res2).value Then debugme = True 'debug
 Next
 
@@ -1653,7 +1653,7 @@ Private Sub ReproduceAndKill()
   While t < rp
     If rep(t) > 0 Then
        If rob(rep(t)).mem(mrepro) > 0 And rob(rep(t)).mem(Repro) > 0 Then
-         If Rndy > 0.5 Then
+         If rndy > 0.5 Then
            temp = rob(rep(t)).mem(Repro)
          Else
            temp = rob(rep(t)).mem(mrepro)
@@ -2294,11 +2294,11 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
             End If
             '
             Dim mrep As Byte
-            For mrep = 0 To (Int(3 * Rndy) + 1) * -(rob(n).mem(mrepro) > 0)   '2x to 4x
+            For mrep = 0 To (Int(3 * rndy) + 1) * -(rob(n).mem(mrepro) > 0)   '2x to 4x
                 For t = 1 To 10
                  If t = 9 Then GoTo skip 'ignore PM2 mutation here
                  If .Mutables.mutarray(t) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
-                 If Rndy < DeltaMainChance / 100 Then
+                 If rndy < DeltaMainChance / 100 Then
                     If DeltaMainExp <> 0 Then
                         '
                         If (t = CopyErrorUP Or t = TranslocationUP Or t = ReversalUP Or t = CE2UP) Then
@@ -2307,17 +2307,17 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
                           If Not (t = MinorDeletionUP Or t = MajorDeletionUP) Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * dmoc 'dynamic mutation overload correction
                         End If
                         '
-                        .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rndy * 2 - 1) / DeltaMainExp)
+                        .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((rndy * 2 - 1) / DeltaMainExp)
                     End If
-                  .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rndy * 2 - 1) * DeltaMainLn
+                  .Mutables.mutarray(t) = .Mutables.mutarray(t) + (rndy * 2 - 1) * DeltaMainLn
                   If .Mutables.mutarray(t) < 1 Then .Mutables.mutarray(t) = 1
                   If .Mutables.mutarray(t) > MratesMax Then .Mutables.mutarray(t) = MratesMax
                  End If
-                 If Rndy < DeltaDevChance / 100 Then
-                  If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((Rndy * 2 - 1) / DeltaDevExp)
-                  .Mutables.StdDev(t) = .Mutables.StdDev(t) + (Rndy * 2 - 1) * DeltaDevLn
-                  If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((Rndy * 2 - 1) / DeltaDevExp)
-                  .Mutables.Mean(t) = .Mutables.Mean(t) + (Rndy * 2 - 1) * DeltaDevLn
+                 If rndy < DeltaDevChance / 100 Then
+                  If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((rndy * 2 - 1) / DeltaDevExp)
+                  .Mutables.StdDev(t) = .Mutables.StdDev(t) + (rndy * 2 - 1) * DeltaDevLn
+                  If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((rndy * 2 - 1) / DeltaDevExp)
+                  .Mutables.Mean(t) = .Mutables.Mean(t) + (rndy * 2 - 1) * DeltaDevLn
                   'Max range is always 0 to 800
                   If .Mutables.StdDev(t) < 0 Then .Mutables.StdDev(t) = 0
                   If .Mutables.StdDev(t) > 200 Then .Mutables.StdDev(t) = 200
@@ -2326,7 +2326,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
                  End If
 skip:
                 Next
-                .Mutables.CopyErrorWhatToChange = .Mutables.CopyErrorWhatToChange + (Rndy * 2 - 1) * DeltaWTC
+                .Mutables.CopyErrorWhatToChange = .Mutables.CopyErrorWhatToChange + (rndy * 2 - 1) * DeltaWTC
                 If .Mutables.CopyErrorWhatToChange < 0 Then .Mutables.CopyErrorWhatToChange = 0
                 If .Mutables.CopyErrorWhatToChange > 100 Then .Mutables.CopyErrorWhatToChange = 100
                 Mutate nuovo, True
@@ -2752,7 +2752,7 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
             For t = 1 To 10
              If t = 9 Then GoTo skip 'ignore PM2 mutation here
              If .Mutables.mutarray(t) < 1 Then GoTo skip 'Botsareus 1/3/2014 if mutation off then skip it
-             If Rndy < DeltaMainChance / 100 Then
+             If rndy < DeltaMainChance / 100 Then
                 If DeltaMainExp <> 0 Then
                     '
                     If (t = CopyErrorUP Or t = TranslocationUP Or t = ReversalUP Or t = CE2UP) Then
@@ -2760,17 +2760,17 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
                     Else
                       If Not (t = MinorDeletionUP Or t = MajorDeletionUP) Then .Mutables.mutarray(t) = .Mutables.mutarray(t) * dmoc 'dynamic mutation overload correction
                     End If                    '
-                    .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((Rndy * 2 - 1) / DeltaMainExp)
+                    .Mutables.mutarray(t) = .Mutables.mutarray(t) * 10 ^ ((rndy * 2 - 1) / DeltaMainExp)
                 End If
-              .Mutables.mutarray(t) = .Mutables.mutarray(t) + (Rndy * 2 - 1) * DeltaMainLn
+              .Mutables.mutarray(t) = .Mutables.mutarray(t) + (rndy * 2 - 1) * DeltaMainLn
               If .Mutables.mutarray(t) < 1 Then .Mutables.mutarray(t) = 1
               If .Mutables.mutarray(t) > MratesMax Then .Mutables.mutarray(t) = MratesMax
              End If
-             If Rndy < DeltaDevChance / 100 Then
-              If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((Rndy * 2 - 1) / DeltaDevExp)
-              .Mutables.StdDev(t) = .Mutables.StdDev(t) + (Rndy * 2 - 1) * DeltaDevLn
-              If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((Rndy * 2 - 1) / DeltaDevExp)
-              .Mutables.Mean(t) = .Mutables.Mean(t) + (Rndy * 2 - 1) * DeltaDevLn
+             If rndy < DeltaDevChance / 100 Then
+              If DeltaDevExp <> 0 Then .Mutables.StdDev(t) = .Mutables.StdDev(t) * 10 ^ ((rndy * 2 - 1) / DeltaDevExp)
+              .Mutables.StdDev(t) = .Mutables.StdDev(t) + (rndy * 2 - 1) * DeltaDevLn
+              If DeltaDevExp <> 0 Then .Mutables.Mean(t) = .Mutables.Mean(t) * 10 ^ ((rndy * 2 - 1) / DeltaDevExp)
+              .Mutables.Mean(t) = .Mutables.Mean(t) + (rndy * 2 - 1) * DeltaDevLn
               'Max range is always 0 to 800
               If .Mutables.StdDev(t) < 0 Then .Mutables.StdDev(t) = 0
               If .Mutables.StdDev(t) > 200 Then .Mutables.StdDev(t) = 200
@@ -2779,7 +2779,7 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
              End If
 skip:
             Next
-            .Mutables.CopyErrorWhatToChange = .Mutables.CopyErrorWhatToChange + (Rndy * 2 - 1) * DeltaWTC
+            .Mutables.CopyErrorWhatToChange = .Mutables.CopyErrorWhatToChange + (rndy * 2 - 1) * DeltaWTC
             If .Mutables.CopyErrorWhatToChange < 0 Then .Mutables.CopyErrorWhatToChange = 0
             If .Mutables.CopyErrorWhatToChange > 100 Then .Mutables.CopyErrorWhatToChange = 100
             Mutate nuovo, True
