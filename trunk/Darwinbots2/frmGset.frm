@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmGset 
    BorderStyle     =   4  'Fixed ToolWindow
@@ -1440,7 +1440,7 @@ End Sub
 
 Private Sub chkIntRnd_Click()
 If chkIntRnd.value = 1 And Visible Then
-     MsgBox "Please make sure you have 7zip installed when using this feature. The pictures are loaded from urls listed in the " & App.path & "\web.gset file.", vbInformation
+     MsgBox "The pictures are loaded from urls listed in the " & App.path & "\web.gset file.", vbInformation
 End If
 End Sub
 
