@@ -239,7 +239,7 @@ If y = 0 Then
         Kill App.path & "\" & filemem 'kill current file and grab the next
         MDIForm1.grabfile
     End If
-    y = (Rnd * 4000) + 1
+    y = (Rnd * 1500) + 1
 End If
 
 rndy = Rnd
