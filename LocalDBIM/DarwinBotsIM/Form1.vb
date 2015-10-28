@@ -6,7 +6,10 @@ Public Class Form1
     Private Sub Timer1_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Timer1.Tick
         'Step1 delete stats files not used locally
         For Each _file As String In Directory.GetFiles(outfolder, "*.stats")
-            File.Delete(_file)
+            Try
+                File.Delete(_file)
+            Catch ex As Exception
+            End Try
         Next
         'Step2 Move dbo files
         Dim strFileSize As String = ""
