@@ -20,7 +20,7 @@ Private Const overtime As Double = 30 'Time correction across all mutations
 
 Sub logmutation(ByVal n As Integer, ByVal strmut As String) 'Botsareus 10/8/2015 Wrap mutations to prevent crash
  With rob(n)
-  If Len(.LastMutDetail) > 100000000 Then .LastMutDetail = "" 'The wrap aprox. 2 billion characters
+  If Len(.LastMutDetail) > 100000000 Then .LastMutDetail = "" 'The wrap aprox. 2 billion bytes
   .LastMutDetail = strmut + vbCrLf + .LastMutDetail
  End With
 End Sub
