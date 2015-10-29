@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "MSINET.OCX"
 Begin VB.MDIForm MDIForm1 
    AutoShowChildren=   0   'False
@@ -1058,10 +1058,10 @@ Do
         MDIForm1.Caption = "Seeding Randomizer " & Int(c / UBound(byt) * 100) & "% Please wait..."
         DoEvents
     Else
+        MDIForm1.Caption = oldcp
         Exit Sub
     End If
 Loop
-MDIForm1.Caption = oldcp
 End Sub
 
 Sub wait(n As Byte)
@@ -1653,12 +1653,12 @@ Private Sub SunButton_Click()
 End Sub
 
 Public Sub menuupdate() 'Botsareus 7/13/2012 The menu handler
-If limitgraphics Then Toolbar1.Buttons(9).value = tbrPressed Else Toolbar1.Buttons(9).value = tbrUnpressed
-If oneonten Then Toolbar1.Buttons(10).value = tbrPressed Else Toolbar1.Buttons(10).value = tbrUnpressed
-If Form1.Flickermode Then Toolbar1.Buttons(11).value = tbrPressed Else Toolbar1.Buttons(11).value = tbrUnpressed
-If Not Form1.dispskin Then Toolbar1.Buttons(12).value = tbrPressed Else Toolbar1.Buttons(12).value = tbrUnpressed
-If nopoff Then Toolbar1.Buttons(13).value = tbrPressed Else Toolbar1.Buttons(13).value = tbrUnpressed
-If Not visualize Then Toolbar1.Buttons(14).value = tbrPressed Else Toolbar1.Buttons(14).value = tbrUnpressed
+If limitgraphics Then Toolbar1.buttons(9).value = tbrPressed Else Toolbar1.buttons(9).value = tbrUnpressed
+If oneonten Then Toolbar1.buttons(10).value = tbrPressed Else Toolbar1.buttons(10).value = tbrUnpressed
+If Form1.Flickermode Then Toolbar1.buttons(11).value = tbrPressed Else Toolbar1.buttons(11).value = tbrUnpressed
+If Not Form1.dispskin Then Toolbar1.buttons(12).value = tbrPressed Else Toolbar1.buttons(12).value = tbrUnpressed
+If nopoff Then Toolbar1.buttons(13).value = tbrPressed Else Toolbar1.buttons(13).value = tbrUnpressed
+If Not visualize Then Toolbar1.buttons(14).value = tbrPressed Else Toolbar1.buttons(14).value = tbrUnpressed
 Toolbar1.Refresh 'Botsareus 1/11/2013 Force toolbar to refresh
 End Sub
 
@@ -1674,7 +1674,7 @@ End If
 'Botsareus 9/12/2014 Simulation now always starts with ignoreerror on
 If UseSafeMode = False Then
  ignoreerror = True
- Toolbar1.Buttons(24).value = tbrPressed
+ Toolbar1.buttons(24).value = tbrPressed
 End If
 'Botsareus 2/9/2014 Based on collected data we need to figure out fudging here
 If SimOpts.F1 Or (x_restartmode <> 1 And x_restartmode <> 9 And x_restartmode <> 0) Then   'Botsareus 10/6/2015 Do not fudge under sertain modes
