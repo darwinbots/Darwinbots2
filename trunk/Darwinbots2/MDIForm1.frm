@@ -2378,7 +2378,10 @@ strMsgEnterDiagMode = "Warning: Diagnostic mode does not check for errors by use
 "Do you want to run diagnostic mode?"
 
 
-If simalreadyrunning And Not autosaved Then MsgBox strMsgSendData
+If simalreadyrunning And Not autosaved Then
+    MsgBox strMsgSendData
+    GoTo skipsetup
+End If
 
 Dim path As String
 Dim fso As New FileSystemObject
@@ -2504,8 +2507,8 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                   Dim i As Byte
                   Dim ecocount As Byte
 
-  If Not (x_restartmode = 0 Or x_restartmode = 5 Or x_restartmode = 8) Then
-        If Not simalreadyrunning Then
+'  If Not (x_restartmode = 0 Or x_restartmode = 5 Or x_restartmode = 8) Then
+'        If Not simalreadyrunning Then
             Select Case x_restartmode
             Case 9
                     SimOpts = TmpOpts
@@ -2775,8 +2778,8 @@ mode2:
                     chseedstartnew = True
                     optionsform.StartNew_Click
             End Select
-        End If
-  End If
+'        End If
+'  End If
 
 skipsetup:
 
