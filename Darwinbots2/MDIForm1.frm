@@ -2380,7 +2380,13 @@ strMsgEnterDiagMode = "Warning: Diagnostic mode does not check for errors by use
 
 If simalreadyrunning And Not autosaved Then
     MsgBox strMsgSendData
-    GoTo skipsetup
+    Open App.path & "\Safemode.gset" For Output As #1
+     Write #1, False
+    Close #1
+    Open App.path & "\autosaved.gset" For Output As #1
+     Write #1, False
+    Close #1
+    End
 End If
 
 Dim path As String
