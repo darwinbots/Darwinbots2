@@ -52,7 +52,7 @@ Dim tmpLFOR As Single
 tmpLFOR = LFOR
 LFOR = LFOR - LFORcorr / n10(LFOR)
 If LFOR < 1 / n10(tmpLFOR) Then LFOR = 1 / n10(tmpLFOR)
-If LFOR < 0.01 Then LFOR = 0.01
+If LFOR < 0.001 Then LFOR = 0.001
 '
 hidePredCycl = Init_hidePredCycl + 300 * rndy - 150
 '
@@ -154,7 +154,7 @@ If Not LFORdir Then
     LFORcorr = LFORcorr / 2
 End If
 LFOR = LFOR + LFORcorr / n10(LFOR)
-If LFOR > 100 Then LFOR = 100
+If LFOR > 1000 Then LFOR = 1000
 '
 hidePredCycl = Init_hidePredCycl + 300 * rndy - 150
 '

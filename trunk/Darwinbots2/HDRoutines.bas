@@ -244,7 +244,7 @@ End Sub
 Public Function AddSpecie(n As Integer, IsNative As Boolean) As Integer
   Dim k As Integer
   Dim fso As New FileSystemObject
-  Dim robotFile As file
+  Dim robotFile As File
   
   If rob(n).Corpse Or rob(n).FName = "Corpse" Or rob(n).exist = False Then
     AddSpecie = 0
@@ -447,7 +447,7 @@ Public Sub SaveSimPopulation(path As String)
   Dim numSpecies As Integer
   Const Fe As Byte = 254
   Dim fso As New FileSystemObject
-  Dim fileToDelete As file
+  Dim fileToDelete As File
   
   Form1.MousePointer = vbHourglass
   On Error GoTo bypass
@@ -1018,6 +1018,12 @@ If dir(App.path & "\autosaved.gset") <> "" Then
     Close #1
 End If
 
+'Botsareus  10/31/2015 Moved for bug fix
+'If we are not using safe mode assume simulation is not runnin'
+If UseSafeMode = False Then simalreadyrunning = False
+
+If simalreadyrunning = False Then autosaved = False
+
 'Botsareus 3/16/2014 If autosaved, we change restartmode, this forces system to run in diagnostic mode
 'The difference between x_restartmode 0 and 5 is that 5 uses hidepred settings
 If autosaved And x_restartmode = 4 Then
@@ -1052,12 +1058,6 @@ End If
 'Botsareus 3/22/2014 Initial hidepred offset is normal
 
 hidePredOffset = hidePredCycl / 6
-
-'If we are not using safe mode assume simulation is not runnin'
-If UseSafeMode = False Then simalreadyrunning = False
-
-If simalreadyrunning = False Then autosaved = False
-
 
 If UseIntRnd Then
 'Use pictures from internet as randomizer
@@ -1957,11 +1957,11 @@ Private Function FileContinue(filenumber As Integer) As Boolean
   'three FE bytes (ie: 254) means we are at the end of the record
   
   Dim Fe As Byte
-  Dim position As Long
+  Dim Position As Long
   Dim k As Integer
   
   FileContinue = False
-  position = Seek(filenumber)
+  Position = Seek(filenumber)
    
   Do
     If Not EOF(filenumber) Then
@@ -1980,7 +1980,7 @@ Private Function FileContinue(filenumber As Integer) As Boolean
   Loop While Not FileContinue And k < 3
   
   'reset position
-  Get #filenumber, position - 1, Fe
+  Get #filenumber, Position - 1, Fe
 End Function
 ' saves the body of the robot
 Private Sub SaveRobotBody(n As Integer, r As Integer)
