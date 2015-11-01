@@ -491,6 +491,7 @@ Public Sub aggiungirob(ByVal r As Integer, ByVal x As Single, ByVal y As Single)
     'Botsareus 10/8/2015 New kill restrictions
     rob(a).multibot_time = IIf(SimOpts.Specie(r).kill_mb, 210, 0)
     rob(a).dq = IIf(SimOpts.Specie(r).dq_kill, 1, 0)
+    rob(a).NoChlr = SimOpts.Specie(r).NoChlr 'Botsareus 11/1/2015 Bug fix
     
     
     For i = 0 To 7 'Botsareus 5/20/2012 fix for skin engine
