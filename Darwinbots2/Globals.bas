@@ -379,7 +379,7 @@ If SimOpts.Specie(r).Veg = True And SimOpts.Specie(r).Native Then
     
     For t = 1 To MaxRobs
             With rob(t)
-                If .exist And .Veg Then
+                If .exist And .Veg And .age > 0 Then
                         checkvegstatus = False
                         Exit Function
                 End If

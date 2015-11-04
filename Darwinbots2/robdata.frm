@@ -792,7 +792,8 @@ Sub Form_Unload(Cancel As Integer)
 End Sub
 
 Private Sub repro_Click(Index As Integer)
-  Reproduce -1, 50
+  If robnum.Caption = "0" Then Exit Sub
+  Reproduce robnum.Caption, 50 'Botsareus 11/3/2015 Bug fix
   Form1.Redraw
 End Sub
 

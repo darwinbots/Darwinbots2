@@ -2106,7 +2106,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
   Dim tempnrg As Single
   
   
-  If n = -1 Then n = robfocus
+  'If n = -1 Then n = robfocus 'Botsareus 11/3/2015 this should be done on user side.
   
   If rob(n).body <= 2 Or rob(n).CantReproduce Then GoTo getout 'bot is too small to reproduce
   
