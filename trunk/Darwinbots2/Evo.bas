@@ -52,12 +52,17 @@ Dim tmpLFOR As Single
 tmpLFOR = LFOR
 LFOR = LFOR - LFORcorr / n10(LFOR)
 If LFOR < 1 / n10(tmpLFOR) Then LFOR = 1 / n10(tmpLFOR)
-If LFOR < 0.001 Then LFOR = 0.001
+If LFOR < 0.01 Then LFOR = 0.01
 '
 hidePredCycl = Init_hidePredCycl + 300 * rndy - 150
 '
 If hidePredCycl < 150 Then hidePredCycl = 150
 If hidePredCycl > 15000 Then hidePredCycl = 15000
+'
+If LFOR = 0.01 Then
+    hidePredCycl = 150
+    Init_hidePredCycl = 150
+End If
 End Sub
 
 Private Sub Next_Stage()
@@ -154,12 +159,17 @@ If Not LFORdir Then
     LFORcorr = LFORcorr / 2
 End If
 LFOR = LFOR + LFORcorr / n10(LFOR)
-If LFOR > 1000 Then LFOR = 1000
+If LFOR > 100 Then LFOR = 100
 '
 hidePredCycl = Init_hidePredCycl + 300 * rndy - 150
 '
 If hidePredCycl < 150 Then hidePredCycl = 150
 If hidePredCycl > 15000 Then hidePredCycl = 15000
+'
+If LFOR = 100 Then
+    hidePredCycl = 150
+    Init_hidePredCycl = 150
+End If
 End Sub
 
 Public Sub UpdateWonEvo(ByVal bestrob As Integer) 'passing best robot
