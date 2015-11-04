@@ -379,7 +379,7 @@ If SimOpts.Specie(r).Veg = True And SimOpts.Specie(r).Native Then
     
     For t = 1 To MaxRobs
             With rob(t)
-                If .exist And .Veg And .age > 0 Then
+                If .exist And .Veg And .age > 0 Then 'Botsareus 11/4/2015 age test makes sure all robots spawn
                         checkvegstatus = False
                         Exit Function
                 End If
