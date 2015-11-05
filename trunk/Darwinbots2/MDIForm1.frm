@@ -1023,7 +1023,7 @@ wait 1
 'step2 compress using 7zip
 shell """" & App.path & "\7z.exe"" a -t7z """ & App.path & "\file.7z"" """ & App.path & "\*.bmp"""
 'wait for process to finish
-wait 3
+wait 5
 'step3 open binary file and insert into byte array
 Dim c As Long
 Dim byt() As Byte
