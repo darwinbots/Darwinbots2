@@ -1002,6 +1002,7 @@ End Sub
 
 
 Private Sub newdata()
+Dim l As Integer
 On Error Resume Next
 Dim oldcp As String
 oldcp = MDIForm1.Caption
@@ -1018,16 +1019,12 @@ Do
     extract urllist
     Loop Until EOF(477)
 Close #477
+wait 1
 'step2 compress using 7zip
 shell """" & App.path & "\7z.exe"" a -t7z """ & App.path & "\file.7z"" """ & App.path & "\*.bmp"""
 'wait for process to finish
 wait 3
-'step3 delete pictures
-Dim l As Integer
-For l = 0 To picinc - 1
-    If dir(App.path & "\" & l & ".bmp") <> "" Then Kill App.path & "\" & l & ".bmp"
-Next
-'step4 open binary file and insert into byte array
+'step3 open binary file and insert into byte array
 Dim c As Long
 Dim byt() As Byte
 ReDim byt(c)
@@ -1040,9 +1037,9 @@ Loop
 c = c - 1
 ReDim Preserve byt(c)
 Close #477
-'step5 delete file (data in memory)
+'step4 delete file (data in memory)
 Kill App.path & "\file.7z"
-'step6 write seporate files
+'step5 write seporate files
 Dim f As Integer
 c = 0
 Do
@@ -1058,10 +1055,15 @@ Do
         DoEvents
     Else
         MDIForm1.Caption = oldcp
+        'step6 delete pictures
+        For l = 0 To picinc - 1
+            If dir(App.path & "\" & l & ".bmp") <> "" Then Kill App.path & "\" & l & ".bmp"
+        Next
         Exit Sub
     End If
 Loop
 End Sub
+
 
 Sub wait(n As Byte)
 Dim e As Long
