@@ -1002,6 +1002,7 @@ End Sub
 
 
 Private Sub newdata()
+On Error Resume Next
 Dim oldcp As String
 oldcp = MDIForm1.Caption
 MDIForm1.Visible = True
@@ -1024,8 +1025,6 @@ wait 3
 'step3 delete pictures
 Dim l As Integer
 For l = 0 To picinc - 1
-    On Error GoTo tryagain:
-tryagain:
     If dir(App.path & "\" & l & ".bmp") <> "" Then Kill App.path & "\" & l & ".bmp"
 Next
 'step4 open binary file and insert into byte array
