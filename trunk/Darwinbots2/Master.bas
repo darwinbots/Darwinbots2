@@ -95,7 +95,13 @@ Public Sub UpdateSim()
         UpdateWonEvo Form1.fittest
     End If
     
+mode:
     If ModeChangeCycles > (hidePredCycl / 1.2 + hidePredOffset) Then
+      'Botsareus 11/5/2015 If lfor max lower limit wait for mutate pop to match base pop
+      If LFOR = 200 And Mutate_count < Base_count And hidepred Then
+            ModeChangeCycles = ModeChangeCycles - 100
+            GoTo mode
+      End If
       'calculate new energy handycap
       energydif2 = energydif2 + energydif / ModeChangeCycles 'inverse handycap
       If hidepred Then

@@ -42,30 +42,22 @@ Begin VB.Form frmGset
       _Version        =   393216
       Style           =   1
       Tabs            =   4
+      Tab             =   3
       TabsPerRow      =   4
       TabHeight       =   520
       BackColor       =   12632256
       TabCaption(0)   =   "Main settings"
       TabPicture(0)   =   "frmGset.frx":0000
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "ffmUI"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "ffmCheatin"
-      Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).Control(2)=   "Frame1"
-      Tab(0).Control(2).Enabled=   0   'False
-      Tab(0).Control(3)=   "ffmMainDir"
-      Tab(0).Control(3).Enabled=   0   'False
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "chkIntRnd"
+      Tab(0).Control(1)=   "chkEpiGene"
+      Tab(0).Control(2)=   "ffmInitChlr"
+      Tab(0).Control(3)=   "ffmFBSBO"
       Tab(0).Control(4)=   "chkSafeMode"
-      Tab(0).Control(4).Enabled=   0   'False
-      Tab(0).Control(5)=   "ffmFBSBO"
-      Tab(0).Control(5).Enabled=   0   'False
-      Tab(0).Control(6)=   "ffmInitChlr"
-      Tab(0).Control(6).Enabled=   0   'False
-      Tab(0).Control(7)=   "chkEpiGene"
-      Tab(0).Control(7).Enabled=   0   'False
-      Tab(0).Control(8)=   "chkIntRnd"
-      Tab(0).Control(8).Enabled=   0   'False
+      Tab(0).Control(5)=   "ffmMainDir"
+      Tab(0).Control(6)=   "Frame1"
+      Tab(0).Control(7)=   "ffmCheatin"
+      Tab(0).Control(8)=   "ffmUI"
       Tab(0).ControlCount=   9
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
@@ -88,18 +80,24 @@ Begin VB.Form frmGset
       Tab(2).ControlCount=   9
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
-      Tab(3).ControlEnabled=   0   'False
+      Tab(3).ControlEnabled=   -1  'True
       Tab(3).Control(0)=   "ffmSurvival"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "chkSurvivalSimple"
+      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).Control(2)=   "ffmZeroBot"
+      Tab(3).Control(2).Enabled=   0   'False
       Tab(3).Control(3)=   "chkZBmode"
+      Tab(3).Control(3).Enabled=   0   'False
       Tab(3).Control(4)=   "chkSurvivalEco"
+      Tab(3).Control(4).Enabled=   0   'False
       Tab(3).Control(5)=   "btnEvoRES"
+      Tab(3).Control(5).Enabled=   0   'False
       Tab(3).ControlCount=   6
       Begin VB.CheckBox chkIntRnd 
          Caption         =   "Use Internet Pictures to seed Randomizer"
          Height          =   255
-         Left            =   7080
+         Left            =   -67920
          TabIndex        =   93
          Top             =   1920
          Width           =   3375
@@ -107,7 +105,7 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkEpiGene 
          Caption         =   "Save epigenetic memory as a temporary gene when saving robot DNA to file.        Warning: This uses delgene."
          Height          =   375
-         Left            =   5520
+         Left            =   -69480
          TabIndex        =   92
          Top             =   4560
          Width           =   4815
@@ -131,7 +129,7 @@ Begin VB.Form frmGset
       Begin VB.CommandButton btnEvoRES 
          Caption         =   "Evolution Restrictions"
          Height          =   375
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   86
          Top             =   3480
          Width           =   2175
@@ -148,7 +146,7 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkSurvivalEco 
          Caption         =   "Eco Survival Mode"
          Height          =   255
-         Left            =   -71040
+         Left            =   3960
          TabIndex        =   67
          Top             =   4080
          Width           =   2295
@@ -156,7 +154,7 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkZBmode 
          Caption         =   "Zerobot Mode"
          Height          =   255
-         Left            =   -72600
+         Left            =   2400
          TabIndex        =   84
          Top             =   4080
          Width           =   2295
@@ -164,7 +162,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmZeroBot 
          Caption         =   "Zerobot settings"
          Height          =   1095
-         Left            =   -67680
+         Left            =   7320
          TabIndex        =   81
          Top             =   600
          Visible         =   0   'False
@@ -189,7 +187,7 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkSurvivalSimple 
          Caption         =   "Simple Survival Mode"
          Height          =   255
-         Left            =   -74640
+         Left            =   360
          TabIndex        =   80
          Top             =   4080
          Width           =   2295
@@ -197,7 +195,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmSurvival 
          Caption         =   "Survival Mode Settings"
          Height          =   2775
-         Left            =   -74760
+         Left            =   240
          TabIndex        =   68
          Top             =   600
          Visible         =   0   'False
@@ -333,7 +331,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmInitChlr 
          Caption         =   "Advanced Chloroplast Options"
          Height          =   975
-         Left            =   4920
+         Left            =   -70080
          TabIndex        =   60
          Top             =   3480
          Width           =   5655
@@ -672,7 +670,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmFBSBO 
          Caption         =   "Find Best Settings base on:"
          Height          =   915
-         Left            =   4920
+         Left            =   -70080
          TabIndex        =   16
          Top             =   2280
          Width           =   5655
@@ -711,7 +709,7 @@ Begin VB.Form frmGset
       Begin VB.CheckBox chkSafeMode 
          Caption         =   "Use Safe Mode"
          Height          =   255
-         Left            =   5160
+         Left            =   -69840
          TabIndex        =   15
          Top             =   1920
          Width           =   1575
@@ -719,7 +717,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmMainDir 
          Caption         =   "Main Directory"
          Height          =   1215
-         Left            =   4920
+         Left            =   -70080
          TabIndex        =   12
          Top             =   480
          Width           =   5655
@@ -743,7 +741,7 @@ Begin VB.Form frmGset
       Begin VB.Frame Frame1 
          Caption         =   "Randomization"
          Height          =   1095
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   9
          Top             =   3960
          Width           =   4695
@@ -767,7 +765,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmCheatin 
          Caption         =   "Cheating Prevention"
          Height          =   1575
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   5
          Top             =   2375
          Width           =   4695
@@ -799,7 +797,7 @@ Begin VB.Form frmGset
       Begin VB.Frame ffmUI 
          Caption         =   "UI Settings"
          Height          =   2000
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   3
          Top             =   360
          Width           =   4695
@@ -1678,7 +1676,7 @@ Private Sub txtLFOR_LostFocus()
 'make sure the value is sane
 txtLFOR = Abs(val(txtLFOR))
 If txtLFOR < 0.01 Then txtLFOR = 0.01
-If txtLFOR > 100 Then txtLFOR = 100
+If txtLFOR > 200 Then txtLFOR = 200
 End Sub
 
 Private Sub txtMainExp_LostFocus()

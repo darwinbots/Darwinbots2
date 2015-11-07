@@ -58,7 +58,7 @@ hidePredCycl = Init_hidePredCycl + 300 * rndy - 150
 '
 If hidePredCycl < 150 Then hidePredCycl = 150
 If hidePredCycl > 15000 Then hidePredCycl = 15000
-'
+'In really rear cases start emping up difficulty using other means
 If LFOR = 0.01 Then
     hidePredCycl = 150
     Init_hidePredCycl = 150
@@ -159,17 +159,13 @@ If Not LFORdir Then
     LFORcorr = LFORcorr / 2
 End If
 LFOR = LFOR + LFORcorr / n10(LFOR)
-If LFOR > 100 Then LFOR = 100
+If LFOR > 200 Then LFOR = 200 'expended to 200 for more flexability
 '
 hidePredCycl = Init_hidePredCycl + 300 * rndy - 150
 '
 If hidePredCycl < 150 Then hidePredCycl = 150
 If hidePredCycl > 15000 Then hidePredCycl = 15000
 '
-If LFOR = 100 Then
-    hidePredCycl = 150
-    Init_hidePredCycl = 150
-End If
 End Sub
 
 Public Sub UpdateWonEvo(ByVal bestrob As Integer) 'passing best robot
