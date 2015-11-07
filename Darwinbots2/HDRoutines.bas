@@ -1885,10 +1885,10 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     
     If Not .Veg Then
      If y_eco_im > 0 And Form1.lblSaving.Visible = False Then
-      If Right(.tag, 5) <> Left(.nrg & .nrg, 5) Then
+      If Trim(Right(.tag, 5)) <> Trim(Left(.nrg & .nrg, 5)) Then
         .dq = 2 + (.dq = 1) * True
       End If
-      If .FName <> "Mutate.txt" And .FName <> "Base.txt" Then
+      If .FName <> "Mutate.txt" And .FName <> "Base.txt" And .FName <> "Corpse" Then
         .dq = 2 + (.dq = 1) * True
       End If
      End If
@@ -1896,6 +1896,7 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
      If y_eco_im > 0 And .chloroplasts < 2000 Then .Dead = True
      If TotalChlr > SimOpts.MaxPopulation Then .Dead = True
     End If
+    If .FName = "Corpse" Then .nrg = 0
     
     'Botsareus 10/5/2015 Replaced with something better
     'Botsareus 9/16/2014 Read gene kill resrictions
@@ -1957,11 +1958,11 @@ Private Function FileContinue(filenumber As Integer) As Boolean
   'three FE bytes (ie: 254) means we are at the end of the record
   
   Dim Fe As Byte
-  Dim Position As Long
+  Dim position As Long
   Dim k As Integer
   
   FileContinue = False
-  Position = Seek(filenumber)
+  position = Seek(filenumber)
    
   Do
     If Not EOF(filenumber) Then
@@ -1980,7 +1981,7 @@ Private Function FileContinue(filenumber As Integer) As Boolean
   Loop While Not FileContinue And k < 3
   
   'reset position
-  Get #filenumber, Position - 1, Fe
+  Get #filenumber, position - 1, Fe
 End Function
 ' saves the body of the robot
 Private Sub SaveRobotBody(n As Integer, r As Integer)
