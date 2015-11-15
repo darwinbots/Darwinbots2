@@ -4,7 +4,7 @@
 
 # Settings
 	Name "Darwinbots 2"
-	OutFile "Darwinbots-2-48-26-Setup.exe"
+	OutFile "Darwinbots-2-48-27-Setup.exe"
 	SetCompress auto
 	SetCompressor lzma
 	
@@ -85,7 +85,7 @@
 		CreateDirectory "$INSTDIR\Autosave"
 		CreateDirectory "$INSTDIR\Robots"
 		CreateDirectory "$INSTDIR\settings"
-		File Darwin2.48.26.exe
+		File Darwin2.48.27.exe
 		File DBLaunch.exe
 		File DarwinbotsIM.exe
 		File "DB THEME GOLD.mp3"
