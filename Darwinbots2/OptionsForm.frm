@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{FE0065C0-1B7B-11CF-9D53-00AA003C9CB6}#1.1#0"; "COMCT232.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
 Begin VB.Form optionsform 
@@ -1995,6 +1995,7 @@ Begin VB.Form optionsform
          _ExtentX        =   6165
          _ExtentY        =   1720
          _Version        =   393217
+         Enabled         =   -1  'True
          ReadOnly        =   -1  'True
          ScrollBars      =   2
          TextRTF         =   $"OptionsForm.frx":0547
@@ -3271,7 +3272,7 @@ Sub additem(path As String)
   TmpOpts.Specie(k).VirusImmune = False
     
   Randomize 'Botsareus 4/27/2013 Added randomize here so we have interesting colors
-  TmpOpts.Specie(k).color = IIf(UseOldColor, RGB(rnd * 200 + 55, rnd * 200 + 55, rnd * 255), RGB(rnd * 255, rnd * 255, rnd * 255))
+  TmpOpts.Specie(k).color = IIf(UseOldColor, RGB(Rnd * 200 + 55, Rnd * 200 + 55, Rnd * 255), RGB(Rnd * 255, Rnd * 255, Rnd * 255))
   
   'Special overwrites for unique robot names
   If TmpOpts.Specie(k).Name = "Base.txt" Then TmpOpts.Specie(k).color = vbBlue
@@ -3426,12 +3427,12 @@ Dim dbls() As Double
 
 ReDim dbls(Len(robname) - 1)
 For x = 1 To Len(robname)
-dbls(x - 1) = rnd(-Asc(Mid(robname, x, 1)))
+dbls(x - 1) = Rnd(-Asc(Mid(robname, x, 1)))
 Next 'pre seeds
 
 For x = 1 To Len(robname)
 newR = dbls(x - 1)
-nextR = rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
+nextR = Rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
 Next 'randomize by name
 
 nameR = nextR
@@ -3445,12 +3446,12 @@ nextR = 0
     
     ReDim dbls(UBound(rob(0).dna))
     For x = 0 To UBound(rob(0).dna)
-    dbls(x) = rnd(-(angle(0, 0, rnd(-rob(0).dna(x).value) - 0.5, rnd(-rob(0).dna(x).tipo) - 0.5)))
+    dbls(x) = Rnd(-(angle(0, 0, Rnd(-rob(0).dna(x).value) - 0.5, Rnd(-rob(0).dna(x).tipo) - 0.5)))
     Next 'pre seeds
     
     For x = 0 To UBound(rob(0).dna)
     newR = dbls(x)
-    nextR = rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
+    nextR = Rnd(-(angle(0, 0, nextR - 0.5, newR - 0.5)))
     Next 'randomize by dna
     
     If MaxRobs = 0 Then ReDim rob(0)
@@ -3462,12 +3463,12 @@ Randomize nextR * 1000
   Dim i As Integer
   If k > -1 Then
     For i = 0 To 7 Step 2
-      TmpOpts.Specie(k).Skin(i) = Int(rnd * (half + 1))
+      TmpOpts.Specie(k).Skin(i) = Int(Rnd * (half + 1))
       If i = 4 Then Randomize nameR * 1000
-      TmpOpts.Specie(k).Skin(i + 1) = Int(rnd * 629)
+      TmpOpts.Specie(k).Skin(i + 1) = Int(Rnd * 629)
     Next i
     Randomize
-    TmpOpts.Specie(k).Skin(6) = (TmpOpts.Specie(k).Skin(6) + Int(rnd * (half + 1)) * 2) / 3
+    TmpOpts.Specie(k).Skin(6) = (TmpOpts.Specie(k).Skin(6) + Int(Rnd * (half + 1)) * 2) / 3
   End If
 End Sub
 
@@ -3652,9 +3653,9 @@ If CurrSpec = -1 Then Exit Sub 'Botsareus 2/3/2013 bug fix when no robot selecte
       b = 228
     Case "Random" 'Botsareus 4/27/2013 This was very broken
       Randomize
-      r = IIf(UseOldColor, rnd * 200 + 55, rnd * 255)
-      g = IIf(UseOldColor, rnd * 200 + 55, rnd * 255)
-      b = rnd * 255
+      r = IIf(UseOldColor, Rnd * 200 + 55, Rnd * 255)
+      g = IIf(UseOldColor, Rnd * 200 + 55, Rnd * 255)
+      b = Rnd * 255
     Case "Custom"
       col = TmpOpts.Specie(k).color
       MakeColor col, respath(TmpOpts.Specie(k).path) + "\" + TmpOpts.Specie(k).Name
@@ -4806,7 +4807,7 @@ If chseedstartnew Then TmpOpts.UserSeedNumber = Timer * 100 'Botsareus 5/3/2013 
   While StartAnotherRound
     StartAnotherRound = False
     Form1.StartSimul
-    SimOpts.UserSeedNumber = rnd * 2147483647 'Botsareus 6/11/2013 Randomize seed on restart, moved to after first sim
+    SimOpts.UserSeedNumber = Rnd * 2147483647 'Botsareus 6/11/2013 Randomize seed on restart, moved to after first sim
   Wend
   
 End Sub
@@ -5042,6 +5043,8 @@ Sub LoadSettings_Click() 'opensettings
     validate = True
     DispSettings
     validate = False
+    
+    PaintObstacles 'Botsareus 11/15/2015 Minor bug fix to paint obstacles
 
   End If
   Exit Sub
