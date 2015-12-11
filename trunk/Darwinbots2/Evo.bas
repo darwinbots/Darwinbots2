@@ -166,6 +166,80 @@ hidePredCycl = Init_hidePredCycl + 300 * rndy - 150
 If hidePredCycl < 150 Then hidePredCycl = 150
 If hidePredCycl > 15000 Then hidePredCycl = 15000
 '
+'Botsareus 12/11/2015 renormalize the mutation rates
+If y_eco_im = 0 Then renormalize_mutations
+End Sub
+
+Private Sub renormalize_mutations()
+
+'norm holds normalized mutation rates
+
+Dim norm As mutationprobs
+Dim Length As Integer
+Length = rob(Form1.fittest).DnaLen
+
+  Dim a As Long
+  With norm
+  
+  For a = 0 To 20
+    .mutarray(a) = Length * CLng(valNormMut)
+    .Mean(a) = 1
+    .StdDev(a) = 0
+  Next a
+  
+  .Mean(PointUP) = 3
+  .StdDev(PointUP) = 1
+  
+  .Mean(DeltaUP) = 500
+  .StdDev(DeltaUP) = 150
+  
+  .Mean(MinorDeletionUP) = 1
+  .StdDev(MinorDeletionUP) = 0
+  
+  .Mean(InsertionUP) = 1
+  .StdDev(InsertionUP) = 0
+  
+  .Mean(CopyErrorUP) = 1
+  .StdDev(CopyErrorUP) = 0
+  
+  .Mean(MajorDeletionUP) = 3
+  .StdDev(MajorDeletionUP) = 1
+  
+  .Mean(ReversalUP) = 3
+  .StdDev(ReversalUP) = 1
+  
+  .CopyErrorWhatToChange = 80
+  .PointWhatToChange = 80
+  
+  .Mean(AmplificationUP) = 250
+  .StdDev(AmplificationUP) = 75
+  
+  .Mean(TranslocationUP) = 250
+  .StdDev(TranslocationUP) = 75
+  
+End With
+
+'load mutations
+  
+Dim filem As mutationprobs
+
+filem = Load_mrates(MDIForm1.MainDir & "\evolution\Mutate.mrate")
+
+'renormalize mutations
+
+filem.CopyErrorWhatToChange = (filem.CopyErrorWhatToChange * 19 + norm.CopyErrorWhatToChange) / 20
+filem.PointWhatToChange = (filem.PointWhatToChange * 19 + norm.PointWhatToChange) / 20
+
+  For a = 0 To 20
+    filem.mutarray(a) = (filem.mutarray(a) * 19 + norm.mutarray(a)) / 20
+    filem.Mean(a) = (filem.Mean(a) * 19 + norm.Mean(a)) / 20
+    filem.StdDev(a) = (filem.StdDev(a) * 19 + norm.StdDev(a)) / 20
+  Next a
+  
+'save mutations
+  
+Save_mrates filem, MDIForm1.MainDir & "\evolution\Mutate.mrate"
+
 End Sub
 
 Public Sub UpdateWonEvo(ByVal bestrob As Integer) 'passing best robot
