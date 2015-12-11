@@ -176,7 +176,11 @@ Private Sub renormalize_mutations()
 
 Dim norm As mutationprobs
 Dim Length As Integer
-Length = rob(Form1.fittest).DnaLen
+
+
+If LoadDNA(MDIForm1.MainDir & "\evolution\Mutate.txt", 0) Then
+    Length = DnaLen(rob(0).dna)
+End If
 
   Dim a As Long
   With norm
