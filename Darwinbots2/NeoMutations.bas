@@ -347,11 +347,11 @@ On Error GoTo getout:
         'we now have the appropriate length of DNA in the temporary array.
         
         'delete fragment
-        Delete .dna, t - Length, Length * 2
+        Delete .dna, t - Length, Length * 2 + 1 'Botsareus 12/11/2015 Bug fix
 
         'open up a hole
         start = Random(1, UBound(.dna) - 2)
-        MakeSpace .dna(), start, UBound(tempDNA)
+        MakeSpace .dna(), start, UBound(tempDNA) + 1 'Botsareus 12/11/2015 Bug fix
 
         For counter = start + 1 To start + UBound(tempDNA) + 1
          .dna(counter) = tempDNA(counter - start - 1)

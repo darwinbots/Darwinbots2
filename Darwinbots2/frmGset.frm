@@ -49,34 +49,34 @@ Begin VB.Form frmGset
       TabCaption(0)   =   "Main settings"
       TabPicture(0)   =   "frmGset.frx":0000
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "chkIntRnd"
-      Tab(0).Control(1)=   "chkEpiGene"
-      Tab(0).Control(2)=   "ffmInitChlr"
-      Tab(0).Control(3)=   "ffmFBSBO"
+      Tab(0).Control(0)=   "ffmUI"
+      Tab(0).Control(1)=   "ffmCheatin"
+      Tab(0).Control(2)=   "Frame1"
+      Tab(0).Control(3)=   "ffmMainDir"
       Tab(0).Control(4)=   "chkSafeMode"
-      Tab(0).Control(5)=   "ffmMainDir"
-      Tab(0).Control(6)=   "Frame1"
-      Tab(0).Control(7)=   "ffmCheatin"
-      Tab(0).Control(8)=   "ffmUI"
+      Tab(0).Control(5)=   "ffmFBSBO"
+      Tab(0).Control(6)=   "ffmInitChlr"
+      Tab(0).Control(7)=   "chkEpiGene"
+      Tab(0).Control(8)=   "chkIntRnd"
       Tab(0).ControlCount=   9
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ffmEpiReset"
-      Tab(1).Control(1)=   "ffmSunMut"
+      Tab(1).Control(0)=   "ffmSunMut"
+      Tab(1).Control(1)=   "ffmEpiReset"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "chkFilter"
-      Tab(2).Control(1)=   "Command1"
-      Tab(2).Control(2)=   "chkAddarob"
-      Tab(2).Control(3)=   "ffmDisqualification"
+      Tab(2).Control(0)=   "lblSource"
+      Tab(2).Control(1)=   "chkTournament"
+      Tab(2).Control(2)=   "txtSourceDir"
+      Tab(2).Control(3)=   "chkStepladder"
       Tab(2).Control(4)=   "ffmFudge"
-      Tab(2).Control(5)=   "chkStepladder"
-      Tab(2).Control(6)=   "txtSourceDir"
-      Tab(2).Control(7)=   "chkTournament"
-      Tab(2).Control(8)=   "lblSource"
+      Tab(2).Control(5)=   "ffmDisqualification"
+      Tab(2).Control(6)=   "chkAddarob"
+      Tab(2).Control(7)=   "Command1"
+      Tab(2).Control(8)=   "chkFilter"
       Tab(2).ControlCount=   9
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
@@ -1249,19 +1249,23 @@ If chkSurvivalSimple.value = 1 Or chkSurvivalEco.value = 1 Then
         FileCopy txtRob, MDIForm1.MainDir & "\evolution\Mutate.txt"
         FileCopy txtRob, MDIForm1.MainDir & "\evolution\stages\stage0.txt"
     Else
+        'Botsareus 12/11/2015 Copy robot to append tag
+        FileCopy txtRob, MDIForm1.MainDir & "\evolution\tmp.txt"
         'Botsareus 10/21/2015 Append tag at start of eco evo
-        Open txtRob For Append As #1
+        Open MDIForm1.MainDir & "\evolution\tmp.txt" For Append As #1
          Print #1, vbCrLf & "'#tag:" & extractname(txtRob)
         Close #1
         Dim ecocount As Byte
-        For ecocount = 1 To 15
+        For ecocount = 1 To 15 'now uses tmp file with appended tag
              MkDir MDIForm1.MainDir & "\evolution\baserob" & ecocount
-             FileCopy txtRob, MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt"
+             FileCopy MDIForm1.MainDir & "\evolution\tmp.txt", MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt"
              MkDir MDIForm1.MainDir & "\evolution\mutaterob" & ecocount
-             FileCopy txtRob, MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.txt"
+             FileCopy MDIForm1.MainDir & "\evolution\tmp.txt", MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.txt"
              MkDir MDIForm1.MainDir & "\evolution\stages\stagerob" & ecocount
-             FileCopy txtRob, MDIForm1.MainDir & "\evolution\stages\stagerob" & ecocount & "\stage0.txt"
+             FileCopy MDIForm1.MainDir & "\evolution\tmp.txt", MDIForm1.MainDir & "\evolution\stages\stagerob" & ecocount & "\stage0.txt"
         Next
+        'Botsareus 12/11/2015 Kill tmp robot file
+        Kill MDIForm1.MainDir & "\evolution\tmp.txt"
     End If
     'generate mrate filename
     Dim mratefn As String
