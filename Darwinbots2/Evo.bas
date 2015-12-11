@@ -231,7 +231,7 @@ filem.CopyErrorWhatToChange = (filem.CopyErrorWhatToChange * 19 + norm.CopyError
 filem.PointWhatToChange = (filem.PointWhatToChange * 19 + norm.PointWhatToChange) / 20
 
   For a = 0 To 20
-    filem.mutarray(a) = (filem.mutarray(a) * 19 + norm.mutarray(a)) / 20
+    If filem.mutarray(a) > 0 Then filem.mutarray(a) = (filem.mutarray(a) * 19 + norm.mutarray(a)) / 20
     filem.Mean(a) = (filem.Mean(a) * 19 + norm.Mean(a)) / 20
     filem.StdDev(a) = (filem.StdDev(a) * 19 + norm.StdDev(a)) / 20
   Next a
