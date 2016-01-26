@@ -88,17 +88,17 @@ Public Sub UpdateSim()
     End If
     'Botsareus 10/19/2015 Prevents simulation from running too long
     If SimOpts.TotRunCycle = 1000000 Then stagnent = True 'Set the stagnent flag now and see what happens
-    If SimOpts.TotRunCycle = 3000000 And stagnent Then
-        DisplayActivations = False
-        Form1.Active = False
-        Form1.SecTimer.Enabled = False
-        UpdateWonEvo Form1.fittest
-    End If
+'    If SimOpts.TotRunCycle = 3000000 And stagnent Then 'Botsareus 1/9/2016 Rule no longer required as I am no longer evolving plants
+'        DisplayActivations = False
+'        Form1.Active = False
+'        Form1.SecTimer.Enabled = False
+'        UpdateWonEvo Form1.fittest
+'    End If
     
 mode:
     If ModeChangeCycles > (hidePredCycl / 1.2 + hidePredOffset) Then
       'Botsareus 11/5/2015 If lfor max lower limit wait for mutate pop to match base pop
-      If LFOR = 200 And Mutate_count < Base_count And hidepred Then
+      If LFOR = 100 And Mutate_count < Base_count And hidepred Then
             ModeChangeCycles = ModeChangeCycles - 100
             GoTo mode
       End If
@@ -106,11 +106,11 @@ mode:
       energydif2 = energydif2 + energydif / ModeChangeCycles 'inverse handycap
       If hidepred Then
         Dim holdXP As Double
-        holdXP = (energydifX - (energydif / ModeChangeCycles)) / (LFOR / 3)
+        holdXP = (energydifX - (energydif / ModeChangeCycles)) / LFOR
         If holdXP < energydifXP Then energydifXP = holdXP Else energydifXP = (energydifXP * 9 + holdXP) / 10
         
         'inverse handycap
-        energydifXP2 = (energydifX2 - energydif2) / (LFOR / 3)
+        energydifXP2 = (energydifX2 - energydif2) / LFOR
         If energydifXP2 > 0 Then energydifXP2 = 0
         If (energydifXP - energydifXP2) > 0.1 Then energydifXP2 = energydifXP - 0.1
         energydifX2 = energydif2
