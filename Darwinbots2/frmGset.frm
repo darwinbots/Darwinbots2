@@ -49,34 +49,34 @@ Begin VB.Form frmGset
       TabCaption(0)   =   "Main settings"
       TabPicture(0)   =   "frmGset.frx":0000
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "ffmUI"
-      Tab(0).Control(1)=   "ffmCheatin"
-      Tab(0).Control(2)=   "Frame1"
-      Tab(0).Control(3)=   "ffmMainDir"
+      Tab(0).Control(0)=   "chkIntRnd"
+      Tab(0).Control(1)=   "chkEpiGene"
+      Tab(0).Control(2)=   "ffmInitChlr"
+      Tab(0).Control(3)=   "ffmFBSBO"
       Tab(0).Control(4)=   "chkSafeMode"
-      Tab(0).Control(5)=   "ffmFBSBO"
-      Tab(0).Control(6)=   "ffmInitChlr"
-      Tab(0).Control(7)=   "chkEpiGene"
-      Tab(0).Control(8)=   "chkIntRnd"
+      Tab(0).Control(5)=   "ffmMainDir"
+      Tab(0).Control(6)=   "Frame1"
+      Tab(0).Control(7)=   "ffmCheatin"
+      Tab(0).Control(8)=   "ffmUI"
       Tab(0).ControlCount=   9
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ffmSunMut"
-      Tab(1).Control(1)=   "ffmEpiReset"
+      Tab(1).Control(0)=   "ffmEpiReset"
+      Tab(1).Control(1)=   "ffmSunMut"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "lblSource"
-      Tab(2).Control(1)=   "chkTournament"
-      Tab(2).Control(2)=   "txtSourceDir"
-      Tab(2).Control(3)=   "chkStepladder"
+      Tab(2).Control(0)=   "chkFilter"
+      Tab(2).Control(1)=   "Command1"
+      Tab(2).Control(2)=   "chkAddarob"
+      Tab(2).Control(3)=   "ffmDisqualification"
       Tab(2).Control(4)=   "ffmFudge"
-      Tab(2).Control(5)=   "ffmDisqualification"
-      Tab(2).Control(6)=   "chkAddarob"
-      Tab(2).Control(7)=   "Command1"
-      Tab(2).Control(8)=   "chkFilter"
+      Tab(2).Control(5)=   "chkStepladder"
+      Tab(2).Control(6)=   "txtSourceDir"
+      Tab(2).Control(7)=   "chkTournament"
+      Tab(2).Control(8)=   "lblSource"
       Tab(2).ControlCount=   9
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
@@ -908,11 +908,11 @@ MsgBox "Survival mode consists of a base species and a mutating species. The bas
 " This is a handicap for the Base species. Because, a negative value means mutating species are losing energy." & vbCrLf _
 & vbCrLf & "Formula1:" & vbCrLf _
 & "new_value = ((Average energy gain with Base.txt on (species average, time average)) minus " & _
-"(Average energy gain with Base.txt off (species average, time average))) / (LFOR / 3) " & vbCrLf & _
+"(Average energy gain with Base.txt off (species average, time average))) / LFOR " & vbCrLf & _
 "If new_value is less then old_value then current_value = new_value else current_value = (old_value * 9 + new_value) / 10 " _
 & vbCrLf & "Formula 2:" & vbCrLf _
 & "((Average energy gain last on/off cycle (species average, time average)) minus " & _
-"(Average energy gain this on/off cycle (species average, time average))) / (LFOR / 3) * 2 " & vbCrLf & _
+"(Average energy gain this on/off cycle (species average, time average))) / LFOR * 2 " & vbCrLf & _
 "Result = Formula1 minus Formula2 or just Formula1 if Formula2 is greater then zero. Result takes full effect after 6 on/off cycles." _
 & vbCrLf & vbCrLf & "For current simulation's data go to the help menu." _
 & vbCrLf & vbCrLf & "www.darwinbots.com", vbInformation, "Dev. By: Paul Kononov a.k.a. Botsareus"
@@ -1680,7 +1680,7 @@ Private Sub txtLFOR_LostFocus()
 'make sure the value is sane
 txtLFOR = Abs(val(txtLFOR))
 If txtLFOR < 0.01 Then txtLFOR = 0.01
-If txtLFOR > 200 Then txtLFOR = 200
+If txtLFOR > 100 Then txtLFOR = 100
 End Sub
 
 Private Sub txtMainExp_LostFocus()
