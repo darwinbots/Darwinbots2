@@ -882,7 +882,7 @@ valMaxNormMut = 1071
 Dim holdmaindir As String
 '
 y_hidePredCycl = 1500
-y_LFOR = 30
+y_LFOR = 10
 '
 y_zblen = 255
 
