@@ -159,7 +159,7 @@ If Not LFORdir Then
     LFORcorr = LFORcorr / 2
 End If
 LFOR = LFOR + LFORcorr / n10(LFOR)
-If LFOR > 200 Then LFOR = 200 'expended to 200 for more flexability
+If LFOR > 100 Then LFOR = 100
 '
 hidePredCycl = Init_hidePredCycl + 300 * rndy - 150
 '
@@ -167,7 +167,9 @@ If hidePredCycl < 150 Then hidePredCycl = 150
 If hidePredCycl > 15000 Then hidePredCycl = 15000
 '
 'Botsareus 12/11/2015 renormalize the mutation rates
-If y_eco_im = 0 Then renormalize_mutations
+If LFORcorr > 0.00005 Then
+    If y_eco_im = 0 Then renormalize_mutations
+End If
 End Sub
 
 Private Sub renormalize_mutations()
@@ -231,13 +233,13 @@ filem = Load_mrates(MDIForm1.MainDir & "\evolution\Mutate.mrate")
 
 'renormalize mutations
 
-filem.CopyErrorWhatToChange = (filem.CopyErrorWhatToChange * 19 + norm.CopyErrorWhatToChange) / 20
-filem.PointWhatToChange = (filem.PointWhatToChange * 19 + norm.PointWhatToChange) / 20
+filem.CopyErrorWhatToChange = (filem.CopyErrorWhatToChange * 39 + norm.CopyErrorWhatToChange) / 40
+filem.PointWhatToChange = (filem.PointWhatToChange * 39 + norm.PointWhatToChange) / 40
 
   For a = 0 To 20
-    If filem.mutarray(a) > 0 Then filem.mutarray(a) = (filem.mutarray(a) * 19 + norm.mutarray(a)) / 20
-    filem.Mean(a) = (filem.Mean(a) * 19 + norm.Mean(a)) / 20
-    filem.StdDev(a) = (filem.StdDev(a) * 19 + norm.StdDev(a)) / 20
+    If filem.mutarray(a) > 0 Then filem.mutarray(a) = (filem.mutarray(a) * 149 + norm.mutarray(a)) / 150
+    filem.Mean(a) = (filem.Mean(a) * 29 + norm.Mean(a)) / 30
+    filem.StdDev(a) = (filem.StdDev(a) * 29 + norm.StdDev(a)) / 30
   Next a
   
 'save mutations
