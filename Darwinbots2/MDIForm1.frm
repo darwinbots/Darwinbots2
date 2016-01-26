@@ -911,7 +911,7 @@ Attribute VB_Exposed = False
 ' Modifications by Purple Youko and Numsgil - 2004, 2005
 ' Post V2.42 modifications copyright (c) 2006, 2007 Eric Lockard  eric@sulaadventures.com
 '
-' Post V2.45 modifications copyright (c) 2012, 2013, 2014, 2015 Paul Kononov
+' Post V2.45 modifications copyright (c) 2012, 2013, 2014, 2015, 2016 Paul Kononov
 'a.k.a
 '______________________________________________1$$$___108033_____$$______________________________
 '____1$$$$$$$3________________011_______________$$__$$$$$$$$$$8_1$_________1$$$1__8$$$1_______3$$
@@ -2586,6 +2586,9 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     load_league_res 'although this is techincally an evo test, it is designed as a league test
                     'F1 enabled
                     TmpOpts.F1 = True
+                    'Dynamic maxrounds
+                    Maxrounds = 5 / (x_filenumber + 1) ^ (1 / 3)
+                    If Maxrounds < 1 Then Maxrounds = 1
                     'new seed and run sim
                     chseedstartnew = True
                     optionsform.StartNew_Click
