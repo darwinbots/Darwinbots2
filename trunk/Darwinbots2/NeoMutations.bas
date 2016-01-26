@@ -261,7 +261,7 @@ On Error GoTo getout:
       Length = Length \ 2
       If t - Length < 1 Then GoTo skip
       If t + Length > .DnaLen - 1 Then GoTo skip
-      If UBound(.dna) + CLng(Length) > 32000 Then GoTo skip 'Botsareus 10/5/2015 Size limit is calculated here
+      If UBound(.dna) + CLng(Length) * 2 > 32000 Then GoTo skip 'Botsareus 10/5/2015 Size limit is calculated here
       
       If Length > 0 Then
       
