@@ -297,6 +297,7 @@ Public Sub updateshots()
   For t = 1 To maxshotarray
     'This is one of the most CPU intensive routines.  We need to make the UI responsive.
     If t Mod 250 = 0 Then DoEvents
+    If t <= maxshotarray Then 'Botsareus 4/5/2016 Bug fix
     
     If Shots(t).flash Then
         Shots(t).exist = False
@@ -396,6 +397,8 @@ Public Sub updateshots()
         End If
           
       End If
+      
+    End If
     Next t
     
     ' Here we test for sparsity of the shots array.  If the number of shots is less than 70% of the array size, then we
@@ -450,7 +453,7 @@ Public Sub Decay(n As Integer) 'corpse decaying as waste shot, energy shot or no
   If rob(n).DecayTimer >= SimOpts.Decaydelay Then
     rob(n).DecayTimer = 0
     
-    rob(n).aim = Rndy * 2 * PI
+    rob(n).aim = rndy * 2 * PI
     rob(n).aimvector = VectorSet(Cos(rob(n).aim), Sin(rob(n).aim))
     
     If rob(n).body > SimOpts.Decay / 10 Then
@@ -1159,7 +1162,7 @@ Public Function addgene(ByVal n As Integer, ByVal p As Long) As Integer
   Dim t As Long
   Dim Insert As Long
   Dim vlen As Long   'length of the DNA code of the virus
-  Dim position As Integer   'gene position to insert the virus
+  Dim Position As Integer   'gene position to insert the virus
   Dim power As Single
   
   'Dead bodies and virus immune bots can't catch a virus
@@ -1176,11 +1179,11 @@ Public Function addgene(ByVal n As Integer, ByVal p As Long) As Integer
     If rob(n).Slime < 0.5 Then rob(n).Slime = 0
   End If
   
-  position = Random(0, rob(n).genenum)                  'randomize the gene number
-  If position = 0 Then
+  Position = Random(0, rob(n).genenum)                  'randomize the gene number
+  If Position = 0 Then
     Insert = 0
   Else
-    Insert = GeneEnd(rob(n).dna, genepos(rob(n).dna, position))
+    Insert = GeneEnd(rob(n).dna, genepos(rob(n).dna, Position))
     If Insert = (rob(n).DnaLen) Then
       Insert = rob(n).DnaLen
     End If
