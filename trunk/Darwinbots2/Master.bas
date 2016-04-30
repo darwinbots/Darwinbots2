@@ -53,20 +53,20 @@ Public Sub UpdateSim()
   Dim usehidepred As Boolean
   usehidepred = x_restartmode = 4 Or x_restartmode = 5 'Botsareus expend to evo mode
   '
-  Dim avgsize As Long
-  Dim k As Integer 'robots moved last attempt
-  Dim k2 As Integer 'robots moved total
+'  Dim avgsize As Long
+'  Dim k As Integer 'robots moved last attempt
+'  Dim k2 As Integer 'robots moved total
   '
   If usehidepred Then
     'Count species for end of evo
     Base_count = 0
     Mutate_count = 0
-    avgsize = 0
+    'avgsize = 0
     For t = 1 To MaxRobs
       If rob(t).exist Then
           If rob(t).FName = "Base.txt" Then
             Base_count = Base_count + 1
-            avgsize = avgsize + rob(t).body
+            'avgsize = avgsize + rob(t).body
           End If
           If rob(t).FName = "Mutate.txt" Then Mutate_count = Mutate_count + 1
       End If
@@ -95,12 +95,12 @@ Public Sub UpdateSim()
 '        UpdateWonEvo Form1.fittest
 '    End If
     
-mode:
+Mode:
     If ModeChangeCycles > (hidePredCycl / 1.2 + hidePredOffset) Then
       'Botsareus 11/5/2015 If lfor max lower limit wait for mutate pop to match base pop
-      If LFOR = 100 And Mutate_count < Base_count And hidepred Then
+      If LFOR = 150 And Mutate_count < Base_count And hidepred Then
             ModeChangeCycles = ModeChangeCycles - 100
-            GoTo mode
+            GoTo Mode
       End If
       'calculate new energy handycap
       energydif2 = energydif2 + energydif / ModeChangeCycles 'inverse handycap
@@ -118,47 +118,47 @@ mode:
       End If
       energydifX = energydif / ModeChangeCycles
       energydif = 0
-      If hidepred And Mutate_count > Base_count Then 'only if there is more mutate robots
-        'lets reposition the robots
-        avgsize = avgsize / Base_count
-        k2 = 0
-        Do
-        k = 0
-        For t = 1 To MaxRobs
-             If rob(t).exist And rob(t).FName = "Base.txt" Then
-                  For i = 1 To MaxRobs
-                      If rob(i).exist And rob(i).FName = "Mutate.txt" Then
-                        If ((rob(i).pos.x - rob(t).pos.x) ^ 2 + (rob(i).pos.y - rob(t).pos.y) ^ 2) ^ 0.5 < avgsize Then
-                        'if the distance between the robots is less then avgsize then move mutate robot out of the way
-                            With rob(i)
-                                'tie mod
-                                Dim pozdif As vector
-                                pozdif.x = 9237 * rndy - .pos.x
-                                pozdif.y = 6928 * rndy - .pos.y
-                                If .numties > 0 Then
-                                    Dim clist(50) As Integer, tk As Integer
-                                    clist(0) = i
-                                    ListCells clist()
-                                    'move multibot
-                                    tk = 1
-                                    While clist(tk) > 0
-                                        rob(clist(tk)).pos.x = rob(clist(tk)).pos.x + pozdif.x
-                                        rob(clist(tk)).pos.y = rob(clist(tk)).pos.y + pozdif.y
-                                        tk = tk + 1
-                                    Wend
-                                End If
-                                .pos.x = .pos.x + pozdif.x
-                                .pos.y = .pos.y + pozdif.y
-                            End With
-                            k = k + 1
-                            k2 = k2 + 1
-                        End If
-                      End If
-                  Next
-             End If
-        Next t
-        Loop Until k = 0 Or k2 > 7000
-      End If
+'      If hidepred And Mutate_count > Base_count Then 'only if there is more mutate robots 'Botsareus 4/19/2016 Disabled to incurge more team work
+'        'lets reposition the robots
+'        avgsize = avgsize / Base_count
+'        k2 = 0
+'        Do
+'        k = 0
+'        For t = 1 To MaxRobs
+'             If rob(t).exist And rob(t).FName = "Base.txt" Then
+'                  For i = 1 To MaxRobs
+'                      If rob(i).exist And rob(i).FName = "Mutate.txt" Then
+'                        If ((rob(i).pos.X - rob(t).pos.X) ^ 2 + (rob(i).pos.Y - rob(t).pos.Y) ^ 2) ^ 0.5 < avgsize Then
+'                        'if the distance between the robots is less then avgsize then move mutate robot out of the way
+'                            With rob(i)
+'                                'tie mod
+'                                Dim pozdif As vector
+'                                pozdif.X = 9237 * rndy - .pos.X
+'                                pozdif.Y = 6928 * rndy - .pos.Y
+'                                If .numties > 0 Then
+'                                    Dim clist(50) As Integer, tk As Integer
+'                                    clist(0) = i
+'                                    ListCells clist()
+'                                    'move multibot
+'                                    tk = 1
+'                                    While clist(tk) > 0
+'                                        rob(clist(tk)).pos.X = rob(clist(tk)).pos.X + pozdif.X
+'                                        rob(clist(tk)).pos.Y = rob(clist(tk)).pos.Y + pozdif.Y
+'                                        tk = tk + 1
+'                                    Wend
+'                                End If
+'                                .pos.X = .pos.X + pozdif.X
+'                                .pos.Y = .pos.Y + pozdif.Y
+'                            End With
+'                            k = k + 1
+'                            k2 = k2 + 1
+'                        End If
+'                      End If
+'                  Next
+'             End If
+'        Next t
+'        Loop Until k = 0 Or k2 > 7000
+'      End If
       'change hide pred
       hidepred = Not hidepred
       hidePredOffset = hidePredCycl / 3 * rndy
@@ -269,19 +269,15 @@ mode:
     For t = 1 To MaxRobs
      If rob(t).exist Then
          If rob(t).FName = "Mutate.txt" And hidepred Then
-            If rob(t).LastMut > 0 Then '4/17/2014 New rule from Botsareus, only handycap fresh robots
-             'we only handycap one value type per run as robots can select body or energy at startup to trick the system
-             If x_filenumber Mod 2 = 1 Then rob(t).nrg = rob(t).nrg + (energydifXP - energydifXP2) * IIf(SimOpts.TotRunCycle < (CLng(hidePredCycl) * CLng(8)), SimOpts.TotRunCycle / (CLng(hidePredCycl) * CLng(8)), 1)
-             If x_filenumber Mod 2 = 0 Then rob(t).body = rob(t).body + (energydifXP - energydifXP2) * IIf(SimOpts.TotRunCycle < (CLng(hidePredCycl) * CLng(8)), SimOpts.TotRunCycle / (CLng(hidePredCycl) * CLng(8)), 1)
+            If rob(t).LastMut > 0 Then '4/5/2016 Handycap freshly mutated robots more than other robots
+              rob(t).nrg = rob(t).nrg + calc_handycap
             Else
-             'we only handycap one value type per run as robots can select body or energy at startup to trick the system
-             If x_filenumber Mod 2 = 1 Then rob(t).nrg = rob(t).nrg + (energydifXP - energydifXP2) * IIf(SimOpts.TotRunCycle < (CLng(hidePredCycl) * CLng(8)), SimOpts.TotRunCycle / (CLng(hidePredCycl) * CLng(8)), 1) / 2
-             If x_filenumber Mod 2 = 0 Then rob(t).body = rob(t).body + (energydifXP - energydifXP2) * IIf(SimOpts.TotRunCycle < (CLng(hidePredCycl) * CLng(8)), SimOpts.TotRunCycle / (CLng(hidePredCycl) * CLng(8)), 1) / 2
+              rob(t).nrg = rob(t).nrg + calc_handycap / 2
             End If
          End If
      End If
     Next t
-  
+
   If usehidepred Then
   'Calculate average energy before sim update
   avrnrgStart = 0
@@ -290,7 +286,7 @@ mode:
         If rob(t).FName = "Mutate.txt" And rob(t).exist Then
             If rob(t).LastMut > 0 Then '4/17/2014 New rule from Botsareus, only handycap fresh robots
                 i = i + 1
-                avrnrgStart = avrnrgStart + IIf(x_filenumber Mod 2 = 1, rob(t).nrg, rob(t).body)
+                avrnrgStart = avrnrgStart + rob(t).nrg
             End If
         End If
   Next t
@@ -319,7 +315,7 @@ mode:
     With rob(t)
      If .exist Then
       If t = robfocus Or .highlight Then
-       If Not (Mouse_loc.x = 0 And Mouse_loc.y = 0) Then .mem(SetAim) = angnorm(angle(.pos.x, .pos.y, Mouse_loc.x, Mouse_loc.y)) * 200
+       If Not (Mouse_loc.X = 0 And Mouse_loc.Y = 0) Then .mem(SetAim) = angnorm(angle(.pos.X, .pos.Y, Mouse_loc.X, Mouse_loc.Y)) * 200
        For i = 1 To UBound(PB_keys)
         If PB_keys(i).Active <> PB_keys(i).Invert Then .mem(PB_keys(i).memloc) = PB_keys(i).value
        Next
@@ -357,7 +353,7 @@ mode:
         If rob(t).FName = "Mutate.txt" And rob(t).exist Then
             If rob(t).LastMut > 0 Then '4/17/2014 New rule from Botsareus, only handycap fresh robots
                 i = i + 1
-                avrnrgEnd = avrnrgEnd + IIf(x_filenumber Mod 2 = 1, rob(t).nrg, rob(t).body)
+                avrnrgEnd = avrnrgEnd + rob(t).nrg
             End If
         End If
   Next t
