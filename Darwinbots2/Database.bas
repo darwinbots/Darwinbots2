@@ -84,4 +84,59 @@ fine:
 getout:
 End Sub
 
+' adds a record to snapshot of the dead
+Public Sub AddRecord(ByVal rn As Integer)
+Dim path1 As String
+Dim path2 As String
+Dim v As String
+Dim d As String
+v = ","
+path1 = MDIForm1.MainDir & "\Autosave\DeadRobots.snp"
+path2 = MDIForm1.MainDir & "\Autosave\DeadRobots_Mutations.txt"
+On Error GoTo getout
+    If dir(path1) = "" Then 'write first line if no data
+        Open path1 For Output As #177
+            Print #177, "Rob id,Parent id,Founder name,Generation,Birth cycle,Age,Mutations,New mutations,Dna length,Offspring number,kills,Fitness,Energy,Chloroplasts"
+        Close #177
+    End If
+    If dir(path2) = "" Then 'write first line if no data
+        Open path2 For Output As #178
+            Print #178, "Rob id,Mutation History"
+        Close #178
+    End If
+    'write the record
+    Open path1 For Append As #177
+    Open path2 For Append As #178
+    
+    With rob(rn)
+    
+        Print #178, vbCrLf & CStr(.AbsNum); v;
+        Print #178, vbCrLf & .LastMutDetail
+        
+        Print #177, vbCrLf & vbCrLf & CStr(.AbsNum); v; CStr(.parent); v; .FName; v; CStr(.generation); v; CStr(.BirthCycle); v; CStr(.age); v; CStr(.Mutations); v;
+        Print #177, CStr(.LastMut); v; CStr(.DnaLen); v; CStr(.SonNumber); v; CStr(.Kills); v;
+        'lets figureout fitness
+        Dim sPopulation As Double
+        Dim sEnergy As Double
+        Dim s As Double
+        sEnergy = (IIf(intFindBestV2 > 100, 100, intFindBestV2)) / 100
+        sPopulation = (IIf(intFindBestV2 < 100, 100, 200 - intFindBestV2)) / 100
+        Form1.TotalOffspring = 1
+        s = Form1.score(rn, 1, 10, 0) + rob(rn).nrg + rob(rn).body * 10 'Botsareus 5/22/2013 Advanced fit test
+        s = (Form1.TotalOffspring ^ sPopulation) * (s ^ sEnergy)
+        Print #177, CStr(s); v; CStr(rob(rn).nrg + rob(rn).body * 10); v; .chloroplasts & vbCrLf;
+        d = ""
+        savingtofile = True
+        d = DetokenizeDNA(rn) & vbCrLf
+        If Mid(d, Len(d) - 3, 2) = vbCrLf Then d = Left(d, Len(d) - 2) 'Borsareus 7/22/2014 a bug fix
+        savingtofile = False
+        Print #177, d;
+        
+      End With
+      
+    Close #177
+    Close #178
+getout:
+End Sub
+
 
