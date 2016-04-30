@@ -62,21 +62,32 @@ Begin VB.Form frmGset
       TabCaption(1)   =   "Mutations"
       TabPicture(1)   =   "frmGset.frx":001C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ffmEpiReset"
-      Tab(1).Control(1)=   "ffmSunMut"
+      Tab(1).Control(0)=   "ffmSunMut"
+      Tab(1).Control(0).Enabled=   0   'False
+      Tab(1).Control(1)=   "ffmEpiReset"
+      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "Leagues"
       TabPicture(2)   =   "frmGset.frx":0038
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "chkFilter"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "Command1"
+      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).Control(2)=   "chkAddarob"
+      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).Control(3)=   "ffmDisqualification"
+      Tab(2).Control(3).Enabled=   0   'False
       Tab(2).Control(4)=   "ffmFudge"
+      Tab(2).Control(4).Enabled=   0   'False
       Tab(2).Control(5)=   "chkStepladder"
+      Tab(2).Control(5).Enabled=   0   'False
       Tab(2).Control(6)=   "txtSourceDir"
+      Tab(2).Control(6).Enabled=   0   'False
       Tab(2).Control(7)=   "chkTournament"
+      Tab(2).Control(7).Enabled=   0   'False
       Tab(2).Control(8)=   "lblSource"
+      Tab(2).Control(8).Enabled=   0   'False
       Tab(2).ControlCount=   9
       TabCaption(3)   =   "Evolution"
       TabPicture(3)   =   "frmGset.frx":0054
@@ -1680,7 +1691,7 @@ Private Sub txtLFOR_LostFocus()
 'make sure the value is sane
 txtLFOR = Abs(val(txtLFOR))
 If txtLFOR < 0.01 Then txtLFOR = 0.01
-If txtLFOR > 100 Then txtLFOR = 100
+If txtLFOR > 150 Then txtLFOR = 150
 End Sub
 
 Private Sub txtMainExp_LostFocus()
