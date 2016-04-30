@@ -4,7 +4,7 @@
 
 # Settings
 	Name "Darwinbots 2"
-	OutFile "Darwinbots-2-48-27-Setup.exe"
+	OutFile "Darwinbots-2-48-29-Setup.exe"
 	SetCompress auto
 	SetCompressor lzma
 	
@@ -85,7 +85,7 @@
 		CreateDirectory "$INSTDIR\Autosave"
 		CreateDirectory "$INSTDIR\Robots"
 		CreateDirectory "$INSTDIR\settings"
-		File Darwin2.48.27.exe
+		File Darwin2.48.29.exe
 		File DBLaunch.exe
 		File DarwinbotsIM.exe
 		File "DB THEME GOLD.mp3"
@@ -95,6 +95,13 @@
 		File "SafeModeBackup.exe"
 		File "ManualSexRepro.exe"
 		File "DarwinBotsIM.exe" 
+		File "_hashlib.pyd"
+		File "_socket.pyd"
+		File "_ssl.pyd"
+		File "bz2.pyd"
+		File "python27.dll"
+		File "select.pyd"
+		File "unicodedata.pyd"
 		File "7z.exe"
 		File "7z.dll"
 		File "web.gset"
@@ -162,6 +169,13 @@
 		Delete $INSTDIR\keys.txt
 		Delete $INSTDIR\DBLaunch.exe
 		Delete $INSTDIR\DarwinbotsIM.exe
+		Delete $INSTDIR\_hashlib.pyd
+		Delete $INSTDIR\_socket.pyd
+		Delete $INSTDIR\_ssl.pyd
+		Delete $INSTDIR\bz2.pyd
+		Delete $INSTDIR\python27.dll
+		Delete $INSTDIR\select.pyd
+		Delete $INSTDIR\unicodedata.pyd
 		Delete "$INSTDIR\DB THEME GOLD.mp3"
 		Delete "$INSTDIR\Graph Join.exe"
 		Delete "$INSTDIR\Snapshot Search.exe"
