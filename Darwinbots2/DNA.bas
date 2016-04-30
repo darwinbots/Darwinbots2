@@ -23,6 +23,10 @@ Const NEXTBODY As Boolean = True 'both of these two are subsets of the clear fla
 Const NEXTELSE As Boolean = False
 
 Public sysvar(1000) As var    ' array of system variables
+
+Public sysvarIN(255) As var    ' array of system variables informational
+Public sysvarOUT(255) As var    ' array of system variables functional
+
 Public Const stacklim As Integer = 100
 
 ' stack structure, used for robots' stack
@@ -45,9 +49,6 @@ Dim currgene As Long 'for *.thisgene
 Public DisplayActivations As Boolean 'EricL - Toggle for displaying activations in the consol
                                      'Indicates whether the cycle was executed from a console
 Public ingene As Boolean             ' Flag for current gene counting.
-
-Public DisplayDebug As Boolean
-
 ''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''
 ''''''''''''''''''''''''''''''''''''''''''''
@@ -82,6 +83,7 @@ Private Sub ExecuteDNA(ByVal n As Integer)
   With rob(n)
   a = 1
   rob(n).condnum = 0 ' EricL 4/6/2006 reset the COND statement counter to 0
+  rob(n).dbgstring = "" 'Botsareus 4/5/2016 Safer way to debug DNA
   While Not (.dna(a).tipo = 10 And .dna(a).value = 1) And a <= 32000 And a < UBound(.dna) 'Botsareus 6/16/2012 Added upper bounds check (This seems like overkill but I had situations where 'end' command did not exisit)
     tipo = .dna(a).tipo
     Select Case tipo
@@ -98,8 +100,8 @@ Private Sub ExecuteDNA(ByVal n As Integer)
               b = Abs(.dna(a).value) Mod MaxMem
               If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
     
-              '2/28/2014 New code from Botsareus if it is a real sysvar then put it into range
-              If Not IsNumeric(SysvarDetok(b, n)) Then .dna(a).value = b
+              '2/28/2014 New code from Botsareus if it is a real sysvar then put it into range 'Disabled 3/20/2016 Replaced with Point2 and Copyerror2
+              'If Not IsNumeric(SysvarDetok(b, n)) Then .dna(a).value = b
           End If
           
           PushIntStack .mem(b)
@@ -132,18 +134,18 @@ Private Sub ExecuteDNA(ByVal n As Integer)
         End If
       Case 7 'store, inc and dec
       
-          '2/28/2014 New code from Botsareus if it is a real sysvar then put it into range
-          If a > 0 Then
-              b = .dna(a - 1).value
-              If (b > MaxMem Or b < 1) And .dna(a - 1).tipo = 0 Then
-                b = Abs(.dna(a - 1).value) Mod MaxMem
-                If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
-                
-                '2/28/2014 New code from Botsareus if it is a real sysvar then put it into range
-                If Not IsNumeric(SysvarDetok(b, n)) Then .dna(a - 1).value = b
-              End If
-          End If
+          '2/28/2014 New code from Botsareus if it is a real sysvar then put it into range 'Disabled 3/20/2016 Replaced with Point2 and Copyerror2
+'          If a > 0 Then
+'              b = .dna(a - 1).value
+'              If (b > MaxMem Or b < 1) And .dna(a - 1).tipo = 0 Then
+'                b = Abs(.dna(a - 1).value) Mod MaxMem
+'                If b = 0 Then b = 1000 ' Special case that multiples of 1000 should store to location 1000
 '
+'                '2/28/2014 New code from Botsareus if it is a real sysvar then put it into range
+'                If Not IsNumeric(SysvarDetok(b, n)) Then .dna(a - 1).value = b
+'              End If
+'          End If
+
         If CurrentFlow = body Or CurrentFlow = ELSEBODY Then
           If CondStateIsTrue Then  ' Check the Bool stack.  If empty or True on top, do the stores.  Don't if False.
             ExecuteStores .dna(a).value
@@ -388,8 +390,8 @@ Private Sub findang()
   Dim e As Single  'angle to target
   b = PopIntStack ' * Form1.yDivisor
   a = PopIntStack ' * Form1.xDivisor
-  c = rob(currbot).pos.x / Form1.xDivisor
-  d = rob(currbot).pos.y / Form1.yDivisor
+  c = rob(currbot).pos.X / Form1.xDivisor
+  d = rob(currbot).pos.Y / Form1.yDivisor
   e = angnorm(angle(c, d, a, b)) * 200
   PushIntStack e
 End Sub
@@ -403,8 +405,8 @@ Private Sub finddist()
   Dim e As Single  'distance to target
   b = PopIntStack * Form1.yDivisor
   a = PopIntStack * Form1.xDivisor
-  c = rob(currbot).pos.x
-  d = rob(currbot).pos.y
+  c = rob(currbot).pos.X
+  d = rob(currbot).pos.Y
   e = Sqr(((c - a) ^ 2 + (d - b) ^ 2))
   If Abs(e) > 2000000000# Then
     e = Sgn(e) * 2000000000#
@@ -535,12 +537,12 @@ Private Sub DNApyth()
 End Sub
 
 
-Private Sub DNAdebugint(at_position As Integer)   'Botsareus 1/31/2013 The new debugint command
+Private Sub DNAdebugint(at_position As Integer)   'Botsareus 1/31/2013 The new debugint command 'Botsareus 4/5/2016 Cleaner architecture
 
     Dim a As Single
     a = PopIntStack
     
-    If Not (rob(currbot).console Is Nothing) And DisplayDebug Then rob(currbot).console.textout a & " at position " & at_position
+    rob(currbot).dbgstring = rob(currbot).dbgstring & vbCrLf & a & " at position " & at_position
     
     PushIntStack a
     
@@ -552,7 +554,7 @@ Private Sub DNAdebugbool(at_position As Integer)    'Botsareus 1/31/2013 The new
     Dim a As Boolean
     a = PopBoolStack
     
-    If Not (rob(currbot).console Is Nothing) And DisplayDebug Then rob(currbot).console.textout a & " at position " & at_position
+    rob(currbot).dbgstring = rob(currbot).dbgstring & vbCrLf & a & " at position " & at_position
     
     PushBoolStack a
     
