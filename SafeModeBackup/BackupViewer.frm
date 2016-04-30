@@ -45,10 +45,10 @@ Option Explicit
 
 Private Sub tmr_Timer()
 On Error Resume Next
-'The nature of the beast - very simple code to do autosave backups
+'Very simple code to do autosave backups
 lbl.Caption = "Time until next backup: " & (60 * 60 * 6 - (Timer \ 3) * 3 Mod (60 * 60 * 6)) & " seconds"
 If (60 * 60 * 6 - (Timer \ 3) * 3 Mod (60 * 60 * 6)) < 4 Then
-    FileCopy App.Path & "\Saves\lastautosave.sim", App.Path & "\Autosave\autosave" & Replace(Time$, ":", "-") & ".sim"
+    FileCopy App.Path & "\Saves\lastautosave.sim", App.Path & "\Autosave\autosave" & Replace(Date$ & Time$, ":", "-") & ".sim"
 End If
 End Sub
 
