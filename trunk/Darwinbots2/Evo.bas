@@ -65,9 +65,29 @@ If LFOR = 0.01 Then
 End If
 End Sub
 
-Private Sub Next_Stage()
-Dim t As Integer
+Private Sub CalcDNALen()
+    Dim DNATOTLEN As Long
+    Dim ROBCT As Integer
+    Dim gotdnalen As Integer
+    Dim t As Integer
+    
+    'lets grab a test robot to figure out dna length
+    For t = 1 To MaxRobs
+            If rob(t).exist And rob(t).FName = "Test.txt" Then
+                ROBCT = ROBCT + 1
+                DNATOTLEN = DNATOTLEN + DnaLen(rob(t).dna)
+            End If
+    Next
+    
+    gotdnalen = DNATOTLEN / ROBCT
+    
+    'write to file to be used later
+    Open App.path & "\dnalength.gset" For Output As #1
+        Write #1, gotdnalen
+    Close #1
+End Sub
 
+Private Sub Next_Stage()
 'Reset F1 test
 y_Stgwins = 0
 
@@ -77,26 +97,30 @@ LFORdir = Not LFORdir
 LFORcorr = 5
 Init_hidePredCycl = hidePredCycl
 
-Dim gotdnalen As Integer
+If y_normsize Then 'This stuff should only happen if y_normalize is enabled
 
-'lets grab a test robot to figure out dna length
-For t = 1 To MaxRobs
-        If rob(t).exist And rob(t).FName = "Test.txt" Then
-            gotdnalen = DnaLen(rob(t).dna)
-            Exit For
-        End If
-Next
+    Dim gotdnalen As Integer
+    
+    'read dna length from file
+    Open App.path & "\dnalength.gset" For Input As #1
+      Input #1, gotdnalen
+    Close #1
+    
+    'kill file
+    Kill App.path & "\dnalength.gset"
+       
+    Dim sizechangerate As Double
+    sizechangerate = (5000 - target_dna_size) / 4750
+    If sizechangerate < 0 Then sizechangerate = 0
+    
+    If gotdnalen < target_dna_size Then
+        curr_dna_size = gotdnalen + 5 'current dna size is 5 more then old size
+        If (gotdnalen >= (target_dna_size - 15)) And (gotdnalen <= (target_dna_size + sizechangerate * 75)) Then target_dna_size = target_dna_size + (sizechangerate * 250) + 10
+    Else
+        curr_dna_size = target_dna_size
+        If (gotdnalen >= (target_dna_size - 15)) And (gotdnalen <= (target_dna_size + sizechangerate * 75)) Then target_dna_size = target_dna_size + (sizechangerate * 250) + 10
+    End If
 
-Dim sizechangerate As Double
-sizechangerate = (5000 - target_dna_size) / 4750
-If sizechangerate < 0 Then sizechangerate = 0
-
-If gotdnalen < target_dna_size Then
-    curr_dna_size = gotdnalen + 5 'current dna size is 5 more then old size
-    If (gotdnalen >= (target_dna_size - 15)) And (gotdnalen <= (target_dna_size + sizechangerate * 75)) Then target_dna_size = target_dna_size + (sizechangerate * 250) + 10
-Else
-    curr_dna_size = target_dna_size
-    If (gotdnalen >= (target_dna_size - 15)) And (gotdnalen <= (target_dna_size + sizechangerate * 75)) Then target_dna_size = target_dna_size + (sizechangerate * 250) + 10
 End If
 
 'Configure robots
@@ -159,7 +183,7 @@ If Not LFORdir Then
     LFORcorr = LFORcorr / 2
 End If
 LFOR = LFOR + LFORcorr / n10(LFOR)
-If LFOR > 100 Then LFOR = 100
+If LFOR > 150 Then LFOR = 150
 '
 hidePredCycl = Init_hidePredCycl + 300 * rndy - 150
 '
@@ -167,84 +191,107 @@ If hidePredCycl < 150 Then hidePredCycl = 150
 If hidePredCycl > 15000 Then hidePredCycl = 15000
 '
 'Botsareus 12/11/2015 renormalize the mutation rates
-If LFORcorr > 0.00005 Then
-    If y_eco_im = 0 Then renormalize_mutations
-End If
+If LFORcorr > 0.00005 Then renormalize_mutations
 End Sub
 
 Private Sub renormalize_mutations()
-
-'norm holds normalized mutation rates
-
+Dim ecocount As Byte
 Dim norm As mutationprobs
 Dim Length As Integer
-
-
-If LoadDNA(MDIForm1.MainDir & "\evolution\Mutate.txt", 0) Then
-    Length = DnaLen(rob(0).dna)
-End If
-
-  Dim a As Long
-  With norm
-  
-  For a = 0 To 20
-    .mutarray(a) = Length * CLng(valNormMut)
-    .Mean(a) = 1
-    .StdDev(a) = 0
-  Next a
-  
-  .Mean(PointUP) = 3
-  .StdDev(PointUP) = 1
-  
-  .Mean(DeltaUP) = 500
-  .StdDev(DeltaUP) = 150
-  
-  .Mean(MinorDeletionUP) = 1
-  .StdDev(MinorDeletionUP) = 0
-  
-  .Mean(InsertionUP) = 1
-  .StdDev(InsertionUP) = 0
-  
-  .Mean(CopyErrorUP) = 1
-  .StdDev(CopyErrorUP) = 0
-  
-  .Mean(MajorDeletionUP) = 3
-  .StdDev(MajorDeletionUP) = 1
-  
-  .Mean(ReversalUP) = 3
-  .StdDev(ReversalUP) = 1
-  
-  .CopyErrorWhatToChange = 80
-  .PointWhatToChange = 80
-  
-  .Mean(AmplificationUP) = 250
-  .StdDev(AmplificationUP) = 75
-  
-  .Mean(TranslocationUP) = 250
-  .StdDev(TranslocationUP) = 75
-  
-End With
-
-'load mutations
-  
+Dim a As Long
 Dim filem As mutationprobs
 
-filem = Load_mrates(MDIForm1.MainDir & "\evolution\Mutate.mrate")
+If y_eco_im = 0 Then
+    
+    'norm holds normalized mutation rates
+    
+    If LoadDNA(MDIForm1.MainDir & "\evolution\Mutate.txt", 0) Then
+        Length = DnaLen(rob(0).dna)
+    End If
 
-'renormalize mutations
+      With norm
+      
+      For a = 0 To 20
+        .mutarray(a) = Length * CLng(valNormMut)
+        .Mean(a) = 1
+        .StdDev(a) = 0
+      Next a
+      
+     SetDefaultLengths norm
+      
+    End With
+    
+    'load mutations
+    
+    On Error GoTo nofile:
+    
+    filem = Load_mrates(MDIForm1.MainDir & "\evolution\Mutate.mrate")
+    
+    'renormalize mutations
+    
+    filem.CopyErrorWhatToChange = (filem.CopyErrorWhatToChange * 39 + norm.CopyErrorWhatToChange) / 40
+    filem.PointWhatToChange = (filem.PointWhatToChange * 39 + norm.PointWhatToChange) / 40
+    
+      For a = 0 To 20
+        If filem.mutarray(a) > 0 Then filem.mutarray(a) = (filem.mutarray(a) * 149 + norm.mutarray(a)) / 150
+        filem.Mean(a) = (filem.Mean(a) * 29 + norm.Mean(a)) / 30
+        filem.StdDev(a) = (filem.StdDev(a) * 29 + norm.StdDev(a)) / 30
+      Next a
+      
+    'save mutations
+      
+    Save_mrates filem, MDIForm1.MainDir & "\evolution\Mutate.mrate"
+    
+nofile:
 
-filem.CopyErrorWhatToChange = (filem.CopyErrorWhatToChange * 39 + norm.CopyErrorWhatToChange) / 40
-filem.PointWhatToChange = (filem.PointWhatToChange * 39 + norm.PointWhatToChange) / 40
+Else
 
-  For a = 0 To 20
-    If filem.mutarray(a) > 0 Then filem.mutarray(a) = (filem.mutarray(a) * 149 + norm.mutarray(a)) / 150
-    filem.Mean(a) = (filem.Mean(a) * 29 + norm.Mean(a)) / 30
-    filem.StdDev(a) = (filem.StdDev(a) * 29 + norm.StdDev(a)) / 30
-  Next a
-  
-'save mutations
-  
-Save_mrates filem, MDIForm1.MainDir & "\evolution\Mutate.mrate"
+    For ecocount = 1 To 15
+    
+        'norm holds normalized mutation rates
+        
+        If LoadDNA(MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.txt", 0) Then
+            Length = DnaLen(rob(0).dna)
+        End If
+        
+          With norm
+          
+          For a = 0 To 20
+            .mutarray(a) = Length * CLng(valNormMut)
+            .Mean(a) = 1
+            .StdDev(a) = 0
+          Next a
+          
+          SetDefaultLengths norm
+          
+        End With
+        
+        'load mutations
+        
+        On Error GoTo nextrob:
+        
+        filem = Load_mrates(MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.mrate")
+        
+        'renormalize mutations
+        
+        filem.CopyErrorWhatToChange = (filem.CopyErrorWhatToChange * 39 + norm.CopyErrorWhatToChange) / 40
+        filem.PointWhatToChange = (filem.PointWhatToChange * 39 + norm.PointWhatToChange) / 40
+        
+          For a = 0 To 20
+            If filem.mutarray(a) > 0 Then filem.mutarray(a) = (filem.mutarray(a) * 149 + norm.mutarray(a)) / 150
+            filem.Mean(a) = (filem.Mean(a) * 29 + norm.Mean(a)) / 30
+            filem.StdDev(a) = (filem.StdDev(a) * 29 + norm.StdDev(a)) / 30
+          Next a
+          
+        'save mutations
+          
+        Save_mrates filem, MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.mrate"
+        
+nextrob:
+    
+    Next
+
+End If
 
 End Sub
 
@@ -310,7 +357,7 @@ If rob(bestrob).Mutations > 0 And (totnvegsDisplayed >= 15 Or y_eco_im = 0) Then
                 If rob(t).exist And Not rob(t).Veg And Not rob(t).FName = "Corpse" And Not (rob(t).FName = "Base.txt" And hidepred) Then
                   
                     Form1.TotalOffspring = 1
-                    s = Form1.score(t, 1, 10, 0) + rob(t).nrg + rob(t).body * 10  'Botsareus 5/22/2013 Advanced fit test
+                    s = Form1.score(t, 1, 10, 0) + rob(t).nrg + rob(t).body * 10 'Botsareus 5/22/2013 Advanced fit test
                     s = (Form1.TotalOffspring ^ sPopulation) * (s ^ sEnergy)
                     s = s * maxgdi(t)
                     If s >= Mx Then
@@ -345,6 +392,8 @@ exportdata
 End Sub
 
 Public Sub UpdateWonF1()
+
+If y_Stgwins = 0 And y_normsize Then CalcDNALen  'Calculate DNA length after fighting in the hardest round
 
 'figure out next opponent
 Dim currenttest As Integer
@@ -502,3 +551,18 @@ Else 'if robot did not mutate
     logevo "'Reset' reason: No mutations", x_filenumber
 End If
 End Sub
+
+'Cleaner but still uses global vars:
+
+Public Function calc_exact_handycap() As Double
+    calc_exact_handycap = energydifXP - energydifXP2
+End Function
+
+Public Function calc_handycap() As Double
+    If SimOpts.TotRunCycle < (CLng(hidePredCycl) * CLng(8)) Then
+        calc_handycap = calc_exact_handycap * SimOpts.TotRunCycle / (CLng(hidePredCycl) * CLng(8))
+    Else
+        calc_handycap = calc_exact_handycap
+    End If
+End Function
+
