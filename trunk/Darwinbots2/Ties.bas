@@ -562,9 +562,9 @@ Public Sub Update_Ties(t As Integer)
                         
                             If l > .body Then l = .body ' Can't give away more body than you have
                         
-                            rob(.Ties(k).pnt).nrg = rob(.Ties(k).pnt).nrg + l * 0.029                'tied robot receives energy
+                            rob(.Ties(k).pnt).nrg = rob(.Ties(k).pnt).nrg + l * 0.03              'tied robot receives energy
                             If rob(.Ties(k).pnt).nrg > 32000 Then rob(.Ties(k).pnt).nrg = 32000
-                            rob(.Ties(k).pnt).body = rob(.Ties(k).pnt).body + l * 0.7         'tied robot stores some fat
+                            rob(.Ties(k).pnt).body = rob(.Ties(k).pnt).body + l * 0.987         'tied robot stores some fat 'Botsareus 3/23/2016 Bugfix
                             If rob(.Ties(k).pnt).body > 32000 Then rob(.Ties(k).pnt).body = 32000
                             rob(.Ties(k).pnt).Waste = rob(.Ties(k).pnt).Waste + l * 0.01          'tied robot receives waste
                             rob(.Ties(k).pnt).radius = FindRadius(.Ties(k).pnt)
@@ -609,9 +609,9 @@ Public Sub Update_Ties(t As Integer)
                                 End If
                             End If
                                                 
-                            .nrg = .nrg - l * 0.029                'tying robot receives energy
+                            .nrg = .nrg - l * 0.03             'tying robot receives energy
                             If .nrg > 32000 Then .nrg = 32000
-                            .body = .body - l * 0.7          'tying robot stores some fat
+                            .body = .body - l * 0.987          'tying robot stores some fat 'Botsareus 3/23/2016 Bugfix
                             If .body > 32000 Then .body = 32000
                             .Waste = .Waste - l * 0.01      'tying robot adds waste
                             .radius = FindRadius(t)
@@ -737,12 +737,12 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
     If .FName <> rob(.Ties(k).pnt).FName Then
      'Botsareus 2/11/2014 Tie Eye Fudge
      If FudgeEyes Or FudgeAll Then
-      If .mem(455 + 8) < 2 Then .mem(455 + 8) = Int(Rndy * 2) + 1 Else .mem(455 + 8) = .mem(455 + 8) + Int(Rndy * 2) * 2 - 1
+      If .mem(455 + 8) < 2 Then .mem(455 + 8) = Int(rndy * 2) + 1 Else .mem(455 + 8) = .mem(455 + 8) + Int(rndy * 2) * 2 - 1
      End If
      'Fudge the rest of Tie occurr
      If FudgeAll Then
       For l = 1 To 7
-       If .mem(455 + l) < 2 Then .mem(455 + l) = Int(Rndy * 2) + 1 Else .mem(455 + l) = .mem(455 + l) + Int(Rndy * 2) * 2 - 1
+       If .mem(455 + l) < 2 Then .mem(455 + l) = Int(rndy * 2) + 1 Else .mem(455 + l) = .mem(455 + l) + Int(rndy * 2) * 2 - 1
       Next l
      End If
     End If
@@ -788,7 +788,7 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
     'Fudge tin/tout
     If FudgeAll And .FName <> rob(.Ties(k).pnt).FName Then
       For l = 410 To 419
-       If .mem(l + 10) <> 0 Then .mem(l + 10) = .mem(l + 10) + Int(Rndy * 2) * 2 - 1
+       If .mem(l + 10) <> 0 Then .mem(l + 10) = .mem(l + 10) + Int(rndy * 2) * 2 - 1
       Next l
     End If
         
