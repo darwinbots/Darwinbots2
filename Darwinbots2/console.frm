@@ -23,7 +23,6 @@ Begin VB.Form Consoleform
       _ExtentX        =   8281
       _ExtentY        =   3572
       _Version        =   393217
-      Enabled         =   -1  'True
       ReadOnly        =   -1  'True
       ScrollBars      =   2
       TextRTF         =   $"console.frx":058A
@@ -339,13 +338,7 @@ Private Sub evnt_textentered(ind As Integer, text As String)
   text = rob(ind).console.text(1)
   Select Case text
     Case "debug"
-        Dim t As Integer
-        For t = 1 To MaxRobs
-            If Not (rob(t).console Is Nothing) Then rob(t).console.textout "***ROBOT DEBUG***"
-        Next
-        DisplayDebug = True
-        cycle 1
-        DisplayDebug = False
+      rob(ind).console.textout printdebug(ind)
     Case "printeye"
       rob(ind).console.textout printeye(ind)
     Case "printtouch"
@@ -434,6 +427,12 @@ Private Function printeye(ind As Integer) As String
   For t = 0 To 8
     printeye = printeye + Str$(rob(ind).mem(EYE1WIDTH + t))
   Next t
+End Function
+
+' printdebug command
+Private Function printdebug(ind As Integer) As String 'Botsareus 4/5/2016 Rearchetectured for cleaner code
+  printdebug = "***ROBOT DEBUG***"
+  printdebug = printdebug & rob(ind).dbgstring
 End Function
 
 
