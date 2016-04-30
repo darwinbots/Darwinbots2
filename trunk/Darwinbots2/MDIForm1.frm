@@ -585,10 +585,6 @@ Begin VB.MDIForm MDIForm1
       Begin VB.Menu intOptionsOpen 
          Caption         =   "Internet Options..."
       End
-      Begin VB.Menu Recording 
-         Caption         =   "Recording Options..."
-         Shortcut        =   ^V
-      End
       Begin VB.Menu sep90 
          Caption         =   "-"
       End
@@ -843,6 +839,24 @@ Begin VB.MDIForm MDIForm1
       Begin VB.Menu EditIntTeleporter 
          Caption         =   "Internet Teleporter..."
          Enabled         =   0   'False
+      End
+   End
+   Begin VB.Menu recording 
+      Caption         =   "Recording"
+      Begin VB.Menu SafemodeBkp 
+         Caption         =   "Safemode Backup"
+      End
+      Begin VB.Menu SnpLiving 
+         Caption         =   "Snapshot of the living"
+      End
+      Begin VB.Menu SnpDead 
+         Caption         =   "Snapshot of the dead"
+         Begin VB.Menu SnpDeadEnable 
+            Caption         =   "Enable recording"
+         End
+         Begin VB.Menu SnpDeadExRep 
+            Caption         =   "Exclude repopulating robots"
+         End
       End
    End
    Begin VB.Menu help 
@@ -1534,8 +1548,8 @@ End Sub
 Private Sub pbOn_Click()
 pbOn.Checked = Not pbOn.Checked
 If pbOn.Checked Then
-    Mouse_loc.x = 0
-    Mouse_loc.y = 0
+    Mouse_loc.X = 0
+    Mouse_loc.Y = 0
 End If
 Form1.PlayerBot.Visible = pbOn.Checked
 End Sub
@@ -1547,14 +1561,6 @@ End Sub
 Private Sub PolarIce_Click()
   Obstacles.DrawPolarIceMaze
 End Sub
-
-Private Sub Recording_Click()
-  optionsform.SSTab1.Tab = 6
-  NetEvent.Timer1.Enabled = False
-  NetEvent.Hide
-  optionsform.Show vbModal
-End Sub
-
 
 Private Sub removepiccy_Click() 'Botsareus 3/24/2012 Added code that deletes the background picture
 Form1.PiccyMode = False
@@ -1609,6 +1615,15 @@ Clipboard.SetText Join(all_str, vbCrLf)
 MsgBox "Data is now copyable from clipboard", vbInformation
 End Sub
 
+Private Sub SafemodeBkp_Click()
+On Error GoTo b:
+shell MainDir & "\SafeModeBackup.exe"
+MsgBox "Safemode backup backs up lastautosave.sim every 6 hours.", vbInformation
+Exit Sub
+b:
+MsgBox "Can not find SafeModeBackup.exe. Did you forget to move it into your " & MainDir & " folder?", vbCritical
+End Sub
+
 Private Sub SaveSimWithoutMutations_Click()
   SaveWithoutMutations = True
   simsave
@@ -1637,6 +1652,24 @@ End Sub
 Private Sub ShowVisionGrid_Click()
   ShowVisionGrid.Checked = Not ShowVisionGrid.Checked
   showVisionGridToggle = ShowVisionGrid.Checked
+End Sub
+
+Private Sub SnpDeadEnable_Click()
+SnpDeadEnable.Checked = Not SnpDeadEnable.Checked
+If SnpDeadEnable.Checked Then MsgBox "Snapshot of the dead writes to the DeadRobots.snp and DeadRobots_Mutations.txt in your " & MainDir & "\Autosave folder. " & _
+"You can delete this files to reset the snapshot. WARNING: This feature consumes disk space quickly.", vbInformation
+SimOpts.DeadRobotSnp = SnpDeadEnable.Checked
+TmpOpts.DeadRobotSnp = SnpDeadEnable.Checked
+End Sub
+
+Private Sub SnpDeadExRep_Click()
+SnpDeadExRep.Checked = Not SnpDeadExRep.Checked
+SimOpts.SnpExcludeVegs = SnpDeadExRep.Checked
+TmpOpts.SnpExcludeVegs = SnpDeadExRep.Checked
+End Sub
+
+Private Sub SnpLiving_Click()
+Snapshot
 End Sub
 
 Private Sub Species_Click()
@@ -1919,20 +1952,20 @@ Private Sub costi_Click()
   optionsform.Show vbModal
 End Sub
 
-Private Sub czin_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czin_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = True
   ZoomInPremuto
 End Sub
 
-Private Sub czin_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czin_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = False
 End Sub
 
 Public Sub ZoomIn()
   If Form1.visiblew > RobSize * 4 Then
     If robfocus > 0 Then
-      xc = rob(robfocus).pos.x
-      yc = rob(robfocus).pos.y
+      xc = rob(robfocus).pos.X
+      yc = rob(robfocus).pos.Y
     Else
       xc = Form1.visiblew / 2 + Form1.ScaleLeft
       yc = Form1.visibleh / 2 + Form1.ScaleTop
@@ -1962,8 +1995,8 @@ End Sub
 
 Public Sub Follow() 'Botsareus 11/29/2013 Zoom follow selected robot
     If robfocus > 0 And Form1.visiblew < 6000 And visualize Then
-      xc = rob(robfocus).pos.x
-      yc = rob(robfocus).pos.y
+      xc = rob(robfocus).pos.X
+      yc = rob(robfocus).pos.Y
       Form1.ScaleTop = yc - Form1.ScaleHeight / 2
       Form1.ScaleLeft = xc - Form1.ScaleWidth / 2
   End If
@@ -1983,7 +2016,7 @@ Private Sub ZoomOutPremuto()
   Wend
 End Sub
 
-Private Sub czo_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czo_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   AspettaFlag = True
   ZoomOutPremuto
 End Sub
@@ -2047,7 +2080,7 @@ Public Sub ZoomOut()
   Form1.Redraw
 End Sub
 
-Private Sub czo_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub czo_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
  AspettaFlag = False
 End Sub
 
@@ -2374,8 +2407,8 @@ strMsgSendData = "Please go to " & MDIForm1.MainDir & " and give the administrat
 "league\robotB.txt" & vbCrLf & vbCrLf & _
 "If you where running evolution please give the administrator the \evolution\ folder (subfolders not required)." & vbCrLf & vbCrLf & _
 IIf(UseIntRnd, "Please also give the administrator the  " & App.path & "\" & filemem & " file.", "")
-'Botsareus 5/8/2013 If the program didcrash and autosave prompt to enter safemode
-strMsgEnterDiagMode = "Warning: Diagnostic mode does not check for errors by user generated events. If the error happened immediacy after you manipulated the simulation. Please press NO and tell what you did to the administrator. Otherwise, it is recommended that you run diagnostic mode." & vbCrLf & vbCrLf & _
+'Botsareus 5/8/2013 If the program did crash and autosave prompt to enter safemode 'Botsareus 4/5/2016 Spelling fix
+strMsgEnterDiagMode = "Warning: Diagnostic mode does not check for errors by user generated events. If the error happened immediately after you manipulated the simulation. Please press NO and tell what you did to the administrator. Otherwise, it is recommended that you run diagnostic mode." & vbCrLf & vbCrLf & _
 "Do you want to run diagnostic mode?"
 
 
@@ -2586,9 +2619,13 @@ Form1.Active = True 'Botsareus 2/21/2013 moved active here to enable to pause in
                     load_league_res 'although this is techincally an evo test, it is designed as a league test
                     'F1 enabled
                     TmpOpts.F1 = True
-                    'Dynamic maxrounds
-                    Maxrounds = 5 / (x_filenumber + 1) ^ (1 / 3)
-                    If Maxrounds < 1 Then Maxrounds = 1
+                    
+                    If y_eco_im = 0 Then
+                        'Dynamic maxrounds
+                        Maxrounds = 5 / (x_filenumber + 1) ^ (1 / 3)
+                        If Maxrounds < 1 Then Maxrounds = 1
+                    End If
+                    
                     'new seed and run sim
                     chseedstartnew = True
                     optionsform.StartNew_Click
@@ -3111,7 +3148,7 @@ MsgBox "Target DNA size: " & IIf(y_normsize, curr_dna_size, "N/A") & vbCrLf & _
         "Next DNA size change: " & IIf(y_normsize, target_dna_size, "N/A") & vbCrLf & _
         "Reduction unit: " & LFOR & vbCrLf & _
         "On/Off cycles: " & hidePredCycl & _
-        IIf(x_restartmode = 4 Or x_restartmode = 5, vbCrLf & "Current Handicap: " & energydifXP & " - " & energydifXP2 & " = " & (energydifXP - energydifXP2), "") _
+        IIf(x_restartmode = 4 Or x_restartmode = 5, vbCrLf & "Current Handicap: " & energydifXP & " - " & energydifXP2 & " = " & calc_exact_handycap, "") _
         , vbInformation, "Survival information"
 End Sub
 
