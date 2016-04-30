@@ -197,6 +197,10 @@ Public Type SimOptions
   
   Tides As Integer
   TidesOf As Integer
+  
+  'Botsareus 4/18/2016 Put (simple) recording back
+  DeadRobotSnp As Boolean
+  SnpExcludeVegs As Boolean
      
 End Type
 
