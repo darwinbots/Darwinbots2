@@ -106,8 +106,8 @@ Public Sub UpdateTieAngles(t As Integer)
   While k > 0
     If rob(t).Ties(k).Port = whichTie Then
        n = rob(t).Ties(k).pnt  ' The bot number of the robot on the other end of the tie
-       tieAngle = angle(rob(t).pos.x, rob(t).pos.y, rob(n).pos.x, rob(n).pos.y)
-       dist = Sqr((rob(t).pos.x - rob(n).pos.x) ^ 2 + (rob(t).pos.y - rob(n).pos.y) ^ 2)
+       tieAngle = angle(rob(t).pos.X, rob(t).pos.Y, rob(n).pos.X, rob(n).pos.Y)
+       dist = Sqr((rob(t).pos.X - rob(n).pos.X) ^ 2 + (rob(t).pos.Y - rob(n).pos.Y) ^ 2)
        'Overflow prevention.  Very long ties can happen for one cycle when bots wrap in torridal fields
        If dist > 32000 Then dist = 32000
        rob(t).mem(TIEANG) = -CInt(AngDiff(angnorm(tieAngle), angnorm(rob(t).aim)) * 200)
@@ -304,8 +304,8 @@ Public Sub Update_Ties(t As Integer)
         Dim dist As Single
         Dim tieAngle As Single
         n = .Ties(k).pnt
-        tieAngle = angle(.pos.x, .pos.y, rob(n).pos.x, rob(n).pos.y)
-        dist = Sqr((.pos.x - rob(n).pos.x) ^ 2 + (.pos.y - rob(n).pos.y) ^ 2)
+        tieAngle = angle(.pos.X, .pos.Y, rob(n).pos.X, rob(n).pos.Y)
+        dist = Sqr((.pos.X - rob(n).pos.X) ^ 2 + (.pos.Y - rob(n).pos.Y) ^ 2)
         If dist > 32000 Then dist = 32000 'Botsareus 1/24/2014 Bug fix here
         .mem(483 + k) = CInt(dist - .radius - rob(n).radius)
         .mem(479 + k) = angnorm(angnorm(tieAngle) - angnorm(.aim)) * 200
@@ -415,9 +415,11 @@ Public Sub Update_Ties(t As Integer)
                             rob(.Ties(k).pnt).nrg = rob(.Ties(k).pnt).nrg + l 'Take the nrg
                             
                             If rob(.Ties(k).pnt).nrg <= 0 And rob(.Ties(k).pnt).Dead = False Then 'Botsareus 3/11/2014 Tie feeding kills
-                                .Kills = .Kills + 1
-                                If .Kills > 32000 Then .Kills = 32000
-                                .mem(220) = .Kills
+                                If Not rob(.Ties(k).pnt).Corpse Then 'Botsareus 7/17/2016 Bug fix to prevent logging infinate kills against a corpse
+                                    .Kills = .Kills + 1
+                                    If .Kills > 32000 Then .Kills = 32000
+                                    .mem(220) = .Kills
+                                End If
                             End If
                             
                             If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 1 And .FName <> rob(.Ties(k).pnt).FName Then dreason .FName, .tag, "taking energy from opponent"
@@ -734,6 +736,7 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
       .mem(455 + l) = rob(.Ties(k).pnt).occurr(l)
     Next l
     
+If Not rob(.Ties(k).pnt).Veg Then
     If .FName <> rob(.Ties(k).pnt).FName Then
      'Botsareus 2/11/2014 Tie Eye Fudge
      If FudgeEyes Or FudgeAll Then
@@ -746,6 +749,7 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
       Next l
      End If
     End If
+End If
     
     If .mem(476) > 0 And .mem(476) <= 1000 Then   'tmemval and tmemloc couple used to read a specific memory value from tied robot.
       .mem(475) = rob(.Ties(k).pnt).mem(.mem(476))
@@ -769,12 +773,12 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
     .mem(trefvelyourdx) = rob(.Ties(k).pnt).mem(veldx)
                 
     'Botsareus 9/27/2014 I was thinking long and hard where to place this bug fix, probebly best to place it at the source
-    If Abs(rob(.Ties(k).pnt).vel.y) > 16000 Then rob(.Ties(k).pnt).vel.y = 16000 * Sgn(rob(.Ties(k).pnt).vel.y)
-    If Abs(rob(.Ties(k).pnt).vel.x) > 16000 Then rob(.Ties(k).pnt).vel.x = 16000 * Sgn(rob(.Ties(k).pnt).vel.x)
+    If Abs(rob(.Ties(k).pnt).vel.Y) > 16000 Then rob(.Ties(k).pnt).vel.Y = 16000 * Sgn(rob(.Ties(k).pnt).vel.Y)
+    If Abs(rob(.Ties(k).pnt).vel.X) > 16000 Then rob(.Ties(k).pnt).vel.X = 16000 * Sgn(rob(.Ties(k).pnt).vel.X)
     
-    .mem(trefvelmyup) = rob(.Ties(k).pnt).vel.x * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.y * -1 - .mem(velup) 'gives velocity from mybots frame of reference
+    .mem(trefvelmyup) = rob(.Ties(k).pnt).vel.X * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.Y * -1 - .mem(velup) 'gives velocity from mybots frame of reference
     .mem(trefvelmydn) = .mem(trefvelmyup) * -1
-    .mem(trefvelmydx) = rob(.Ties(k).pnt).vel.y * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.x - .mem(veldx)
+    .mem(trefvelmydx) = rob(.Ties(k).pnt).vel.Y * Cos(.aim) + Sin(.aim) * rob(.Ties(k).pnt).vel.X - .mem(veldx)
     .mem(trefvelmysx) = .mem(trefvelmydx) * -1
     .mem(trefvelscalar) = rob(.Ties(k).pnt).mem(velscalar)
    ' .mem(trefbody) = rob(.Ties(k).pnt).body
@@ -785,12 +789,14 @@ Public Sub ReadTRefVars(t As Integer, k As Integer)
       .mem(l + 10) = rob(.Ties(k).pnt).mem(l)
     Next l
     
+If Not rob(.Ties(k).pnt).Veg Then
     'Fudge tin/tout
     If FudgeAll And .FName <> rob(.Ties(k).pnt).FName Then
       For l = 410 To 419
        If .mem(l + 10) <> 0 Then .mem(l + 10) = .mem(l + 10) + Int(rndy * 2) * 2 - 1
       Next l
     End If
+End If
         
   End With
 End Sub
@@ -978,9 +984,9 @@ Public Sub regang(t As Integer, j As Integer)
       .Ties(j).k = 0.05 ' was 0.05
       .Ties(j).type = 3
       n = .Ties(j).pnt
-      angl = angle(.pos.x, .pos.y, rob(n).pos.x, rob(n).pos.y)
+      angl = angle(.pos.X, .pos.Y, rob(n).pos.X, rob(n).pos.Y)
     '  angl = angnorm(angl)
-      dist = Sqr((.pos.x - rob(n).pos.x) ^ 2 + (.pos.y - rob(n).pos.y) ^ 2)
+      dist = Sqr((.pos.X - rob(n).pos.X) ^ 2 + (.pos.Y - rob(n).pos.Y) ^ 2)
       If .Ties(j).back = False Then
         .Ties(j).ang = AngDiff(angnorm(angl), angnorm(rob(t).aim)) ' only fix the angle of the bot that created the tie
         .Ties(j).angreg = True

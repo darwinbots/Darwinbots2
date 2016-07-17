@@ -6,30 +6,39 @@ Option Explicit
 '
 
 ' moves the organism of which robot n is part to the position x,y
-Public Sub ReSpawn(n As Integer, x As Single, Y As Single)
+Public Sub ReSpawn(n As Integer, X As Single, Y As Single)
   Dim clist(50) As Integer 'changed from 20 to 50
   Dim Min As Single, nmin As Integer
   Dim t As Integer, dx As Single, dy As Single
+  Dim radiidif As Single
   clist(0) = n
   ListCells clist()
   Min = 999999999999#
   t = 0
   While clist(t) > 0
-    If ((rob(clist(t)).pos.x - x) ^ 2 + (rob(clist(t)).pos.Y - Y) ^ 2) <= Min Then
-      Min = (rob(clist(t)).pos.x - x) ^ 2 + (rob(clist(t)).pos.Y - Y) ^ 2
+    If ((rob(clist(t)).pos.X - X) ^ 2 + (rob(clist(t)).pos.Y - Y) ^ 2) <= Min Then
+      Min = (rob(clist(t)).pos.X - X) ^ 2 + (rob(clist(t)).pos.Y - Y) ^ 2
       nmin = clist(t)
     End If
     t = t + 1
     If t > 50 Then GoTo getout
   Wend
-  dx = x - rob(nmin).pos.x
+  dx = X - rob(nmin).pos.X
   dy = Y - rob(nmin).pos.Y
-  dx = dx - 1 * Sgn(dx)
-  dy = dy - 1 * Sgn(dy)
+  
+  'Botsareus 7/15/2016 Bug fix: corrects by radii difference between the two robots
+  radiidif = rob(n).radius - rob(nmin).radius
+  
+  dx = dx - 1 * Sgn(dx) + Sgn(dx) * radiidif
+  dy = dy - 1 * Sgn(dy) + Sgn(dy) * radiidif
+  
   t = 0
   While clist(t) > 0
-    rob(clist(t)).pos.x = rob(clist(t)).pos.x + dx
+    rob(clist(t)).pos.X = rob(clist(t)).pos.X + dx
     rob(clist(t)).pos.Y = rob(clist(t)).pos.Y + dy
+    'Botsareus 7/6/2016 Make sure to resolve actvel
+    rob(clist(t)).opos.X = rob(clist(t)).pos.X
+    rob(clist(t)).opos.Y = rob(clist(t)).pos.Y
     'Bot is already part of a bucket...
     'rob(clist(t)).BucketPos.x = -2
     'rob(clist(t)).BucketPos.Y = -2

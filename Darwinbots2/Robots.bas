@@ -196,6 +196,8 @@ Private Type robot
   BucketPos As vector
   
   vel As vector
+  actvel As vector 'Botsareus 6/22/2016 Robots actual velocity if it hits something
+  opos As vector 'Used to calculate actvel
    
   ImpulseInd As vector      ' independant forces vector
   ImpulseRes As vector      ' Resistive forces vector
@@ -769,10 +771,9 @@ Public Function absy(aim As Single, ByVal up As Integer, ByVal dn As Integer, By
   absy = -Sin(aim) * upTotal + Cos(aim) * sxTotal
 End Function
 
-Private Function SetAimFunc(t As Integer) As Single  'Botsareus 6/29/2013 Turn costs and ma more accurate
+Private Function SetAimFunc(ByVal t As Integer) As Single  'Botsareus 6/29/2013 Turn costs and ma more accurate
   Dim diff As Single
   Dim diff2 As Single
-  Dim newaim As Single
   With rob(t)
   
   diff = CSng(.mem(aimsx)) - CSng(.mem(aimdx))
@@ -783,12 +784,12 @@ Private Function SetAimFunc(t As Integer) As Single  'Botsareus 6/29/2013 Turn c
   Else
     ' .setaim overrides .aimsx and .aimdx
     SetAimFunc = .mem(SetAim)          ' this is where .aim needs to be
-    diff = -AngDiff(.aim, CSng(.mem(SetAim) / 200)) * 200  ' this is the diff to get there
+    diff = -AngDiff(.aim, angnorm(CSng(.mem(SetAim) / 200))) * 200   ' this is the diff to get there 'Botsareus 6/18/2016 Added angnorm
     diff2 = Abs(Round((.aim * 200 - .mem(SetAim)) / 1256, 0) * 1256) * Sgn(diff) ' this is how much we add to momentum
   End If
   
   'diff + diff2 is now the amount, positive or negative to turn.
-  .nrg = .nrg - Abs((Round((diff / 200 + diff2 / 200), 3) * SimOpts.Costs(TURNCOST) * SimOpts.Costs(COSTMULTIPLIER)))
+  .nrg = .nrg - Abs((Round((diff + diff2) / 200, 3) * SimOpts.Costs(TURNCOST) * SimOpts.Costs(COSTMULTIPLIER)))
       
   SetAimFunc = SetAimFunc Mod (1256)
   If SetAimFunc < 0 Then SetAimFunc = SetAimFunc + 1256
@@ -803,11 +804,11 @@ Private Function SetAimFunc(t As Integer) As Single  'Botsareus 6/29/2013 Turn c
   'Voluntary rotation can reduce angular momentum but does not add to it.
     
   If .ma > 0 And diff < 0 Then
-    .ma = .ma + (diff + diff2) / 400
+    .ma = .ma + (diff + diff2) / 200
     If .ma < 0 Then .ma = 0
   End If
   If .ma < 0 And diff > 0 Then
-    .ma = .ma + (diff + diff2) / 400
+    .ma = .ma + (diff + diff2) / 200
     If .ma > 0 Then .ma = 0
   End If
   
@@ -834,7 +835,7 @@ Public Sub UpdatePosition(ByVal n As Integer)
   
   If Not .Fixed Then
     ' speed normalization
-            
+    
     .vel = VectorAdd(.vel, VectorScalar(.ImpulseInd, 1 / (.mass + .AddedMass)))
         
     vt = VectorMagnitudeSquare(.vel)
@@ -948,7 +949,7 @@ Dim slimeNrgConvRate As Single
     
     If Abs(Delta) > .nrg / slimeNrgConvRate Then Delta = Sgn(Delta) * .nrg / slimeNrgConvRate  ' Can't make or unmake more slime than you have nrg
     
-    If Abs(Delta) > 100 Then Delta = Sgn(Delta) * 100      ' Can't make or unmake more than 100 slime at a time
+    If Abs(Delta) > 200 Then Delta = Sgn(Delta) * 200      'Botsareus 6/23/2016 Can't make or unmake more than 200 slime at a time
     If .Slime + Delta > 32000 Then Delta = 32000 - .Slime  ' Slime can't go above 32000
     If .Slime + Delta < 0 Then Delta = -.Slime             ' Slime can't go below 0
     
@@ -1121,7 +1122,7 @@ Private Sub Poisons(n As Integer)
     If .Paracount < 1 Then .Paralyzed = False: .Vloc = 0: .Vval = 0
   End If
   
-  .mem(837) = .Paracount
+  .mem(837) = Int(.Paracount) 'Botsareus 7/13/2016 Bug fix
   
   If .Poisoned Then .mem(.Ploc) = .Pval
 
@@ -1130,7 +1131,7 @@ Private Sub Poisons(n As Integer)
     If .Poisoncount < 1 Then .Poisoned = False: .Ploc = 0: .Pval = 0
   End If
   
-  .mem(838) = .Poisoncount
+  .mem(838) = Int(.Poisoncount) 'Botsareus 7/13/2016 Bug fix
   End With
 End Sub
 
@@ -1266,7 +1267,7 @@ End Sub
 Private Sub ManageBody(ByVal n As Integer)
     
   'body management
-  rob(n).obody = rob(n).body      'replaces routine above
+  'rob(n).obody = rob(n).body      'replaces routine above 'Botsareus 7/4/2016 Bug fix -bodgain and bodloss work now
         
   If rob(n).mem(strbody) > 0 Then storebody n
   If rob(n).mem(fdbody) > 0 Then feedbody n
@@ -1481,7 +1482,7 @@ Public Sub UpdateBots()
   Dim q As Integer
   Dim ti As Single
   Dim X As Integer
-  Dim staticV As vector
+  Dim staticV As Single
     
   rp = 1
   kl = 1
@@ -1542,10 +1543,16 @@ Public Sub UpdateBots()
       If Not rob(t).Corpse And Not rob(t).DisableDNA Then TieTorque t 'EricL 4/21/2006 Handles tie angles
       If Not rob(t).Fixed Then NetForces t 'calculate forces on all robots
       BucketsCollision t
-      If rob(t).ImpulseStatic > 0 Then
-        staticV = VectorScalar(VectorUnit(rob(t).ImpulseInd), rob(t).ImpulseStatic)
-        If VectorMagnitudeSquare(staticV) > VectorMagnitudeSquare(rob(t).ImpulseInd) Then
-          rob(t).ImpulseInd = VectorSub(rob(t).ImpulseInd, staticV)
+      'Botsareus 6/17/2016 Static friction fix
+      If rob(t).ImpulseStatic > 0 And (rob(t).ImpulseInd.X <> 0 Or rob(t).ImpulseInd.Y <> 0) Then
+        If rob(t).vel.X = 0 And rob(t).vel.Y = 0 Then
+            staticV = rob(t).ImpulseStatic
+        Else
+            'Takes into account the fact that the robot may be moving along the same vector
+            staticV = rob(t).ImpulseStatic * Abs(Cross(VectorUnit(rob(t).vel), VectorUnit(rob(t).ImpulseInd)))
+        End If
+        If staticV > VectorMagnitude(rob(t).ImpulseInd) Then
+          rob(t).ImpulseInd = VectorSet(0, 0) 'If static vector is greater then impulse vector, reset impulse vector
         End If
       End If
       rob(t).ImpulseInd = VectorSub(rob(t).ImpulseInd, rob(t).ImpulseRes)
@@ -1723,7 +1730,7 @@ Private Sub robshoot(n As Integer)
   value = rob(n).mem(shootval)
   
    
-  If shtype >= -1 Or shtype = -6 Then ' nrg feeed, body feeding or info shot
+  If shtype = -1 Or shtype = -6 Then 'Botsareus 6/20/2016 Only for nrg/body feed shots
     
     'Negative value for .shootval
     If value < 0 Then                 ' negative values of .shootval impact shot range?
@@ -1780,20 +1787,20 @@ Private Sub robshoot(n As Integer)
     Cost = SimOpts.Costs(SHOTCOST) * SimOpts.Costs(COSTMULTIPLIER)
     If rob(n).nrg < Cost Then Cost = rob(n).nrg
     rob(n).nrg = rob(n).nrg - Cost ' EricL - postive shots should cost the shotcost
-    newshot n, shtype, value, 1
+    newshot n, shtype, value, 1, True
     'Botsareus 3/14/2014 Disqualify
     If (SimOpts.F1 Or x_restartmode = 1) And Disqualify = 2 Then dreason rob(n).FName, rob(n).tag, "firing an info shot"
     If Not SimOpts.F1 And rob(n).dq = 1 And Disqualify = 2 Then rob(n).Dead = True 'safe kill robot
   Case -1 ' Nrg request Feeding Shot
     If rob(n).Multibot Then
-      value = 20 + (rob(n).body / 5) * (rob(n).numties + 1)
+      value = 20 + (rob(n).body / 5) * (IIf(rob(n).numties < 0, 0, rob(n).numties) + 1) 'Botsareus 6/22/2016 Bugfix
     Else
       value = 20 + (rob(n).body / 5)
     End If
     value = value * multiplier
     If rob(n).nrg < Cost Then Cost = rob(n).nrg
     rob(n).nrg = rob(n).nrg - Cost
-    newshot n, shtype, value, rngmultiplier
+    newshot n, shtype, value, rngmultiplier, True
   Case -2 ' Nrg shot
     value = Abs(value)
     If rob(n).nrg < value Then value = rob(n).nrg
@@ -1804,7 +1811,7 @@ Private Sub robshoot(n As Integer)
     Else
       rob(n).nrg = rob(n).nrg - EnergyLost
     End If
-    newshot n, shtype, value, 1
+    newshot n, shtype, value, 1, True
   Case -3 'shoot venom
     value = Abs(value)
     If value > rob(n).venom Then value = rob(n).venom
@@ -1819,7 +1826,7 @@ Private Sub robshoot(n As Integer)
       rob(n).nrg = rob(n).nrg - EnergyLost
      ' EnergyLostPerCycle = EnergyLostPerCycle - EnergyLost
     End If
-    newshot n, shtype, value, 1
+    newshot n, shtype, value, 1, True
   Case -4 'shoot waste 'Botsareus 4/22/2016 Bugfix
     value = Abs(value)
     If value = 0 Then value = rob(n).Waste / 20# 'default waste shot. 'Botsareus 10/5/2015 Fix for waste
@@ -1833,7 +1840,7 @@ Private Sub robshoot(n As Integer)
     Else
       rob(n).nrg = rob(n).nrg - EnergyLost
     End If
-    newshot n, shtype, value, 1
+    newshot n, shtype, value, 1, True
   ' no -5 shot here as poison can only be shot in response to an attack
   Case -6 'shoot body
     If rob(n).Multibot Then
@@ -1844,12 +1851,12 @@ Private Sub robshoot(n As Integer)
     If rob(n).nrg < Cost Then Cost = rob(n).nrg
     rob(n).nrg = rob(n).nrg - Cost
     value = value * multiplier
-    newshot n, shtype, value, rngmultiplier
+    newshot n, shtype, value, rngmultiplier, True
   Case -8 ' shoot sperm
     Cost = SimOpts.Costs(SHOTCOST) * SimOpts.Costs(COSTMULTIPLIER)
     If rob(n).nrg < Cost Then Cost = rob(n).nrg
     rob(n).nrg = rob(n).nrg - Cost ' EricL - postive shots should cost the shotcost
-    newshot n, shtype, value, 1
+    newshot n, shtype, value, 1, True
   End Select
 CantShoot:
   rob(n).mem(shoot) = 0
@@ -2045,7 +2052,7 @@ Public Sub storepoison(n As Integer)
   Dim Delta As Single
   Dim poisonNrgConvRate As Single
 
-  poisonNrgConvRate = 1 ' Make 1 poison for 1 nrg
+  poisonNrgConvRate = 0.25 'Botsareus 6/23/2016 Make 4 poison for 1 nrg
 
   With rob(n)
     If .nrg <= 0 Then GoTo getout ' Can't make or unmake poison if nrg is negative
@@ -2179,6 +2186,7 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
       rob(nuovo).BucketPos.Y = -2
       UpdateBotBucket nuovo
       rob(nuovo).vel = rob(n).vel
+      rob(nuovo).actvel = rob(n).actvel 'Botsareus 7/1/2016 Bugfix
       rob(nuovo).color = rob(n).color
       rob(nuovo).aim = rob(n).aim + PI
       If rob(nuovo).aim > 6.28 Then rob(nuovo).aim = rob(nuovo).aim - 2 * PI
@@ -2626,6 +2634,7 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
       UpdateBotBucket nuovo
       
       rob(nuovo).vel = rob(female).vel
+      rob(nuovo).actvel = rob(female).actvel 'Botsareus 7/1/2016 Bugfix
       rob(nuovo).color = rob(female).color
       rob(nuovo).aim = rob(female).aim + PI
       If rob(nuovo).aim > 6.28 Then rob(nuovo).aim = rob(nuovo).aim - 2 * PI
@@ -2982,7 +2991,7 @@ End If
  Dim newsize As Long
  Dim X As Long
  
-  If n = -1 Then n = robfocus
+  'If n = -1 Then n = robfocus
    
   rob(n).Fixed = False
   rob(n).Veg = False

@@ -53,21 +53,21 @@ Public Sub UpdateSim()
   Dim usehidepred As Boolean
   usehidepred = x_restartmode = 4 Or x_restartmode = 5 'Botsareus expend to evo mode
   '
-'  Dim avgsize As Long
-'  Dim k As Integer 'robots moved last attempt
-'  Dim k2 As Integer 'robots moved total
+  'Dim avgsize As Long
+  Dim k As Long 'robots moved last attempt
+  Dim k2 As Long 'robots moved total
+  Dim ingdist As Single
+  Dim pozdif As vector
+  Dim newpoz As vector
+  Dim posdif As vector
   '
   If usehidepred Then
     'Count species for end of evo
     Base_count = 0
     Mutate_count = 0
-    'avgsize = 0
     For t = 1 To MaxRobs
       If rob(t).exist Then
-          If rob(t).FName = "Base.txt" Then
-            Base_count = Base_count + 1
-            'avgsize = avgsize + rob(t).body
-          End If
+          If rob(t).FName = "Base.txt" Then Base_count = Base_count + 1
           If rob(t).FName = "Mutate.txt" Then Mutate_count = Mutate_count + 1
       End If
     Next t
@@ -118,47 +118,81 @@ Mode:
       End If
       energydifX = energydif / ModeChangeCycles
       energydif = 0
-'      If hidepred And Mutate_count > Base_count Then 'only if there is more mutate robots 'Botsareus 4/19/2016 Disabled to incurge more team work
-'        'lets reposition the robots
-'        avgsize = avgsize / Base_count
-'        k2 = 0
-'        Do
-'        k = 0
-'        For t = 1 To MaxRobs
-'             If rob(t).exist And rob(t).FName = "Base.txt" Then
-'                  For i = 1 To MaxRobs
-'                      If rob(i).exist And rob(i).FName = "Mutate.txt" Then
-'                        If ((rob(i).pos.X - rob(t).pos.X) ^ 2 + (rob(i).pos.Y - rob(t).pos.Y) ^ 2) ^ 0.5 < avgsize Then
-'                        'if the distance between the robots is less then avgsize then move mutate robot out of the way
-'                            With rob(i)
-'                                'tie mod
-'                                Dim pozdif As vector
-'                                pozdif.X = 9237 * rndy - .pos.X
-'                                pozdif.Y = 6928 * rndy - .pos.Y
-'                                If .numties > 0 Then
-'                                    Dim clist(50) As Integer, tk As Integer
-'                                    clist(0) = i
-'                                    ListCells clist()
-'                                    'move multibot
-'                                    tk = 1
-'                                    While clist(tk) > 0
-'                                        rob(clist(tk)).pos.X = rob(clist(tk)).pos.X + pozdif.X
-'                                        rob(clist(tk)).pos.Y = rob(clist(tk)).pos.Y + pozdif.Y
-'                                        tk = tk + 1
-'                                    Wend
-'                                End If
-'                                .pos.X = .pos.X + pozdif.X
-'                                .pos.Y = .pos.Y + pozdif.Y
-'                            End With
-'                            k = k + 1
-'                            k2 = k2 + 1
-'                        End If
-'                      End If
-'                  Next
-'             End If
-'        Next t
-'        Loop Until k = 0 Or k2 > 7000
-'      End If
+      'Botsareus 6/12/2016 An attempt to get rid of 'chasers' without using any reposition code:
+      If hidepred Then
+      
+        'Erase offensive shots
+        For t = 1 To maxshotarray
+          With Shots(t)
+            If .shottype = -1 Or .shottype = -6 Then
+                .exist = False
+                .flash = False
+            End If
+          End With
+        Next t
+        
+        'Reposition robots the safe way
+        k2 = 0
+        Do
+        k = 0
+        For t = 1 To MaxRobs
+             If rob(t).exist And rob(t).FName = "Base.txt" Then
+                  For i = 1 To MaxRobs
+                      If rob(i).exist And rob(i).FName = "Mutate.txt" Then
+                      
+                        'calculate ingagment distance
+                        If rob(t).body > rob(i).body Then
+                            If rob(t).body > 10 Then
+                                ingdist = Log(rob(t).body) * 60 + 41
+                            Else
+                                ingdist = 40
+                            End If
+                        Else
+                            If rob(i).body > 10 Then
+                                ingdist = Log(rob(i).body) * 60 + 41
+                            Else
+                                ingdist = 40
+                            End If
+                        End If
+                        ingdist = rob(t).radius + rob(i).radius + ingdist + 40 'both radii plus shot dist plus offset 1 shot travel dist
+                            
+                        posdif = VectorSub(rob(t).pos, rob(i).pos)
+                        If VectorMagnitude(posdif) < ingdist Then
+                        'if the distance between the robots is less then ingagment distance
+                            With rob(i)
+                                ingdist = ingdist - VectorMagnitude(posdif) 'ingdist becomes offset dist
+                                newpoz = VectorSub(.pos, VectorScalar(VectorUnit(posdif), ingdist)) 'offset the multibot by ingagment distance
+                                
+                                pozdif.X = newpoz.X - .pos.X
+                                pozdif.Y = newpoz.Y - .pos.Y
+                                If .numties > 0 Then
+                                    Dim clist(50) As Integer, tk As Integer
+                                    clist(0) = i
+                                    ListCells clist()
+                                    'move multibot
+                                    tk = 1
+                                    While clist(tk) > 0
+                                        'Botsareus 7/15/2016 Only own species
+                                        If rob(clist(tk)).FName = "Mutate.txt" Then
+                                            rob(clist(tk)).pos.X = rob(clist(tk)).pos.X + pozdif.X
+                                            rob(clist(tk)).pos.Y = rob(clist(tk)).pos.Y + pozdif.Y
+                                        End If
+                                        tk = tk + 1
+                                    Wend
+                                End If
+                                .pos.X = .pos.X + pozdif.X
+                                .pos.Y = .pos.Y + pozdif.Y
+                            End With
+                            k = k + 1
+                            k2 = k2 + 1
+                        End If
+                      End If
+                  Next
+             End If
+        Next t
+        Loop Until k = 0 Or k2 > (3200 + Mutate_count * 0.9) 'Scales as mutate_count scales
+        
+      End If
       'change hide pred
       hidepred = Not hidepred
       hidePredOffset = hidePredCycl / 3 * rndy
@@ -324,9 +358,25 @@ Mode:
     End With
    Next t
   End If
-    
+
   updateshots
+  
+    'Botsareus 6/22/2016 to figure out actual velocity of the bot incase there is a collision event
+    For t = 1 To MaxRobs
+        If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
+            rob(t).opos = rob(t).pos
+        End If
+    Next
+  
   UpdateBots
+  
+    'to figure out actual velocity of the bot incase there is a collision event
+    For t = 1 To MaxRobs
+        If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
+            'Only if the robots position was already configured
+            If Not (rob(t).opos.X = 0 And rob(t).opos.Y = 0) Then rob(t).actvel = VectorSub(rob(t).pos, rob(t).opos)
+        End If
+    Next
   
   If numObstacles > 0 Then MoveObstacles
   If numTeleporters > 0 Then UpdateTeleporters

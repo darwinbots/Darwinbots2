@@ -74,6 +74,11 @@ Public Function MakeSpace(ByRef dna() As block, ByVal beginning As Long, ByVal L
   MakeSpace = True
 
   ReDim Preserve dna(DNALength + Length)
+  
+  'Botsareus 6/25/2016 Bugfix - erase dna that was just created to insure all units get erased
+  For t = DNALength + 1 To DNALength + Length Step 1
+    EraseUnit dna(t)
+  Next
 
   For t = DNALength To beginning + 1 Step -1
     dna(t + Length) = dna(t)

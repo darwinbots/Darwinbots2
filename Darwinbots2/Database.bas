@@ -35,7 +35,7 @@ Public Sub Snapshot()
   v = ","
   Form1.GraphLab.Visible = True
   For rn = 1 To MaxRobs
-    If rob(rn).exist Then
+    If rob(rn).exist And rob(rn).DnaLen > 1 Then 'Botsareus 6/16/2016 Bugfix
       With rob(rn)
       
         If m Then
@@ -110,6 +110,8 @@ On Error GoTo getout
     
     With rob(rn)
     
+        If .DnaLen = 1 Then GoTo getout 'Botsareus 6/16/2016 Bugfix
+    
         Print #178, vbCrLf & CStr(.AbsNum); v;
         Print #178, vbCrLf & .LastMutDetail
         
@@ -134,9 +136,10 @@ On Error GoTo getout
         
       End With
       
+getout:
+
     Close #177
     Close #178
-getout:
 End Sub
 
 

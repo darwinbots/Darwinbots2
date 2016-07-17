@@ -206,7 +206,7 @@ End Sub
 
 Private Sub Form_Load()
   strings Me
-  SetWindowPos hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
+  SetWindowPos hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE
 End Sub
 
 Private Sub Form_Resize()
@@ -479,10 +479,10 @@ Public Sub cycle(num As Integer)
         Form1.cyc = 0
       End If
       
-      Select Case SimOpts.PopLimMethod
-        Case 1, 2
-          If TotalRobots > SimOpts.MaxPopulation Then Form1.popcontrol
-      End Select
+'      Select Case SimOpts.PopLimMethod
+'        Case 1, 2
+'          If TotalRobots > SimOpts.MaxPopulation Then Form1.popcontrol
+'      End Select
     DoEvents
   Next k
 End Sub

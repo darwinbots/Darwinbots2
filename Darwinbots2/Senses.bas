@@ -18,7 +18,7 @@ End Sub
 
 ' touch: tells a robot whether it has been hit by another one
 ' and where: up, dn dx, sx
-Public Sub touch(ByVal a As Long, ByVal x As Long, ByVal y As Long)
+Public Sub touch(ByVal a As Long, ByVal X As Long, ByVal Y As Long)
   Dim xc As Single
   Dim yc As Single
   Dim dx As Single
@@ -28,10 +28,10 @@ Public Sub touch(ByVal a As Long, ByVal x As Long, ByVal y As Long)
   Dim aim As Single
   Dim dang As Single
   aim = 6.28 - rob(a).aim
-  xc = rob(a).pos.x
-  yc = rob(a).pos.y
-  dx = x - xc
-  dy = y - yc
+  xc = rob(a).pos.X
+  yc = rob(a).pos.Y
+  dx = X - xc
+  dy = Y - yc
   
   If dx <> 0 Then
     tn = dy / dx
@@ -58,7 +58,7 @@ End Sub
 ' taste: same as for touch, but for shots, and gives back
 ' also the flavour of the shot, that is, its shottype
 ' value
-Public Sub taste(a As Integer, ByVal x As Single, ByVal y As Single, value As Integer)
+Public Sub taste(a As Integer, ByVal X As Single, ByVal Y As Single, value As Integer)
   Dim xc As Single
   Dim yc As Single
   Dim dx As Single
@@ -68,10 +68,10 @@ Public Sub taste(a As Integer, ByVal x As Single, ByVal y As Single, value As In
   Dim aim As Single
   Dim dang As Single
   aim = 6.28 - rob(a).aim
-  xc = rob(a).pos.x
-  yc = rob(a).pos.y
-  dx = x - xc
-  dy = y - yc
+  xc = rob(a).pos.X
+  yc = rob(a).pos.Y
+  dx = X - xc
+  dy = Y - yc
   If dx <> 0 Then
     tn = dy / dx
     ang = Atn(tn)
@@ -205,13 +205,13 @@ Public Sub WriteSenses(ByVal n As Integer)
     .mem(Energy) = CInt(.nrg)
     If .age = 0 And .mem(body) = 0 Then .mem(body) = .body 'to stop an odd bug in birth.  Don't ask
     If .Fixed Then .mem(215) = 1 Else .mem(215) = 0
-    If .pos.y < 0 Then .pos.y = 0
-    temp = Int((.pos.y / Form1.yDivisor) / 32000#)
-    temp = (.pos.y / Form1.yDivisor) - (temp * 32000#)
+    If .pos.Y < 0 Then .pos.Y = 0
+    temp = Int((.pos.Y / Form1.yDivisor) / 32000#)
+    temp = (.pos.Y / Form1.yDivisor) - (temp * 32000#)
     .mem(217) = CInt(temp Mod 32000)
-    If .pos.x < 0 Then .pos.x = 0
-    temp = Int((.pos.x / Form1.xDivisor) / 32000#)
-    temp = (.pos.x / Form1.xDivisor) - (temp * 32000#)
+    If .pos.X < 0 Then .pos.X = 0
+    temp = Int((.pos.X / Form1.xDivisor) / 32000#)
+    temp = (.pos.X / Form1.xDivisor) - (temp * 32000#)
     .mem(219) = CInt(temp Mod 32000)
   End With
 End Sub
@@ -221,8 +221,8 @@ End Sub
 Public Sub lookoccurr(ByVal n As Integer, ByVal o As Integer)
   If rob(n).Corpse Then GoTo getout
   Dim t As Byte
-  Dim x As Single
-  Dim y As Single
+  Dim X As Single
+  Dim Y As Single
   
   rob(n).mem(REFTYPE) = 0
   
@@ -230,18 +230,20 @@ Public Sub lookoccurr(ByVal n As Integer, ByVal o As Integer)
     rob(n).mem(occurrstart + t) = rob(o).occurr(t)
   Next t
   
+If Not rob(o).Veg Then 'Botsareus 6/23/2016 Bug fix - fudging does not apply to repopulating robots
   If rob(o).FName <> rob(n).FName Then
    'Botsareus 2/5/2014 Eye Fudge
    If FudgeEyes Or FudgeAll Then
-    If rob(n).mem(occurrstart + 8) < 2 Then rob(n).mem(occurrstart + 8) = Int(Rndy * 2) + 1 Else rob(n).mem(occurrstart + 8) = rob(n).mem(occurrstart + 8) + Int(Rndy * 2) * 2 - 1
+    If rob(n).mem(occurrstart + 8) < 2 Then rob(n).mem(occurrstart + 8) = Int(rndy * 2) + 1 Else rob(n).mem(occurrstart + 8) = rob(n).mem(occurrstart + 8) + Int(rndy * 2) * 2 - 1
    End If
    'Fudge the rest of look occurr
    If FudgeAll Then
     For t = 1 To 7
-     If rob(n).mem(occurrstart + t) < 2 Then rob(n).mem(occurrstart + t) = Int(Rndy * 2) + 1 Else rob(n).mem(occurrstart + t) = rob(n).mem(occurrstart + t) + Int(Rndy * 2) * 2 - 1
+     If rob(n).mem(occurrstart + t) < 2 Then rob(n).mem(occurrstart + t) = Int(rndy * 2) + 1 Else rob(n).mem(occurrstart + t) = rob(n).mem(occurrstart + t) + Int(rndy * 2) * 2 - 1
     Next t
    End If
   End If
+End If
   
   
   If rob(o).nrg < 0 Then
@@ -269,47 +271,51 @@ Public Sub lookoccurr(ByVal n As Integer, ByVal o As Integer)
   rob(n).mem(in9) = rob(o).mem(out9)
   rob(n).mem(in10) = rob(o).mem(out10)
   
+If Not rob(o).Veg Then
   'fudge in/out
   If FudgeAll Then
     If rob(o).FName <> rob(n).FName Then
-        If rob(o).mem(out1) <> 0 Then rob(n).mem(in1) = rob(o).mem(out1) + Int(Rndy * 2) * 2 - 1
-        If rob(o).mem(out2) <> 0 Then rob(n).mem(in2) = rob(o).mem(out2) + Int(Rndy * 2) * 2 - 1
-        If rob(o).mem(out3) <> 0 Then rob(n).mem(in3) = rob(o).mem(out3) + Int(Rndy * 2) * 2 - 1
-        If rob(o).mem(out4) <> 0 Then rob(n).mem(in4) = rob(o).mem(out4) + Int(Rndy * 2) * 2 - 1
-        If rob(o).mem(out5) <> 0 Then rob(n).mem(in5) = rob(o).mem(out5) + Int(Rndy * 2) * 2 - 1
-        If rob(o).mem(out6) <> 0 Then rob(n).mem(in6) = rob(o).mem(out6) + Int(Rndy * 2) * 2 - 1
-        If rob(o).mem(out7) <> 0 Then rob(n).mem(in7) = rob(o).mem(out7) + Int(Rndy * 2) * 2 - 1
-        If rob(o).mem(out8) <> 0 Then rob(n).mem(in8) = rob(o).mem(out8) + Int(Rndy * 2) * 2 - 1
-        If rob(o).mem(out9) <> 0 Then rob(n).mem(in9) = rob(o).mem(out9) + Int(Rndy * 2) * 2 - 1
-        If rob(o).mem(out10) <> 0 Then rob(n).mem(in10) = rob(o).mem(out10) + Int(Rndy * 2) * 2 - 1
+        If rob(o).mem(out1) <> 0 Then rob(n).mem(in1) = rob(o).mem(out1) + Int(rndy * 2) * 2 - 1
+        If rob(o).mem(out2) <> 0 Then rob(n).mem(in2) = rob(o).mem(out2) + Int(rndy * 2) * 2 - 1
+        If rob(o).mem(out3) <> 0 Then rob(n).mem(in3) = rob(o).mem(out3) + Int(rndy * 2) * 2 - 1
+        If rob(o).mem(out4) <> 0 Then rob(n).mem(in4) = rob(o).mem(out4) + Int(rndy * 2) * 2 - 1
+        If rob(o).mem(out5) <> 0 Then rob(n).mem(in5) = rob(o).mem(out5) + Int(rndy * 2) * 2 - 1
+        If rob(o).mem(out6) <> 0 Then rob(n).mem(in6) = rob(o).mem(out6) + Int(rndy * 2) * 2 - 1
+        If rob(o).mem(out7) <> 0 Then rob(n).mem(in7) = rob(o).mem(out7) + Int(rndy * 2) * 2 - 1
+        If rob(o).mem(out8) <> 0 Then rob(n).mem(in8) = rob(o).mem(out8) + Int(rndy * 2) * 2 - 1
+        If rob(o).mem(out9) <> 0 Then rob(n).mem(in9) = rob(o).mem(out9) + Int(rndy * 2) * 2 - 1
+        If rob(o).mem(out10) <> 0 Then rob(n).mem(in10) = rob(o).mem(out10) + Int(rndy * 2) * 2 - 1
     End If
   End If
+End If
   
   rob(n).mem(711) = rob(o).mem(18)      'refaim
   rob(n).mem(712) = rob(o).occurr(9)    'reftie
   
+If Not rob(o).Veg Then
   'Fudge the ties
   If FudgeAll Then
     If rob(o).FName <> rob(n).FName Then
-        If rob(n).mem(712) < 2 Then rob(n).mem(712) = Int(Rndy * 2) + 1 Else rob(n).mem(712) = rob(n).mem(712) + Int(Rndy * 2) * 2 - 1
+        If rob(n).mem(712) < 2 Then rob(n).mem(712) = Int(rndy * 2) + 1 Else rob(n).mem(712) = rob(n).mem(712) + Int(rndy * 2) * 2 - 1
     End If
   End If
+End If
   
   rob(n).mem(refshell) = rob(o).shell
   rob(n).mem(refbody) = rob(o).body
   rob(n).mem(refypos) = rob(o).mem(217)
   rob(n).mem(refxpos) = rob(o).mem(219)
   'give reference variables from the bots frame of reference
-  x = (rob(o).vel.x * Cos(rob(n).aim) + rob(o).vel.y * Sin(rob(n).aim) * -1) - rob(n).mem(velup)
-  y = (rob(o).vel.y * Cos(rob(n).aim) + rob(o).vel.x * Sin(rob(n).aim)) - rob(n).mem(veldx)
-  If x > 32000 Then x = 32000
-  If x < -32000 Then x = -32000
-  If y > 32000 Then y = 32000
-  If y < -32000 Then y = -32000
+  X = (rob(o).vel.X * Cos(rob(n).aim) + rob(o).vel.Y * Sin(rob(n).aim) * -1) - rob(n).mem(velup)
+  Y = (rob(o).vel.Y * Cos(rob(n).aim) + rob(o).vel.X * Sin(rob(n).aim)) - rob(n).mem(veldx)
+  If X > 32000 Then X = 32000
+  If X < -32000 Then X = -32000
+  If Y > 32000 Then Y = 32000
+  If Y < -32000 Then Y = -32000
   
-  rob(n).mem(refvelup) = x
+  rob(n).mem(refvelup) = X
   rob(n).mem(refveldn) = rob(n).mem(refvelup) * -1
-  rob(n).mem(refveldx) = y
+  rob(n).mem(refveldx) = Y
   rob(n).mem(refvelsx) = rob(n).mem(refvelsx) * -1
   Dim temp As Single
   temp = Sqr(CLng(rob(n).mem(refvelup) ^ 2) + CLng(rob(n).mem(refveldx) ^ 2))  ' how fast is this robot moving compared to me?
@@ -418,13 +424,13 @@ Public Sub lookoccurrShape(ByVal n As Integer, ByVal o As Integer)
   rob(n).mem(refshell) = 0
   rob(n).mem(refbody) = 0
   
-  rob(n).mem(refxpos) = CInt((rob(n).lastopppos.x / Form1.xDivisor) Mod 32000)
-  rob(n).mem(refypos) = CInt((rob(n).lastopppos.y / Form1.yDivisor) Mod 32000)
+  rob(n).mem(refxpos) = CInt((rob(n).lastopppos.X / Form1.xDivisor) Mod 32000)
+  rob(n).mem(refypos) = CInt((rob(n).lastopppos.Y / Form1.yDivisor) Mod 32000)
     
   'give reference variables from the bots frame of reference
-  rob(n).mem(refvelup) = (Obstacles.Obstacles(o).vel.x * Cos(rob(n).aim) + Obstacles.Obstacles(o).vel.y * Sin(rob(n).aim) * -1) - rob(n).mem(velup)
+  rob(n).mem(refvelup) = (Obstacles.Obstacles(o).vel.X * Cos(rob(n).aim) + Obstacles.Obstacles(o).vel.Y * Sin(rob(n).aim) * -1) - rob(n).mem(velup)
   rob(n).mem(refveldn) = rob(n).mem(refvelup) * -1
-  rob(n).mem(refveldx) = (Obstacles.Obstacles(o).vel.y * Cos(rob(n).aim) + Obstacles.Obstacles(o).vel.x * Sin(rob(n).aim)) - rob(n).mem(veldx)
+  rob(n).mem(refveldx) = (Obstacles.Obstacles(o).vel.Y * Cos(rob(n).aim) + Obstacles.Obstacles(o).vel.X * Sin(rob(n).aim)) - rob(n).mem(veldx)
   rob(n).mem(refvelsx) = rob(n).mem(refvelsx) * -1
   
   Dim temp As Single
@@ -440,7 +446,7 @@ Public Sub lookoccurrShape(ByVal n As Integer, ByVal o As Integer)
  'readmem and memloc couple used to read a specified memory location of the target robot
   rob(n).mem(473) = 0
   
-  If Obstacles.Obstacles(o).vel.x = 0 And Obstacles.Obstacles(o).vel.y = 0 Then                  'reffixed. Tells if a viewed robot is fixed by .fixpos.
+  If Obstacles.Obstacles(o).vel.X = 0 And Obstacles.Obstacles(o).vel.Y = 0 Then                  'reffixed. Tells if a viewed robot is fixed by .fixpos.
     rob(n).mem(477) = 1
   Else
     rob(n).mem(477) = 0
