@@ -550,7 +550,7 @@ Public Sub releasenrg(ByVal n As Integer, ByVal t As Long)
  '  power = rob(n).nrg + rob(n).poison
  'End If
   
-  'If rob(n).Corpse Then power = power * 0.5 'half power against corpses.  Most of your shot is wasted 'Botsareus 7/17/2016 Should not happen as a corpse is presumed to have no energy
+  If rob(n).Corpse Then power = power * 0.5 'half power against corpses.  Most of your shot is wasted 'The only way I can see this happening is if something tie injected energy into corpse
   
   Range = Shots(t).Range * 2 'returned energy shots have twice the range as the shot that it came from (but half the velocity)
   
