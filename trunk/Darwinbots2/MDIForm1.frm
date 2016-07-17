@@ -537,13 +537,6 @@ Begin VB.MDIForm MDIForm1
       Begin VB.Menu pause 
          Caption         =   "Pause Sim (F12)"
       End
-      Begin VB.Menu sep10 
-         Caption         =   "-"
-      End
-      Begin VB.Menu AutoS 
-         Caption         =   "Autosave..."
-         Shortcut        =   {F4}
-      End
       Begin VB.Menu p 
          Caption         =   "-"
          Index           =   3
@@ -1928,13 +1921,6 @@ End Sub
 
 Private Sub about_Click()
     frmAbout.Show
-End Sub
-
-Private Sub autos_Click()
-  optionsform.SSTab1.Tab = 6
-  NetEvent.Timer1.Enabled = False
-  NetEvent.Hide
-  optionsform.Show vbModal
 End Sub
 
 Private Sub col_Click()
