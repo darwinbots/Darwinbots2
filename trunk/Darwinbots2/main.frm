@@ -419,6 +419,17 @@ End Sub
 
 ' redraws screen
 Public Sub Redraw()
+Dim t As Integer
+'Botsareus 6/23/2016 Need to offset the robots by (actual velocity minus velocity) before drawing them
+'It is a hacky way of doing it, but should be a bit faster since the computation is only preformed twice, other than preforming it in each subsection.
+For t = 1 To MaxRobs
+    If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
+        rob(t).pos.X = rob(t).pos.X - (rob(t).vel.X - rob(t).actvel.X)
+        rob(t).pos.Y = rob(t).pos.Y - (rob(t).vel.Y - rob(t).actvel.Y)
+    End If
+Next
+
+
   Dim count As Long
 '  count = SimOpts.TotRunCycle / 10
   
@@ -447,6 +458,14 @@ Public Sub Redraw()
   If numTeleporters > 0 Then Teleport.DrawTeleporters
   DrawShots
   Me.AutoRedraw = True
+  
+'Plase robots back
+For t = 1 To MaxRobs
+    If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
+        rob(t).pos.X = rob(t).pos.X + (rob(t).vel.X - rob(t).actvel.X)
+        rob(t).pos.Y = rob(t).pos.Y + (rob(t).vel.Y - rob(t).actvel.Y)
+    End If
+Next
 End Sub
 
 ' calculates the pixel/twip ratio, since some graphic methods
@@ -920,6 +939,7 @@ Private Sub DrawRobTiesCol(t As Integer, w As Integer, ByVal s As Integer)
         col = vbYellow
         .Ties(k).sharing = False
       End If
+      
       Line (CentreX, CentreY)-(CentreX1, CentreY1), col
       'Line (.x + s, .Y + s)-(rob(rp).x + s, rob(rp).Y + s), col
     End If
@@ -971,7 +991,7 @@ Public Sub DrawAllRobs()
   Dim Length As Single
   Dim a As Integer
   Dim r As Single
-  
+
   visibleLeft = Form1.ScaleLeft
   visibleRight = Form1.ScaleLeft + Form1.ScaleWidth
   visibleTop = Form1.ScaleTop
@@ -1309,7 +1329,7 @@ End If
   loadrobs
   If Form1.Active Then SecTimer.Enabled = True
   SimOpts.TotRunTime = 0
-  setfeed
+  'setfeed
   If MDIForm1.visualize Then DrawAllRobs
   MDIForm1.enablesim
   
@@ -1472,7 +1492,7 @@ Sub startloaded()
   MDIForm1.AutoFork.Checked = SimOpts.EnableAutoSpeciation
     
   SecTimer.Enabled = True
-  setfeed
+  'setfeed
   If MDIForm1.visualize Then DrawAllRobs
   MDIForm1.enablesim
   Me.Visible = True
@@ -1557,6 +1577,7 @@ bypassThisSpecies:
     MDIForm1.Caption = "Loading... " & Int((cc - 1) * 100 / SimOpts.SpeciesNum) & "% Please wait..."
   Next cc
   MDIForm1.Caption = MDIForm1.BaseCaption
+  
 End Sub
 
 ' calls main form status bar update
@@ -1568,6 +1589,15 @@ End Sub
 Private Function whichrob(X As Single, Y As Single) As Integer
   Dim dist As Double, pist As Double
   Dim t As Integer
+  
+'Botsareus 6/23/2016 Need to offset the robots by (actual velocity minus velocity) before drawing them
+For t = 1 To MaxRobs
+    If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
+        rob(t).pos.X = rob(t).pos.X - (rob(t).vel.X - rob(t).actvel.X)
+        rob(t).pos.Y = rob(t).pos.Y - (rob(t).vel.Y - rob(t).actvel.Y)
+    End If
+Next
+  
   whichrob = 0
   dist = 10000
   For t = 1 To MaxRobs
@@ -1579,6 +1609,13 @@ Private Function whichrob(X As Single, Y As Single) As Integer
       End If
     End If
   Next t
+
+For t = 1 To MaxRobs
+    If rob(t).exist And Not (rob(t).FName = "Base.txt" And hidepred) Then
+        rob(t).pos.X = rob(t).pos.X + (rob(t).vel.X - rob(t).actvel.X)
+        rob(t).pos.Y = rob(t).pos.Y + (rob(t).vel.Y - rob(t).actvel.Y)
+    End If
+Next
 End Function
 
 ' stuff for clicking, dragging, etc
@@ -1629,10 +1666,12 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
     vel = VectorSub(rob(robfocus).pos, VectorSet(X, Y))
     rob(robfocus).pos = VectorSet(X, Y)
     rob(robfocus).vel = VectorSet(0, 0)
+    rob(robfocus).actvel = VectorSet(0, 0) 'Botsareus 6/24/2016 Bug fix
     Dim a As Byte
     For a = 1 To tmprob_c
         rob(tmppos(a).n).pos = VectorSet(X - tmppos(a).X, Y - tmppos(a).Y)
         rob(tmppos(a).n).vel = VectorSet(0, 0)
+        rob(tmppos(a).n).actvel = VectorSet(0, 0) 'Botsareus 6/24/2016 Bug fix
     Next
     If Not Active Then Redraw
     Exit Sub
@@ -2049,7 +2088,6 @@ Private Sub main()
           If SimOpts.TotRunCycle Mod 10 = 0 Then Redraw
         End If
       End If
-      
     
       If datirob.Visible And Not datirob.ShowMemoryEarlyCycle Then
         With rob(robfocus)
@@ -2904,49 +2942,49 @@ Public Function discendenti(t As Integer, disce As Integer) As Integer
 End Function
 
 ' sets the energy token for vegs feeding
-Private Sub setfeed()
+'Private Sub setfeed()
   'Dim t As Integer
   'For t = 1 To MaxRobs
   '  If rob(t).Veg = True Then rob(t).Feed = 8
   'Next t
-End Sub
+'End Sub
 
 ' selects a robot to kill for population control
-Public Sub popcontrol()
-  Dim a As Integer
-  Dim totrob As Integer
-  totrob = TotalRobots
-  While totrob > SimOpts.MaxPopulation
-    If SimOpts.PopLimMethod = 1 Then a = randrob
-    If SimOpts.PopLimMethod = 2 Then a = eldest
-    KillRobot a
-    totrob = totrob - 1
-  Wend
-End Sub
+'Public Sub popcontrol()
+'  Dim a As Integer
+'  Dim totrob As Integer
+'  totrob = TotalRobots
+'  While totrob > SimOpts.MaxPopulation
+'    If SimOpts.PopLimMethod = 1 Then a = randrob
+'    If SimOpts.PopLimMethod = 2 Then a = eldest
+'    KillRobot a
+'    totrob = totrob - 1
+'  Wend
+'End Sub
 
 ' returns a random robot (for population control)
-Private Function randrob() As Integer
-  Dim a As Integer
-  a = Random(1, MaxRobs)
-  While rob(a).exist = False
-    a = Random(1, MaxRobs)
-  Wend
-End Function
+'Private Function randrob() As Integer
+'  Dim a As Integer
+'  a = Random(1, MaxRobs)
+'  While rob(a).exist = False
+'    a = Random(1, MaxRobs)
+'  Wend
+'End Function
 
 ' returns the eldest robot (for pop control)
-Private Function eldest() As Integer
-  Dim t As Integer
-  Dim mxa As Integer
-  Dim mxr As Integer
-  mxa = 0
-  For t = 1 To MaxRobs
-    If rob(t).exist And rob(t).age > mxa And Not (rob(t).FName = "Base.txt" And hidepred) Then
-      mxa = rob(t).age
-      mxr = t
-    End If
-  Next t
-  eldest = mxr
-End Function
+'Private Function eldest() As Integer
+'  Dim t As Integer
+'  Dim mxa As Integer
+'  Dim mxr As Integer
+'  mxa = 0
+'  For t = 1 To MaxRobs
+'    If rob(t).exist And rob(t).age > mxa And Not (rob(t).FName = "Base.txt" And hidepred) Then
+'      mxa = rob(t).age
+'      mxr = t
+'    End If
+'  Next t
+'  eldest = mxr
+'End Function
 
 ' returns the fittest robot (selected through the score function)
 ' altered from the bot with the most generations

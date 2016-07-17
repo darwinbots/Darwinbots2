@@ -1898,6 +1898,11 @@ Private Sub LoadRobotBody(n As Integer, r As Integer)
     'Botsareus 10/8/2015 Keep track of mutations from old dna file
     If FileContinue(n) Then Get #n, , .OldMutations
     
+    'Botsareus 6/22/2016 Actual velocity
+    
+    If FileContinue(n) Then Get #n, , .actvel.X
+    If FileContinue(n) Then Get #n, , .actvel.Y
+    
     .dq = .dq - IIf(.dq > 1, 2, 0)
     
     If Not .Veg Then
@@ -2220,6 +2225,12 @@ Private Sub SaveRobotBody(n As Integer, r As Integer)
     'Botsareus 10/8/2015 Keep track of mutations from old dna file
     
     Put #n, , .OldMutations
+    
+    'Botsareus 6/22/2016 Actual velocity
+    
+    Put #n, , .actvel.X
+    Put #n, , .actvel.Y
+    
     
     'Botsareus 10/5/2015 Replaced with something better
 '    'Botsareus 9/16/2014 Write gene kill resrictions

@@ -3106,7 +3106,7 @@ Private Sub TrashCompactor_Click()
 End Sub
 
 Private Sub ucci_Click()
-  KillRobot -1
+  KillRobot robfocus 'Botsareus 6/12/2016 Bugfix
 End Sub
 
 Private Sub unpause_Timer()

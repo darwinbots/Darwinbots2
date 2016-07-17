@@ -28,12 +28,12 @@ Public Function NetForces(n As Integer)
   'The physics engine breaks apart if bot masses are less than about .1
   
 
-    If Abs(rob(n).vel.x) < 0.0000001 Then rob(n).vel.x = 0#  'Prevents underflow errors down the line
-    If Abs(rob(n).vel.y) < 0.0000001 Then rob(n).vel.y = 0#  'Prevents underflow erros down the line
+    If Abs(rob(n).vel.X) < 0.0000001 Then rob(n).vel.X = 0#  'Prevents underflow errors down the line
+    If Abs(rob(n).vel.Y) < 0.0000001 Then rob(n).vel.Y = 0#  'Prevents underflow erros down the line
     PlanetEaters n
     FrictionForces n
     SphereDragForces n
-    TieDragForces n
+    'TieDragForces n Botsareus 6/18/2016 Disabled for not doing anything
     BrownianForces n
     'BouyancyForces n  BouyancyForces are no longer needed since boy is proportional to y gravity
     GravityForces n
@@ -80,28 +80,27 @@ Public Sub FrictionForces(n As Integer)
 
   ZGrav = SimOpts.Zgravity
   
-  If .vel.x = 0 And .vel.y = 0 Then 'is there a vector way to do this?
+
     .ImpulseStatic = CSng(.mass * ZGrav * SimOpts.CoefficientStatic) ' * 1 cycle (timestep = 1)
-  Else
+
     Impulse = CSng(.mass * ZGrav * SimOpts.CoefficientKinetic) ' * 1 cycle (timestep = 1)
+
+    'Here we calculate the reduction in angular momentum due to friction
+    If Abs(rob(n).ma) > 0 Then
+      If Impulse < 48# Then
+        rob(n).ma = rob(n).ma * (48 - Impulse) / 48
+      Else
+        rob(n).ma = 0
+      End If
+      If Abs(rob(n).ma) < 0.0000001 Then rob(n).ma = 0
+    End If
+    
     If Impulse > VectorMagnitude(.vel) Then Impulse = VectorMagnitude(.vel) ' EricL 5/3/2006 Added to insure friction only counteracts
     
-    If Impulse < 0.0000001 Then Impulse = 0 ' Prevents the accumulation of very very low velocity in sims without density
+    If Impulse < 0.0000001 Then GoTo getout ' Prevents the accumulation of very very low velocity in sims without density
       
     'EricL 5/7/2006 Changed to operate directly on velocity
     .vel = VectorSub(.vel, VectorScalar(VectorUnit(.vel), Impulse)) 'kinetic friction points in opposite direction of velocity
-  End If
-  
-  'Here we calculate the reduction in angular momentum due to friction
-  'I'm sure there there is a better calculation
-  If Abs(rob(n).ma) > 0 Then
-    If Impulse < 1# Then
-      rob(n).ma = rob(n).ma * (1# - Impulse)
-    Else
-      rob(n).ma = 0
-    End If
-    If Abs(rob(n).ma) < 0.0000001 Then rob(n).ma = 0
-  End If
 getout:
   End With
 End Sub
@@ -111,11 +110,11 @@ Public Sub BrownianForces(n As Integer)
   Dim Impulse As Single
   Dim RandomAngle As Single
 
-    Impulse = SimOpts.PhysBrown * 0.5 * Rndy
+    Impulse = SimOpts.PhysBrown * 0.5 * rndy
     
-    RandomAngle = Rndy * 2 * PI
+    RandomAngle = rndy * 2 * PI
     rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(Cos(RandomAngle) * Impulse, Sin(RandomAngle) * Impulse))
-    rob(n).ma = rob(n).ma + (Impulse / 100) * (Rndy - 0.5) ' turning motion due to brownian motion
+    rob(n).ma = rob(n).ma + (Impulse / 100) * (rndy - 0.5) ' turning motion due to brownian motion
 
 getout:
 End Sub
@@ -126,7 +125,7 @@ Public Sub SphereDragForces(n As Integer)  'for bots
   Dim mag As Single
   
   'No Drag if no velocity or no density
-  If (rob(n).vel.x = 0 And rob(n).vel.y = 0) Or SimOpts.Density = 0 Then GoTo getout
+  If (rob(n).vel.X = 0 And rob(n).vel.Y = 0) Or SimOpts.Density = 0 Then GoTo getout
    
   'Here we calculate the reduction in angular momentum due to fluid density
   'I'm sure there there is a better calculation
@@ -155,154 +154,154 @@ Public Sub SphereDragForces(n As Integer)  'for bots
 getout:
 End Sub
 
-Public Sub TieDragForces(n As Integer)  'for ties
-'calculate drag on the ties as if the ties are cylinders
-'radius of the tie should be stored in tie array
-Dim a As Long
-
-'EricL 5/26/2006 Added for Perf
-If rob(n).numties = 0 Then GoTo getout
-
-For a = 0 To MAXTIES
-  If rob(n).Ties(a).pnt > 0 Then
-    'If rob(n).Ties(a).pnt > n Then TieDrag2 n, rob(n).Ties(a).pnt
-    TieDrag n, rob(n).Ties(a).pnt
-  End If
-Next a
-
-getout:
-End Sub
-
-Public Sub TieDrag3(n1 As Integer, n2 As Integer)
-  Dim pos As vector
-  Dim a As Single, b As Single, c As Single
-  Dim TorqueScalar
-  
-  pos = VectorSub(rob(n2).pos, rob(n1).pos)
-  
-  a = Cross(rob(n1).vel, pos)
-  b = Cross(rob(n2).vel, pos)
-  c = (a + b) * 0.5 * 0.0001
-  
-  'pretend Cd is always 1
-  pos = VectorUnit(pos)
-  pos = VectorSet(-pos.y, pos.x)
-  rob(n1).ImpulseRes = VectorSub(rob(n1).ImpulseRes, VectorScalar(pos, Abs(c)))
-  
-End Sub
-
-Public Sub TieDrag2(ByVal n1 As Long, ByVal n2 As Long)
-  Dim pos As vector
-  Dim a As Single, b As Single, c As Single
-  Dim invlength As Single
-  Dim ForceScalar As Single
-  
-  If rob(n1).mass = 0 Or rob(n2).mass = 0 Then GoTo getout
-  
-  'cooperative or independant\
-  pos = VectorSub(rob(n1).pos, rob(n2).pos)
-  invlength = VectorInvMagnitude(pos)
-  
-  'a and b are the two cross velocities
-  a = Cross(rob(n1).vel, pos)
-  b = Cross(rob(n2).vel, pos)
-  
-  c = (a + b) * 0.5 * invlength 'the average cross velocity
-  'use c to find the Cd
-  
-  Dim asquare As Single
-  Dim ab As Single
-  Dim bsquare As Single
-  Dim BigB As Single
-  Dim BigA As Single
-  Const TieRadius As Single = 30
-  
-  asquare = a * a
-  ab = a * b
-  bsquare = b * b
-  BigB = rob(n2).mass / (rob(n1).mass + rob(n2).mass)
-  BigA = SimOpts.Density * TieRadius * CylinderCd(c, TieRadius) * 0.083333333333 * Sgn(c)
-  
-  ForceScalar = BigA * invlength * (4 * BigB * _
-    (asquare - 5 * ab + bsquare) + asquare + 2 * ab + 3 * bsquare)
-  'divide the above be either B or 1-B (depending on which robot we're
-  'applying forces to) and multiply by the orthogonal unit component to pos
-  pos = VectorScalar(pos, invlength)
-  pos = VectorSet(-pos.y, pos.x)
-  
-  rob(n1).ImpulseRes = VectorAdd(rob(n1).ImpulseRes, _
-    VectorScalar(pos, ForceScalar * 0.5 / BigB))
-  'rob(N2).ForceRes = VectorAdd(rob(N2).ForceRes, _
-  '  VectorScalar(pos, ForceScalar * 0.5 / (1 - BigB)))
-getout:
-End Sub
-
-Public Sub TieDrag(n1 As Integer, n2 As Integer)
-'Simple method:
-
-'v1 = my velocity
-'m1 = my mass
-'p1 = my position
-'v2 = other 's velocity
-'m2 = other mass
-'p2 = other position
+'Public Sub TieDragForces(n As Integer)  'for ties
+''calculate drag on the ties as if the ties are cylinders
+''radius of the tie should be stored in tie array
+'Dim a As Long
+'
+''EricL 5/26/2006 Added for Perf
+'If rob(n).numties = 0 Then GoTo getout
+'
+'For a = 0 To MAXTIES
+'  If rob(n).Ties(a).pnt > 0 Then
+'    'If rob(n).Ties(a).pnt > n Then TieDrag2 n, rob(n).Ties(a).pnt
+'    TieDrag n, rob(n).Ties(a).pnt
+'  End If
+'Next a
+'
+'getout:
+'End Sub
+'
+'Public Sub TieDrag3(n1 As Integer, n2 As Integer)
+'  Dim pos As vector
+'  Dim a As Single, b As Single, c As Single
+'  Dim TorqueScalar
+'
+'  pos = VectorSub(rob(n2).pos, rob(n1).pos)
+'
+'  a = Cross(rob(n1).vel, pos)
+'  b = Cross(rob(n2).vel, pos)
+'  c = (a + b) * 0.5 * 0.0001
+'
+'  'pretend Cd is always 1
+'  pos = VectorUnit(pos)
+'  pos = VectorSet(-pos.Y, pos.X)
+'  rob(n1).ImpulseRes = VectorSub(rob(n1).ImpulseRes, VectorScalar(pos, Abs(c)))
+'
+'End Sub
+'
+'Public Sub TieDrag2(ByVal n1 As Long, ByVal n2 As Long)
+'  Dim pos As vector
+'  Dim a As Single, b As Single, c As Single
+'  Dim invlength As Single
+'  Dim ForceScalar As Single
+'
+'  If rob(n1).mass = 0 Or rob(n2).mass = 0 Then GoTo getout
+'
+'  'cooperative or independant\
+'  pos = VectorSub(rob(n1).pos, rob(n2).pos)
+'  invlength = VectorInvMagnitude(pos)
+'
+'  'a and b are the two cross velocities
+'  a = Cross(rob(n1).vel, pos)
+'  b = Cross(rob(n2).vel, pos)
+'
+'  c = (a + b) * 0.5 * invlength 'the average cross velocity
+'  'use c to find the Cd
+'
+'  Dim asquare As Single
+'  Dim ab As Single
+'  Dim bsquare As Single
+'  Dim BigB As Single
+'  Dim BigA As Single
+'  Const TieRadius As Single = 30
+'
+'  asquare = a * a
+'  ab = a * b
+'  bsquare = b * b
+'  BigB = rob(n2).mass / (rob(n1).mass + rob(n2).mass)
+'  BigA = SimOpts.Density * TieRadius * CylinderCd(c, TieRadius) * 0.083333333333 * Sgn(c)
+'
+'  ForceScalar = BigA * invlength * (4 * BigB * _
+'    (asquare - 5 * ab + bsquare) + asquare + 2 * ab + 3 * bsquare)
+'  'divide the above be either B or 1-B (depending on which robot we're
+'  'applying forces to) and multiply by the orthogonal unit component to pos
+'  pos = VectorScalar(pos, invlength)
+'  pos = VectorSet(-pos.Y, pos.X)
+'
+'  rob(n1).ImpulseRes = VectorAdd(rob(n1).ImpulseRes, _
+'    VectorScalar(pos, ForceScalar * 0.5 / BigB))
+'  'rob(N2).ForceRes = VectorAdd(rob(N2).ForceRes, _
+'  '  VectorScalar(pos, ForceScalar * 0.5 / (1 - BigB)))
+'getout:
+'End Sub
+'
+'Public Sub TieDrag(n1 As Integer, n2 As Integer)
+''Simple method:
+'
+''v1 = my velocity
+''m1 = my mass
+''p1 = my position
+''v2 = other 's velocity
+''m2 = other mass
+''p2 = other position
+''
+''
+''1.  Find unit vector for tie = u = (p2 - p1) / length(p2-p1)
+''2.  a = v1 cross u  |  a and b are the cross velocities, that is, the velocity
+''    b = vc cross u  |  perpindicular to the movement of the tie,
+''                    |  which is the direction that causes drag
+''    v(d) = a + (b-a)/length * d where d is distance from a
+''3.  Force on either bots is: A/12*length^2(a^2+2ab+3b^2) in a direction perpindicular to u.
+''A = density * radius * Cd
+''4.  Find force of drag per unit length using c as the velocity <--- this is
+''     the assumption that drag and velocity are linearly related.
+''     For turbulent flows, using the average of two velocities is incorrect.
+''     In the future, this should be solved.  This requires integrating the
+''     Cd and drag force equations for length (with velocity depending linearly
+''     on distance from either Mc or m1 of course) between 0 and distance from
+''     m1 to Mc.
+''5.  The torque (we just add it to resistive forces) applied to "me" =
+''     Drag Force per length / 2, since it's the area of the triangle
+''     formed by length and dragforces at Mc and m1, divided by the length
+''     since we 're applying them all to m1.
+'
+'  Dim u As vector, vc As vector, a As Single, b As Single, c As Single
+'  Dim Aconstant As Single
+'  Dim DragScalar As Single
+'  Dim Drag As vector
+'  Dim radius As Single
+'  Dim Length As Single
+'
+'  If n2 > UBound(rob) Then Exit Sub
+'  If n1 > UBound(rob) Then Exit Sub
 '
 '
-'1.  Find unit vector for tie = u = (p2 - p1) / length(p2-p1)
-'2.  a = v1 cross u  |  a and b are the cross velocities, that is, the velocity
-'    b = vc cross u  |  perpindicular to the movement of the tie,
-'                    |  which is the direction that causes drag
-'    v(d) = a + (b-a)/length * d where d is distance from a
-'3.  Force on either bots is: A/12*length^2(a^2+2ab+3b^2) in a direction perpindicular to u.
-'A = density * radius * Cd
-'4.  Find force of drag per unit length using c as the velocity <--- this is
-'     the assumption that drag and velocity are linearly related.
-'     For turbulent flows, using the average of two velocities is incorrect.
-'     In the future, this should be solved.  This requires integrating the
-'     Cd and drag force equations for length (with velocity depending linearly
-'     on distance from either Mc or m1 of course) between 0 and distance from
-'     m1 to Mc.
-'5.  The torque (we just add it to resistive forces) applied to "me" =
-'     Drag Force per length / 2, since it's the area of the triangle
-'     formed by length and dragforces at Mc and m1, divided by the length
-'     since we 're applying them all to m1.
-
-  Dim u As vector, vc As vector, a As Single, b As Single, c As Single
-  Dim Aconstant As Single
-  Dim DragScalar As Single
-  Dim Drag As vector
-  Dim radius As Single
-  Dim Length As Single
-  
-  If n2 > UBound(rob) Then Exit Sub
-  If n1 > UBound(rob) Then Exit Sub
-  
-  
-  '1.  Find unit vector
-  u = VectorSub(rob(n2).pos, rob(n1).pos)
-  Length = VectorMagnitude(u)
-  u = VectorUnit(u)
-  
-  a = Cross(rob(n1).vel, u)
-  b = Cross(rob(n2).vel, u)
-  c = (a * a + 2 * a * b + 3 * b * b)
-  '4.  Find drag using c:
-  
-  '1.7 is a good radius.  What?  Whhhaaatttt?  It is.
-  'okay, it's because that's what 10 body, at 905 twips^3 each,
-  'stretched into a cylinder with a length of 1000 twips would be
-      
-  If Length = 0 Then Length = 1    'EricL: 4/15/2006
-  radius = Sqr(9050 / Length / PI) ' EricL Possible divide by zero bug here when a bot is moved using the mouse.
-  Aconstant = radius * SimOpts.Density * 1
-    
-  DragScalar = Aconstant * Length * Length / 12 * c
-  Drag = VectorScalar(VectorSet(-u.y, u.x), DragScalar * 0.5)
-  
-  '5:  apply drag to bot
-  'not working right :/
-  'rob(n1).ForceRes = VectorAdd(rob(n1).ForceRes, Drag)
-End Sub
+'  '1.  Find unit vector
+'  u = VectorSub(rob(n2).pos, rob(n1).pos)
+'  Length = VectorMagnitude(u)
+'  u = VectorUnit(u)
+'
+'  a = Cross(rob(n1).vel, u)
+'  b = Cross(rob(n2).vel, u)
+'  c = (a * a + 2 * a * b + 3 * b * b)
+'  '4.  Find drag using c:
+'
+'  '1.7 is a good radius.  What?  Whhhaaatttt?  It is.
+'  'okay, it's because that's what 10 body, at 905 twips^3 each,
+'  'stretched into a cylinder with a length of 1000 twips would be
+'
+'  If Length = 0 Then Length = 1    'EricL: 4/15/2006
+'  radius = Sqr(9050 / Length / PI) ' EricL Possible divide by zero bug here when a bot is moved using the mouse.
+'  Aconstant = radius * SimOpts.Density * 1
+'
+'  DragScalar = Aconstant * Length * Length / 12 * c
+'  Drag = VectorScalar(VectorSet(-u.Y, u.X), DragScalar * 0.5)
+'
+'  '5:  apply drag to bot
+'  'not working right :/
+'  'rob(n1).ForceRes = VectorAdd(rob(n1).ForceRes, Drag)
+'End Sub
 
 Public Function SphereCd(ByVal velocitymagnitude As Single, ByVal radius As Single) As Single
   'computes the coeficient of drag for a spehre given the unit reynolds in simopts
@@ -399,7 +398,7 @@ Else
         .nrg = .nrg - (SimOpts.Ygravity / (SimOpts.PhysMoving) * IIf(.mass > 192, 192, .mass) * SimOpts.Costs(MOVECOST) * SimOpts.Costs(COSTMULTIPLIER)) * rob(n).Bouyancy
         End With
     End If
-    If (1 / BouyancyScaling - rob(n).pos.y / SimOpts.FieldHeight) > rob(n).Bouyancy Then
+    If (1 / BouyancyScaling - rob(n).pos.Y / SimOpts.FieldHeight) > rob(n).Bouyancy Then
        rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(0, SimOpts.Ygravity * rob(n).mass))
     Else
        rob(n).ImpulseInd = VectorAdd(rob(n).ImpulseInd, VectorSet(0, -SimOpts.Ygravity * rob(n).mass))
@@ -675,7 +674,7 @@ Public Sub TieTorque(t As Integer)
           While .Ties(j).pnt > 0
             If .Ties(j).angreg Then 'if angle is fixed.
               n = .Ties(j).pnt
-              anl = angle(.pos.x, .pos.y, rob(n).pos.x, rob(n).pos.y) 'angle of tie in euclidian space
+              anl = angle(.pos.X, .pos.Y, rob(n).pos.X, rob(n).pos.Y) 'angle of tie in euclidian space
               dlo = AngDiff(anl, .aim) 'difference of angle of tie and direction of robot
               mm = AngDiff(dlo, .Ties(j).ang + .Ties(j).bend) 'difference of actual angle and requested angle
              
@@ -685,8 +684,8 @@ Public Sub TieTorque(t As Integer)
                 numOfTorqueTies = numOfTorqueTies + 1
                 mm = (Abs(mm) - angleslack) * Sgn(mm)
                 m = mm * 0.1 ' Was .3
-                dx = rob(n).pos.x - .pos.x
-                dy = .pos.y - rob(n).pos.y
+                dx = rob(n).pos.X - .pos.X
+                dy = .pos.Y - rob(n).pos.Y
                 dist = Sqr(dx ^ 2 + dy ^ 2)
                 nax = -Sin(anl) * m * dist / 10
                 nay = -Cos(anl) * m * dist / 10
@@ -790,7 +789,7 @@ Public Sub bordercolls(t As Integer)
   Dim smudge As Single
   
   With rob(t)
-    If (.pos.x > .radius) And (.pos.x < SimOpts.FieldWidth - .radius) And (.pos.y > .radius) And (.pos.y < SimOpts.FieldHeight - .radius) Then GoTo getout
+    If (.pos.X > .radius) And (.pos.X < SimOpts.FieldWidth - .radius) And (.pos.Y > .radius) And (.pos.Y < SimOpts.FieldHeight - .radius) Then GoTo getout
   
     .mem(214) = 0
     
@@ -799,30 +798,30 @@ Public Sub bordercolls(t As Integer)
     dif = VectorMin(VectorMax(.pos, VectorSet(smudge, smudge)), VectorSet(SimOpts.FieldWidth - smudge, SimOpts.FieldHeight - smudge))
     dist = VectorSub(dif, .pos)
   
-    If dist.x <> 0 Then
+    If dist.X <> 0 Then
       If SimOpts.Dxsxconnected = True Then
-        If dist.x < 0 Then
-          ReSpawn t, smudge, .pos.y
+        If dist.X < 0 Then
+          ReSpawn t, smudge, .pos.Y
         Else
-          ReSpawn t, SimOpts.FieldWidth - smudge, .pos.y
+          ReSpawn t, SimOpts.FieldWidth - smudge, .pos.Y
         End If
       Else
         .mem(214) = 1
         'F-> = -k dist-> + v-> * b
       
        ' .ImpulseRes.x = .ImpulseRes.x + dist.x * -k
-         If .pos.x - .radius < 0 Then .pos.x = .radius
-         If .pos.x + .radius > SimOpts.FieldWidth Then .pos.x = CSng(SimOpts.FieldWidth) - .radius
-        .ImpulseRes.x = .ImpulseRes.x + .vel.x * b
+         If .pos.X - .radius < 0 Then .pos.X = .radius
+         If .pos.X + .radius > SimOpts.FieldWidth Then .pos.X = CSng(SimOpts.FieldWidth) - .radius
+        .ImpulseRes.X = .ImpulseRes.X + .vel.X * b
       End If
     End If
   
-    If dist.y <> 0 Then
+    If dist.Y <> 0 Then
       If SimOpts.Updnconnected Then
-        If dist.y < 0 Then
-          ReSpawn t, .pos.x, smudge
+        If dist.Y < 0 Then
+          ReSpawn t, .pos.X, smudge
         Else
-          ReSpawn t, .pos.x, SimOpts.FieldHeight - smudge
+          ReSpawn t, .pos.X, SimOpts.FieldHeight - smudge
         End If
       Else
         rob(t).mem(214) = 1
@@ -832,9 +831,9 @@ Public Sub bordercolls(t As Integer)
     '  dist = VectorSub(dif, .pos)
       
      ' .ImpulseRes.y = .ImpulseRes.y + dist.y * -k
-        If .pos.y - .radius < 0 Then .pos.y = .radius
-        If .pos.y + .radius > SimOpts.FieldHeight Then .pos.y = CSng(SimOpts.FieldHeight) - .radius
-        .ImpulseRes.y = .ImpulseRes.y + .vel.y * b
+        If .pos.Y - .radius < 0 Then .pos.Y = .radius
+        If .pos.Y + .radius > SimOpts.FieldHeight Then .pos.Y = CSng(SimOpts.FieldHeight) - .radius
+        .ImpulseRes.Y = .ImpulseRes.Y + .vel.Y * b
       End If
     End If
 getout:
@@ -866,11 +865,12 @@ Public Sub Repel3(rob1 As Integer, rob2 As Integer)
   Dim fixedSepVector As vector
   Dim i As Single ' moment of interia
   Dim relVel As Single
+  Dim TotalMass As Single
   
   e = SimOpts.CoefficientElasticity ' Set in the UI or loaded/defaulted in the sim load routines
   
-  'Botsareus 9/30/2014 More realisitic coefficient for massive robots
-  If e > 0 Then If rob(rob1).mass > 400 And rob(rob2).mass > 400 Then e = e * 10
+  'Botsareus 9/30/2014 More realisitic coefficient for massive robots 'Botsareus 6/18/2016 Disabled - Better idea using fixed logic below
+  'If e > 0 Then If rob(rob1).mass > 400 And rob(rob2).mass > 400 Then e = e * 10
   
   normal = VectorSub(rob(rob2).pos, rob(rob1).pos) ' Vector pointing from bot 1 to bot 2
   currdist = VectorMagnitude(normal) ' The current distance between the bots
@@ -885,6 +885,13 @@ Public Sub Repel3(rob1 As Integer, rob2 As Integer)
     fixedSepVector = VectorScalar(VectorUnit(normal), fixedSep)
     rob(rob1).pos = VectorSub(rob(rob1).pos, fixedSepVector)
     rob(rob2).pos = VectorAdd(rob(rob2).pos, fixedSepVector)
+  Else
+    'Botsareus 6/18/2016 Still slowly move robots appart to cancel out compressive events
+    TotalMass = rob(rob1).mass + rob(rob2).mass
+    fixedSep = ((rob(rob1).radius + rob(rob2).radius) - currdist)
+    fixedSepVector = VectorScalar(VectorUnit(normal), fixedSep / (1 + 55 ^ (0.3 - e)))
+    rob(rob1).pos = VectorSub(rob(rob1).pos, VectorScalar(fixedSepVector, rob(rob2).mass / TotalMass))  'Botsareus 7/4/2016 Factor in mass of robots (apply inverted)
+    rob(rob2).pos = VectorAdd(rob(rob2).pos, VectorScalar(fixedSepVector, rob(rob1).mass / TotalMass))
   End If
   
                   
@@ -954,8 +961,8 @@ Public Sub Repel3(rob1 As Integer, rob2 As Integer)
       
     
     'Update the touch senses
-    touch rob1, rob(rob2).pos.x, rob(rob2).pos.y
-    touch rob2, rob(rob1).pos.x, rob(rob1).pos.y
+    touch rob1, rob(rob2).pos.X, rob(rob2).pos.Y
+    touch rob2, rob(rob1).pos.X, rob(rob1).pos.Y
     
     'Update last touch variables
     rob(rob1).lasttch = rob2
