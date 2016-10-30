@@ -53,6 +53,7 @@ Public Sub Snapshot()
         sPopulation = (IIf(intFindBestV2 < 100, 100, 200 - intFindBestV2)) / 100
         Form1.TotalOffspring = 1
         s = Form1.score(rn, 1, 10, 0) + rob(rn).nrg + rob(rn).body * 10 'Botsareus 5/22/2013 Advanced fit test
+        If s < 0 Then s = 0 'Botsareus 9/23/2016 Bug fix
         s = (Form1.TotalOffspring ^ sPopulation) * (s ^ sEnergy)
         Print #3, CStr(s); v; CStr(rob(rn).nrg + rob(rn).body * 10); v; .chloroplasts & vbCrLf;
         d = ""
@@ -125,6 +126,7 @@ On Error GoTo getout
         sPopulation = (IIf(intFindBestV2 < 100, 100, 200 - intFindBestV2)) / 100
         Form1.TotalOffspring = 1
         s = Form1.score(rn, 1, 10, 0) + rob(rn).nrg + rob(rn).body * 10 'Botsareus 5/22/2013 Advanced fit test
+        If s < 0 Then s = 0 'Botsareus 9/23/2016 Bug fix
         s = (Form1.TotalOffspring ^ sPopulation) * (s ^ sEnergy)
         Print #177, CStr(s); v; CStr(rob(rn).nrg + rob(rn).body * 10); v; .chloroplasts & vbCrLf;
         d = ""
