@@ -399,7 +399,7 @@ Public Sub updateshots()
          End If
         End If
         
-        If Shots(t).age > Shots(t).Range Then
+        If Shots(t).age > Shots(t).Range And Not Shots(t).flash Then 'Botsareus 9/12/2016 Bug fix
           Shots(t).exist = False ' Kill shots once they reach maturity
           Shots(t).DnaLen = 0
         End If
