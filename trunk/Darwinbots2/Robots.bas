@@ -1047,7 +1047,7 @@ Public Function genelength(n As Integer, p As Integer) As Long
 End Function
 
 Private Sub BotDNAManipulation(n As Integer)
-Dim Length As Long
+Dim length As Long
 
   With rob(n)
   
@@ -1066,10 +1066,10 @@ Dim Length As Long
    
         'make the virus
         If MakeVirus(n, .mem(mkvirus)) Then
-           Length = genelength(n, .mem(mkvirus)) * 2
-           rob(n).nrg = rob(n).nrg - Length / 2 * SimOpts.Costs(DNACOPYCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 7/20/2013 Creating a virus costs a copy cost
-           If Length < 32000 Then
-             .Vtimer = Length
+           length = genelength(n, .mem(mkvirus)) * 2
+           rob(n).nrg = rob(n).nrg - length / 2 * SimOpts.Costs(DNACOPYCOST) * SimOpts.Costs(COSTMULTIPLIER) 'Botsareus 7/20/2013 Creating a virus costs a copy cost
+           If length < 32000 Then
+             .Vtimer = length
            Else
              .Vtimer = 32000
            End If
@@ -1402,7 +1402,7 @@ Private Sub ManageReproduction(ByVal n As Integer)
 End Sub
 
 Private Sub FireTies(ByVal n As Integer)
-  Dim Length As Single, maxLength As Single
+  Dim length As Single, maxLength As Single
   Dim resetlastopp As Boolean 'Botsareus 8/26/2012 only if lastopp is zero, this will reset it back to zero
   
   With rob(n)
@@ -1427,10 +1427,10 @@ Private Sub FireTies(ByVal n As Integer)
     If .lastopp > 0 And Not SimOpts.DisableTies And (.lastopptype = 0) Then
       
       '2 robot lengths
-      Length = VectorMagnitude(VectorSub(rob(.lastopp).pos, .pos))
+      length = VectorMagnitude(VectorSub(rob(.lastopp).pos, .pos))
       maxLength = RobSize * 4# + rob(n).radius + rob(rob(n).lastopp).radius
       
-      If Length <= maxLength Then
+      If length <= maxLength Then
         'maketie auto deletes existing ties for you
         maketie n, rob(n).lastopp, rob(n).radius + rob(rob(n).lastopp).radius + RobSize * 2, -20, rob(n).mem(mtie)
         'Botsareus 3/14/2014 Disqualify
@@ -2099,8 +2099,6 @@ End Sub
 ' ties parent and son, and the miracle of birth is accomplished
 Public Sub Reproduce(n As Integer, per As Integer)
 
-If reprofix Then If per < 3 Then rob(n).Dead = True 'Botsareus 4/27/2013 kill 8/26/2014 greedy robots
-
 If rob(n).body < 5 Then Exit Sub 'Botsareus 3/27/2014 An attempt to prevent 'robot bursts'
 
 If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
@@ -2132,6 +2130,9 @@ If SimOpts.DisableTypArepro And rob(n).Veg = False Then Exit Sub
   If totvegsDisplayed = -1 Then GoTo getout ' no veggies can reproduce on the first cycle after the sim is restarted.
 
   per = per Mod 100 ' per should never be <=0 as this is checked in ManageReproduction()
+  
+  If reprofix Then If per < 3 Then rob(n).Dead = True 'Botsareus 4/27/2013 kill 8/26/2014 greedy robots
+  
   If per <= 0 Then GoTo getout
   sondist = FindRadius(n, (per / 100)) + FindRadius(n, ((100 - per) / 100))
   
@@ -2415,8 +2416,6 @@ End Sub
 ' New Sexual Reproduction routine from EricL Jan 2008  -Botsareus 4/2/2013 Sexrepro fix
 Public Function SexReproduce(female As Integer)
 
-If reprofix Then If rob(female).mem(SEXREPRO) < 3 Then rob(female).Dead = True 'Botsareus 4/27/2013 kill 8/26/2014 greedy robots
-
 If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to prevent 'robot bursts'
 
   Dim sondist As Long
@@ -2458,6 +2457,9 @@ If rob(female).body < 5 Then Exit Function 'Botsareus 3/27/2014 An attempt to pr
   If totvegsDisplayed = -1 Then Exit Function ' no veggies can reproduce on the first cycle after the sim is restarted.
 
   per = per Mod 100 ' per should never be <=0 as this is checked in ManageReproduction()
+  
+  If reprofix Then If per < 3 Then rob(female).Dead = True 'Botsareus 4/27/2013 kill 8/26/2014 greedy robots
+  
   If per <= 0 Then Exit Function ' Can't give 100% or 0% of resources to offspring
   sondist = FindRadius(female, (per / 100)) + FindRadius(female, ((100 - per) / 100))
   
