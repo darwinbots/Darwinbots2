@@ -65,28 +65,6 @@ If LFOR = 0.01 Then
 End If
 End Sub
 
-Private Sub CalcDNALen()
-    Dim DNATOTLEN As Long
-    Dim ROBCT As Integer
-    Dim gotdnalen As Integer
-    Dim t As Integer
-    
-    'lets grab a test robot to figure out dna length
-    For t = 1 To MaxRobs
-            If rob(t).exist And rob(t).FName = "Test.txt" Then
-                ROBCT = ROBCT + 1
-                DNATOTLEN = DNATOTLEN + DnaLen(rob(t).dna)
-            End If
-    Next
-    
-    gotdnalen = DNATOTLEN / ROBCT
-    
-    'write to file to be used later
-    Open App.path & "\dnalength.gset" For Output As #1
-        Write #1, gotdnalen
-    Close #1
-End Sub
-
 Private Sub Next_Stage()
 'Reset F1 test
 y_Stgwins = 0
@@ -100,14 +78,10 @@ Init_hidePredCycl = hidePredCycl
 If y_normsize Then 'This stuff should only happen if y_normalize is enabled
 
     Dim gotdnalen As Integer
-    
-    'read dna length from file
-    Open App.path & "\dnalength.gset" For Input As #1
-      Input #1, gotdnalen
-    Close #1
-    
-    'kill file
-    Kill App.path & "\dnalength.gset"
+        
+    If LoadDNA(MDIForm1.MainDir & "\evolution\Test.txt", 0) Then
+        gotdnalen = DnaLen(rob(0).dna)
+    End If
        
     Dim sizechangerate As Double
     sizechangerate = (5000 - target_dna_size) / 4750
@@ -178,6 +152,11 @@ End If
 End Sub
 
 Private Sub Decrease_Difficulty()
+
+'Botsareus 12/11/2015 renormalize the mutation rates
+renormalize_mutations
+'
+
 If Not LFORdir Then
     LFORdir = True
     LFORcorr = LFORcorr / 2
@@ -190,29 +169,81 @@ hidePredCycl = Init_hidePredCycl + 300 * rndy - 150
 If hidePredCycl < 150 Then hidePredCycl = 150
 If hidePredCycl > 15000 Then hidePredCycl = 15000
 '
-'Botsareus 12/11/2015 renormalize the mutation rates
-If LFORcorr > 0.00005 Then renormalize_mutations
+'Botsareus 8/17/2016 Revert one stage, should not apply to eco evo
+If LFORcorr < 0.00000005 And y_eco_im = 0 And x_filenumber > 0 Then
+    logevo "Reverting one stage."
+    revert
+End If
+End Sub
+
+Private Sub revert()
+'Kill a stage
+Kill MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".txt"
+Kill MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".mrate"
+'Update file number
+x_filenumber = x_filenumber - 1
+'Move files
+FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".txt", MDIForm1.MainDir & "\evolution\Base.txt"
+FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".txt", MDIForm1.MainDir & "\evolution\Mutate.txt"
+FileCopy MDIForm1.MainDir & "\evolution\stages\stage" & x_filenumber & ".mrate", MDIForm1.MainDir & "\evolution\Mutate.mrate"
+'Reset data
+LFORcorr = 5
+LFOR = (LFOR + 10) / 2 'normalize LFOR toward 10
+Dim fdnalen As Integer
+If LoadDNA(MDIForm1.MainDir & "\evolution\Mutate.txt", 0) Then
+    fdnalen = DnaLen(rob(0).dna)
+End If
+curr_dna_size = fdnalen + 5
 End Sub
 
 Private Sub renormalize_mutations()
+Dim val As Single
+val = 5 / LFORcorr
+val = val * 90
+
 Dim ecocount As Byte
 Dim norm As mutationprobs
-Dim Length As Integer
 Dim a As Long
 Dim filem As mutationprobs
 
+Dim i As Byte
+Dim tot As Double
+Dim rez As Double 'the mult 3 of the average value
+
+Dim length As Integer
+
 If y_eco_im = 0 Then
     
-    'norm holds normalized mutation rates
+    'load mutations
+    
+    On Error GoTo nofile:
+    
+    filem = Load_mrates(MDIForm1.MainDir & "\evolution\Mutate.mrate")
+    
+    'calculate normalized rate
+    
+    tot = 0
+    i = 0
+    For a = 0 To 10
+      If filem.mutarray(a) > 0 Then
+        tot = tot + filem.mutarray(a)
+        i = i + 1
+      End If
+    Next a
+    rez = tot / i * 3
     
     If LoadDNA(MDIForm1.MainDir & "\evolution\Mutate.txt", 0) Then
-        Length = DnaLen(rob(0).dna)
+        length = DnaLen(rob(0).dna)
     End If
+    
+    If rez > IIf(NormMut, length * CLng(valMaxNormMut), 2000000000) Then rez = IIf(NormMut, length * CLng(valMaxNormMut), 2000000000)
+    
+    'norm holds normalized mutation rates
 
-      With norm
+    With norm
       
-      For a = 0 To 20
-        .mutarray(a) = Length * CLng(valNormMut)
+      For a = 0 To 10
+        .mutarray(a) = rez
         .Mean(a) = 1
         .StdDev(a) = 0
       Next a
@@ -221,21 +252,15 @@ If y_eco_im = 0 Then
       
     End With
     
-    'load mutations
-    
-    On Error GoTo nofile:
-    
-    filem = Load_mrates(MDIForm1.MainDir & "\evolution\Mutate.mrate")
-    
     'renormalize mutations
     
-    filem.CopyErrorWhatToChange = (filem.CopyErrorWhatToChange * 39 + norm.CopyErrorWhatToChange) / 40
-    filem.PointWhatToChange = (filem.PointWhatToChange * 39 + norm.PointWhatToChange) / 40
+    filem.CopyErrorWhatToChange = (filem.CopyErrorWhatToChange * (val - 1) + norm.CopyErrorWhatToChange) / val
+    filem.PointWhatToChange = (filem.PointWhatToChange * (val - 1) + norm.PointWhatToChange) / val
     
-      For a = 0 To 20
-        If filem.mutarray(a) > 0 Then filem.mutarray(a) = (filem.mutarray(a) * 149 + norm.mutarray(a)) / 150
-        filem.Mean(a) = (filem.Mean(a) * 29 + norm.Mean(a)) / 30
-        filem.StdDev(a) = (filem.StdDev(a) * 29 + norm.StdDev(a)) / 30
+      For a = 0 To 10
+        If filem.mutarray(a) > 0 Then filem.mutarray(a) = (filem.mutarray(a) * (val - 1) + norm.mutarray(a)) / val
+        filem.Mean(a) = (filem.Mean(a) * (val - 1) + norm.Mean(a)) / val
+        filem.StdDev(a) = (filem.StdDev(a) * (val - 1) + norm.StdDev(a)) / val
       Next a
       
     'save mutations
@@ -247,17 +272,38 @@ nofile:
 Else
 
     For ecocount = 1 To 15
-    
-        'norm holds normalized mutation rates
+        
+        'load mutations
+        
+        On Error GoTo nextrob:
+        
+        filem = Load_mrates(MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.mrate")
+        
+        'calculate normalized rate
+        
+        tot = 0
+        i = 0
+        For a = 0 To 10
+          If filem.mutarray(a) > 0 Then
+            tot = tot + filem.mutarray(a)
+            i = i + 1
+          End If
+        Next a
+        rez = tot / i * 3
         
         If LoadDNA(MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.txt", 0) Then
-            Length = DnaLen(rob(0).dna)
+            length = DnaLen(rob(0).dna)
         End If
         
-          With norm
+        If rez > IIf(NormMut, length * CLng(valMaxNormMut), 2000000000) Then rez = IIf(NormMut, length * CLng(valMaxNormMut), 2000000000)
+
+        
+        'norm holds normalized mutation rates
+        
+        With norm
           
-          For a = 0 To 20
-            .mutarray(a) = Length * CLng(valNormMut)
+          For a = 0 To 10
+            .mutarray(a) = rez
             .Mean(a) = 1
             .StdDev(a) = 0
           Next a
@@ -266,21 +312,15 @@ Else
           
         End With
         
-        'load mutations
-        
-        On Error GoTo nextrob:
-        
-        filem = Load_mrates(MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.mrate")
-        
         'renormalize mutations
         
-        filem.CopyErrorWhatToChange = (filem.CopyErrorWhatToChange * 39 + norm.CopyErrorWhatToChange) / 40
-        filem.PointWhatToChange = (filem.PointWhatToChange * 39 + norm.PointWhatToChange) / 40
+        filem.CopyErrorWhatToChange = (filem.CopyErrorWhatToChange * (val - 1) + norm.CopyErrorWhatToChange) / val
+        filem.PointWhatToChange = (filem.PointWhatToChange * (val - 1) + norm.PointWhatToChange) / val
         
-          For a = 0 To 20
-            If filem.mutarray(a) > 0 Then filem.mutarray(a) = (filem.mutarray(a) * 149 + norm.mutarray(a)) / 150
-            filem.Mean(a) = (filem.Mean(a) * 29 + norm.Mean(a)) / 30
-            filem.StdDev(a) = (filem.StdDev(a) * 29 + norm.StdDev(a)) / 30
+          For a = 0 To 10
+            If filem.mutarray(a) > 0 Then filem.mutarray(a) = (filem.mutarray(a) * (val - 1) + norm.mutarray(a)) / val
+            filem.Mean(a) = (filem.Mean(a) * (val - 1) + norm.Mean(a)) / val
+            filem.StdDev(a) = (filem.StdDev(a) * (val - 1) + norm.StdDev(a)) / val
           Next a
           
         'save mutations
@@ -294,6 +334,102 @@ nextrob:
 End If
 
 End Sub
+
+Private Sub scale_mutations()
+Dim val As Single
+Dim holdrate As Single
+val = 5 / LFORcorr
+val = val * 5
+
+Dim ecocount As Byte
+Dim a As Long
+Dim filem As mutationprobs
+
+Dim i As Byte
+Dim tot As Double
+Dim rez As Double
+
+If y_eco_im = 0 Then
+
+    'load mutations
+    
+    On Error GoTo nofile:
+    
+    filem = Load_mrates(MDIForm1.MainDir & "\evolution\Mutate.mrate")
+    
+    tot = 0
+    i = 0
+    For a = 0 To 10
+      If filem.mutarray(a) > 0 Then
+        tot = tot + filem.mutarray(a)
+        i = i + 1
+      End If
+    Next a
+    rez = tot / i
+       
+      For a = 0 To 10
+        If filem.mutarray(a) > 0 Then
+            'The lower the value, the faster it reaches 1
+            holdrate = filem.mutarray(a)
+            '
+            If holdrate >= (Log(6) / Log(4) * rez) Then holdrate = (Log(6) / Log(4) * rez) - 1
+            holdrate = holdrate / 6 * 4 ^ (holdrate / rez)
+            If holdrate < 1 Then holdrate = 1
+            '
+            filem.mutarray(a) = (filem.mutarray(a) * (val - 1) + holdrate) / val
+        End If
+      Next a
+      
+    'save mutations
+      
+    Save_mrates filem, MDIForm1.MainDir & "\evolution\Mutate.mrate"
+    
+nofile:
+
+Else
+
+    For ecocount = 1 To 15
+
+        'load mutations
+        
+        On Error GoTo nextrob:
+        
+        filem = Load_mrates(MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.mrate")
+        
+        tot = 0
+        i = 0
+        For a = 0 To 10
+          If filem.mutarray(a) > 0 Then
+            tot = tot + filem.mutarray(a)
+            i = i + 1
+          End If
+        Next a
+        rez = tot / i
+        
+        For a = 0 To 10
+          If filem.mutarray(a) > 0 Then
+            'The lower the value, the faster it reaches 1
+            holdrate = filem.mutarray(a)
+            '
+            If holdrate >= (Log(6) / Log(4) * rez) Then holdrate = (Log(6) / Log(4) * rez) - 1
+            holdrate = holdrate / 6 * 4 ^ (holdrate / rez)
+            If holdrate < 1 Then holdrate = 1
+            '
+            filem.mutarray(a) = (filem.mutarray(a) * (val - 1) + holdrate) / val
+          End If
+        Next a
+          
+        'save mutations
+          
+        Save_mrates filem, MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.mrate"
+        
+nextrob:
+    
+    Next
+
+End If
+End Sub
+
 
 Public Sub UpdateWonEvo(ByVal bestrob As Integer) 'passing best robot
 If rob(bestrob).Mutations > 0 And (totnvegsDisplayed >= 15 Or y_eco_im = 0) Then
@@ -358,6 +494,7 @@ If rob(bestrob).Mutations > 0 And (totnvegsDisplayed >= 15 Or y_eco_im = 0) Then
                   
                     Form1.TotalOffspring = 1
                     s = Form1.score(t, 1, 10, 0) + rob(t).nrg + rob(t).body * 10 'Botsareus 5/22/2013 Advanced fit test
+                    If s < 0 Then s = 0 'Botsareus 9/23/2016 Bug fix
                     s = (Form1.TotalOffspring ^ sPopulation) * (s ^ sEnergy)
                     s = s * maxgdi(t)
                     If s >= Mx Then
@@ -379,6 +516,8 @@ If rob(bestrob).Mutations > 0 And (totnvegsDisplayed >= 15 Or y_eco_im = 0) Then
     x_restartmode = 6
 Else
     logevo "Evolving robot never changed, increasing difficulty."
+    'Increase mutation rates
+    scale_mutations
     'Robot never mutated so we need to tighten up the difficulty
     Increase_Difficulty
 End If
@@ -392,9 +531,6 @@ exportdata
 End Sub
 
 Public Sub UpdateWonF1()
-
-If y_Stgwins = 0 And y_normsize Then CalcDNALen  'Calculate DNA length after fighting in the hardest round
-
 'figure out next opponent
 Dim currenttest As Integer
 y_Stgwins = y_Stgwins + 1
@@ -499,6 +635,42 @@ Open App.path & "\restartmode.gset" For Output As #1
  Write #1, x_restartmode
  Write #1, x_filenumber
 Close #1
+'Botsareus 10/9/2016 If runs out of stages restart everything
+If x_filenumber > 500 Then
+    
+    'erase the folder
+    RecursiveRmDir MDIForm1.MainDir & "\evolution"
+    
+    'make folder again
+    RecursiveMkDir MDIForm1.MainDir & "\evolution"
+    RecursiveMkDir MDIForm1.MainDir & "\evolution\stages"
+
+    'populate folder init
+    Dim ecocount As Byte
+    For ecocount = 1 To 8
+        'generate folders for multi
+        MkDir MDIForm1.MainDir & "\evolution\baserob" & ecocount
+        MkDir MDIForm1.MainDir & "\evolution\mutaterob" & ecocount
+        'generate the zb file (multi)
+        Open MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt" For Output As #1
+            Dim zerocount As Integer
+            For zerocount = 1 To y_zblen
+                Write #1, 0
+            Next
+        Close #1
+        FileCopy MDIForm1.MainDir & "\evolution\baserob" & ecocount & "\Base.txt", MDIForm1.MainDir & "\evolution\mutaterob" & ecocount & "\Mutate.txt"
+    Next
+    
+    'Botsareus 10/22/2015 the stages are singuler
+    FileCopy MDIForm1.MainDir & "\evolution\baserob1\Base.txt", MDIForm1.MainDir & "\evolution\stages\stage0.txt"
+
+    'restart
+    Open App.path & "\restartmode.gset" For Output As #1
+        Write #1, 7
+        Write #1, 0
+    Close #1
+    
+End If
 'Restart
     DisplayActivations = False
     Form1.Active = False
